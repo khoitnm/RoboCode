@@ -1,10 +1,11 @@
 package org.tnmk.robocode.common.predictor.self;
 
-import java.util.Vector;
-
 import org.tnmk.robocode.common.helper.BattleField;
+import org.tnmk.robocode.common.model.BaseRobotState;
+import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.common.predictor.albert.MoveSim;
 import org.tnmk.robocode.common.predictor.albert.MoveSimStat;
+import org.tnmk.robocode.common.predictor.self.model.PredictStateResult;
 
 public class PredictWrapper {
 	public static PredictStateResult toPredictResult(MoveSimStat moveSimStat){
@@ -30,19 +31,19 @@ public class PredictWrapper {
 	 * @param battleField
 	 * @return
 	 */
-	public static PredictStateResult predict(int steps, RobotState robotState, BattleField battleField) {
+	public static PredictStateResult predict(int steps, FullRobotState robotState, BattleField battleField) {
 		if (steps == 0){
 			PredictStateResult result = new PredictStateResult();
 			result.setDifferentHeadingToPreviousStep(0);
 			result.setHeading(robotState.getHeading());
-			result.setPoint(robotState.getPosition());
+			result.setPosition(robotState.getPosition());
 			result.setVelocity(robotState.getVelocity());
 			return result;
 		}
 		PredictStateResult[] rs = predictSteps(steps, robotState, battleField.getWidth(), battleField.getHeight());
 		return rs[rs.length-1];
 	}
-	public static PredictStateResult[] predictSteps(int steps, RobotState robotState, double battleWidth, double battleHeight) {
+	public static PredictStateResult[] predictSteps(int steps, FullRobotState robotState, double battleWidth, double battleHeight) {
 		MoveSim moveSim = new MoveSim();
 		double headingRadian = Math.toRadians(robotState.getHeading());
 		double turnRemainingRadian = Math.toRadians(robotState.getTurnRemaining());
@@ -59,7 +60,7 @@ public class PredictWrapper {
      * @param velocity - The velocity of the target along it's vector.
      * @return - The estimated new position of the target.
      */
-    public static PredictStateResult predictTargetPosition(int steps, RobotState robotState){
+    public static PredictStateResult predictTargetPosition(int steps, BaseRobotState robotState){
     	PredictStateResult result = new PredictStateResult();
     	double distance = robotState.getSpeed() * steps;
     	double moveRadians = Math.toRadians(robotState.getMoveAngle());

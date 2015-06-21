@@ -1,20 +1,13 @@
 package org.tnmk.robocode.jimkirk;
 
 import org.tnmk.robocode.common.constant.AimStatus;
-import org.tnmk.robocode.common.helper.BattleField;
-import org.tnmk.robocode.common.helper.FireByDistance;
 import org.tnmk.robocode.common.helper.GunHelper;
-import org.tnmk.robocode.common.helper.MoveHelper;
 import org.tnmk.robocode.common.helper.MoveHelper.BattlePosition;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
-import org.tnmk.robocode.common.math.MathUtils;
-import org.tnmk.robocode.common.predictor.self.PredictHelper;
-import org.tnmk.robocode.common.predictor.self.PredictHelper.PredictedAimAndFireSuccess;
-import org.tnmk.robocode.common.predictor.self.RobotState;
+import org.tnmk.robocode.common.model.FullRobotState;
+import org.tnmk.robocode.common.predictor.self.model.PredictedAimResult;
+import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
 
-import robocode.AdvancedRobot;
-import robocode.Event;
-import robocode.HitByBulletEvent;
 import robocode.ScannedRobotEvent;
 import robocode.StatusEvent;
 
@@ -118,7 +111,7 @@ public class JimKirkAdvance extends JimKirkBase {
 	public void onStatus(StatusEvent e) {
 		long time = getTime();
 		if (predicted != null && predicted.getFinishAimTime() == time) {
-			RobotState robotState = RobotStateConverter.toRobotState(this);
+			FullRobotState robotState = RobotStateConverter.toRobotState(this);
 			String msg = String.format("%s - THIS(%s, %s)", time, robotState.getX(), robotState.getY());
 			System.out.println(msg);
 		}
@@ -132,25 +125,26 @@ public class JimKirkAdvance extends JimKirkBase {
 			predicted = aimTarget(targetEvent);
 			if (predicted.getBestPredictPoint() == null || GunHelper.isTooFarFromTarget(predicted)){
 				predicted.setWaitForBetterAim(true);
-				moveHelper.moveCloseToTarget(predicted.getCurrentTarget().getPosition());
+				moveHelper.moveCloseToTarget(predicted.getBeginTarget().getPosition());
 			}
 		}
 	}
 
-	public PredictedAimAndFireSuccess aimTarget(ScannedRobotEvent targetEvent) {
-		RobotState thisState = RobotStateConverter.toRobotState(this);
-		RobotState targetState = RobotStateConverter.toRobotState(this, targetEvent);
+	public PredictedAimAndFireResult aimTarget(ScannedRobotEvent targetEvent) {
+		FullRobotState thisState = RobotStateConverter.toRobotState(this);
+		FullRobotState targetState = RobotStateConverter.toRobotState(this, targetEvent);
 		double maxPower = GunHelper.reckonMaxNecessaryPower(targetEvent.getEnergy());
-		PredictedAimAndFireSuccess predicted = predictHelper.predictBestStepsToAimAndFire(this.getGunCoolingRate(), getGunHeat(), maxPower, getGunHeading(), thisState, targetState);
-		predicted.setCurrentSource(thisState);
-		predicted.setCurrentTarget(targetState);
+		PredictedAimAndFireResult predicted = predictHelper.predictBestStepsToAimAndFire(this.getGunCoolingRate(), getGunHeat(), maxPower, getGunHeading(), thisState, targetState);
+		predicted.setBeginSource(thisState);
+		predicted.setBeginTarget(targetState);
 		predicted.setTime(getTime());
+		PredictedAimResult aimResult = predicted.getAimResult();
 		String msg = String.format("PREDICTION:\n" + "\tNOW:\t %s - THIS(%s,%s) & TARGET(%s,%s)\n" + "\tPREDICT:\t %s - THIS FIRE(%s,%s)\n" + "\tPREDICT:\t %s - TARGET(%s,%s)", getTime(), getX(), getY(), targetState.getX(), targetState.getY(), getTime()
-		        + predicted.getAimAndFire().getAimSteps(), predicted.getPredictedAimedSource().getX(), predicted.getPredictedAimedSource().getY(), getTime() + predicted.getAimAndFire().getTotalSteps(), predicted.getPredictedFiredTarget().getX(), predicted
+		        + aimResult.getAimSteps(), aimResult.getSource().getX(), aimResult.getSource().getY(), predicted.getFinishAllTime(), predicted.getPredictedFiredTarget().getX(), predicted
 		        .getPredictedFiredTarget().getY());
 		System.out.println(msg);
 		if (predicted.getBestPredictPoint() != null){
-			double turnRightAngle = predicted.getAimAndFire().getTurnRightAngle();
+			double turnRightAngle = predicted.getAimResult().getGunTurnRightDirection();
 			setTurnGunRight(turnRightAngle);
 			isFired = false;
 		}		

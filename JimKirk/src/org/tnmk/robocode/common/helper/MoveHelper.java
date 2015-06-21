@@ -2,7 +2,7 @@ package org.tnmk.robocode.common.helper;
 
 import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.math.Point;
-import org.tnmk.robocode.common.predictor.self.RobotState;
+import org.tnmk.robocode.common.model.FullRobotState;
 
 import robocode.AdvancedRobot;
 import robocode.Robot;
@@ -83,7 +83,7 @@ public class MoveHelper {
 	}
 
 	public void moveCloseToTarget(Point targetPoint) {
-		RobotState thisState = RobotStateConverter.toRobotState(robot);
+		FullRobotState thisState = RobotStateConverter.toRobotState(robot);
 		double turnRightAngle = MathUtils.calculateTurnRightAngleToTarget(thisState.getHeading(), thisState.getX(), thisState.getY(), targetPoint.getX(), targetPoint.getY());
 		if (turnRightAngle > 0) {
 			turnRightAngle -= MOVE_CLOSE_TO_TARGET_MIN_ANGLE;

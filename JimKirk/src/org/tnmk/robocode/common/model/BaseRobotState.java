@@ -1,14 +1,14 @@
-package org.tnmk.robocode.common.predictor.self;
+package org.tnmk.robocode.common.model;
 
 import org.tnmk.robocode.common.math.Point;
 
-import robocode.Rules;
-
-public class RobotBaseState {
-	protected Point position;
+public class BaseRobotState {
+	protected Point position = new Point();
 	protected double velocity;
 	protected double heading;
 
+	// CONVENTION SET-GET
+	// ====================================================================
 	/**
 	 * @return heading is only the body angle, but if velocity is negative, the
 	 *         angle is conversed. So we need to re-calculate move angle
@@ -26,8 +26,13 @@ public class RobotBaseState {
 
 	}
 
-	// CONVENTION SET-GET
-	// ====================================================================
+	public double getSpeed() {
+		return Math.abs(velocity);
+	}
+	//Need to predict by more information
+	public boolean isStandStill() {
+		return (velocity == 0);
+	}
 	public double getX() {
 		return position.x;
 	}
@@ -46,10 +51,6 @@ public class RobotBaseState {
 
 	// SETTER - GETTER
 	// ====================================================================
-	public double getSpeed() {
-		return Math.abs(velocity);
-	}
-
 	public Point getPosition() {
 		return position;
 	}

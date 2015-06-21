@@ -1,7 +1,8 @@
 package org.tnmk.robocode.common.helper;
 
 import org.tnmk.robocode.common.math.MathUtils;
-import org.tnmk.robocode.common.predictor.self.PredictHelper.PredictedAimAndFireSuccess;
+import org.tnmk.robocode.common.model.AimAndFireResult;
+import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
 
 import robocode.Rules;
 
@@ -9,7 +10,6 @@ public class GunHelper {
 	public static final int BULLET_POWER_01 = 1;
 	public static final int BULLET_POWER_02 = 2;
 	public static final int BULLET_POWER_03 = 3;
-	private static final int AIMFIRE_TOO_LONG = 40;
 	/**
 	 * @param power
 	 *            bullet power
@@ -32,11 +32,9 @@ public class GunHelper {
 		public void setNumValue(int numValue) {
 	        this.numValue = numValue;
         }
-
-		
 	}
-	public static boolean isTooFarFromTarget(PredictedAimAndFireSuccess predicted){
-		int fireSteps = predicted.getAimAndFire().getTotalSteps();
+	public static boolean isTooFarFromTarget(PredictedAimAndFireResult predicted){
+		int fireSteps = predicted.getTotalSteps();
 		return (fireSteps >= FireDistance.STEPS_TOO_LONG.getNumValue());
 	}
 	/**
@@ -81,56 +79,11 @@ public class GunHelper {
 	 */
 	public static AimAndFireResult reckonStepsToAimAndFire(int firePower, double gunHeading, double gunX, double gunY, double targetX, double targetY) {
 		AimAndFireResult result = new AimAndFireResult();
-		result.turnRightAngle = MathUtils.calculateTurnRightAngleToTarget(gunHeading, gunX, gunY, targetX, targetY);
-		result.distance = MathUtils.distance(gunX, gunY, targetX, targetY);
-		result.aimSteps = reckonGunTurningSteps(result.turnRightAngle);
-		result.fireSteps  = reckonBulletSteps(result.distance, firePower);
+		result.setTurnRightAngle(MathUtils.calculateTurnRightAngleToTarget(gunHeading, gunX, gunY, targetX, targetY));
+		result.setDistance(MathUtils.distance(gunX, gunY, targetX, targetY));
+		result.setAimSteps(reckonGunTurningSteps(result.getTurnRightAngle()));
+		result.setFireSteps(reckonBulletSteps(result.getDistance(), firePower));
 		return result;
 	}
-	public static class AimAndFireResult{
-		/**
-		 * gun turn right angle
-		 */
-		private double turnRightAngle;
-		/**
-		 * distance from aimed position to fired position.
-		 */
-		private double distance;
-		private int aimSteps;
-		private int fireSteps;
-		
-		
-		public int getAimSteps() {
-			return aimSteps;
-		}
 
-		public void setAimSteps(int aimSteps) {
-			this.aimSteps = aimSteps;
-		}
-
-		public int getFireSteps() {
-			return fireSteps;
-		}
-
-		public void setFireSteps(int fireSteps) {
-			this.fireSteps = fireSteps;
-		}
-
-		public int getTotalSteps() {
-			return aimSteps + fireSteps;
-		}
-		
-		public double getTurnRightAngle() {
-			return turnRightAngle;
-		}
-		public void setTurnRightAngle(double turnRightAngle) {
-			this.turnRightAngle = turnRightAngle;
-		}
-		public double getDistance() {
-			return distance;
-		}
-		public void setDistance(double distance) {
-			this.distance = distance;
-		}
-	}
 }

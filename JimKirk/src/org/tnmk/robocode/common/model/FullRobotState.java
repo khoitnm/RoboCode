@@ -1,9 +1,9 @@
-package org.tnmk.robocode.common.predictor.self;
+package org.tnmk.robocode.common.model;
 
 import robocode.Rules;
 
 
-public class RobotState extends RobotBaseState{
+public class FullRobotState extends BaseRobotState{
 	public static final double DISTANCE_REMAINING_UNKNOWN = Double.MAX_VALUE;
 	public static final double TURN_REMAINING_UNKOWN = Double.MAX_VALUE;
 	public static final double MAX_VELOCITY_UNKOWN = 0;

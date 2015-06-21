@@ -11,8 +11,8 @@ import org.tnmk.robocode.common.math.LineSegment;
 import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.math.Point;
 import org.tnmk.robocode.common.predictor.self.PredictHelper;
-import org.tnmk.robocode.common.predictor.self.PredictHelper.PredictedAimAndFireSuccess;
-import org.tnmk.robocode.common.predictor.self.PredictHelper.PredictedFiredPoint;
+import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
+import org.tnmk.robocode.common.predictor.self.model.PredictedFiredPoint;
 
 import robocode.AdvancedRobot;
 import robocode.Event;
@@ -47,7 +47,7 @@ public abstract class JimKirkBase extends AdvancedRobot {
 	protected FireByDistance fireByDistance;
 	protected MoveHelper moveHelper;
 	protected PredictHelper predictHelper;
-	protected PredictedAimAndFireSuccess predicted;
+	protected PredictedAimAndFireResult predicted;
 	protected long painted = -1;
 	
 	
@@ -80,9 +80,9 @@ public abstract class JimKirkBase extends AdvancedRobot {
 			 paintPoint(2,COLOR_NEAREST_TARGET_POINT, nearestPoint, null);
        }
 		
-		paintPoint(2, COLOR_CURRENT_SOURCE, predicted.getCurrentSource().getPosition(), "");
-		paintPoint(4, COLOR_CURRENT_TARGET, predicted.getCurrentTarget().getPosition(), null);
-		paintPoint(5, COLOR_PREDICTED_TARGET_HIT, predicted.getPredictedAimedTarget().getPoint(), "");
+		paintPoint(2, COLOR_CURRENT_SOURCE, predicted.getBeginSource().getPosition(), "");
+		paintPoint(4, COLOR_CURRENT_TARGET, predicted.getBeginTarget().getPosition(), null);
+		paintPoint(5, COLOR_PREDICTED_TARGET_HIT, predicted.getAimResult().getTarget().getPosition(), "");
 		if (predicted.getBestPredictPoint() != null){
 			paintPoint(5, COLOR_PREDICTED_TARGET_HIT, predicted.getBestPredictPoint(), "p-"+predicted.getBestPredictPoint().getFirePower()+"_");
 		}
@@ -105,8 +105,8 @@ public abstract class JimKirkBase extends AdvancedRobot {
 	public void paintPredictInfo(){
 		Graphics graphic = getGraphics();
 		graphic.setColor(Color.WHITE);
-		graphic.drawString("Target heading: "+predicted.getCurrentTarget().getHeading(), 0, 10);
-		graphic.drawString("Target velocity: "+predicted.getCurrentTarget().getVelocity(), 0, 30);
+		graphic.drawString("Target heading: "+predicted.getBeginTarget().getHeading(), 0, 10);
+		graphic.drawString("Target velocity: "+predicted.getBeginTarget().getVelocity(), 0, 30);
 	}
 	public void paintLine(Color color, LineSegment line){
 		if (line == null){

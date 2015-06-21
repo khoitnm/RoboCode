@@ -2,9 +2,9 @@ package org.tnmk.robocode.jimkirk;
 
 
 import org.tnmk.robocode.common.helper.RobotStateConverter;
-import org.tnmk.robocode.common.predictor.self.PredictStateResult;
+import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.common.predictor.self.PredictWrapper;
-import org.tnmk.robocode.common.predictor.self.RobotState;
+import org.tnmk.robocode.common.predictor.self.model.PredictStateResult;
 
 import robocode.Event;
 import robocode.StatusEvent;
@@ -35,7 +35,7 @@ public class JimKirkStraight extends JimKirkBase {
         	long time = getTime();
         	if (time > predictTime){
         		int predictSteps = 30;
-            	RobotState thisState = RobotStateConverter.toRobotState(this);
+            	FullRobotState thisState = RobotStateConverter.toRobotState(this);
             	predictState = PredictWrapper.predict(predictSteps, thisState, battleField);
             	predictTime = predictSteps + getTime();
             	String msg = String.format("PREDICT: %s - (%.2f, %.2f)", 
@@ -48,7 +48,7 @@ public class JimKirkStraight extends JimKirkBase {
     }
 	public void onStatus(StatusEvent e) {
 		long time = getTime();
-		RobotState robotState = RobotStateConverter.toRobotState(this);
+		FullRobotState robotState = RobotStateConverter.toRobotState(this);
 		String msg = String.format("%s - THIS(%.2f, %.2f)", time, robotState.getX(), robotState.getY());
 		System.out.println(msg);
 		if (predictState != null && time == predictTime) {
