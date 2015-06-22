@@ -17,17 +17,26 @@ public class WallSmoothHelper {
 	}
 	/**
 	 * 
-	 * @param moveAngle
+	 * @param currentMoveAngle
 	 * @param speed
-	 * @param turnLeft turn right (true) or left (false). Then we can decide whether turn right or left will be better.
+	 * @param turnLeft turn right (1) or left (-1). Then we can decide whether turn right or left will be better.
 	 * @return
 	 */
-	public double distanceToTopWall(double moveAngle, double speed, boolean turnRight){
+	public double distanceToTopWall(double currentMoveAngle, double speed, int turnRight){
 		double turnRate = Rules.getTurnRate(speed);
-		double movementRadius = MathUtils.reckonMovementRadius(speed, turnRate);
-		
+		double moveRadius = MathUtils.reckonMovementRadius(speed, turnRate);
+		double moveRadiusAngle = (currentMoveAngle - (turnRight*90) + 360) % 360; //plus 360 to ensure that this value is positive
+		return moveRadius * (1 - Math.cos(moveRadiusAngle)); 
 	}
-	
+	public double distanceToRightWall(double currentMoveAngle, double speed, int turnRight){
+		return distanceToTopWall((currentMoveAngle-90 + 360) % 360, speed, turnRight);
+	}
+	public double distanceToBottomWall(double currentMoveAngle, double speed, int turnRight){
+		return distanceToTopWall((currentMoveAngle + 180) % 360, speed, turnRight);
+	}
+	public double distanceToLeftWall(double currentMoveAngle, double speed, int turnRight){
+		return distanceToTopWall((currentMoveAngle + 90) % 360, speed, turnRight);
+	}
 	/**
 	 * Reckon which wall our robot is heading to.
 	 * @param steps

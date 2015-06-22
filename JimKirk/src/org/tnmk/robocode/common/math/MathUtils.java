@@ -14,7 +14,7 @@ public final class MathUtils {
 	 * @see http://www.efm.leeds.ac.uk/CIVE/CIVE1140/section01/linear_angular_motion.html
 	 * @param linearSpeed speed of linear movement, positive number.
 	 * @param angularSpeed speed of angular movement (direction turning speed), in degree, positive number
-	 * @return radius of movement circle.
+	 * @return radius of movement follow circle sharp.
 	 */
 	public static double reckonMovementRadius(double linearSpeed, double angularSpeed){
 		return linearSpeed/Math.toRadians(angularSpeed);
