@@ -3,14 +3,21 @@ package org.tnmk.robocode.common.math;
 import java.util.Collection;
 import java.util.List;
 
-import robocode.util.Utils;
 import math.geom2d.Point2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
-import math.geom2d.line.StraightLine2D;
 
 public final class MathUtils {
 	private MathUtils() {
+	}
+	/**
+	 * @see http://www.efm.leeds.ac.uk/CIVE/CIVE1140/section01/linear_angular_motion.html
+	 * @param linearSpeed speed of linear movement, positive number.
+	 * @param angularSpeed speed of angular movement (direction turning speed), in degree, positive number
+	 * @return radius of movement circle.
+	 */
+	public static double reckonMovementRadius(double linearSpeed, double angularSpeed){
+		return linearSpeed/Math.toRadians(angularSpeed);
 	}
 	/**
 	 * @param pA
@@ -42,7 +49,7 @@ public final class MathUtils {
 		return MathConverter.toPoints(intersections);
 	}
 
-	public static double calculateTurnRightAngleToTarget(double currentAbsAngle, double currentX, double currentY, double targetX, double targetY) {
+	public static double calculateTurnRightDirectionToTarget(double currentAbsAngle, double currentX, double currentY, double targetX, double targetY) {
 		double absBearingToTarget = MathUtils.absoluteBearing(currentX, currentY, targetX, targetY);
 		double relativeBearing = absBearingToTarget - currentAbsAngle;
 		return MathUtils.normalizeDegree(relativeBearing);

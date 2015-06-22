@@ -1,14 +1,8 @@
 package org.tnmk.robocode.common.predictor.self.model;
 
-import java.util.List;
-
 import org.tnmk.robocode.common.model.FullRobotState;
 
 public class PredictedAimAndFireResult {
-	
-	
-	// BEGIN STATS
-	// ---------------------------------------------------------------------------
 	/**
 	 * The time when prediction begin.
 	 */
@@ -16,61 +10,45 @@ public class PredictedAimAndFireResult {
 
 	private FullRobotState beginSource;
 	private FullRobotState beginTarget;
-	
-	// AIMED STATS
-	// ---------------------------------------------------------------------------
-	private PredictedAimResult aimResult;
 
+	private final RawEstimateAimResult firstAimEstimation = new RawEstimateAimResult();
+	private final PredictedAimResult aimResult = new PredictedAimResult();
 
-	// FIRED STATS
-	// ---------------------------------------------------------------------------
-	private FindingBestFirePointResult findNearestPointToTargetMovementResult;
-
+	private final PredictedFireResult fireResult = new PredictedFireResult();
 	/**
 	 * This prediction was cancel, we will predict again and fire base on the
 	 * new prediction. The reason maybe it's too far away from target.
 	 */
 	private boolean waitForBetterAim = false;
-	private List<PredictedFiredPoint> possibleBulletHitTargetPoints;
-
-	private PredictedFiredPoint bestPredictPoint;
-
-	/**
-	 * Status of target when it's hit by bullet.
-	 */
-	private PredictStateResult predictedFiredTarget;
 
 	// CONVENIENT SET-GET
 	// ===========================================================================
-	public long getFinishAimTime() {
+	public PredictedFirePoint getBestFirePoint(){
+		if (getFireResult() == null || getFireResult().getFindingBestPointResult() == null) return null;
+		return getFireResult().getFindingBestPointResult().getBestPoint();
+	}
+	public long getAimedTime() {
 		return time + aimResult.getAimSteps();
 	}
-
-	public long getFinishAllTime() {
-		return time + getTotalSteps();
+	/**
+	 * this is the aimed and fired time
+	 * @return
+	 */
+	public Long getTotalTime() {
+		Integer totalSteps = getTotalSteps();
+		if (totalSteps == null) return null;
+		return time + totalSteps;
 	}
 
 	public Integer getTotalSteps() {
-	    if (bestPredictPoint == null) return null;
-	    return aimResult.getAimSteps() + bestPredictPoint.getFireSteps();
+		PredictedFirePoint bestFirePoint = getBestFirePoint();
+	    if (bestFirePoint == null) return null;
+	    return aimResult.getAimSteps() + bestFirePoint.getFireSteps();
     }
 	// SET-GET
 	// ===========================================================================
 	public PredictedAimResult getAimResult() {
 		return aimResult;
-	}
-
-	public void setAimResult(PredictedAimResult aimAndFire) {
-		this.aimResult = aimAndFire;
-	}
-
-
-	public PredictStateResult getPredictedFiredTarget() {
-		return predictedFiredTarget;
-	}
-
-	public void setPredictedFiredTarget(PredictStateResult predictedFiredTarget) {
-		this.predictedFiredTarget = predictedFiredTarget;
 	}
 
 	public long getTime() {
@@ -104,30 +82,10 @@ public class PredictedAimAndFireResult {
 	public void setBeginSource(FullRobotState currentSource) {
 		this.beginSource = currentSource;
 	}
-
-
-	public List<PredictedFiredPoint> getPossibleBulletHitTargetPoints() {
-		return possibleBulletHitTargetPoints;
-	}
-
-	public void setPossibleBulletHitTargetPoints(List<PredictedFiredPoint> possibleBulletHitTargetPoints) {
-		this.possibleBulletHitTargetPoints = possibleBulletHitTargetPoints;
-	}
-
-	public PredictedFiredPoint getBestPredictPoint() {
-		return bestPredictPoint;
-	}
-
-	public void setBestPredictPoint(PredictedFiredPoint bestPredictPoint) {
-		this.bestPredictPoint = bestPredictPoint;
-	}
-
-	public FindingBestFirePointResult getFindNearestPointToTargetMovementResult() {
-		return findNearestPointToTargetMovementResult;
-	}
-
-	public void setFindNearestPointToTargetMovementResult(FindingBestFirePointResult findNearestPointToTargetMovementResult) {
-		this.findNearestPointToTargetMovementResult = findNearestPointToTargetMovementResult;
-	}
-
+	public PredictedFireResult getFireResult() {
+	    return fireResult;
+    }
+	public RawEstimateAimResult getFirstAimEstimation() {
+	    return firstAimEstimation;
+    }
 }

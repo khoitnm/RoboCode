@@ -1,56 +1,59 @@
 package org.tnmk.robocode.common.predictor.self.model;
+/**
+ * This class doesn't contain information about target when it get fired (hit by bullet) because those information are stored in {@link PredictedFireResult} 
+ * @author Khoi
+ */
+public class PredictedAimResult {
 
-public class PredictedAimResult{
-	/**
-	 * gun turn right direction (could be negative or positive)
-	 */
-	private double gunTurnRightDirection;
-	/**
-	 * distance from source to target position when it is aimed.
-	 */
-	private double sourceAndTargetDistance;
-	/**
-	 * Number of steps necessary to turn gun
-	 */
 	private int aimSteps;
-	
+
 	/**
 	 * Status of source after aimed, not when bullet hit target
 	 */
 	private PredictStateResult source;
-	private PredictStateResult target;
+
+	/**
+	 * Gun turn right direction (could be negative or positive).
+	 * Note: if cannot find position to fire at target ({@link RawEstimateAimResult#getTarget()}), this value is null
+	 */
+	private Double gunTurnRightDirection;
+	/**
+	 * The target point when it get fired (get hit by bullet). It has different meaning from {@link RawEstimateAimResult#getTarget()}.
+	 * So it will be null if {@link RawEstimateAimResult#getTarget()} is null
+	 */
+	private PredictedFirePoint firedTarget;
 	
-	
-	public double getGunTurnRightDirection() {
-		return gunTurnRightDirection;
-	}
-	public void setGunTurnRightDirection(double gunTurnRightDirection) {
-		this.gunTurnRightDirection = gunTurnRightDirection;
-	}
-	public double getSourceAndTargetDistance() {
-		return sourceAndTargetDistance;
-	}
-	public void setSourceAndTargetDistance(double sourceAndTargetDistance) {
-		this.sourceAndTargetDistance = sourceAndTargetDistance;
-	}
 	public int getAimSteps() {
 		return aimSteps;
 	}
+
 	public void setAimSteps(int aimSteps) {
 		this.aimSteps = aimSteps;
 	}
+
 	public PredictStateResult getSource() {
-	    return source;
+		return source;
+	}
+
+	public void setSource(PredictStateResult source) {
+		this.source = source;
+	}
+
+	public double getGunTurnRightDirection() {
+		return gunTurnRightDirection;
+	}
+
+	public void setGunTurnRightDirection(double gunTurnRightDirection) {
+		this.gunTurnRightDirection = gunTurnRightDirection;
+	}
+
+	public PredictedFirePoint getFiredTarget() {
+	    return firedTarget;
     }
-	public void setSource(PredictStateResult predictedAimedSource) {
-	    this.source = predictedAimedSource;
+
+	public void setFiredTarget(PredictedFirePoint firedTarget) {
+	    this.firedTarget = firedTarget;
     }
-	public PredictStateResult getTarget() {
-	    return target;
-    }
-	public void setTarget(PredictStateResult predictedAimedTarget) {
-	    this.target = predictedAimedTarget;
-    }
-	
+
 	
 }

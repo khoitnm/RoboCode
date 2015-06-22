@@ -5,9 +5,10 @@ import org.tnmk.robocode.common.math.Point;
 /**
  * @author Khoi The point where bullet hit target
  */
-public class PredictedFiredPoint extends Point {
+public class PredictedFirePoint extends Point {
 	/**
-	 * Sometimes we don't need to calculate this value to predictFiredPoint
+	 * This is the distance between this point to the target move line. It's not the distance between source position and target position.
+	 * Sometimes we don't need to calculate this value to predictFiredPoint.
 	 */
 	private Double distanceToTargetMove = null;
 	/**

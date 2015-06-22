@@ -5,42 +5,113 @@ import java.util.List;
 
 import org.tnmk.robocode.common.math.LineSegment;
 
-public class FindingBestFirePointResult{
-	private List<PredictedFiredPoint> nearestPoints = new ArrayList<>();
-	private List<PredictedFiredPoint> impossiblePoints = new ArrayList<>();
-	private PredictedFiredPoint bestPoint;
+public class FindingBestFirePointResult {
+	/**
+	 * This list is never null.
+	 * Sometimes, the field {@link #bestPoint} has value but this field is still empty because bestPoint was calculated without needing to calculate this field.
+	 */
+	private List<PredictedFirePoint> nearestPoints = new ArrayList<>();
+	private List<PredictedFirePoint> possiblePoints = new ArrayList<>();
+	private List<PredictedFirePoint> availablePoints = new ArrayList<>();
+	/**
+	 * This list is never null.
+	 * Sometimes, the field {@link #bestPoint} has value but this field is still empty because bestPoint was calculated without needing to calculate this field.
+	 */
+	private List<PredictedFirePoint> impossiblePoints = new ArrayList<>();
+	private List<PredictedFirePoint> tooFarPoints = new ArrayList<>();
+	private List<PredictedFirePoint> outsideBattlePoints = new ArrayList<>();
+	private List<PredictedFirePoint> impossibleAnglePoints = new ArrayList<>();
+	
+	private PredictedFirePoint bestPoint;
 	private LineSegment targetCurrentMoveLine;
 	private double targetCurrentMoveAngle;
-	
-	public List<PredictedFiredPoint> getNearestPoints() {
-		return nearestPoints;
+
+	// SEPECIAL SET-GET
+	// ------------------------------------------------------------------------------------------
+	public void setImpossiblePoints(List<PredictedFirePoint> impossiblePoints) {
+		if (impossiblePoints == null)
+			this.impossiblePoints = new ArrayList<>();
+		this.impossiblePoints = impossiblePoints;
 	}
-	public void setNearestPoints(List<PredictedFiredPoint> nearestPoints) {
+
+	public void setNearestPoints(List<PredictedFirePoint> nearestPoints) {
+		if (nearestPoints == null)
+			this.nearestPoints = new ArrayList<>();
 		this.nearestPoints = nearestPoints;
 	}
-	public PredictedFiredPoint getBestPoint() {
+
+	// SET-GET
+	// ------------------------------------------------------------------------------------------
+	public List<PredictedFirePoint> getNearestPoints() {
+		return nearestPoints;
+	}
+
+	public PredictedFirePoint getBestPoint() {
 		return bestPoint;
 	}
-	public void setBestPoint(PredictedFiredPoint bestPoint) {
+
+	public void setBestPoint(PredictedFirePoint bestPoint) {
 		this.bestPoint = bestPoint;
 	}
+
 	public double getTargetCurrentMoveAngle() {
-        return targetCurrentMoveAngle;
-    }
+		return targetCurrentMoveAngle;
+	}
+
 	public void setTargetCurrentMoveAngle(double targetCurrentMoveAngle) {
-        this.targetCurrentMoveAngle = targetCurrentMoveAngle;
-    }
+		this.targetCurrentMoveAngle = targetCurrentMoveAngle;
+	}
+
 	public LineSegment getTargetCurrentMoveLine() {
-        return targetCurrentMoveLine;
-    }
+		return targetCurrentMoveLine;
+	}
+
 	public void setTargetCurrentMoveLine(LineSegment targetCurrentMoveLine) {
-        this.targetCurrentMoveLine = targetCurrentMoveLine;
+		this.targetCurrentMoveLine = targetCurrentMoveLine;
+	}
+
+	public List<PredictedFirePoint> getImpossiblePoints() {
+		return impossiblePoints;
+	}
+
+	public List<PredictedFirePoint> getImpossibleAnglePoints() {
+	    return impossibleAnglePoints;
     }
 
-	public List<PredictedFiredPoint> getImpossiblePoints() {
-        return impossiblePoints;
+	public void setImpossibleAnglePoints(List<PredictedFirePoint> impossibleAnglePoints) {
+	    this.impossibleAnglePoints = impossibleAnglePoints;
     }
-	public void setImpossiblePoints(List<PredictedFiredPoint> impossiblePoints) {
-        this.impossiblePoints = impossiblePoints;
+
+	public List<PredictedFirePoint> getTooFarPoints() {
+	    return tooFarPoints;
     }
+
+	public void setTooFarPoints(List<PredictedFirePoint> tooFarPoints) {
+	    this.tooFarPoints = tooFarPoints;
+    }
+
+	public List<PredictedFirePoint> getOutsideBattlePoints() {
+	    return outsideBattlePoints;
+    }
+
+	public void setOutsideBattlePoints(List<PredictedFirePoint> outsideBattlePoints) {
+	    this.outsideBattlePoints = outsideBattlePoints;
+    }
+
+	public List<PredictedFirePoint> getPossiblePoints() {
+	    return possiblePoints;
+    }
+
+	public void setPossiblePoints(List<PredictedFirePoint> possiblePoints) {
+	    this.possiblePoints = possiblePoints;
+    }
+
+	public List<PredictedFirePoint> getAvailablePoints() {
+	    return availablePoints;
+    }
+
+	public void setAvailablePoints(List<PredictedFirePoint> availablePoints) {
+	    this.availablePoints = availablePoints;
+    }
+
 }

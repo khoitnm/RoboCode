@@ -19,6 +19,15 @@ public class GunHelper {
 		power = Math.max(power, Rules.MAX_BULLET_POWER);
 		return (int) (4 * power + 2 * Math.max(power - 1, 0));
 	}
+	public static boolean isShouldFireBySteps(int firePower, int steps){
+		if (firePower == BULLET_POWER_01){
+			return steps <= FireDistance.STEPS_TOO_LONG.getNumValue();
+		}else if (firePower == BULLET_POWER_02){
+			return steps <= FireDistance.STEPS_MIDDLE.getNumValue();
+		}else{
+			return steps <= FireDistance.STEPS_VERY_SHORT.getNumValue();
+		}
+	}
 	public enum FireDistance{
 		STEPS_VERY_SHORT(8), STEPS_SHORT(15), STEPS_MIDDLE(22), STEPS_LONG(30), STEPS_TOO_LONG(40),
 		DISTANCE_VERY_SHORT(100), DISTANCE_SHORT(200), DISTANCE_MIDDLE(350), DISTANCE_LONG(500), DISTANCE_TOO_LONG(650);
@@ -34,9 +43,11 @@ public class GunHelper {
         }
 	}
 	public static boolean isTooFarFromTarget(PredictedAimAndFireResult predicted){
-		int fireSteps = predicted.getTotalSteps();
+		Integer fireSteps = predicted.getTotalSteps();
+		if (fireSteps == null) return true;
 		return (fireSteps >= FireDistance.STEPS_TOO_LONG.getNumValue());
 	}
+	
 	/**
 	 * We don't want to use redundant power to shoot a low energy robot.
 	 * 
@@ -79,11 +90,20 @@ public class GunHelper {
 	 */
 	public static AimAndFireResult reckonStepsToAimAndFire(int firePower, double gunHeading, double gunX, double gunY, double targetX, double targetY) {
 		AimAndFireResult result = new AimAndFireResult();
-		result.setTurnRightAngle(MathUtils.calculateTurnRightAngleToTarget(gunHeading, gunX, gunY, targetX, targetY));
+		result.setTurnRightAngle(MathUtils.calculateTurnRightDirectionToTarget(gunHeading, gunX, gunY, targetX, targetY));
 		result.setDistance(MathUtils.distance(gunX, gunY, targetX, targetY));
 		result.setAimSteps(reckonGunTurningSteps(result.getTurnRightAngle()));
 		result.setFireSteps(reckonBulletSteps(result.getDistance(), firePower));
 		return result;
 	}
+	public static int findFirePowerByDistance(double fireDistance) {
+		if (fireDistance < GunHelper.FireDistance.DISTANCE_VERY_SHORT.getNumValue()){
+			return GunHelper.BULLET_POWER_03;
+		}else if (fireDistance < GunHelper.FireDistance.DISTANCE_MIDDLE.getNumValue()){
+			return GunHelper.BULLET_POWER_02;
+		}else{
+			return GunHelper.BULLET_POWER_01;
+		}
+    }
 
 }

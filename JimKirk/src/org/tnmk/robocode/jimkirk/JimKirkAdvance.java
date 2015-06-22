@@ -5,8 +5,9 @@ import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.robocode.common.helper.MoveHelper.BattlePosition;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
 import org.tnmk.robocode.common.model.FullRobotState;
-import org.tnmk.robocode.common.predictor.self.model.PredictedAimResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
+import org.tnmk.robocode.common.predictor.self.model.PredictedAimResult;
+import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
 
 import robocode.ScannedRobotEvent;
 import robocode.StatusEvent;
@@ -81,10 +82,10 @@ public class JimKirkAdvance extends JimKirkBase {
 		if (predicted == null){
 			return;
 		}
-		if (getTime() == predicted.getFinishAimTime() && !predicted.isWaitForBetterAim()) {
+		if (getTime() == predicted.getAimedTime() && !predicted.isWaitForBetterAim()) {
 			String msg = String.format("%s - THIS FIRE(%s, %s)", getTime(), getX(), getY());
 			System.out.println(msg);
-			setFire(predicted.getBestPredictPoint().getFirePower());
+			setFire(predicted.getBestFirePoint().getFirePower());
 			
 			isFired = true;
 		}
@@ -110,7 +111,7 @@ public class JimKirkAdvance extends JimKirkBase {
 
 	public void onStatus(StatusEvent e) {
 		long time = getTime();
-		if (predicted != null && predicted.getFinishAimTime() == time) {
+		if (predicted != null && predicted.getAimedTime() == time) {
 			FullRobotState robotState = RobotStateConverter.toRobotState(this);
 			String msg = String.format("%s - THIS(%s, %s)", time, robotState.getX(), robotState.getY());
 			System.out.println(msg);
@@ -121,9 +122,9 @@ public class JimKirkAdvance extends JimKirkBase {
 		if (!finishPrepared) {
 			return;
 		}		
-		if (isFired || predicted == null || getTime() > predicted.getFinishAimTime()) {
+		if (isFired || predicted == null || getTime() > predicted.getAimedTime()) {
 			predicted = aimTarget(targetEvent);
-			if (predicted.getBestPredictPoint() == null || GunHelper.isTooFarFromTarget(predicted)){
+			if (predicted.getBestFirePoint() == null || GunHelper.isTooFarFromTarget(predicted)){
 				predicted.setWaitForBetterAim(true);
 				moveHelper.moveCloseToTarget(predicted.getBeginTarget().getPosition());
 			}
@@ -133,17 +134,23 @@ public class JimKirkAdvance extends JimKirkBase {
 	public PredictedAimAndFireResult aimTarget(ScannedRobotEvent targetEvent) {
 		FullRobotState thisState = RobotStateConverter.toRobotState(this);
 		FullRobotState targetState = RobotStateConverter.toRobotState(this, targetEvent);
-		double maxPower = GunHelper.reckonMaxNecessaryPower(targetEvent.getEnergy());
-		PredictedAimAndFireResult predicted = predictHelper.predictBestStepsToAimAndFire(this.getGunCoolingRate(), getGunHeat(), maxPower, getGunHeading(), thisState, targetState);
-		predicted.setBeginSource(thisState);
-		predicted.setBeginTarget(targetState);
-		predicted.setTime(getTime());
-		PredictedAimResult aimResult = predicted.getAimResult();
-		String msg = String.format("PREDICTION:\n" + "\tNOW:\t %s - THIS(%s,%s) & TARGET(%s,%s)\n" + "\tPREDICT:\t %s - THIS FIRE(%s,%s)\n" + "\tPREDICT:\t %s - TARGET(%s,%s)", getTime(), getX(), getY(), targetState.getX(), targetState.getY(), getTime()
-		        + aimResult.getAimSteps(), aimResult.getSource().getX(), aimResult.getSource().getY(), predicted.getFinishAllTime(), predicted.getPredictedFiredTarget().getX(), predicted
-		        .getPredictedFiredTarget().getY());
-		System.out.println(msg);
-		if (predicted.getBestPredictPoint() != null){
+		int maxPower = GunHelper.reckonMaxNecessaryPower(targetEvent.getEnergy());
+		PredictedAimAndFireResult predicted = predictHelper.predictBestStepsToAimAndFire(getTime(), this.getGunCoolingRate(), getGunHeat(), maxPower, getGunHeading(), thisState, targetState);
+		
+		PredictedAimResult predictedAiming = predicted.getAimResult();
+		PredictedFirePoint predictedFirePoint = predicted.getBestFirePoint();
+		if (predictedFirePoint != null){
+			String msg = String.format("PREDICTION:\n" + 
+					"\tNOW:\t %s - THIS(%.2f, %.2f) & TARGET %s\n" + 
+					"\tPREDICT (Aimed):\t %s - THIS FIRE %s\n" + 
+					"\tPREDICT (Aimed):\t %s - TARGET %s\n" +
+					"\tPREDICT (Fired):\t %s - TARGET %s", 
+					getTime(), getX(), getY(), targetState.getPosition(), 
+					predicted.getAimedTime(), predictedAiming.getSource().getPosition(),
+					predicted.getAimedTime(), predictedAiming.getFiredTarget(),
+					predicted.getTotalTime(), predictedFirePoint);
+			System.out.println(msg);
+			
 			double turnRightAngle = predicted.getAimResult().getGunTurnRightDirection();
 			setTurnGunRight(turnRightAngle);
 			isFired = false;

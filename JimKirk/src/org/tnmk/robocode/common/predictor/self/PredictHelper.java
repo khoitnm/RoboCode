@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
+
 import org.tnmk.robocode.common.helper.BattleField;
 import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.robocode.common.helper.MoveHelper;
@@ -12,12 +14,13 @@ import org.tnmk.robocode.common.math.Circle;
 import org.tnmk.robocode.common.math.LineSegment;
 import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.math.Point;
-import org.tnmk.robocode.common.model.AimAndFireResult;
 import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.common.predictor.self.model.FindingBestFirePointResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictStateResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
-import org.tnmk.robocode.common.predictor.self.model.PredictedFiredPoint;
+import org.tnmk.robocode.common.predictor.self.model.PredictedAimResult;
+import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
+import org.tnmk.robocode.common.predictor.self.model.RawEstimateAimResult;
 
 import robocode.Robot;
 import robocode.Rules;
@@ -41,11 +44,11 @@ public class PredictHelper {
 		this.battleField = MoveHelper.createBattleField(robot);
 	}
 
-	public PredictedAimAndFireResult predictBestStepsToAimAndFire(double gunCoolRate, double sourceGunHeat, double maxPower, double sourceGunHeading, FullRobotState sourceState, FullRobotState targetState) {
+	public PredictedAimAndFireResult predictBestStepsToAimAndFire(long time, double gunCoolRate, double sourceGunHeat, int maxPower, double sourceGunHeading, FullRobotState sourceState, FullRobotState targetState) {
 		// Robot will aim while waiting for the gun cool down. So the steps to
 		// aim is equals to the steps to cool gun down.
 		int gunCoolTime = (int) Math.ceil(sourceGunHeat / gunCoolRate) + 1;
-		double estimatedGunTurnRightAngle = MathUtils.calculateTurnRightAngleToTarget(sourceGunHeading, sourceState.getX(), sourceState.getY(), targetState.getX(), targetState.getY());
+		double estimatedGunTurnRightAngle = MathUtils.calculateTurnRightDirectionToTarget(sourceGunHeading, sourceState.getX(), sourceState.getY(), targetState.getX(), targetState.getY());
 		int estimatedAimSteps = (int)Math.ceil(Math.abs(estimatedGunTurnRightAngle)/Rules.GUN_TURN_RATE)+2;
 		// if the steps to cool gun down is too short, robot won't have enough steps to aim, so we must calculate aimSteps base on the estimated gunTurnAngle.
 		int aimSteps = Math.max(gunCoolTime, estimatedAimSteps);
@@ -54,31 +57,35 @@ public class PredictHelper {
 		PredictStateResult predictedAimedTarget = PredictWrapper.predictTargetPosition(aimSteps, targetState);
 		
 		PredictedAimAndFireResult result = new PredictedAimAndFireResult();
-		PredictedFiredPoint bestPoint = predictPossibleFirePointsWithSmallDifferentAngle(maxPower, aimSteps, targetState, predictedAimedSource, predictedAimedTarget);
+		result.setBeginSource(sourceState);
+		result.setBeginTarget(targetState);
+		result.setTime(time);
+		
+		RawEstimateAimResult firstAimEstimation = result.getFirstAimEstimation();
+		firstAimEstimation.setGunTurnRightDirection(estimatedGunTurnRightAngle);
+		firstAimEstimation.setAimSteps(aimSteps);
+		firstAimEstimation.setSource(predictedAimedSource);
+		firstAimEstimation.setTarget(predictedAimedTarget);
+		
+		PredictedFirePoint bestPoint = predictPossibleFirePointsWithSmallDifferentAngle(maxPower, targetState, predictedAimedSource, predictedAimedTarget);
 		if (bestPoint != null){
-			FindingBestFirePointResult findResult = new FindingBestFirePointResult();
-			result.setFindNearestPointToTargetMovementResult(findResult);
+			result.getFireResult().getFindingBestPointResult().setBestPoint(bestPoint);
 		}else{
-			List<PredictedFiredPoint> possibleBulletHitTargetPoints = predictPossibleBulletHitTargetPoints(predictedAimedSource, predictedAimedTarget);// This
-			FindingBestFirePointResult findResult = findBestPointToTarget(possibleBulletHitTargetPoints, predictedAimedTarget);// Note:
-			result.setPossibleBulletHitTargetPoints(possibleBulletHitTargetPoints);
-			result.setFindNearestPointToTargetMovementResult(findResult);
+			List<PredictedFirePoint> availabelFireTargetPoints = predictAvailabelFireTargetPoints(predictedAimedSource, predictedAimedTarget);// This
+			FindingBestFirePointResult findResult = findBestPointToTarget(availabelFireTargetPoints, predictedAimedTarget);// Note:
+			result.getFireResult().setAvailableFirePoints(availabelFireTargetPoints);
+			result.getFireResult().setFindingBestPointResult(findResult);
 			bestPoint = findResult.getBestPoint();
 		}
 		
-		result.setAimResult(new AimAndFireResult());
-		result.getAimResult().setAimSteps(aimSteps);
-		result.setSource(predictedAimedSource);
-		result.setTarget(predictedAimedTarget);
-		result.setPredictedFiredTarget(PredictWrapper.predict(result.getAimResult().getTotalSteps(), targetState, battleField));
-		
+		PredictedAimResult aimResult = result.getAimResult();
+		aimResult.setAimSteps(aimSteps);
+		aimResult.setSource(predictedAimedSource);
 		if (bestPoint != null){
-			result.getAimResult().setFireSteps(bestPoint.getFireSteps());
-			double predictedDistance = MathUtils.distance(predictedAimedSource.getPosition(), bestPoint);
-			result.getAimResult().setDistance(predictedDistance);
-			double turnRightAngle = MathUtils.calculateTurnRightAngleToTarget(sourceGunHeading, predictedAimedSource.getX(), predictedAimedSource.getY(), bestPoint.x, bestPoint.y);
-			result.getAimResult().setTurnRightAngle(turnRightAngle);
-			result.setBestPredictPoint(bestPoint);
+			double gunTurnRightDirection = MathUtils.calculateTurnRightDirectionToTarget(sourceGunHeading, predictedAimedSource.getX(), predictedAimedSource.getY(), bestPoint.x, bestPoint.y);
+			aimResult.setGunTurnRightDirection(gunTurnRightDirection);
+			aimResult.setFiredTarget(bestPoint);
+			
 			result.setWaitForBetterAim(false);
 		}else{
 			result.setWaitForBetterAim(true);
@@ -87,13 +94,13 @@ public class PredictHelper {
 	}
 
 
-	private FindingBestFirePointResult findBestPointToTarget(List<PredictedFiredPoint> possibleBulletHitTargetPoints, PredictStateResult predictedAimedTarget) {
+	private FindingBestFirePointResult findBestPointToTarget(List<PredictedFirePoint> possibleBulletHitTargetPoints, PredictStateResult predictedAimedTarget) {
 		if (predictedAimedTarget.isStandStill()){
 			FindingBestFirePointResult rs = new FindingBestFirePointResult();
-			PredictedFiredPoint nearestPoint = findBestPointToTargetStanding(possibleBulletHitTargetPoints, predictedAimedTarget);
+			PredictedFirePoint nearestPoint = findBestPointToTargetStanding(possibleBulletHitTargetPoints, predictedAimedTarget);
 			rs.setBestPoint(nearestPoint);
-			rs.setImpossiblePoints(new ArrayList<PredictedFiredPoint>());
-			rs.setNearestPoints(new ArrayList<PredictedFiredPoint>());
+			rs.setImpossiblePoints(new ArrayList<PredictedFirePoint>());
+			rs.setNearestPoints(new ArrayList<PredictedFirePoint>());
 			return rs;
 		}else{
 			return findBestPointToTargetMoving(possibleBulletHitTargetPoints, predictedAimedTarget);
@@ -101,7 +108,7 @@ public class PredictHelper {
     }
 	
 	
-	private FindingBestFirePointResult findBestPointToTargetMoving(List<PredictedFiredPoint> possibleBulletHitTargetPoints, PredictStateResult predictedAimedTarget) {
+	private FindingBestFirePointResult findBestPointToTargetMoving(List<PredictedFirePoint> possibleBulletHitTargetPoints, PredictStateResult predictedAimedTarget) {
 		FindingBestFirePointResult nearestPointsResult = findNearestPointsToTargetMovement(possibleBulletHitTargetPoints, predictedAimedTarget);
 		nearestPointsResult.setBestPoint(findBestPointToTargetFromNearestPoints(nearestPointsResult.getNearestPoints(), nearestPointsResult.getTargetCurrentMoveLine(), predictedAimedTarget));
 		return nearestPointsResult;
@@ -113,11 +120,11 @@ public class PredictHelper {
 	 * @param predictedAimedTarget
 	 * @return
 	 */
-	private PredictedFiredPoint findBestPointToTargetFromNearestPoints(List<PredictedFiredPoint> nearestPoints, LineSegment targetCurrentMoveLine, PredictStateResult predictedAimedTarget) {
-		List<PredictedFiredPoint> pointsByPower03 = new ArrayList<>();
-		List<PredictedFiredPoint> pointsByPower02 = new ArrayList<>();
-		List<PredictedFiredPoint> pointsByPower01 = new ArrayList<>();
-	    for (PredictedFiredPoint predictedFiredPoint : nearestPoints) {
+	private PredictedFirePoint findBestPointToTargetFromNearestPoints(List<PredictedFirePoint> nearestPoints, LineSegment targetCurrentMoveLine, PredictStateResult predictedAimedTarget) {
+		List<PredictedFirePoint> pointsByPower03 = new ArrayList<>();
+		List<PredictedFirePoint> pointsByPower02 = new ArrayList<>();
+		List<PredictedFirePoint> pointsByPower01 = new ArrayList<>();
+	    for (PredictedFirePoint predictedFiredPoint : nearestPoints) {
 	        if (predictedFiredPoint.getFirePower() == GunHelper.BULLET_POWER_03){
 	        	pointsByPower03.add(predictedFiredPoint);
 	        }else if (predictedFiredPoint.getFirePower() == GunHelper.BULLET_POWER_02){
@@ -128,15 +135,15 @@ public class PredictHelper {
         }
 	    if (pointsByPower03.size() > 0){
 	    	shortByFireSteps(pointsByPower03);
-	    	PredictedFiredPoint bestPointByPower03 = pointsByPower03.get(0);
-	    	if (bestPointByPower03.getFireSteps() > 0 && bestPointByPower03.getFireSteps() <= GunHelper.FireDistance.STEPS_VERY_SHORT.getNumValue()){
+	    	PredictedFirePoint bestPointByPower03 = pointsByPower03.get(0);
+	    	if (bestPointByPower03.getFireSteps() > 0 && GunHelper.isShouldFireBySteps(GunHelper.BULLET_POWER_03, bestPointByPower03.getFireSteps())){
 	    		return bestPointByPower03;
 	    	}
 	    }
 	    if (pointsByPower02.size() > 0){
 	    	shortByFireSteps(pointsByPower02);
-	    	PredictedFiredPoint bestPointByPower02 = pointsByPower02.get(0);
-	    	if (bestPointByPower02.getFireSteps() > 0 && bestPointByPower02.getFireSteps() <= GunHelper.FireDistance.STEPS_SHORT.getNumValue()){
+	    	PredictedFirePoint bestPointByPower02 = pointsByPower02.get(0);
+	    	if (bestPointByPower02.getFireSteps() > 0 && GunHelper.isShouldFireBySteps(GunHelper.BULLET_POWER_02, bestPointByPower02.getFireSteps())){
 	    		return bestPointByPower02;
 	    	}
 	    }
@@ -148,38 +155,57 @@ public class PredictHelper {
 	    }
 	    
     }
-	private void shortByFireSteps(List<PredictedFiredPoint> points) {
-	    Comparator<PredictedFiredPoint> comparator = new Comparator<PredictedFiredPoint>(){
+	private void shortByFireSteps(List<PredictedFirePoint> points) {
+	    Comparator<PredictedFirePoint> comparator = new Comparator<PredictedFirePoint>(){
 			@Override
-            public int compare(PredictedFiredPoint pA, PredictedFiredPoint pB) {
+            public int compare(PredictedFirePoint pA, PredictedFirePoint pB) {
 				return pA.getFireSteps() - pB.getFireSteps();				
             }
 	    };
 	    Collections.sort(points, comparator);
     }
 
-	private FindingBestFirePointResult findNearestPointsToTargetMovement(List<PredictedFiredPoint> possibleBulletHitTargetPoints, PredictStateResult predictedAimedTarget) {
+	private FindingBestFirePointResult findNearestPointsToTargetMovement(List<PredictedFirePoint> availableFireTargetPoints, PredictStateResult predictedAimedTarget) {
 		FindingBestFirePointResult result = new FindingBestFirePointResult();
-		List<PredictedFiredPoint> nearestPoints = new ArrayList<>();
-		List<PredictedFiredPoint> impossiblePoints = new ArrayList<>();
-		List<PredictedFiredPoint> possiblePoints = new ArrayList<>();
+		List<PredictedFirePoint> possiblePoints = new ArrayList<>();
+		List<PredictedFirePoint> nearestPoints = new ArrayList<>();
+		
+		List<PredictedFirePoint> allImpossiblePoints = new ArrayList<>();
+		List<PredictedFirePoint> outsideBattlePoints = new ArrayList<>();
+		List<PredictedFirePoint> impossibleAnglePoints = new ArrayList<>();
+		List<PredictedFirePoint> tooFarPoints = new ArrayList<>();
+		
 		LineSegment targetCurrentMoveLine= new LineSegment(predictedAimedTarget.getPosition(), predictedAimedTarget.getMoveAngle(),1000);
 		double targetCurrentMoveAngle = predictedAimedTarget.getMoveAngle();
 		
-		for (PredictedFiredPoint predictedFiredPoint : possibleBulletHitTargetPoints) {
+		for (PredictedFirePoint predictedFiredPoint : availableFireTargetPoints) {
 			LineSegment targetMoveToHitFiredLine= new LineSegment(predictedAimedTarget.getPosition(), predictedFiredPoint);
 			double targetMoveToHitFiredAngle = targetMoveToHitFiredLine.reckonAngle();
-			if (!isInsideBattleField(predictedFiredPoint) || 
-				(Math.abs(targetCurrentMoveAngle - targetMoveToHitFiredAngle) > MAX_DIFFERENT_TARGET_MOVE_ANGLE && !MathUtils.close(predictedFiredPoint, predictedAimedTarget.getPosition())) ){
-				impossiblePoints.add(predictedFiredPoint);
+			if (Math.abs(targetCurrentMoveAngle - targetMoveToHitFiredAngle) > MAX_DIFFERENT_TARGET_MOVE_ANGLE && !MathUtils.close(predictedFiredPoint, predictedAimedTarget.getPosition())) {
+				impossibleAnglePoints.add(predictedFiredPoint);
+				allImpossiblePoints.add(predictedFiredPoint);
+				continue;
+			};
+			if (!isInsideBattleField(predictedFiredPoint)){
+				outsideBattlePoints.add(predictedFiredPoint);
+				allImpossiblePoints.add(predictedFiredPoint);
+				//Only for debuging
+				double testDistance = MathUtils.distance(targetCurrentMoveLine, predictedFiredPoint);
+				if (testDistance < 15 && isInsideBattleField(predictedFiredPoint)){
+					System.out.println("Debug somethign wrong");
+				}
+				predictedFiredPoint.setDistanceToTargetMove(testDistance);
+				
 				continue;
 			}else{
 				predictedFiredPoint.setDistanceToTargetMove(MathUtils.distance(targetCurrentMoveLine, predictedFiredPoint));
 				if (predictedFiredPoint.getDistanceToTargetMove() > MAX_DISTANCE_TO_TARGET_MOVE){
-					impossiblePoints.add(predictedFiredPoint);
+					tooFarPoints.add(predictedFiredPoint);
+					allImpossiblePoints.add(predictedFiredPoint);
 					continue;
 				}
 			}
+			
 			possiblePoints.add(predictedFiredPoint);
 	       
         }
@@ -187,25 +213,34 @@ public class PredictHelper {
 		shortByDistance(possiblePoints, targetCurrentMoveLine);
 		if (possiblePoints.size() > FILTER_NEAERST_POINTS_COUNT){
 			nearestPoints = possiblePoints.subList(0, FILTER_NEAERST_POINTS_COUNT);
+		}else{
+			nearestPoints.addAll(possiblePoints);
 		}
 		
-		result.setImpossiblePoints(impossiblePoints);
+		result.setOutsideBattlePoints(outsideBattlePoints);
+		result.setTooFarPoints(tooFarPoints);
+		result.setImpossibleAnglePoints(impossibleAnglePoints);
+		result.setImpossiblePoints(allImpossiblePoints);
+
+		result.setAvailablePoints(availableFireTargetPoints);
+		result.setPossiblePoints(possiblePoints);
+		result.setNearestPoints(nearestPoints);
+		
 		result.setTargetCurrentMoveAngle(targetCurrentMoveAngle);
 		result.setTargetCurrentMoveLine(targetCurrentMoveLine);
-		result.setNearestPoints(nearestPoints);
 		return result;
 	}
 	
-	private boolean isInsideBattleField(PredictedFiredPoint predictedFiredPoint) {
-		double x = predictedFiredPoint.getX();
-		double y = predictedFiredPoint.getY();
+	private boolean isInsideBattleField(Point point) {
+		double x = point.getX();
+		double y = point.getY();
 	    return (x >= 0 && x <= battleField.getWidth() && y >= 0 && y <= battleField.getHeight());
     }
 
-	private void shortByDistance(List<PredictedFiredPoint> possiblePoints, final LineSegment targetCurrentMoveLine) {
-	    Comparator<PredictedFiredPoint> comparator = new Comparator<PredictedFiredPoint>(){
+	private void shortByDistance(List<PredictedFirePoint> possiblePoints, final LineSegment targetCurrentMoveLine) {
+	    Comparator<PredictedFirePoint> comparator = new Comparator<PredictedFirePoint>(){
 			@Override
-            public int compare(PredictedFiredPoint pA, PredictedFiredPoint pB) {
+            public int compare(PredictedFirePoint pA, PredictedFirePoint pB) {
 				if (pA.getDistanceToTargetMove() == null){
 					pA.setDistanceToTargetMove(MathUtils.distance(targetCurrentMoveLine, pA));
 				}
@@ -224,10 +259,10 @@ public class PredictHelper {
 	    Collections.sort(possiblePoints, comparator);
     }
 
-	private PredictedFiredPoint findBestPointToTargetStanding(List<PredictedFiredPoint> possibleBulletHitTargetPoints, PredictStateResult predictedAimedTarget) {
+	private PredictedFirePoint findBestPointToTargetStanding(List<PredictedFirePoint> possibleBulletHitTargetPoints, PredictStateResult predictedAimedTarget) {
 		double nearestDistance = Double.MAX_VALUE;
-		PredictedFiredPoint nearestPoint = null;
-		for (PredictedFiredPoint predictedFiredPoint : possibleBulletHitTargetPoints) {
+		PredictedFirePoint nearestPoint = null;
+		for (PredictedFirePoint predictedFiredPoint : possibleBulletHitTargetPoints) {
 	        double distance = MathUtils.distance(predictedFiredPoint, predictedAimedTarget.getPosition());
 	        if (distance < nearestDistance){
 	        	nearestDistance = distance;
@@ -237,22 +272,15 @@ public class PredictHelper {
 		return nearestPoint;
 	}
 
-	private List<PredictedFiredPoint> predictPossibleBulletHitTargetPoints(PredictStateResult predictedAimedSource, PredictStateResult predictedAimedTarget) {
-		List<PredictedFiredPoint> results = new ArrayList<>();
+	private List<PredictedFirePoint> predictAvailabelFireTargetPoints(PredictStateResult predictedAimedSource, PredictStateResult predictedAimedTarget) {
+		List<PredictedFirePoint> results = new ArrayList<>();
 		double aimedDistance = MathUtils.distance(predictedAimedSource.getPosition(), predictedAimedTarget.getPosition());
 
 		if (predictedAimedTarget.isStandStill()) {
-			PredictedFiredPoint result = new PredictedFiredPoint();
+			PredictedFirePoint result = new PredictedFirePoint();
 			result.set(predictedAimedTarget.getPosition().x, predictedAimedTarget.getPosition().y);
 			double fireDistance = MathUtils.distance(predictedAimedSource.getPosition(), result);
-			double firePower;
-			if (fireDistance < GunHelper.FireDistance.DISTANCE_VERY_SHORT.getNumValue()){
-				firePower = GunHelper.BULLET_POWER_03;
-			}else if (fireDistance < GunHelper.FireDistance.DISTANCE_SHORT.getNumValue()){
-				firePower = GunHelper.BULLET_POWER_02;
-			}else{
-				firePower = GunHelper.BULLET_POWER_01;
-			}
+			double firePower = GunHelper.findFirePowerByDistance(fireDistance);
 			int fireSteps = (int) Math.ceil(aimedDistance / Rules.getBulletSpeed(firePower));
 			result.setFireSteps(fireSteps);
 			result.setFirePower(firePower);
@@ -261,27 +289,14 @@ public class PredictHelper {
 		}
 		for (int i = 0; i < Rules.MAX_BULLET_POWER; i++) {
 			double firePower = i + 1;
-			List<PredictedFiredPoint> resultsByFirePower = predictPossibleBulletHitMovingTargetPointsByPower(firePower, aimedDistance, predictedAimedSource, predictedAimedTarget);
+			List<PredictedFirePoint> resultsByFirePower = predictPossibleBulletHitMovingTargetPointsByPower(firePower, aimedDistance, predictedAimedSource, predictedAimedTarget);
 			results.addAll(resultsByFirePower);
 		}
 		return results;
 	}
-	private PredictedFiredPoint predictPossibleFirePointsWithSmallDifferentAngle(double maxPower, int aimSteps, 
+	private PredictedFirePoint predictPossibleFirePointsWithSmallDifferentAngle(int maxPower, 
 			FullRobotState targetState, PredictStateResult predictedAimedSource, PredictStateResult predictedAimedTarget) {
-		
-	}
-	/**
-	 * If target's moving direction and our robot aiming direction is very the same, use this method
-	 * @param firePower
-	 * @param sourceAndTargetDistance
-	 * @param predictedAimedSource
-	 * @param predictedAimedTarget
-	 * @return 
-	 */
-	private PredictedFiredPoint predictPossibleFirePointsByPowerWithSmallDifferentAngle(
-			double firePower, double sourceAndTargetDistance, 
-			PredictStateResult predictedAimedSource, PredictStateResult predictedAimedTarget) {
-		List<PredictedFiredPoint> results = new ArrayList<>();
+		double sourceAndTargetDistance = MathUtils.distance(predictedAimedSource.getPosition(), predictedAimedTarget.getPosition());
 		double targetMoveAngle = predictedAimedTarget.getMoveAngle();
 		double aimAngle = MathUtils.absoluteBearing(predictedAimedSource.getX(), predictedAimedSource.getY(), predictedAimedTarget.getX(), predictedAimedTarget.getY());
 		double differentAngle = Math.abs(aimAngle - targetMoveAngle) % 180;//It's not important which A - B or B - A, negative or positive is not important.
@@ -289,16 +304,46 @@ public class PredictHelper {
 		if (absCosDifferentAngle < MIN_DIFFERENT_MOVE_AND_AIM_COS) {
 			return null;
 		}
+		
+		for (int firePower = maxPower; firePower >= GunHelper.BULLET_POWER_02; firePower--) {
+			PredictedFirePoint predictPoint = predictPossibleFirePointsByPowerWithSmallDifferentAngle(firePower, sourceAndTargetDistance, predictedAimedSource, predictedAimedTarget);
+			if (GunHelper.isShouldFireBySteps(firePower, predictPoint.getFireSteps())){
+				return predictPoint;
+			}
+        }
+		return predictPossibleFirePointsByPowerWithSmallDifferentAngle(GunHelper.BULLET_POWER_01, sourceAndTargetDistance, predictedAimedSource, predictedAimedTarget);		
+	}
+	/**
+	 * If target's moving direction and our robot aiming direction is very the same, use this method
+	 * @param firePower
+	 * @param sourceAndTargetDistance raw estimate source and target distance. It's usally the distance of aimedSource and aimedTarget (target position when source is aimed, not target when it will get fired)
+	 * @param predictedAimedSource
+	 * @param predictedAimedTarget
+	 * @return 
+	 */
+	private PredictedFirePoint predictPossibleFirePointsByPowerWithSmallDifferentAngle(
+			double firePower, double sourceAndTargetDistance, 
+			PredictStateResult predictedAimedSource, PredictStateResult predictedAimedTarget) {
 		//aim to absolutely by linear target point
 		double bulletSpeed = Rules.getBulletSpeed(firePower);
 		int estimateFireSteps = (int)Math.ceil(sourceAndTargetDistance / bulletSpeed);
-//		PredictedFiredPoint predictedFiredTarget = PredictWrapper.predictTargetPosition(estimateFireSteps, predictedAimedTarget);
 		
-		PredictedFiredPoint predictedFiredPoint = new PredictedFiredPoint();
-		predictedFiredPoint.set(predictedAimedTarget.getX(), predictedAimedTarget.getY());
+		PredictStateResult predictedFiredTarget = PredictWrapper.predictTargetPosition(estimateFireSteps, predictedAimedTarget);
+		double correctDistance;
+		int correctFireSteps;
+		if (isInsideBattleField(predictedFiredTarget.getPosition())){
+			correctDistance = MathUtils.distance(predictedAimedSource.getPosition(), predictedFiredTarget.getPosition());
+			correctFireSteps = (int)Math.ceil(correctDistance / bulletSpeed);	 
+		}else{
+			predictedFiredTarget = predictedAimedTarget;
+			correctDistance = sourceAndTargetDistance;
+			correctFireSteps = estimateFireSteps;
+		}
+		
+		PredictedFirePoint predictedFiredPoint = new PredictedFirePoint();
+		predictedFiredPoint.set(predictedFiredTarget.getX(), predictedFiredTarget.getY());
 		predictedFiredPoint.setFirePower(firePower);
-		predictedFiredPoint.setFireSteps(estimateFireSteps);
-		predictedFiredPoint.setDistanceToTargetMove(sourceAndTargetDistance);
+		predictedFiredPoint.setFireSteps(correctFireSteps);
 		return predictedFiredPoint;
 	}
 	/**
@@ -310,8 +355,8 @@ public class PredictHelper {
 	 *            call this method.
 	 * @return
 	 */
-	private List<PredictedFiredPoint> predictPossibleBulletHitMovingTargetPointsByPower(double firePower, double sourceAndTargetDistance, PredictStateResult predictedAimedSource, PredictStateResult predictedAimedTarget) {
-		List<PredictedFiredPoint> results = new ArrayList<>();
+	private List<PredictedFirePoint> predictPossibleBulletHitMovingTargetPointsByPower(double firePower, double sourceAndTargetDistance, PredictStateResult predictedAimedSource, PredictStateResult predictedAimedTarget) {
+		List<PredictedFirePoint> results = new ArrayList<>();
 		double bulletSpeed = Rules.getBulletSpeed(firePower);
 		double targetSpeed = predictedAimedTarget.getSpeed();
 		int minStepsToFire = (int) Math.ceil(sourceAndTargetDistance / (bulletSpeed + targetSpeed));
@@ -323,7 +368,7 @@ public class PredictHelper {
 			Circle targetMoveCircle = new Circle(predictedAimedTarget.getPosition(), targetMoveDistance);
 			List<Point> possibleHitPoints = MathUtils.intersectCircles(bulletMoveCircle, targetMoveCircle);
 			for (Point ipossibleHitPoint : possibleHitPoints) {
-				PredictedFiredPoint predictedFiredPoint = new PredictedFiredPoint();
+				PredictedFirePoint predictedFiredPoint = new PredictedFirePoint();
 				predictedFiredPoint.set(ipossibleHitPoint.x, ipossibleHitPoint.y);
 				predictedFiredPoint.setFirePower(firePower);
 				predictedFiredPoint.setFireSteps(isteps);

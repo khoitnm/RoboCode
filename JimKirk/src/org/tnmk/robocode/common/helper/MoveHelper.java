@@ -1,18 +1,22 @@
 package org.tnmk.robocode.common.helper;
 
+import org.tnmk.robocode.common.math.LineSegment;
 import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.math.Point;
+import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.FullRobotState;
 
 import robocode.AdvancedRobot;
 import robocode.Robot;
+import robocode.Rules;
 import robocode.ScannedRobotEvent;
 
 public class MoveHelper {
+	public static final double ROBOT_SIZE = 50;
 	public static final double MOVE_CLOSE_TO_TARGET_MIN_ANGLE = 20;
-
+	public static double MIN_TURN_RATE = Rules.getTurnRate(Rules.MAX_VELOCITY); 
 	private BattleField battleField;
-
+	
 	public enum BattlePosition {
 		BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT;
 	}
@@ -32,9 +36,7 @@ public class MoveHelper {
 	}
 
 	public static BattleField createBattleField(Robot robot) {
-		BattleField battleField = new BattleField();
-		battleField.setHeight(robot.getBattleFieldHeight());
-		battleField.setWidth(robot.getBattleFieldWidth());
+		BattleField battleField = new BattleField(robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
 		battleField.setSentryBorderSize(robot.getSentryBorderSize());
 		return battleField;
 	}
@@ -50,17 +52,17 @@ public class MoveHelper {
 		double targetX;
 		double targetY;
 		if (position == BattlePosition.BOTTOM_LEFT) {
-			targetX = battleField.getSafeLeft();
-			targetY = battleField.getSafeBottom();
+			targetX = battleField.getSafeArea().getLeft();
+			targetY = battleField.getSafeArea().getBottom();
 		} else if (position == BattlePosition.BOTTOM_RIGHT) {
-			targetX = battleField.getSafeRight();
-			targetY = battleField.getSafeBottom();
+			targetX = battleField.getSafeArea().getRight();
+			targetY = battleField.getSafeArea().getBottom();
 		} else if (position == BattlePosition.TOP_LEFT) {
-			targetX = battleField.getSafeLeft();
-			targetY = battleField.getSafeTop();
+			targetX = battleField.getSafeArea().getLeft();
+			targetY = battleField.getSafeArea().getTop();
 		} else {
-			targetX = battleField.getSafeRight();
-			targetY = battleField.getSafeTop();
+			targetX = battleField.getSafeArea().getRight();
+			targetY = battleField.getSafeArea().getTop();
 		}
 		moveTo(targetX, targetY);
 	}
@@ -71,7 +73,7 @@ public class MoveHelper {
 	 * @return angle degree toward the target
 	 */
 	public double calculateTurnRightAngleToTarget(double targetX, double targetY) {
-		return MathUtils.calculateTurnRightAngleToTarget(robot.getHeading(), robot.getX(), robot.getY(), targetX, targetY);
+		return MathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), robot.getX(), robot.getY(), targetX, targetY);
 	}
 
 	public void moveTo(double targetX, double targetY) {
@@ -84,14 +86,90 @@ public class MoveHelper {
 
 	public void moveCloseToTarget(Point targetPoint) {
 		FullRobotState thisState = RobotStateConverter.toRobotState(robot);
-		double turnRightAngle = MathUtils.calculateTurnRightAngleToTarget(thisState.getHeading(), thisState.getX(), thisState.getY(), targetPoint.getX(), targetPoint.getY());
-		if (turnRightAngle > 0) {
-			turnRightAngle -= MOVE_CLOSE_TO_TARGET_MIN_ANGLE;
-//			turnRightAngle = Math.max(turnRightAngle - MOVE_CLOSE_TO_TARGET_MIN_ANGLE, MOVE_CLOSE_TO_TARGET_MIN_ANGLE);
+		double turnRightDirection = MathUtils.calculateTurnRightDirectionToTarget(thisState.getHeading(), thisState.getX(), thisState.getY(), targetPoint.getX(), targetPoint.getY());
+		if (turnRightDirection > 0) {
+			turnRightDirection -= MOVE_CLOSE_TO_TARGET_MIN_ANGLE;
 		} else {
-			turnRightAngle += MOVE_CLOSE_TO_TARGET_MIN_ANGLE;
-//			turnRightAngle = Math.min(turnRightAngle + MOVE_CLOSE_TO_TARGET_MIN_ANGLE, -MOVE_CLOSE_TO_TARGET_MIN_ANGLE);
+			turnRightDirection += MOVE_CLOSE_TO_TARGET_MIN_ANGLE;
 		}
-		robot.setTurnRight(turnRightAngle);
+		robot.setTurnRight(turnRightDirection);
+	}
+
+	public void avoidWallIfNecessary(){
+		
+	}
+	/**
+	 * Reckon which wall our robot is heading to.
+	 * @param steps
+	 * @return
+	 */
+	public HitAreaResult reckonHitAreaFromInside(BaseRobotState robotState, Area area){
+		double moveAngle = robotState.getMoveAngle() % 360;
+		
+		HitAreaResult result = new HitAreaResult();
+		result.setHitArea(area);
+		result.setRobotMoveAngle(moveAngle);
+		
+		if (moveAngle > 0 && moveAngle < 180){//RIGHT wall
+			
+		}
+		if (moveAngle > 90 && moveAngle < 270){//BOTTOM wall
+			
+		}
+		if (moveAngle > 180){//LEFT wall
+		}
+		if (moveAngle > 270 || moveAngle < 90){//TOP wall
+		}
+
+		
+		if (moveAngle == 0){
+			result.setHitWall(area.getWallTop());
+			result.setHitPoint(new Point(robotState.getX(), result.getHitWall().getPointA().getY()));
+		}else if (moveAngle == 90){
+			result.setHitWall(area.getWallRight());
+			result.setHitPoint(new Point(result.getHitWall().getPointA().getX(), robotState.getY()));
+		}else if (moveAngle == 180){
+			result.setHitWall(area.getWallTop());
+			result.setHitPoint(new Point(robotState.getX(), result.getHitWall().getPointA().getY()));
+		}else if (moveAngle == 270){
+			result.setHitWall(area.getWallLeft());
+			result.setHitPoint(new Point(result.getHitWall().getPointA().getX(), robotState.getY()));
+		}
+		return result;
+	}
+	public static class HitAreaResult{
+		private Area hitArea;
+		private LineSegment hitWall;
+		private Point hitPoint;
+		/**
+		 * The angle which robot is running.
+		 */
+		private double robotMoveAngle;
+		
+		public Area getHitArea() {
+			return hitArea;
+		}
+		public void setHitArea(Area hitArea) {
+			this.hitArea = hitArea;
+		}
+		public LineSegment getHitWall() {
+			return hitWall;
+		}
+		public void setHitWall(LineSegment hitWall) {
+			this.hitWall = hitWall;
+		}
+		public Point getHitPoint() {
+			return hitPoint;
+		}
+		public void setHitPoint(Point hitPoint) {
+			this.hitPoint = hitPoint;
+		}
+		public double getRobotMoveAngle() {
+	        return robotMoveAngle;
+        }
+		public void setRobotMoveAngle(double robotMoveAngle) {
+	        this.robotMoveAngle = robotMoveAngle;
+        }
+		
 	}
 }

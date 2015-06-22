@@ -1,89 +1,32 @@
 package org.tnmk.robocode.common.helper;
 
-import robocode.Robot;
-
-public class BattleField {
-	private double height;
-	private double width;
+public class BattleField extends Area {
+	/**
+	 * There is an area around the battlefield which you can get danger from
+	 * sentry (guard) robots.
+	 */
 	private int sentryBorderSize = 0;
-
-	private double bottom = 0;
-	private double left = 0;
-	private double right;
-	private double top;
-
-	private double safeLeft;
-	private double safeRight;
-	private double safeTop;
-	private double safeBottom;
-
-	public void setHeight(double height) {
-		this.height = height;
-		reckonBattleField();
+	
+	private Area safeArea;// Don't have setter because it is calculated from
+						  // sendtryBorderSize
+	
+	public BattleField(double width, double height) {
+		super(0, 0, width, height);
+		reckonSafeAreaBySentryBorderSize();
 	}
-
-	public void setWidth(double width) {
-		this.width = width;
-		reckonBattleField();
+	private void reckonSafeAreaBySentryBorderSize(){
+		this.safeArea = new Area(sentryBorderSize, sentryBorderSize, getRight() - sentryBorderSize, getTop() - sentryBorderSize);
 	}
-
 	public void setSentryBorderSize(int sentryBorderSize) {
 		this.sentryBorderSize = sentryBorderSize;
-		reckonBattleField();
+		reckonSafeAreaBySentryBorderSize();
 	}
-
-	private void reckonBattleField() {
-		int borderSize = this.sentryBorderSize;
-		this.top = this.height;
-		this.right = this.width;
-
-		this.safeLeft = borderSize;
-		this.safeRight = this.width - borderSize;
-		this.safeBottom = borderSize;
-		this.safeTop = this.height - borderSize;
-	}
-
-	public double getHeight() {
-		return height;
-	}
-
-	public double getWidth() {
-		return width;
+	
+	public Area getSafeArea() {
+		return safeArea;
 	}
 
 	public int getSentryBorderSize() {
 		return sentryBorderSize;
-	}
-
-	public double getBottom() {
-		return bottom;
-	}
-
-	public double getLeft() {
-		return left;
-	}
-
-	public double getRight() {
-		return right;
-	}
-
-	public double getTop() {
-		return top;
-	}
-
-	public double getSafeLeft() {
-		return safeLeft;
-	}
-
-	public double getSafeRight() {
-		return safeRight;
-	}
-
-	public double getSafeTop() {
-		return safeTop;
-	}
-
-	public double getSafeBottom() {
-		return safeBottom;
 	}
 }
