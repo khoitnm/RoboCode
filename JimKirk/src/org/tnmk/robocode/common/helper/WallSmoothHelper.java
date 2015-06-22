@@ -4,12 +4,8 @@ import org.tnmk.robocode.common.math.LineSegment;
 import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.math.Point;
 import org.tnmk.robocode.common.model.BaseRobotState;
-import org.tnmk.robocode.common.model.FullRobotState;
 
-import robocode.AdvancedRobot;
-import robocode.Robot;
 import robocode.Rules;
-import robocode.ScannedRobotEvent;
 /**
  * Avoid wall, turn direction when necessary
  * @author Khoi
