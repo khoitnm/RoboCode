@@ -18,12 +18,8 @@ public class BaseRobotState {
 			return heading;
 		} else {
 			double rs = heading - 180;
-			if (rs < 0) {
-				rs += 360;
-			}
-			return rs;
+			return (rs + 360) % 360;//to ensure that 0 <= angle <= 360
 		}
-
 	}
 
 	public double getSpeed() {

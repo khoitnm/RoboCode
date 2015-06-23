@@ -7,26 +7,26 @@ import java.util.List;
 import org.tnmk.robocode.common.helper.BattleField;
 import org.tnmk.robocode.common.helper.FireByDistance;
 import org.tnmk.robocode.common.helper.MoveHelper;
+import org.tnmk.robocode.common.helper.RobotStateConverter;
+import org.tnmk.robocode.common.helper.WallSmoothHelper;
 import org.tnmk.robocode.common.math.LineSegment;
 import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.math.Point;
+import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.common.predictor.self.PredictHelper;
 import org.tnmk.robocode.common.predictor.self.model.FindingBestFirePointResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
-import org.tnmk.robocode.common.predictor.self.model.PredictedFireResult;
 
 import robocode.AdvancedRobot;
 import robocode.Event;
 import robocode.HitByBulletEvent;
+import robocode.StatusEvent;
 
 /**
- * @author Khoi With AdvancedRobot, the shooting time is different from basic
- *         Robot class.
+ * @author Khoi With AdvancedRobot, the shooting time is different from basic Robot class.
  * 
- *         Term: + Bearing: the angle (degree) from pointA to pointB (or vectorA
- *         to vectorB). It can be an absolute bearing (compare to North axis) or
- *         relative bearing (compare to vectorA)
+ *         Term: + Bearing: the angle (degree) from pointA to pointB (or vectorA to vectorB). It can be an absolute bearing (compare to North axis) or relative bearing (compare to vectorA)
  */
 public abstract class JimKirkBase extends AdvancedRobot {
 	private static final Color COLOR_PREDICTED_TARGET_AIMED = Color.MAGENTA;
@@ -39,15 +39,15 @@ public abstract class JimKirkBase extends AdvancedRobot {
 	private static final Color COLOR_AVAILABLE_TEST_TARGET_POINT = Color.YELLOW;
 	private static final Color COLOR_POSSIBLE_TARGET_POINT = new Color(0, 255, 255);
 	private static final Color COLOR_NEAREST_TARGET_POINT = Color.ORANGE;
-	
+
 	private static final Color COLOR_IMPOSSIBLE_TARGET_POINT = Color.GRAY;
 	private static final Color COLOR_TOOFAR_TARGET_POINT = Color.GREEN;
 	private static final Color COLOR_IMPOSSIBLE_ANGLE_TARGET_POINT = Color.RED;
 	private static final Color COLOR_OUTSIDEBATTLE_TARGET_POINT = Color.BLACK;
 	private static final Color COLOR_TARGET_MOVE_LINE = Color.DARK_GRAY;
 
-	public static final Color ROBOT_BORDY_COLOR = new Color(174, 118, 77);//new Color(51, 153, 153);
-	public static final Color ROBOT_RADAR_COLOR = new Color(211, 163, 126);//Color(117, 209, 209);
+	public static final Color ROBOT_BORDY_COLOR = new Color(174, 118, 77);// new Color(51, 153, 153);
+	public static final Color ROBOT_RADAR_COLOR = new Color(211, 163, 126);// Color(117, 209, 209);
 	public static final Color ROBOT_GUN_COLOR = new Color(51, 102, 102);
 	public static final Color ROBOT_BULLET03_COLOR = new Color(250, 245, 90);
 	public static final Color ROBOT_BULLET02_COLOR = new Color(255, 211, 50);
@@ -73,22 +73,28 @@ public abstract class JimKirkBase extends AdvancedRobot {
 		setAdjustRadarForGunTurn(true);
 		setAdjustGunForRobotTurn(true);
 	}
-
+	public void avoidWallWhenNecessary(){
+		FullRobotState robotState = RobotStateConverter.toRobotState(this);
+		Double shouldTurnRightDirection = WallSmoothHelper.shouldAvoidWall(this.battleField, robotState);
+		if (shouldTurnRightDirection != null){
+			this.setTurnRight(shouldTurnRightDirection);
+		}
+	}
 	public void paintPredict() {
 		FindingBestFirePointResult findingBestPointResult = predicted.getFireResult().getFindingBestPointResult();
 		List<PredictedFirePoint> impossibleTargetPoints = findingBestPointResult.getImpossiblePoints();
 		List<PredictedFirePoint> impossibleAngleTargetPoints = findingBestPointResult.getImpossibleAnglePoints();
 		List<PredictedFirePoint> outsideBattleTargetPoints = findingBestPointResult.getOutsideBattlePoints();
 		List<PredictedFirePoint> tooFarTargetPoints = findingBestPointResult.getTooFarPoints();
-		
+
 		List<PredictedFirePoint> availableBulletHitTargetPoints = predicted.getFireResult().getAvailableFirePoints();
 		List<PredictedFirePoint> availableTestPoints = findingBestPointResult.getAvailablePoints();
 		List<PredictedFirePoint> possiblePoints = findingBestPointResult.getPossiblePoints();
 		List<PredictedFirePoint> nearestPoints = findingBestPointResult.getNearestPoints();
-		
+
 		LineSegment targetMoveLine = findingBestPointResult.getTargetCurrentMoveLine();
 		paintLine(COLOR_TARGET_MOVE_LINE, targetMoveLine);
-		
+
 		for (PredictedFirePoint point : availableBulletHitTargetPoints) {
 			paintPoint(1, COLOR_AVAILABLE_TARGET_POINT, point, null);
 		}
@@ -101,7 +107,7 @@ public abstract class JimKirkBase extends AdvancedRobot {
 		for (PredictedFirePoint point : nearestPoints) {
 			paintPoint(3, COLOR_NEAREST_TARGET_POINT, point, null);
 		}
-		
+
 		for (PredictedFirePoint point : impossibleTargetPoints) {
 			paintPoint(2, COLOR_IMPOSSIBLE_TARGET_POINT, point, null);
 		}
@@ -114,16 +120,16 @@ public abstract class JimKirkBase extends AdvancedRobot {
 		for (PredictedFirePoint point : tooFarTargetPoints) {
 			paintPoint(2, COLOR_TOOFAR_TARGET_POINT, point, null);
 		}
-		
-//		for (PredictedFirePoint nearestPoint : findingBestPointResult.getNearestPoints()) {
-//			paintPoint(3, COLOR_NEAREST_TARGET_POINT, nearestPoint, null);
-//		}
+
+		// for (PredictedFirePoint nearestPoint : findingBestPointResult.getNearestPoints()) {
+		// paintPoint(3, COLOR_NEAREST_TARGET_POINT, nearestPoint, null);
+		// }
 
 		paintPoint(2, COLOR_CURRENT_SOURCE, predicted.getBeginSource().getPosition(), "");
 		paintPoint(4, COLOR_CURRENT_TARGET, predicted.getBeginTarget().getPosition(), null);
 		paintPoint(4, COLOR_PREDICTED_TARGET_AIMED, predicted.getFirstAimEstimation().getTarget().getPosition(), null);
-		
-		if (predicted.getFireResult().getFindingBestPointResult().getBestPoint() != null){
+
+		if (predicted.getFireResult().getFindingBestPointResult().getBestPoint() != null) {
 			paintPoint(5, COLOR_PREDICTED_TARGET_HIT, predicted.getAimResult().getFiredTarget(), "");
 			if (predicted.getBestFirePoint() != null) {
 				paintPoint(5, COLOR_PREDICTED_TARGET_HIT, predicted.getBestFirePoint(), "p-" + predicted.getBestFirePoint().getFirePower() + "_");
@@ -162,6 +168,7 @@ public abstract class JimKirkBase extends AdvancedRobot {
 		graphic.setColor(color);
 		graphic.drawLine((int) line.getPointA().x, (int) line.getPointA().y, (int) line.getPointB().x, (int) line.getPointB().y);
 	}
+
 	public void paintPossiblePoint(int pointSize, Color color, PredictedFirePoint point, String printText) {
 		Graphics graphic = getGraphics();
 		graphic.setColor(color);
@@ -170,7 +177,7 @@ public abstract class JimKirkBase extends AdvancedRobot {
 		graphic.drawLine((int) point.x - pointSize, (int) point.y, (int) point.x + pointSize, (int) point.y);
 		graphic.drawLine((int) point.x, (int) point.y - pointSize, (int) point.x, (int) point.y + pointSize);
 	}
-	
+
 	public void paintPoint(int pointSize, Color color, Point point, String printText) {
 		Graphics graphic = getGraphics();
 		graphic.setColor(color);
@@ -183,8 +190,7 @@ public abstract class JimKirkBase extends AdvancedRobot {
 
 	/**
 	 * @param bearingFromRobotHeading
-	 *            this is the relative bearing from our robot's body heading to
-	 *            target.
+	 *            this is the relative bearing from our robot's body heading to target.
 	 */
 	protected void setTurnRadarToTarget(double bearingFromRobotHeading) {
 		double turnRightDegree = MathUtils.normalizeDegree(getHeading() - getRadarHeading() + bearingFromRobotHeading);
@@ -193,8 +199,7 @@ public abstract class JimKirkBase extends AdvancedRobot {
 
 	/**
 	 * @param bearingFromRobotHeading
-	 *            this is the relative bearing from our robot's body heading to
-	 *            target.
+	 *            this is the relative bearing from our robot's body heading to target.
 	 */
 	protected void setTurnGunToTarget(double bearingFromRobotHeading) {
 		double turnRightDegree = MathUtils.normalizeDegree(getHeading() - getGunHeading() + bearingFromRobotHeading);
@@ -208,8 +213,7 @@ public abstract class JimKirkBase extends AdvancedRobot {
 	}
 
 	/**
-	 * We were hit! Turn perpendicular to the bullet, so our robot might avoid a
-	 * future shot.
+	 * We were hit! Turn perpendicular to the bullet, so our robot might avoid a future shot.
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
 		moveAwayFromTarget(e, e.getBearing());

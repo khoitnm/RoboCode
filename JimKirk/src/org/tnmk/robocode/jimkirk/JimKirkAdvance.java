@@ -2,6 +2,7 @@ package org.tnmk.robocode.jimkirk;
 
 import org.tnmk.robocode.common.constant.AimStatus;
 import org.tnmk.robocode.common.helper.GunHelper;
+import org.tnmk.robocode.common.helper.WallSmoothHelper;
 import org.tnmk.robocode.common.helper.MoveHelper.BattlePosition;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
 import org.tnmk.robocode.common.model.FullRobotState;
@@ -75,6 +76,7 @@ public class JimKirkAdvance extends JimKirkBase {
 			if (canFire() && getGunTurnRemaining() == 0) {
 				fireAsPredicted();
 			}
+			avoidWallWhenNecessary();
 			execute();
 		}
 	}
@@ -116,6 +118,7 @@ public class JimKirkAdvance extends JimKirkBase {
 			String msg = String.format("%s - THIS(%s, %s)", time, robotState.getX(), robotState.getY());
 			System.out.println(msg);
 		}
+		super.onStatus(e);
 	}
 
 	public void onScannedRobot(ScannedRobotEvent targetEvent) {
