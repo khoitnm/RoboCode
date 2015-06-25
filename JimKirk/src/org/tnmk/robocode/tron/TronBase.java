@@ -1,9 +1,10 @@
-package org.tnmk.robocode.jimkirk;
+package org.tnmk.robocode.tron;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.List;
 
+import org.tnmk.robocode.common.helper.Area;
 import org.tnmk.robocode.common.helper.BattleField;
 import org.tnmk.robocode.common.helper.FireByDistance;
 import org.tnmk.robocode.common.helper.MoveHelper;
@@ -21,14 +22,13 @@ import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
 import robocode.AdvancedRobot;
 import robocode.Event;
 import robocode.HitByBulletEvent;
-import robocode.StatusEvent;
 
 /**
  * @author Khoi With AdvancedRobot, the shooting time is different from basic Robot class.
  * 
  *         Term: + Bearing: the angle (degree) from pointA to pointB (or vectorA to vectorB). It can be an absolute bearing (compare to North axis) or relative bearing (compare to vectorA)
  */
-public abstract class JimKirkBase extends AdvancedRobot {
+public abstract class TronBase extends AdvancedRobot {
 	private static final Color COLOR_PREDICTED_TARGET_AIMED = Color.MAGENTA;
 	private static final Color COLOR_PREDICTED_TARGET_HIT = Color.PINK;
 	private static final Color COLOR_CURRENT_TARGET = Color.WHITE;
@@ -73,12 +73,12 @@ public abstract class JimKirkBase extends AdvancedRobot {
 		setAdjustRadarForGunTurn(true);
 		setAdjustGunForRobotTurn(true);
 	}
-	public void avoidWallWhenNecessary(){
+	public void avoidWallWhenNecessary(Area safeArea){
 		FullRobotState robotState = RobotStateConverter.toRobotState(this);
 		if (robotState.getX() > 700 || robotState.getY() > 550 || robotState.getX() < 120 || robotState.getY() < 120){
 			System.out.println("Debug");
 		}
-		Double shouldTurnRightDirection = WallSmoothHelper.shouldAvoidWall(this.battleField, robotState);
+		Double shouldTurnRightDirection = WallSmoothHelper.shouldAvoidWall(safeArea, robotState);
 		if (shouldTurnRightDirection != null){
 			this.setTurnRight(shouldTurnRightDirection);
 		}

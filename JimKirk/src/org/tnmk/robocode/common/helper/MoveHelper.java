@@ -15,7 +15,7 @@ public class MoveHelper {
 	public static final double ROBOT_SIZE = 50;
 	public static final double MOVE_CLOSE_TO_TARGET_MIN_ANGLE = 20;
 	public static final double MIN_TURN_RATE = Rules.getTurnRate(Rules.MAX_VELOCITY);
-	public static final double MAX_DIFFERENT_OF_NEAR_ANGLES = 0.001; 
+	public static final double MAX_DIFFERENT_OF_NEAR_ANGLES = 2; 
 	private BattleField battleField;
 	
 	public enum BattlePosition {

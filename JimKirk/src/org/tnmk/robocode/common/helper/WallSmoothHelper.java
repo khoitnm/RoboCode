@@ -28,7 +28,7 @@ public class WallSmoothHelper {
 	/**
 	 * Total size, not radius of robot.
 	 */
-	private static final double ROBOT_SIZE = 35;
+	private static final double ROBOT_SIZE = 20;
 
 	/**
 	 * @param area
@@ -168,46 +168,63 @@ public class WallSmoothHelper {
 		// OTHER ANGLES ////////////////////////////////////////////
 		// ------------------------------------------------------------------
 		else if (moveAngle > 0 && moveAngle < 90) {// TOP & RIGHT wall
-			double distanceToTop = distanceToTopWall(safeMoveArea, robotPosition, moveAngle, speed, -1);
-			double distanceToRight = distanceToRightWall(safeMoveArea, robotPosition, moveAngle, speed, 1);
-			double minDistanceToWall = Math.max(distanceToRight, distanceToTop);
-			if (isAlmostHitWall(minDistanceToWall)) {
-				if (distanceToRight < distanceToTop) {
-					targetAngle = TURN_TOP_DIRECTION;
-				} else {
+			double distanceTurnLeftToRightWall= distanceToRightWall(safeMoveArea, robotPosition, moveAngle, speed, -1);
+			double distanceTurnLeftToTopWall = distanceToTopWall(safeMoveArea, robotPosition, moveAngle, speed, -1);
+			double distanceTurnRightToRightWall = distanceToRightWall(safeMoveArea, robotPosition, moveAngle, speed, 1);
+			double distanceTurnRightToTopWall = distanceToTopWall(safeMoveArea, robotPosition, moveAngle, speed, 1);
+			double minTurnLeft = Math.min(distanceTurnLeftToRightWall, distanceTurnLeftToTopWall);
+			double minTurnRight = Math.min(distanceTurnRightToRightWall, distanceTurnRightToTopWall);
+			double maxDistanceToWall = Math.max(minTurnLeft, minTurnRight);
+			if (isAlmostHitWall(maxDistanceToWall)) {
+				if (minTurnLeft < minTurnRight) {
 					targetAngle = TURN_RIGHT_DIRECTION;
+				} else {
+					targetAngle = TURN_TOP_DIRECTION;
 				}
 			}
 
 		} else if (moveAngle > 90 && moveAngle < 180) {// RIGHT & BOTTOM wall
-			double distanceToBottom = distanceToBottomWall(safeMoveArea, robotPosition, moveAngle, speed, 1);
-			double distanceToRight = distanceToRightWall(safeMoveArea, robotPosition, moveAngle, speed, -1);
-			double minDistanceToWall = Math.max(distanceToRight, distanceToBottom);
-			if (isAlmostHitWall(minDistanceToWall)) {
-				if (distanceToRight < distanceToBottom) {
-					targetAngle = TURN_BOTTOM_DIRECTION;
+			double distanceTurnLeftToRightWall= distanceToRightWall(safeMoveArea, robotPosition, moveAngle, speed, -1);
+			double distanceTurnLeftToBottomWall = distanceToBottomWall(safeMoveArea, robotPosition, moveAngle, speed, -1);
+			double distanceTurnRightToRightWall = distanceToRightWall(safeMoveArea, robotPosition, moveAngle, speed, 1);
+			double distanceTurnRightToBottomWall = distanceToBottomWall(safeMoveArea, robotPosition, moveAngle, speed, 1);
+			double minTurnLeft = Math.min(distanceTurnLeftToRightWall, distanceTurnLeftToBottomWall);
+			double minTurnRight = Math.min(distanceTurnRightToRightWall, distanceTurnRightToBottomWall);
+			double maxDistanceToWall = Math.max(minTurnLeft, minTurnRight);
+			if (isAlmostHitWall(maxDistanceToWall)) {
+				if (minTurnLeft < minTurnRight) {
+					targetAngle = TURN_BOTTOM_DIRECTION;					
 				} else {
 					targetAngle = TURN_RIGHT_DIRECTION;
+
 				}
 			}
 		} else if (moveAngle > 180 && moveAngle < 270) {// BOTTOM & LEFT wall
-			double distanceToBottom = distanceToBottomWall(safeMoveArea, robotPosition, moveAngle, speed, -1);
-			double distanceToLeft = distanceToLeftWall(safeMoveArea, robotPosition, moveAngle, speed, 1);
-			double minDistanceToWall = Math.max(distanceToLeft, distanceToBottom);
-			if (isAlmostHitWall(minDistanceToWall)) {
-				if (distanceToLeft < distanceToBottom) {
-					targetAngle = TURN_BOTTOM_DIRECTION;
-				} else {
+			double distanceTurnLeftToLeftWall= distanceToLeftWall(safeMoveArea, robotPosition, moveAngle, speed, -1);
+			double distanceTurnLeftToBottomWall = distanceToBottomWall(safeMoveArea, robotPosition, moveAngle, speed, -1);
+			double distanceTurnRightToLeftWall = distanceToLeftWall(safeMoveArea, robotPosition, moveAngle, speed, 1);
+			double distanceTurnRightToBottomWall = distanceToBottomWall(safeMoveArea, robotPosition, moveAngle, speed, 1);
+			double minTurnLeft = Math.min(distanceTurnLeftToLeftWall, distanceTurnLeftToBottomWall);
+			double minTurnRight = Math.min(distanceTurnRightToLeftWall, distanceTurnRightToBottomWall);
+			double maxDistanceToWall = Math.max(minTurnLeft, minTurnRight);
+			if (isAlmostHitWall(maxDistanceToWall)) {
+				if (minTurnLeft < minTurnRight) {
 					targetAngle = TURN_LEFT_DIRECTION;
+				} else {
+					targetAngle = TURN_BOTTOM_DIRECTION;
 				}
 			}
 
 		} else if (moveAngle > 270) {// LEFT & TOP wall
-			double distanceToTop = distanceToTopWall(safeMoveArea, robotPosition, moveAngle, speed, 1);
-			double distanceToLeft = distanceToLeftWall(safeMoveArea, robotPosition, moveAngle, speed, -1);
-			double minDistanceToWall = Math.max(distanceToLeft, distanceToTop);
-			if (isAlmostHitWall(minDistanceToWall)) {
-				if (distanceToLeft < distanceToTop) {
+			double distanceTurnLeftToLeftWall= distanceToLeftWall(safeMoveArea, robotPosition, moveAngle, speed, -1);
+			double distanceTurnLeftToTopWall = distanceToTopWall(safeMoveArea, robotPosition, moveAngle, speed, -1);
+			double distanceTurnRightToLeftWall = distanceToLeftWall(safeMoveArea, robotPosition, moveAngle, speed, 1);
+			double distanceTurnRightToTopWall = distanceToTopWall(safeMoveArea, robotPosition, moveAngle, speed, 1);
+			double minTurnLeft = Math.min(distanceTurnLeftToLeftWall, distanceTurnLeftToTopWall);
+			double minTurnRight = Math.min(distanceTurnRightToLeftWall, distanceTurnRightToTopWall);
+			double maxDistanceToWall = Math.max(minTurnLeft, minTurnRight);
+			if (isAlmostHitWall(maxDistanceToWall)) {
+				if (minTurnLeft < minTurnRight) {
 					targetAngle = TURN_TOP_DIRECTION;
 				} else {
 					targetAngle = TURN_LEFT_DIRECTION;

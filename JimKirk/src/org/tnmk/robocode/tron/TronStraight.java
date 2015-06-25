@@ -1,4 +1,4 @@
-package org.tnmk.robocode.jimkirk;
+package org.tnmk.robocode.tron;
 
 
 import org.tnmk.robocode.common.helper.RobotStateConverter;
@@ -17,7 +17,7 @@ import robocode.StatusEvent;
  * + Bearing: the angle (degree) from pointA to pointB (or vectorA to vectorB).
  * It can be an absolute bearing (compare to North axis) or relative bearing (compare to vectorA)
  */
-public class JimKirkStraight extends JimKirkBase {
+public class TronStraight extends TronBase {
 	public static int MOVE_DISTANCE = 100000;
 	private int direction = 1;
 	

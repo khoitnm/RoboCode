@@ -1,9 +1,10 @@
-package org.tnmk.robocode.jimkirk;
+package org.tnmk.robocode.tron;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import org.tnmk.robocode.common.constant.AimStatus;
 import org.tnmk.robocode.common.helper.GunHelper;
-import org.tnmk.robocode.common.helper.WallSmoothHelper;
-import org.tnmk.robocode.common.helper.MoveHelper.BattlePosition;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
 import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
@@ -21,20 +22,17 @@ import robocode.StatusEvent;
  *         to vectorB). It can be an absolute bearing (compare to North axis) or
  *         relative bearing (compare to vectorA)
  */
-public class JimKirkAdvance extends JimKirkBase {
-	public static boolean CONFIG_FIRE = true;
-	public static boolean CONFIG_MOVE_CLOSE_TO_TARGET = true;
-	public static boolean CONFIG_CHANGE_DIRECTION = true;
-	
+public class TronStandAim extends TronBase {
 	public static double MOVE_DISTANCE = 30200.54;
 	public static double TURN = 0;
 	public static int DISTANCE_LOOP = 5;
 	public static int FIRE_COUNT = 3;
 
+
 	private boolean isFired = false;
 	boolean finishPrepared = false;
 
-	public JimKirkAdvance() {
+	public TronStandAim() {
 		super();
 	}
 
@@ -42,6 +40,9 @@ public class JimKirkAdvance extends JimKirkBase {
 		return getTime() - previousTime;
 	}
 
+	String action = "";
+	private long aimCount = 0;
+	private long movingForAimCount = 0;
 
 	int turnDirection = 1;
 	int headDirection = 1;
@@ -51,49 +52,25 @@ public class JimKirkAdvance extends JimKirkBase {
 	private boolean isAiming() {
 		return (aimStatus == AimStatus.AIMING);
 	}
-	private void praparePos(double x, double y){
-		moveHelper.moveTo(x, y);
-		turnLeft(this.getHeading());//moveAngle = 0
-	}
+
 	public void run() {
 		super.init();
 
-		ahead(5);
-		praparePos(500, battleField.getHeight() - 500);
-		
-		turnLeft(70);
-		setAhead(100000);
-		execute();
-		
-		
-//		moveHelper.moveToSafeCorner(BattlePosition.TOP_RIGHT);
-//		turnLeft(this.getHeading() + 90);
-		System.out.println("FINISH PREPARING");
-
-//		setAhead(headDirection * MOVE_DISTANCE);
-//		setTurnLeft(Math.round(360) * turnDirection * TURN % 360);
-//		execute();
 		finishPrepared = true;
 		while (true) {
-			// if has new aim, than we can change direction.
-			// if (movingForAimCount != aimCount){
-			if (CONFIG_CHANGE_DIRECTION){
-				runNewMoveIfFinishOldMove();
-			}
-			
-			// }
-
 			// Radar
+			if (painted >= getTime()-1){
+				System.out.println("Debug Painted");
+			}
 			if (getRadarTurnRemaining() == 0) {
 				setTurnRadarRight(360);
 			}
 
 			// Our robot already predicted target long time ago, so it just shot
 			// by predicted. It doesn't need to see target to shot anymore.
-			if (CONFIG_FIRE && canFire() && getGunTurnRemaining() == 0) {
+			if (canFire() && getGunTurnRemaining() == 0) {
 				fireAsPredicted();
 			}
-			avoidWallWhenNecessary();
 			execute();
 		}
 	}
@@ -102,29 +79,11 @@ public class JimKirkAdvance extends JimKirkBase {
 			return;
 		}
 		if (getTime() == predicted.getAimedTime() && !predicted.isWaitForBetterAim()) {
-			String msg = String.format("%s - THIS FIRE(%s, %s)", getTime(), getX(), getY());
+			String msg = String.format("%s - THIS FIRE(%.2f, %.2f)", getTime(), getX(), getY());
 			System.out.println(msg);
 			setFire(predicted.getBestFirePoint().getFirePower());
 			
 			isFired = true;
-		}
-	}
-	private void runNewMoveIfFinishOldMove() {
-		// Turn
-		if (getTurnRemaining() == 0) {
-			System.out.println("\t CHANGE TURN");
-			turnDirection = -turnDirection;
-			setTurnLeft(turnDirection * TURN);
-		}
-
-		// Ahead
-		if (getDistanceRemaining() == 0) {
-			System.out.println("\t CHANGE DEADING");
-			// setTurnLeft(90.73);//override current turn left
-			turnDirection = -turnDirection;
-			setTurnLeft(turnDirection * TURN);
-			headDirection = -headDirection;
-			setAhead(headDirection * MOVE_DISTANCE);
 		}
 	}
 
@@ -132,25 +91,38 @@ public class JimKirkAdvance extends JimKirkBase {
 		long time = getTime();
 		if (predicted != null && predicted.getAimedTime() == time) {
 			FullRobotState robotState = RobotStateConverter.toRobotState(this);
-			String msg = String.format("%s - THIS(%s, %s)", time, robotState.getX(), robotState.getY());
+			String msg = String.format("%s - THIS(%.2f, %.2f)", time, robotState.getX(), robotState.getY());
 			System.out.println(msg);
 		}
-		super.onStatus(e);
 	}
-
+	List<Long> predictTagetHitTimes = new LinkedList<>();
+	List<Long> predictTagetAimedTimes = new LinkedList<>();
 	public void onScannedRobot(ScannedRobotEvent targetEvent) {
 		if (!finishPrepared) {
 			return;
-		}		
+		}
+		FullRobotState target = RobotStateConverter.toRobotState(this, targetEvent);
+		String s = String.format("\t %s Target:%s", getTime(), target.getPosition());
+		System.out.println(s);
+		if (predictTagetHitTimes.contains(getTime()) || predictTagetAimedTimes.contains(getTime())){
+			FullRobotState targetState = RobotStateConverter.toRobotState(this, targetEvent);
+			String msg = String.format("%s - TARGET(%s, %s)", getTime(), targetState.getX(), targetState.getY());
+			System.out.println(msg);
+		}
 		if (isFired || predicted == null || getTime() > predicted.getAimedTime()) {
 			predicted = aimTarget(targetEvent);
-			if (predicted.getBestFirePoint() == null || GunHelper.isTooFarFromTarget(predicted)){
+			this.paintPredict();
+			if (predicted.getBestFirePoint() != null){
+				predictTagetHitTimes.add(predicted.getTotalTime());
+			}else{
 				predicted.setWaitForBetterAim(true);
-				if (CONFIG_MOVE_CLOSE_TO_TARGET){
-					moveHelper.moveCloseToTarget(predicted.getBeginTarget().getPosition());
-				}
+			}
+			predictTagetAimedTimes.add(predicted.getAimedTime());
+			if (predicted.getBestFirePoint() == null || GunHelper.isTooFarFromTarget(predicted)){
+//				moveHelper.moveCloseToTarget(predicted.getCurrentTarget().getPoint());
 			}
 		}
+		setTurnRadarToTarget(targetEvent.getBearing());
 	}
 
 	public PredictedAimAndFireResult aimTarget(ScannedRobotEvent targetEvent) {
@@ -172,11 +144,11 @@ public class JimKirkAdvance extends JimKirkBase {
 					predicted.getAimedTime(), predictedAiming.getFiredTarget(),
 					predicted.getTotalTime(), predictedFirePoint);
 			System.out.println(msg);
-			
+		
 			double turnRightAngle = predicted.getAimResult().getGunTurnRightDirection();
 			setTurnGunRight(turnRightAngle);
 			isFired = false;
-		}		
+		}
 		return predicted;
 	}
 }
