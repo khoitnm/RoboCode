@@ -29,6 +29,7 @@ import robocode.HitByBulletEvent;
  *         Term: + Bearing: the angle (degree) from pointA to pointB (or vectorA to vectorB). It can be an absolute bearing (compare to North axis) or relative bearing (compare to vectorA)
  */
 public abstract class OutlanderBase extends AdvancedRobot {
+
 	private static final Color COLOR_PREDICTED_TARGET_AIMED = Color.MAGENTA;
 	private static final Color COLOR_PREDICTED_TARGET_HIT = Color.PINK;
 	private static final Color COLOR_CURRENT_TARGET = Color.WHITE;
@@ -46,7 +47,7 @@ public abstract class OutlanderBase extends AdvancedRobot {
 	private static final Color COLOR_OUTSIDEBATTLE_TARGET_POINT = Color.BLACK;
 	private static final Color COLOR_TARGET_MOVE_LINE = Color.DARK_GRAY;
 
-	public static final Color ROBOT_BORDY_COLOR = new Color(174, 118, 77);// new Color(51, 153, 153);
+	public static final Color ROBOT_BORDY_COLOR = new Color(194, 118, 50);// new Color(51, 153, 153);
 	public static final Color ROBOT_RADAR_COLOR = new Color(211, 163, 126);// Color(117, 209, 209);
 	public static final Color ROBOT_GUN_COLOR = new Color(51, 102, 102);
 	public static final Color ROBOT_BULLET03_COLOR = new Color(250, 245, 90);
@@ -58,7 +59,12 @@ public abstract class OutlanderBase extends AdvancedRobot {
 	protected MoveHelper moveHelper;
 	protected PredictHelper predictHelper;
 	protected PredictedAimAndFireResult predicted;
-	protected long painted = -1;
+	protected long paintedTime = -1;
+
+	public void praparePos(double x, double y) {
+		moveHelper.moveTo(x, y);
+		turnLeft(this.getHeading());// moveAngle = 0
+	}
 
 	public void init() {
 		battleField = MoveHelper.createBattleField(this);
@@ -73,17 +79,22 @@ public abstract class OutlanderBase extends AdvancedRobot {
 		setAdjustRadarForGunTurn(true);
 		setAdjustGunForRobotTurn(true);
 	}
-	public void avoidWallWhenNecessary(Area safeArea){
+
+	public void avoidWallWhenNecessary(Area safeArea) {
 		FullRobotState robotState = RobotStateConverter.toRobotState(this);
-		if (robotState.getX() > 700 || robotState.getY() > 550 || robotState.getX() < 120 || robotState.getY() < 120){
+		if (robotState.getX() > 700 || robotState.getY() > 550 || robotState.getX() < 120 || robotState.getY() < 120) {
 			System.out.println("Debug");
 		}
 		Double shouldTurnRightDirection = WallSmoothHelper.shouldAvoidWall(safeArea, robotState);
-		if (shouldTurnRightDirection != null){
+		if (shouldTurnRightDirection != null) {
 			this.setTurnRight(shouldTurnRightDirection);
 		}
 	}
+
 	public void paintPredict() {
+		if (!Config.PANT_PREDICT_TARGET)
+			return;
+
 		FindingBestFirePointResult findingBestPointResult = predicted.getFireResult().getFindingBestPointResult();
 		List<PredictedFirePoint> impossibleTargetPoints = findingBestPointResult.getImpossiblePoints();
 		List<PredictedFirePoint> impossibleAngleTargetPoints = findingBestPointResult.getImpossibleAnglePoints();
@@ -139,7 +150,7 @@ public abstract class OutlanderBase extends AdvancedRobot {
 			}
 		}
 		paintPredictInfo();
-		painted = getTime();
+		paintedTime = getTime();
 	}
 
 	/**
@@ -219,7 +230,9 @@ public abstract class OutlanderBase extends AdvancedRobot {
 	 * We were hit! Turn perpendicular to the bullet, so our robot might avoid a future shot.
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
-		moveAwayFromTarget(e, e.getBearing());
+		if (Config.CHANGE_DIRECTION_WHEN_BULLET_HIT) {
+			moveAwayFromTarget(e, e.getBearing());
+		}
 	}
 
 	protected boolean canFire() {

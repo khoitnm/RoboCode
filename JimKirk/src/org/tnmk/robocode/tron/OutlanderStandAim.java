@@ -59,7 +59,7 @@ public class OutlanderStandAim extends OutlanderBase {
 		finishPrepared = true;
 		while (true) {
 			// Radar
-			if (painted >= getTime()-1){
+			if (paintedTime >= getTime()-1){
 				System.out.println("Debug Painted");
 			}
 			if (getRadarTurnRemaining() == 0) {

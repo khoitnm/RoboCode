@@ -5,6 +5,7 @@ import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.math.Point;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.FullRobotState;
+import org.tnmk.robocode.tron.Config;
 
 import robocode.AdvancedRobot;
 import robocode.Robot;
@@ -42,7 +43,11 @@ public class MoveHelper {
 
 	public static BattleField createBattleField(Robot robot) {
 		BattleField battleField = new BattleField(robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
-		battleField.setSentryBorderSize(robot.getSentryBorderSize());
+		int sentrySize = 0;
+		if (Config.MOVE_ONLY_IN_SAFE_ZONE){
+			sentrySize = robot.getSentryBorderSize();
+		}
+		battleField.setSentryBorderSize(sentrySize);
 		return battleField;
 	}
 
