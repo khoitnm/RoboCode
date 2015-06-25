@@ -75,6 +75,9 @@ public abstract class JimKirkBase extends AdvancedRobot {
 	}
 	public void avoidWallWhenNecessary(){
 		FullRobotState robotState = RobotStateConverter.toRobotState(this);
+		if (robotState.getX() > 700 || robotState.getY() > 550 || robotState.getX() < 120 || robotState.getY() < 120){
+			System.out.println("Debug");
+		}
 		Double shouldTurnRightDirection = WallSmoothHelper.shouldAvoidWall(this.battleField, robotState);
 		if (shouldTurnRightDirection != null){
 			this.setTurnRight(shouldTurnRightDirection);

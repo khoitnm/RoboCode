@@ -14,11 +14,16 @@ import robocode.ScannedRobotEvent;
 public class MoveHelper {
 	public static final double ROBOT_SIZE = 50;
 	public static final double MOVE_CLOSE_TO_TARGET_MIN_ANGLE = 20;
-	public static double MIN_TURN_RATE = Rules.getTurnRate(Rules.MAX_VELOCITY); 
+	public static final double MIN_TURN_RATE = Rules.getTurnRate(Rules.MAX_VELOCITY);
+	public static final double MAX_DIFFERENT_OF_NEAR_ANGLES = 0.001; 
 	private BattleField battleField;
 	
 	public enum BattlePosition {
 		BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT;
+	}
+	
+	public static boolean isNearMoveAngle(double currentMoveAngle, double targetMoveAngle){
+		return Math.abs(currentMoveAngle - targetMoveAngle) < MAX_DIFFERENT_OF_NEAR_ANGLES;
 	}
 	/**
 	 * This method is correct, no need to debug.
