@@ -28,7 +28,7 @@ import robocode.HitByBulletEvent;
  * 
  *         Term: + Bearing: the angle (degree) from pointA to pointB (or vectorA to vectorB). It can be an absolute bearing (compare to North axis) or relative bearing (compare to vectorA)
  */
-public abstract class TronBase extends AdvancedRobot {
+public abstract class OutlanderBase extends AdvancedRobot {
 	private static final Color COLOR_PREDICTED_TARGET_AIMED = Color.MAGENTA;
 	private static final Color COLOR_PREDICTED_TARGET_HIT = Color.PINK;
 	private static final Color COLOR_CURRENT_TARGET = Color.WHITE;

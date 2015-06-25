@@ -21,7 +21,7 @@ import robocode.StatusEvent;
  *         to vectorB). It can be an absolute bearing (compare to North axis) or
  *         relative bearing (compare to vectorA)
  */
-public class Tron extends TronBase {
+public class Outlander extends OutlanderBase {
 	public static boolean CONFIG_FIRE = true;
 	public static boolean CONFIG_MOVE_CLOSE_TO_TARGET = true;
 	public static boolean CONFIG_CHANGE_DIRECTION = true;
@@ -35,7 +35,7 @@ public class Tron extends TronBase {
 	private boolean isFired = false;
 	boolean finishPrepared = false;
 
-	public Tron() {
+	public Outlander() {
 		super();
 	}
 
