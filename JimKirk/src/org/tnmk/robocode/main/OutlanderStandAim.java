@@ -1,5 +1,6 @@
-package org.tnmk.robocode.tron;
+package org.tnmk.robocode.main;
 
+import java.sql.PreparedStatement;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,6 +57,7 @@ public class OutlanderStandAim extends OutlanderBase {
 	public void run() {
 		super.init();
 
+		super.preparePos(this.battleField.getWidth() - 500, 100);
 		finishPrepared = true;
 		while (true) {
 			// Radar

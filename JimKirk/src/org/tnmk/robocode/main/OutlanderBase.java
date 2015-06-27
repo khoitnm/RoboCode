@@ -1,4 +1,4 @@
-package org.tnmk.robocode.tron;
+package org.tnmk.robocode.main;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -14,7 +14,7 @@ import org.tnmk.robocode.common.math.LineSegment;
 import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.math.Point;
 import org.tnmk.robocode.common.model.FullRobotState;
-import org.tnmk.robocode.common.predictor.self.PredictHelper;
+import org.tnmk.robocode.common.predictor.self.PredictManager;
 import org.tnmk.robocode.common.predictor.self.model.FindingBestFirePointResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
@@ -47,9 +47,9 @@ public abstract class OutlanderBase extends AdvancedRobot {
 	private static final Color COLOR_OUTSIDEBATTLE_TARGET_POINT = Color.BLACK;
 	private static final Color COLOR_TARGET_MOVE_LINE = Color.DARK_GRAY;
 
-	public static final Color ROBOT_BORDY_COLOR = new Color(194, 118, 50);// new Color(51, 153, 153);
+	public static final Color ROBOT_BORDY_COLOR = new Color(170, 92, 21);// new Color(51, 153, 153);
 	public static final Color ROBOT_RADAR_COLOR = new Color(211, 163, 126);// Color(117, 209, 209);
-	public static final Color ROBOT_GUN_COLOR = new Color(51, 102, 102);
+	public static final Color ROBOT_GUN_COLOR = new Color(0, 128, 128);
 	public static final Color ROBOT_BULLET03_COLOR = new Color(250, 245, 90);
 	public static final Color ROBOT_BULLET02_COLOR = new Color(255, 211, 50);
 	public static final Color ROBOT_BULLET01_COLOR = new Color(255, 255, 210);
@@ -57,11 +57,13 @@ public abstract class OutlanderBase extends AdvancedRobot {
 	protected BattleField battleField;
 	protected FireByDistance fireByDistance;
 	protected MoveHelper moveHelper;
-	protected PredictHelper predictHelper;
+	protected PredictManager predictHelper;
 	protected PredictedAimAndFireResult predicted;
 	protected long paintedTime = -1;
 
-	public void praparePos(double x, double y) {
+	private Config config = new Config();
+	
+	public void preparePos(double x, double y) {
 		moveHelper.moveTo(x, y);
 		turnLeft(this.getHeading());// moveAngle = 0
 	}
@@ -70,7 +72,7 @@ public abstract class OutlanderBase extends AdvancedRobot {
 		battleField = MoveHelper.createBattleField(this);
 		moveHelper = new MoveHelper(this);
 		fireByDistance = new FireByDistance(this);
-		predictHelper = new PredictHelper(this);
+		predictHelper = new PredictManager(this);
 
 		setBodyColor(ROBOT_BORDY_COLOR);
 		setRadarColor(ROBOT_RADAR_COLOR);
@@ -92,7 +94,7 @@ public abstract class OutlanderBase extends AdvancedRobot {
 	}
 
 	public void paintPredict() {
-		if (!Config.PANT_PREDICT_TARGET)
+		if (!getConfig().isPaintTargetPrediction())
 			return;
 
 		FindingBestFirePointResult findingBestPointResult = predicted.getFireResult().getFindingBestPointResult();
@@ -141,7 +143,7 @@ public abstract class OutlanderBase extends AdvancedRobot {
 
 		paintPoint(2, COLOR_CURRENT_SOURCE, predicted.getBeginSource().getPosition(), "");
 		paintPoint(4, COLOR_CURRENT_TARGET, predicted.getBeginTarget().getPosition(), null);
-		paintPoint(4, COLOR_PREDICTED_TARGET_AIMED, predicted.getFirstAimEstimation().getTarget().getPosition(), null);
+		paintPoint(4, COLOR_PREDICTED_TARGET_AIMED, predicted.getFirstAimEstimation().getAimedTarget().getPosition(), null);
 
 		if (predicted.getFireResult().getFindingBestPointResult().getBestPoint() != null) {
 			paintPoint(5, COLOR_PREDICTED_TARGET_HIT, predicted.getAimResult().getFiredTarget(), "");
@@ -230,7 +232,7 @@ public abstract class OutlanderBase extends AdvancedRobot {
 	 * We were hit! Turn perpendicular to the bullet, so our robot might avoid a future shot.
 	 */
 	public void onHitByBullet(HitByBulletEvent e) {
-		if (Config.CHANGE_DIRECTION_WHEN_BULLET_HIT) {
+		if (getConfig().isChangeDirectionWhenBulletHit()) {
 			moveAwayFromTarget(e, e.getBearing());
 		}
 	}
@@ -238,5 +240,13 @@ public abstract class OutlanderBase extends AdvancedRobot {
 	protected boolean canFire() {
 		return getGunHeat() == 0;
 	}
+
+	public Config getConfig() {
+	    return config;
+    }
+
+	public void setConfig(Config config) {
+	    this.config = config;
+    }
 
 }

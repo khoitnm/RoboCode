@@ -18,3 +18,5 @@ hs_err_pid*
 /JimKirkMaven/*.project
 /JimKirkMaven/*
 /JimKirkMaven/*.classpath
+/JimKirk/config/robocode.properties
+/JimKirk/config/window.properties

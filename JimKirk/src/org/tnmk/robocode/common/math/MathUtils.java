@@ -49,9 +49,9 @@ public final class MathUtils {
 		return MathConverter.toPoints(intersections);
 	}
 
-	public static double calculateTurnRightDirectionToTarget(double currentAbsAngle, double currentX, double currentY, double targetX, double targetY) {
+	public static double calculateTurnRightDirectionToTarget(double currentAbsMoveAngle, double currentX, double currentY, double targetX, double targetY) {
 		double absBearingToTarget = MathUtils.absoluteBearing(currentX, currentY, targetX, targetY);
-		double relativeBearing = absBearingToTarget - currentAbsAngle;
+		double relativeBearing = absBearingToTarget - currentAbsMoveAngle;
 		return MathUtils.normalizeDegree(relativeBearing);
 	}
 

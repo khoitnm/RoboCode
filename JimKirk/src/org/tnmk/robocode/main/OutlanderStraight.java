@@ -1,4 +1,4 @@
-package org.tnmk.robocode.tron;
+package org.tnmk.robocode.main;
 
 
 import org.tnmk.robocode.common.helper.RobotStateConverter;

@@ -5,7 +5,7 @@ import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.math.Point;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.FullRobotState;
-import org.tnmk.robocode.tron.Config;
+import org.tnmk.robocode.main.OutlanderBase;
 
 import robocode.AdvancedRobot;
 import robocode.Robot;
@@ -17,6 +17,7 @@ public class MoveHelper {
 	public static final double MOVE_CLOSE_TO_TARGET_MIN_ANGLE = 20;
 	public static final double MIN_TURN_RATE = Rules.getTurnRate(Rules.MAX_VELOCITY);
 	public static final double MAX_DIFFERENT_OF_NEAR_ANGLES = 2; 
+	public static final double MIN_ROBOT_DISTANCE = 200;
 	private BattleField battleField;
 	
 	public enum BattlePosition {
@@ -44,8 +45,12 @@ public class MoveHelper {
 	public static BattleField createBattleField(Robot robot) {
 		BattleField battleField = new BattleField(robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
 		int sentrySize = 0;
-		if (Config.MOVE_ONLY_IN_SAFE_ZONE){
-			sentrySize = robot.getSentryBorderSize();
+		if (robot instanceof OutlanderBase){
+			OutlanderBase outlanderBase = (OutlanderBase)robot;
+			if (outlanderBase.getConfig().isMoveOnlyInSafeZone()){
+				sentrySize = robot.getSentryBorderSize();
+			}
+			
 		}
 		battleField.setSentryBorderSize(sentrySize);
 		return battleField;
@@ -83,7 +88,8 @@ public class MoveHelper {
 	 * @return angle degree toward the target
 	 */
 	public double calculateTurnRightAngleToTarget(double targetX, double targetY) {
-		return MathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), robot.getX(), robot.getY(), targetX, targetY);
+		FullRobotState robotState = RobotStateConverter.toRobotState(robot);
+		return MathUtils.calculateTurnRightDirectionToTarget(robotState.getMoveAngle(), robot.getX(), robot.getY(), targetX, targetY);
 	}
 
 	public void moveTo(double targetX, double targetY) {
@@ -96,7 +102,9 @@ public class MoveHelper {
 
 	public void moveCloseToTarget(Point targetPoint) {
 		FullRobotState thisState = RobotStateConverter.toRobotState(robot);
-		double turnRightDirection = MathUtils.calculateTurnRightDirectionToTarget(thisState.getHeading(), thisState.getX(), thisState.getY(), targetPoint.getX(), targetPoint.getY());
+		double distance = MathUtils.distance(thisState.getPosition(), targetPoint);
+		if (distance < MIN_ROBOT_DISTANCE)return;//Don't need to try harder to get more closer to target.
+		double turnRightDirection = MathUtils.calculateTurnRightDirectionToTarget(thisState.getMoveAngle(), thisState.getX(), thisState.getY(), targetPoint.getX(), targetPoint.getY());
 		if (turnRightDirection > 0) {
 			turnRightDirection -= MOVE_CLOSE_TO_TARGET_MIN_ANGLE;
 		} else {

@@ -1,17 +1,12 @@
-package org.tnmk.robocode.tron;
+package org.tnmk.robocode.main;
 
-import org.tnmk.robocode.common.constant.AimStatus;
 import org.tnmk.robocode.common.helper.GunHelper;
-import org.tnmk.robocode.common.helper.WallSmoothHelper;
-import org.tnmk.robocode.common.helper.MoveHelper.BattlePosition;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
 import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
-import org.tnmk.robocode.common.predictor.self.model.PredictedAimResult;
-import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
 
 import robocode.ScannedRobotEvent;
-import robocode.StatusEvent;
+import robocode.control.snapshot.RobotState;
 
 /**
  * Briareos Hecatonchires: an character in Appleseed anime movie. He's very similar to Outlander (from Outlands soundtrack in Tron Legacy movie)
@@ -39,9 +34,9 @@ public class Briareos extends OutlanderBase {
 
 	public void run() {
 		super.init();
-
+		
 		// ahead(5);
-		// praparePos(500, battleField.getHeight() - 500);
+//		 preparePos(battleField.getWidth()/2, battleField.getHeight() - 100);
 		//
 		// turnLeft(70);
 		// setAhead(100000);
@@ -50,7 +45,7 @@ public class Briareos extends OutlanderBase {
 		System.out.println("FINISH PREPARING");
 		finishPrepared = true;
 		while (true) {
-			if (Config.CHANGE_DIRECTION_WHEN_FINISH_MOVE) {
+			if (getConfig().isChangeDirectionWhenFinishMove()) {
 				runNewMoveIfFinishOldMove();
 			}
 
@@ -59,7 +54,7 @@ public class Briareos extends OutlanderBase {
 			}
 
 			// Our robot already predicted target long time ago, so it just shot by predicted. It doesn't need to see target to shot anymore.
-			if (Config.FIRE && canFire() && getGunTurnRemaining() == 0) {
+			if (getConfig().isFire() && canFire() && getGunTurnRemaining() == 0) {
 				fireAsPredicted();
 			}
 			avoidWallWhenNecessary(this.battleField.getSafeArea());
@@ -103,12 +98,13 @@ public class Briareos extends OutlanderBase {
 			return;
 		}
 		if (isFired || predicted == null || getTime() > predicted.getAimedTime()) {
+			FullRobotState target = RobotStateConverter.toRobotState(this, targetEvent);
+			if (getConfig().isMoveCloseToTarget()) {
+				moveHelper.moveCloseToTarget(target.getPosition());
+			}
 			predicted = aimTarget(targetEvent);
 			if (predicted.getBestFirePoint() == null || GunHelper.isTooFarFromTarget(predicted)) {
 				predicted.setWaitForBetterAim(true);
-				if (Config.MOVE_CLOSE_TO_TARGET) {
-					moveHelper.moveCloseToTarget(predicted.getBeginTarget().getPosition());
-				}
 			}
 		}
 	}

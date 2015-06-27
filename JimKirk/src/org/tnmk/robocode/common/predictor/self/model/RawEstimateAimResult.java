@@ -13,12 +13,12 @@ public class RawEstimateAimResult{
 	/**
 	 * Status of source after aimed, not when bullet hit target
 	 */
-	private PredictStateResult source;
+	private PredictStateResult aimedSource;
 	
 	/**
 	 * This is the state of target when the source finishing aiming. It's not target state when it get fired (hit by bullet)
 	 */
-	private PredictStateResult target;
+	private PredictStateResult aimedTarget;
 	
 	
 	public double getGunTurnRightDirection() {
@@ -33,17 +33,17 @@ public class RawEstimateAimResult{
 	public void setAimSteps(int aimSteps) {
 		this.aimSteps = aimSteps;
 	}
-	public PredictStateResult getSource() {
-	    return source;
+	public PredictStateResult getAimedSource() {
+	    return aimedSource;
     }
-	public void setSource(PredictStateResult predictedAimedSource) {
-	    this.source = predictedAimedSource;
+	public void setAimedSource(PredictStateResult predictedAimedSource) {
+	    this.aimedSource = predictedAimedSource;
     }
-	public PredictStateResult getTarget() {
-	    return target;
+	public PredictStateResult getAimedTarget() {
+	    return aimedTarget;
     }
-	public void setTarget(PredictStateResult predictedAimedTarget) {
-	    this.target = predictedAimedTarget;
+	public void setAimedTarget(PredictStateResult predictedAimedTarget) {
+	    this.aimedTarget = predictedAimedTarget;
     }
 	
 	

@@ -14,12 +14,12 @@ public class PredictedAimResult {
 
 	/**
 	 * Gun turn right direction (could be negative or positive).
-	 * Note: if cannot find position to fire at target ({@link RawEstimateAimResult#getTarget()}), this value is null
+	 * Note: if cannot find position to fire at target ({@link RawEstimateAimResult#getAimedTarget()}), this value is null
 	 */
 	private Double gunTurnRightDirection;
 	/**
-	 * The target point when it get fired (get hit by bullet). It has different meaning from {@link RawEstimateAimResult#getTarget()}.
-	 * So it will be null if {@link RawEstimateAimResult#getTarget()} is null
+	 * The target point when it get fired (get hit by bullet). It has different meaning from {@link RawEstimateAimResult#getAimedTarget()}.
+	 * So it will be null if {@link RawEstimateAimResult#getAimedTarget()} is null
 	 */
 	private PredictedFirePoint firedTarget;
 	
