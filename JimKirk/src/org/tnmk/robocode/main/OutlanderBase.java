@@ -2,10 +2,9 @@ package org.tnmk.robocode.main;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.List;
 
-import org.tnmk.robocode.common.helper.Area;
-import org.tnmk.robocode.common.helper.BattleField;
 import org.tnmk.robocode.common.helper.FireByDistance;
 import org.tnmk.robocode.common.helper.MoveHelper;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
@@ -13,6 +12,9 @@ import org.tnmk.robocode.common.helper.WallSmoothHelper;
 import org.tnmk.robocode.common.math.LineSegment;
 import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.math.Point;
+import org.tnmk.robocode.common.model.Area;
+import org.tnmk.robocode.common.model.BaseRobotState;
+import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.common.predictor.self.PredictManager;
 import org.tnmk.robocode.common.predictor.self.model.FindingBestFirePointResult;
@@ -22,14 +24,15 @@ import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
 import robocode.AdvancedRobot;
 import robocode.Event;
 import robocode.HitByBulletEvent;
+import robocode.HitRobotEvent;
 
 /**
  * @author Khoi With AdvancedRobot, the shooting time is different from basic Robot class.
  * 
  *         Term: + Bearing: the angle (degree) from pointA to pointB (or vectorA to vectorB). It can be an absolute bearing (compare to North axis) or relative bearing (compare to vectorA)
  */
-public abstract class OutlanderBase extends AdvancedRobot {
-
+public abstract class OutlanderBase extends AdvancedRobot implements Serializable {
+	private static final long serialVersionUID = -5706564831794738218L;
 	private static final Color COLOR_PREDICTED_TARGET_AIMED = Color.MAGENTA;
 	private static final Color COLOR_PREDICTED_TARGET_HIT = Color.PINK;
 	private static final Color COLOR_CURRENT_TARGET = Color.WHITE;
@@ -53,19 +56,38 @@ public abstract class OutlanderBase extends AdvancedRobot {
 	public static final Color ROBOT_BULLET03_COLOR = new Color(250, 245, 90);
 	public static final Color ROBOT_BULLET02_COLOR = new Color(255, 211, 50);
 	public static final Color ROBOT_BULLET01_COLOR = new Color(255, 255, 210);
+	private static final int LINE_SIZE = 20;
 
+	// protected Cloner cloner;
 	protected BattleField battleField;
 	protected FireByDistance fireByDistance;
 	protected MoveHelper moveHelper;
 	protected PredictManager predictHelper;
-	protected PredictedAimAndFireResult predicted;
+	
+	protected int moveDirection = 1;
+	/**
+	 * @Deprecated replaced by aimingTarget
+	 */
+	@Deprecated
+	protected PredictedAimAndFireResult currentPredicted;
 	protected long paintedTime = -1;
 
 	private Config config = new Config();
-	
+
+	public OutlanderBase() {
+		super();
+		// cloner = new Cloner();
+		// We don't want it to clone Enum class, which will cause '==' operator doesn't work correctly. View more at http://stackoverflow.com/questions/665860/deep-clone-utility-recomendation (comment of Mostafa Zeinali)
+		// cloner.registerImmutable(RobotStatus.class, RobotAction.class);
+	}
+
 	public void preparePos(double x, double y) {
 		moveHelper.moveTo(x, y);
 		turnLeft(this.getHeading());// moveAngle = 0
+	}
+
+	public BaseRobotState getState() {
+		return RobotStateConverter.toRobotState(this);
 	}
 
 	public void init() {
@@ -93,7 +115,14 @@ public abstract class OutlanderBase extends AdvancedRobot {
 		}
 	}
 
-	public void paintPredict() {
+	public void paint(String... msgs) {
+		for (int line = 0; line < msgs.length; line++) {
+			paintText(msgs[line], 20, line);
+		}
+		paintedTime = getTime();
+	}
+
+	public void paintPredict(PredictedAimAndFireResult predicted) {
 		if (!getConfig().isPaintTargetPrediction())
 			return;
 
@@ -145,31 +174,29 @@ public abstract class OutlanderBase extends AdvancedRobot {
 		paintPoint(4, COLOR_CURRENT_TARGET, predicted.getBeginTarget().getPosition(), null);
 		paintPoint(4, COLOR_PREDICTED_TARGET_AIMED, predicted.getFirstAimEstimation().getAimedTarget().getPosition(), null);
 
-		if (predicted.getFireResult().getFindingBestPointResult().getBestPoint() != null) {
+		if (predicted.isFoundBestPoint()) {
 			paintPoint(5, COLOR_PREDICTED_TARGET_HIT, predicted.getAimResult().getFiredTarget(), "");
-			if (predicted.getBestFirePoint() != null) {
-				paintPoint(5, COLOR_PREDICTED_TARGET_HIT, predicted.getBestFirePoint(), "p-" + predicted.getBestFirePoint().getFirePower() + "_");
-			}
+			paintPoint(5, COLOR_PREDICTED_TARGET_HIT, predicted.getBestFirePoint(), "p-" + predicted.getBestFirePoint().getFirePower() + "_");
 		}
-		paintPredictInfo();
+		paintPredictInfo(predicted);
 		paintedTime = getTime();
 	}
 
-	/**
-	 * @Override
-	 */
-	public void setFire(double power) {
-		if (power > 2) {
-			setBulletColor(ROBOT_BULLET03_COLOR);
-		} else if (power > 1) {
-			setBulletColor(ROBOT_BULLET02_COLOR);
-		} else {
-			setBulletColor(ROBOT_BULLET01_COLOR);
-		}
-		super.setFire(power);
-	}
+	// /**
+	// * @Override
+	// */
+	// public void setFire(double power) {
+	// if (power > 2) {
+	// setBulletColor(ROBOT_BULLET03_COLOR);
+	// } else if (power > 1) {
+	// setBulletColor(ROBOT_BULLET02_COLOR);
+	// } else {
+	// setBulletColor(ROBOT_BULLET01_COLOR);
+	// }
+	// super.setFire(power);
+	// }
 
-	public void paintPredictInfo() {
+	public void paintPredictInfo(PredictedAimAndFireResult predicted) {
 		Graphics graphic = getGraphics();
 		graphic.setColor(Color.WHITE);
 		graphic.drawString("Target heading: " + predicted.getBeginTarget().getHeading(), 0, 10);
@@ -204,6 +231,12 @@ public abstract class OutlanderBase extends AdvancedRobot {
 		graphic.drawLine((int) point.x, (int) point.y - pointSize, (int) point.x, (int) point.y + pointSize);
 	}
 
+	public void paintText(String string, int x, int line) {
+		Graphics graphic = getGraphics();
+		graphic.setColor(Color.WHITE);
+		graphic.drawString(string, x, (line + 1) * LINE_SIZE);
+	}
+
 	/**
 	 * @param bearingFromRobotHeading
 	 *            this is the relative bearing from our robot's body heading to target.
@@ -224,29 +257,48 @@ public abstract class OutlanderBase extends AdvancedRobot {
 		setTurnGunRight(turnRightDegree);
 	}
 
+	protected void moveToOtherSideOfBattleField() {
+		double distance = moveHelper.turnToOtherSideOfBattleField();
+		setAhead(moveDirection * distance);
+    }
+	public void moveCloseToTarget(Point targetPoint) {
+		double distance = moveHelper.turnCloseToTarget(targetPoint);
+		setAhead(moveDirection * distance);
+	}
 	protected void moveAwayFromTarget(Event e, double bearing) {
 		setTurnLeft(90 - bearing);
+		setAhead(moveDirection * 300);
 	}
 
 	/**
 	 * We were hit! Turn perpendicular to the bullet, so our robot might avoid a future shot.
 	 */
+	@Override
 	public void onHitByBullet(HitByBulletEvent e) {
 		if (getConfig().isChangeDirectionWhenBulletHit()) {
 			moveAwayFromTarget(e, e.getBearing());
 		}
+		
 	}
-
+	@Override
+	public void onHitRobot(HitRobotEvent e) {
+		if (getConfig().isChangeDirectionWhenRobotHit()) {
+			moveDirection = - moveDirection;
+			setAhead(moveDirection * 300);//TODO must change direction.
+			setTurnRight(10);
+//			moveAwayFromTarget(e, e.getBearing());
+		}
+	}
 	protected boolean canFire() {
 		return getGunHeat() == 0;
 	}
 
 	public Config getConfig() {
-	    return config;
-    }
+		return config;
+	}
 
 	public void setConfig(Config config) {
-	    this.config = config;
-    }
+		this.config = config;
+	}
 
 }

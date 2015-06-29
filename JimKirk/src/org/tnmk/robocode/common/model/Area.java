@@ -1,4 +1,6 @@
-package org.tnmk.robocode.common.helper;
+package org.tnmk.robocode.common.model;
+
+import java.io.Serializable;
 
 import org.tnmk.robocode.common.math.LineSegment;
 import org.tnmk.robocode.common.math.Point;
@@ -6,7 +8,8 @@ import org.tnmk.robocode.common.math.Point;
 /**
  * @author Khoi This class is immutable, so it has only getter methods.
  */
-public class Area {
+public class Area implements Serializable {
+    private static final long serialVersionUID = -8637600309652832198L;
 	private Point bottomLeft;
 	private Point bottomRight;
 	private Point topRight;

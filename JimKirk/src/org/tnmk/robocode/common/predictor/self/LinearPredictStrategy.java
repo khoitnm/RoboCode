@@ -1,11 +1,13 @@
 package org.tnmk.robocode.common.predictor.self;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.tnmk.robocode.common.helper.GunHelper;
+import org.tnmk.robocode.common.helper.ListUtils;
 import org.tnmk.robocode.common.math.Circle;
 import org.tnmk.robocode.common.math.LineSegment;
 import org.tnmk.robocode.common.math.MathUtils;
@@ -30,6 +32,7 @@ public class LinearPredictStrategy extends BasePredictStrategy {
 
 	public LinearPredictStrategy(Robot robot) {
 		super(robot);
+		setPredictBulletColor(Color.YELLOW);
 	}
 
 	@Override
@@ -177,11 +180,7 @@ public class LinearPredictStrategy extends BasePredictStrategy {
 		}
 		// Short possiblePoints by distance
 		shortByDistance(possiblePoints, targetCurrentMoveLine);
-		if (possiblePoints.size() > FILTER_NEAERST_POINTS_COUNT) {
-			nearestPoints = possiblePoints.subList(0, FILTER_NEAERST_POINTS_COUNT);
-		} else {
-			nearestPoints.addAll(possiblePoints);
-		}
+		nearestPoints = ListUtils.firstElements(possiblePoints, FILTER_NEAERST_POINTS_COUNT);
 
 		result.setOutsideBattlePoints(outsideBattlePoints);
 		result.setTooFarPoints(tooFarPoints);

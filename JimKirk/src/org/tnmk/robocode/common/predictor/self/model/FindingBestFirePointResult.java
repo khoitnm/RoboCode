@@ -1,27 +1,27 @@
 package org.tnmk.robocode.common.predictor.self.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.tnmk.robocode.common.math.LineSegment;
 
-public class FindingBestFirePointResult {
+public class FindingBestFirePointResult implements Serializable {
+    private static final long serialVersionUID = -7193042179679613688L;
 	/**
-	 * This list is never null.
-	 * Sometimes, the field {@link #bestPoint} has value but this field is still empty because bestPoint was calculated without needing to calculate this field.
+	 * This list is never null. Sometimes, the field {@link #bestPoint} has value but this field is still empty because bestPoint was calculated without needing to calculate this field.
 	 */
 	private List<PredictedFirePoint> nearestPoints = new ArrayList<>();
 	private List<PredictedFirePoint> possiblePoints = new ArrayList<>();
 	private List<PredictedFirePoint> availablePoints = new ArrayList<>();
 	/**
-	 * This list is never null.
-	 * Sometimes, the field {@link #bestPoint} has value but this field is still empty because bestPoint was calculated without needing to calculate this field.
+	 * This list is never null. Sometimes, the field {@link #bestPoint} has value but this field is still empty because bestPoint was calculated without needing to calculate this field.
 	 */
 	private List<PredictedFirePoint> impossiblePoints = new ArrayList<>();
 	private List<PredictedFirePoint> tooFarPoints = new ArrayList<>();
 	private List<PredictedFirePoint> outsideBattlePoints = new ArrayList<>();
 	private List<PredictedFirePoint> impossibleAnglePoints = new ArrayList<>();
-	
+
 	private PredictedFirePoint bestPoint;
 	private LineSegment targetCurrentMoveLine;
 	private double targetCurrentMoveAngle;
@@ -29,15 +29,19 @@ public class FindingBestFirePointResult {
 	// SEPECIAL SET-GET
 	// ------------------------------------------------------------------------------------------
 	public void setImpossiblePoints(List<PredictedFirePoint> impossiblePoints) {
-		if (impossiblePoints == null)
+		if (impossiblePoints == null){
 			this.impossiblePoints = new ArrayList<>();
-		this.impossiblePoints = impossiblePoints;
+		}else{
+			this.impossiblePoints = impossiblePoints;
+		}
 	}
 
 	public void setNearestPoints(List<PredictedFirePoint> nearestPoints) {
-		if (nearestPoints == null)
+		if (nearestPoints == null){
 			this.nearestPoints = new ArrayList<>();
-		this.nearestPoints = nearestPoints;
+		}else{
+			this.nearestPoints = nearestPoints;
+		}
 	}
 
 	// SET-GET
@@ -75,43 +79,43 @@ public class FindingBestFirePointResult {
 	}
 
 	public List<PredictedFirePoint> getImpossibleAnglePoints() {
-	    return impossibleAnglePoints;
-    }
+		return impossibleAnglePoints;
+	}
 
 	public void setImpossibleAnglePoints(List<PredictedFirePoint> impossibleAnglePoints) {
-	    this.impossibleAnglePoints = impossibleAnglePoints;
-    }
+		this.impossibleAnglePoints = impossibleAnglePoints;
+	}
 
 	public List<PredictedFirePoint> getTooFarPoints() {
-	    return tooFarPoints;
-    }
+		return tooFarPoints;
+	}
 
 	public void setTooFarPoints(List<PredictedFirePoint> tooFarPoints) {
-	    this.tooFarPoints = tooFarPoints;
-    }
+		this.tooFarPoints = tooFarPoints;
+	}
 
 	public List<PredictedFirePoint> getOutsideBattlePoints() {
-	    return outsideBattlePoints;
-    }
+		return outsideBattlePoints;
+	}
 
 	public void setOutsideBattlePoints(List<PredictedFirePoint> outsideBattlePoints) {
-	    this.outsideBattlePoints = outsideBattlePoints;
-    }
+		this.outsideBattlePoints = outsideBattlePoints;
+	}
 
 	public List<PredictedFirePoint> getPossiblePoints() {
-	    return possiblePoints;
-    }
+		return possiblePoints;
+	}
 
 	public void setPossiblePoints(List<PredictedFirePoint> possiblePoints) {
-	    this.possiblePoints = possiblePoints;
-    }
+		this.possiblePoints = possiblePoints;
+	}
 
 	public List<PredictedFirePoint> getAvailablePoints() {
-	    return availablePoints;
-    }
+		return availablePoints;
+	}
 
 	public void setAvailablePoints(List<PredictedFirePoint> availablePoints) {
-	    this.availablePoints = availablePoints;
-    }
+		this.availablePoints = availablePoints;
+	}
 
 }

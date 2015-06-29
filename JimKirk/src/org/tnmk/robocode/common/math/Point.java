@@ -1,8 +1,12 @@
 package org.tnmk.robocode.common.math;
 
+import java.io.Serializable;
+
+import robocode.util.Utils;
 import math.geom2d.Point2D;
 
-public class Point {
+public class Point implements Serializable {
+    private static final long serialVersionUID = 669039862668704511L;
 	public double x;
 	public double y;
 
@@ -19,6 +23,10 @@ public class Point {
 		this.y = y;
 	}
 
+	public boolean equals(Point pB){
+		return (Utils.isNear(x, pB.x) &&  Utils.isNear(y, pB.y));
+	}
+	
 	public void set(double x, double y) {
 		this.x = x;
 		this.y = y;

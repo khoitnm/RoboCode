@@ -1,15 +1,21 @@
 package org.tnmk.robocode.common.predictor.self.model;
 
-import org.tnmk.robocode.common.model.FullRobotState;
+import java.io.Serializable;
 
-public class PredictedAimAndFireResult {
+import org.tnmk.robocode.common.model.BaseRobotState;
+import org.tnmk.robocode.common.model.FullRobotState;
+import org.tnmk.robocode.common.predictor.self.PredictStrategy;
+
+public class PredictedAimAndFireResult implements Serializable {
+	private static final long serialVersionUID = -5769191279934004224L;
+	private PredictStrategy predictStrategy;
 	/**
 	 * The time when prediction begin.
 	 */
-	private long time;
+	private long beginTime;
 
 	private FullRobotState beginSource;
-	private FullRobotState beginTarget;
+	private BaseRobotState beginTarget;
 
 	private RawEstimateAimResult firstAimEstimation = new RawEstimateAimResult();
 	private final PredictedAimResult aimResult = new PredictedAimResult();
@@ -22,36 +28,44 @@ public class PredictedAimAndFireResult {
 
 	// CONVENIENT SET-GET
 	// ===========================================================================
+	/**
+	 * Find best target point to shot or not
+	 * 
+	 * @return
+	 */
 	public boolean isFoundBestPoint() {
 		return getBestFirePoint() != null;
 	}
 
 	public PredictedFirePoint getBestFirePoint() {
-		if (getFireResult() == null || getFireResult().getFindingBestPointResult() == null)
+		if (getFireResult() == null || getFireResult().getFindingBestPointResult() == null) {
 			return null;
+		}
 		return getFireResult().getFindingBestPointResult().getBestPoint();
 	}
 
 	public long getAimedTime() {
-		return time + aimResult.getAimSteps();
+		return beginTime + aimResult.getAimSteps();
 	}
 
 	/**
-	 * this is the aimed and fired time
+	 * this is the aimed and fired time (the time point when bullet hit target)
 	 * 
 	 * @return
 	 */
-	public Long getTotalTime() {
+	public Long getFiredTime() {
 		Integer totalSteps = getTotalSteps();
-		if (totalSteps == null)
+		if (totalSteps == null) {
 			return null;
-		return time + totalSteps;
+		}
+		return beginTime + totalSteps;
 	}
 
 	public Integer getTotalSteps() {
 		PredictedFirePoint bestFirePoint = getBestFirePoint();
-		if (bestFirePoint == null)
+		if (bestFirePoint == null) {
 			return null;
+		}
 		return aimResult.getAimSteps() + bestFirePoint.getFireSteps();
 	}
 
@@ -61,12 +75,12 @@ public class PredictedAimAndFireResult {
 		return aimResult;
 	}
 
-	public long getTime() {
-		return time;
+	public long getBeginTime() {
+		return beginTime;
 	}
 
-	public void setTime(long time) {
-		this.time = time;
+	public void setBeginTime(long time) {
+		this.beginTime = time;
 	}
 
 	public boolean isWaitForBetterAim() {
@@ -77,11 +91,11 @@ public class PredictedAimAndFireResult {
 		this.waitForBetterAim = waitForBetterAim;
 	}
 
-	public FullRobotState getBeginTarget() {
+	public BaseRobotState getBeginTarget() {
 		return beginTarget;
 	}
 
-	public void setBeginTarget(FullRobotState currentTarget) {
+	public void setBeginTarget(BaseRobotState currentTarget) {
 		this.beginTarget = currentTarget;
 	}
 
@@ -104,4 +118,13 @@ public class PredictedAimAndFireResult {
 	public void setFirstAimEstimation(RawEstimateAimResult firstAimEstimation) {
 		this.firstAimEstimation = firstAimEstimation;
 	}
+
+	public PredictStrategy getPredictStrategy() {
+		return predictStrategy;
+	}
+
+	public void setPredictStrategy(PredictStrategy predictStrategy) {
+		this.predictStrategy = predictStrategy;
+	}
+
 }

@@ -1,8 +1,10 @@
 package org.tnmk.robocode.common.predictor.self;
 
+import java.awt.Color;
+
 import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.robocode.common.math.MathUtils;
-import org.tnmk.robocode.common.model.FullRobotState;
+import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.predictor.self.model.FirePredictRequest;
 import org.tnmk.robocode.common.predictor.self.model.PredictStateResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
@@ -19,21 +21,23 @@ public class FacingPredictStrategy extends BasePredictStrategy {
 
 	public FacingPredictStrategy(Robot robot) {
 		super(robot);
+		setPredictBulletColor(Color.GREEN);
 	}
 
 	@Override
 	public PredictedAimAndFireResult predictBestFirePoint(FirePredictRequest firePredictRequest) {
 		PredictedAimAndFireResult result = initResult(firePredictRequest);
 		PredictedFirePoint bestFirePoint = predictPossibleFirePointsWithSmallDifferentAngle(
-				firePredictRequest.getMaxPower(), firePredictRequest.getBeginTarget(), 
-				firePredictRequest.getAimEstimateResult().getAimedTarget(), 
-				firePredictRequest.getAimEstimateResult().getAimedSource());
+				firePredictRequest.getMaxPower(), firePredictRequest.getBeginTarget(),
+				firePredictRequest.getAimEstimateResult().getAimedSource(),
+				firePredictRequest.getAimEstimateResult().getAimedTarget() 
+				);
 
 		setPredictAimResult(firePredictRequest, bestFirePoint, result);
 		return result;
 	}
 
-	private PredictedFirePoint predictPossibleFirePointsWithSmallDifferentAngle(int maxPower, FullRobotState targetState, PredictStateResult predictedAimedSource, PredictStateResult predictedAimedTarget) {
+	private PredictedFirePoint predictPossibleFirePointsWithSmallDifferentAngle(int maxPower, BaseRobotState targetState, PredictStateResult predictedAimedSource, PredictStateResult predictedAimedTarget) {
 		double sourceAndTargetDistance = MathUtils.distance(predictedAimedSource.getPosition(), predictedAimedTarget.getPosition());
 		double targetMoveAngle = predictedAimedTarget.getMoveAngle();
 		double aimAngle = MathUtils.absoluteBearing(predictedAimedSource.getX(), predictedAimedSource.getY(), predictedAimedTarget.getX(), predictedAimedTarget.getY());

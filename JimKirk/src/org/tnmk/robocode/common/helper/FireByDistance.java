@@ -1,11 +1,14 @@
 package org.tnmk.robocode.common.helper;
 
+import java.io.Serializable;
+
 import org.tnmk.robocode.common.constant.Distance;
 
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
 
-public class FireByDistance{
+public class FireByDistance implements Serializable{
+    private static final long serialVersionUID = -1506827075368013673L;
 	private Robot robot;
 	public FireByDistance(Robot robot){
 		this.robot = robot;

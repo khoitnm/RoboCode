@@ -77,13 +77,13 @@ public class OutlanderStandAim extends OutlanderBase {
 		}
 	}
 	private void fireAsPredicted(){
-		if (predicted == null){
+		if (currentPredicted == null){
 			return;
 		}
-		if (getTime() == predicted.getAimedTime() && !predicted.isWaitForBetterAim()) {
+		if (getTime() == currentPredicted.getAimedTime() && !currentPredicted.isWaitForBetterAim()) {
 			String msg = String.format("%s - THIS FIRE(%.2f, %.2f)", getTime(), getX(), getY());
 			System.out.println(msg);
-			setFire(predicted.getBestFirePoint().getFirePower());
+			setFire(currentPredicted.getBestFirePoint().getFirePower());
 			
 			isFired = true;
 		}
@@ -91,7 +91,7 @@ public class OutlanderStandAim extends OutlanderBase {
 
 	public void onStatus(StatusEvent e) {
 		long time = getTime();
-		if (predicted != null && predicted.getAimedTime() == time) {
+		if (currentPredicted != null && currentPredicted.getAimedTime() == time) {
 			FullRobotState robotState = RobotStateConverter.toRobotState(this);
 			String msg = String.format("%s - THIS(%.2f, %.2f)", time, robotState.getX(), robotState.getY());
 			System.out.println(msg);
@@ -103,24 +103,24 @@ public class OutlanderStandAim extends OutlanderBase {
 		if (!finishPrepared) {
 			return;
 		}
-		FullRobotState target = RobotStateConverter.toRobotState(this, targetEvent);
+		FullRobotState target = RobotStateConverter.toTargetState(this, targetEvent);
 		String s = String.format("\t %s Target:%s", getTime(), target.getPosition());
 		System.out.println(s);
 		if (predictTagetHitTimes.contains(getTime()) || predictTagetAimedTimes.contains(getTime())){
-			FullRobotState targetState = RobotStateConverter.toRobotState(this, targetEvent);
+			FullRobotState targetState = RobotStateConverter.toTargetState(this, targetEvent);
 			String msg = String.format("%s - TARGET(%s, %s)", getTime(), targetState.getX(), targetState.getY());
 			System.out.println(msg);
 		}
-		if (isFired || predicted == null || getTime() > predicted.getAimedTime()) {
-			predicted = aimTarget(targetEvent);
-			this.paintPredict();
-			if (predicted.getBestFirePoint() != null){
-				predictTagetHitTimes.add(predicted.getTotalTime());
+		if (isFired || currentPredicted == null || getTime() > currentPredicted.getAimedTime()) {
+			currentPredicted = aimTarget(targetEvent);
+			this.paintPredict(currentPredicted);
+			if (currentPredicted.getBestFirePoint() != null){
+				predictTagetHitTimes.add(currentPredicted.getFiredTime());
 			}else{
-				predicted.setWaitForBetterAim(true);
+				currentPredicted.setWaitForBetterAim(true);
 			}
-			predictTagetAimedTimes.add(predicted.getAimedTime());
-			if (predicted.getBestFirePoint() == null || GunHelper.isTooFarFromTarget(predicted)){
+			predictTagetAimedTimes.add(currentPredicted.getAimedTime());
+			if (currentPredicted.getBestFirePoint() == null || GunHelper.isTooFarFromTarget(currentPredicted)){
 //				moveHelper.moveCloseToTarget(predicted.getCurrentTarget().getPoint());
 			}
 		}
@@ -129,7 +129,7 @@ public class OutlanderStandAim extends OutlanderBase {
 
 	public PredictedAimAndFireResult aimTarget(ScannedRobotEvent targetEvent) {
 		FullRobotState thisState = RobotStateConverter.toRobotState(this);
-		FullRobotState targetState = RobotStateConverter.toRobotState(this, targetEvent);
+		FullRobotState targetState = RobotStateConverter.toTargetState(this, targetEvent);
 		int maxPower = GunHelper.reckonMaxNecessaryPower(targetEvent.getEnergy());
 		PredictedAimAndFireResult predicted = predictHelper.predictBestStepsToAimAndFire(getTime(), this.getGunCoolingRate(), getGunHeat(), maxPower, getGunHeading(), thisState, targetState);
 		
@@ -144,7 +144,7 @@ public class OutlanderStandAim extends OutlanderBase {
 					getTime(), getX(), getY(), targetState.getPosition(), 
 					predicted.getAimedTime(), predictedAiming.getSource().getPosition(),
 					predicted.getAimedTime(), predictedAiming.getFiredTarget(),
-					predicted.getTotalTime(), predictedFirePoint);
+					predicted.getFiredTime(), predictedFirePoint);
 			System.out.println(msg);
 		
 			double turnRightAngle = predicted.getAimResult().getGunTurnRightDirection();

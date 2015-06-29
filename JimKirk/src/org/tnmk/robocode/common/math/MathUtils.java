@@ -48,7 +48,9 @@ public final class MathUtils {
 		Collection<Point2D> intersections = cir2DA.intersections(cir2DB);
 		return MathConverter.toPoints(intersections);
 	}
-
+	public static double calculateTurnRightDirectionToTarget(double currentAbsMoveAngle, Point pA, Point pB) {
+		return calculateTurnRightDirectionToTarget(currentAbsMoveAngle, pA.getX(), pA.getY(), pB.getX(), pB.getY());
+	}
 	public static double calculateTurnRightDirectionToTarget(double currentAbsMoveAngle, double currentX, double currentY, double targetX, double targetY) {
 		double absBearingToTarget = MathUtils.absoluteBearing(currentX, currentY, targetX, targetY);
 		double relativeBearing = absBearingToTarget - currentAbsMoveAngle;

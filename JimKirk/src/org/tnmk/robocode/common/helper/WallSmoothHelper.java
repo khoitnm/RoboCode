@@ -3,6 +3,7 @@ package org.tnmk.robocode.common.helper;
 import org.tnmk.robocode.common.math.LineSegment;
 import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.math.Point;
+import org.tnmk.robocode.common.model.Area;
 import org.tnmk.robocode.common.model.BaseRobotState;
 
 import robocode.Rules;

@@ -1,6 +1,10 @@
-package org.tnmk.robocode.common.helper;
+package org.tnmk.robocode.common.model;
+
+import org.tnmk.robocode.common.math.Point;
 
 public class BattleField extends Area {
+    private static final long serialVersionUID = 5003534200184843218L;
+
 	/**
 	 * There is an area around the battlefield which you can get danger from
 	 * sentry (guard) robots.
@@ -29,4 +33,7 @@ public class BattleField extends Area {
 	public int getSentryBorderSize() {
 		return sentryBorderSize;
 	}
+	public Point getCenter() {
+	   return new Point(getWidth()/2, getHeight()/2);
+    }
 }

@@ -1,9 +1,13 @@
 package org.tnmk.robocode.common.helper;
 
+import java.io.Serializable;
+
 import org.tnmk.robocode.common.math.LineSegment;
 import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.math.Point;
+import org.tnmk.robocode.common.model.Area;
 import org.tnmk.robocode.common.model.BaseRobotState;
+import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.main.OutlanderBase;
 
@@ -12,12 +16,12 @@ import robocode.Robot;
 import robocode.Rules;
 import robocode.ScannedRobotEvent;
 
-public class MoveHelper {
+public class MoveHelper implements Serializable{
 	public static final double ROBOT_SIZE = 50;
 	public static final double MOVE_CLOSE_TO_TARGET_MIN_ANGLE = 20;
 	public static final double MIN_TURN_RATE = Rules.getTurnRate(Rules.MAX_VELOCITY);
 	public static final double MAX_DIFFERENT_OF_NEAR_ANGLES = 2; 
-	public static final double MIN_ROBOT_DISTANCE = 200;
+	public static final double MAX_DISTANCE_TO_TARGET = 100;
 	private BattleField battleField;
 	
 	public enum BattlePosition {
@@ -100,10 +104,10 @@ public class MoveHelper {
 		robot.ahead(MathUtils.distance(sourceX, sourceY, targetX, targetY));
 	}
 
-	public void moveCloseToTarget(Point targetPoint) {
+	public double turnCloseToTarget(Point targetPoint) {
 		FullRobotState thisState = RobotStateConverter.toRobotState(robot);
 		double distance = MathUtils.distance(thisState.getPosition(), targetPoint);
-		if (distance < MIN_ROBOT_DISTANCE)return;//Don't need to try harder to get more closer to target.
+		if (distance < MAX_DISTANCE_TO_TARGET) return distance;//Don't need to try harder to get more closer to target.
 		double turnRightDirection = MathUtils.calculateTurnRightDirectionToTarget(thisState.getMoveAngle(), thisState.getX(), thisState.getY(), targetPoint.getX(), targetPoint.getY());
 		if (turnRightDirection > 0) {
 			turnRightDirection -= MOVE_CLOSE_TO_TARGET_MIN_ANGLE;
@@ -111,6 +115,7 @@ public class MoveHelper {
 			turnRightDirection += MOVE_CLOSE_TO_TARGET_MIN_ANGLE;
 		}
 		robot.setTurnRight(turnRightDirection);
+		return distance*2;
 	}
 
 	public void avoidWallIfNecessary(){
@@ -190,4 +195,11 @@ public class MoveHelper {
         }
 		
 	}
+	public double turnToOtherSideOfBattleField() {
+		Point center = this.battleField.getCenter();
+		double otherSideX = center.getX() + (center.getX() - robot.getX());
+		double otherSideY = center.getY() + (center.getY() - robot.getY());
+	    moveTo(otherSideX, otherSideY);
+	    return battleField.getWidth()+battleField.getHeight();
+    }
 }

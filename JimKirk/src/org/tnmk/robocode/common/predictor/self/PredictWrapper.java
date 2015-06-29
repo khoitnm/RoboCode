@@ -1,7 +1,7 @@
 package org.tnmk.robocode.common.predictor.self;
 
-import org.tnmk.robocode.common.helper.BattleField;
 import org.tnmk.robocode.common.model.BaseRobotState;
+import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.common.predictor.albert.MoveSim;
 import org.tnmk.robocode.common.predictor.albert.MoveSimStat;

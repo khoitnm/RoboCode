@@ -8,9 +8,10 @@ import robocode.ScannedRobotEvent;
 
 
 public class RobotStateConverter {
-	public static FullRobotState toRobotState(AdvancedRobot robot, ScannedRobotEvent scannedRobotEvent){
+	public static FullRobotState toTargetState(AdvancedRobot robot, ScannedRobotEvent scannedRobotEvent){
 		Point targetPos = MoveHelper.reckonTargetPosition(robot, scannedRobotEvent);
 		FullRobotState rs = new FullRobotState();
+		rs.setName(scannedRobotEvent.getName());
 		rs.setDistanceRemaining(FullRobotState.DISTANCE_REMAINING_UNKNOWN);
 		rs.setTurnRemaining(0);
 		rs.setHeading(scannedRobotEvent.getHeading());
@@ -23,6 +24,7 @@ public class RobotStateConverter {
 	}
 	public static FullRobotState toRobotState(AdvancedRobot robot){
 		FullRobotState rs = new FullRobotState();
+		rs.setName(robot.getName());
 		rs.setDistanceRemaining(robot.getDistanceRemaining());
 		rs.setHeading(robot.getHeading());
 		rs.setTurnRemaining(robot.getTurnRemaining());

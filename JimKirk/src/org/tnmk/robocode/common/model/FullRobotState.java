@@ -4,6 +4,7 @@ import robocode.Rules;
 
 
 public class FullRobotState extends BaseRobotState{
+    private static final long serialVersionUID = -9122595279962389587L;
 	public static final double DISTANCE_REMAINING_UNKNOWN = Double.MAX_VALUE;
 	public static final double TURN_REMAINING_UNKOWN = Double.MAX_VALUE;
 	public static final double MAX_VELOCITY_UNKOWN = 0;

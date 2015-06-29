@@ -1,5 +1,6 @@
 package org.tnmk.robocode.common.predictor.self.model;
 
+import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.FullRobotState;
 /**
  * This class contain all information of predicted aimed target.
@@ -12,19 +13,19 @@ public class FirePredictRequest {
 	/**
 	 * The time when prediction begin.
 	 */
-	private long time;
+	private long beginTime;
 	private double beginSourceGunHeading;
 	private FullRobotState beginSource;
-	private FullRobotState beginTarget;
+	private BaseRobotState beginTarget;
 
 	private RawEstimateAimResult aimEstimateResult;
 
-	public long getTime() {
-		return time;
+	public long getBeginTime() {
+		return beginTime;
 	}
 
-	public void setTime(long time) {
-		this.time = time;
+	public void setBeginTime(long time) {
+		this.beginTime = time;
 	}
 
 	public FullRobotState getBeginSource() {
@@ -35,11 +36,11 @@ public class FirePredictRequest {
 		this.beginSource = beginSource;
 	}
 
-	public FullRobotState getBeginTarget() {
+	public BaseRobotState getBeginTarget() {
 		return beginTarget;
 	}
 
-	public void setBeginTarget(FullRobotState beginTarget) {
+	public void setBeginTarget(BaseRobotState beginTarget) {
 		this.beginTarget = beginTarget;
 	}
 

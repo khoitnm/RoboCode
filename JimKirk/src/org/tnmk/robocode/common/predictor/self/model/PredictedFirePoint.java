@@ -1,14 +1,15 @@
 package org.tnmk.robocode.common.predictor.self.model;
 
 import org.tnmk.robocode.common.math.Point;
+import org.tnmk.robocode.common.predictor.self.PredictStrategy;
 
 /**
  * @author Khoi The point where bullet hit target
  */
 public class PredictedFirePoint extends Point {
+	private static final long serialVersionUID = -7797298106617128389L;
 	/**
-	 * This is the distance between this point to the target move line. It's not the distance between source position and target position.
-	 * Sometimes we don't need to calculate this value to predictFiredPoint.
+	 * This is the distance between this point to the target move line. It's not the distance between source position and target position. Sometimes we don't need to calculate this value to predictFiredPoint.
 	 */
 	private Double distanceToTargetMove = null;
 	/**
@@ -30,15 +31,14 @@ public class PredictedFirePoint extends Point {
 	}
 
 	public void setFirePower(double firePower) {
-		this.firePower = (int)Math.round(firePower);
+		this.firePower = (int) Math.round(firePower);
 	}
 
 	public Double getDistanceToTargetMove() {
-        return distanceToTargetMove;
-    }
+		return distanceToTargetMove;
+	}
 
 	public void setDistanceToTargetMove(Double distanceToTargetMove) {
-        this.distanceToTargetMove = distanceToTargetMove;
-    }
-
+		this.distanceToTargetMove = distanceToTargetMove;
+	}
 }
