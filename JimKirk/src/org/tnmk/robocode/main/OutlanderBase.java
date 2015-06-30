@@ -280,15 +280,7 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 		}
 		
 	}
-	@Override
-	public void onHitRobot(HitRobotEvent e) {
-		if (getConfig().isChangeDirectionWhenRobotHit()) {
-			moveDirection = - moveDirection;
-			setAhead(moveDirection * 300);//TODO must change direction.
-			setTurnRight(10);
-//			moveAwayFromTarget(e, e.getBearing());
-		}
-	}
+
 	protected boolean canFire() {
 		return getGunHeat() == 0;
 	}

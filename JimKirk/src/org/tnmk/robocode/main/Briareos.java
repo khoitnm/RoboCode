@@ -4,7 +4,8 @@ import java.awt.Color;
 import java.util.List;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.tnmk.robocode.common.constant.RobotStatus;
+import org.tnmk.robocode.common.constant.FireStatus;
+import org.tnmk.robocode.common.constant.MoveStatus;
 import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
 import org.tnmk.robocode.common.math.MathUtils;
@@ -16,6 +17,7 @@ import org.tnmk.robocode.common.predictor.self.LinearPredictStrategy;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
 import org.tnmk.robocode.common.predictor.self.model.RawEstimateAimResult;
 
+import robocode.HitRobotEvent;
 import robocode.ScannedRobotEvent;
 
 /**
@@ -38,7 +40,9 @@ public class Briareos extends OutlanderBase {
 		super();
 	}
 
-	private RobotStatus currentStatus = RobotStatus.STAND_STILL;
+	private FireStatus currentFireStatus = FireStatus.STAND_STILL;
+	private MoveStatus currentMoveStatus = MoveStatus.STAND_STILL;
+	
 	// private boolean isFired = false;
 	//
 	// int turnDirection = 1;
@@ -53,8 +57,11 @@ public class Briareos extends OutlanderBase {
 	public void run() {
 		super.init();
 
+//		preparePos(500, 500);
+//		preparePos(200, 200);
+		//Standstill (0, 200), (200, 200)
 		// ahead(5);
-		// preparePos(battleField.getWidth()/2, battleField.getHeight() - 100);
+//		 preparePos(battleField.getWidth()/2, battleField.getHeight() - 100);
 		//
 		// turnLeft(70);
 		// setAhead(100000);
@@ -66,10 +73,11 @@ public class Briareos extends OutlanderBase {
 			if (getTime() >= super.paintedTime && getTime() <= paintedTime) {
 				System.out.println("Debug paint");
 			}
-
+			System.out.println("Normal "+getTime());
 			scanRadarAround();
-
-			if (isStandStill()) {
+			if (isHitRobot()){
+				moveAwayFromTarget(e, bearing);
+			}else if (isStandStill()) {
 				moveToNearestTarget();
 			}
 			if (isFinishAim()) {
@@ -106,7 +114,7 @@ public class Briareos extends OutlanderBase {
 			setBulletColor(bulletColor);
 			setFire(predicted.getBestFirePoint().getFirePower());
 
-			currentStatus = RobotStatus.STARTED_FIRE;
+			currentFireStatus = FireStatus.STARTED_FIRE;
 		}
 	}
 
@@ -213,32 +221,32 @@ public class Briareos extends OutlanderBase {
 			gunTurnRightDirection = target.getPredicted().getFirstAimEstimation().getGunTurnRightDirection();
 		}
 		setTurnGunRight(gunTurnRightDirection);
-		currentStatus = RobotStatus.STARTED_AIM;
+		currentFireStatus = FireStatus.STARTED_AIM;
 	}
 
 	/**
 	 * @return aiming target
 	 */
 	protected boolean isAiming() {
-		return currentStatus == RobotStatus.STARTED_AIM;
+		return currentFireStatus == FireStatus.STARTED_AIM;
 	}
 
 	protected boolean isFinishAim() {
 		if (getGunTurnRemaining() == 0) {
-			currentStatus = RobotStatus.AIMED;
+			currentFireStatus = FireStatus.AIMED;
 		}
-		return currentStatus.getNumValue() >= RobotStatus.AIMED.getNumValue();
+		return currentFireStatus.getNumValue() >= FireStatus.AIMED.getNumValue();
 	}
 
 	protected boolean isStartedFire() {
-		return currentStatus.getNumValue() >= RobotStatus.STARTED_FIRE.getNumValue();
+		return currentFireStatus.getNumValue() >= FireStatus.STARTED_FIRE.getNumValue();
 	}
 
 	protected boolean isStandStill() {
 		if (getDistanceRemaining() == 0 || getVelocity() == 0) {
-			currentStatus = RobotStatus.STAND_STILL;
+			currentMoveStatus = MoveStatus.STAND_STILL;
 		}
-		return currentStatus.getNumValue() >= RobotStatus.STAND_STILL.getNumValue();
+		return currentMoveStatus.getNumValue() <= MoveStatus.STAND_STILL.getNumValue();
 	}
 
 	protected Target updateStateToCorrespondingTarget(BaseRobotState targetState) {
@@ -292,7 +300,11 @@ public class Briareos extends OutlanderBase {
 		// }
 		// }
 	}
-
+	@Override
+	public void onHitRobot(HitRobotEvent e) {
+		System.out.println("Hit Robot at "+getTime());
+		currentMoveStatus = MoveStatus.HIT_ROBOT;
+	}
 	private void printNewPredict(PredictedAimAndFireResult newPredicted) {
 		if (!newPredicted.getPredictStrategy().getClass().equals(LinearPredictStrategy.class)){
 			System.out.println("Debug predict not linear");

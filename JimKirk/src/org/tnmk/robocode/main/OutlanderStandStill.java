@@ -27,7 +27,8 @@ public class OutlanderStandStill extends OutlanderBase {
 		super.setConfig(Config.createConfigStandStillNoFire());
 		
 		// ahead(5);
-		super.preparePos(this.battleField.getWidth() - 300, 100);
+		super.preparePos(100, 200);
+		super.preparePos(0, 100);
 		
 
 		while (true) {
