@@ -1,9 +1,11 @@
 package org.tnmk.robocode.common.helper;
 
 import org.tnmk.robocode.common.math.Point;
+import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.FullRobotState;
 
 import robocode.AdvancedRobot;
+import robocode.HitRobotEvent;
 import robocode.ScannedRobotEvent;
 
 
@@ -22,6 +24,20 @@ public class RobotStateConverter {
 		rs.setY(targetPos.y);
 		return rs;
 	}
+	public static BaseRobotState toTargetState(AdvancedRobot robot, HitRobotEvent scannedRobotEvent) {
+		Point targetPos = MoveHelper.reckonTargetPosition(robot, scannedRobotEvent);
+		FullRobotState rs = new FullRobotState();
+		rs.setName(scannedRobotEvent.getName());
+		rs.setDistanceRemaining(FullRobotState.DISTANCE_REMAINING_UNKNOWN);
+		rs.setTurnRemaining(0);
+		rs.setHeading(0);
+		rs.setVelocity(0);
+		rs.setMaxVelocity(rs.getVelocity());
+		rs.setMaxTurnRate(0);
+		rs.setX(targetPos.x);
+		rs.setY(targetPos.y);
+		return rs;
+    }
 	public static FullRobotState toRobotState(AdvancedRobot robot){
 		FullRobotState rs = new FullRobotState();
 		rs.setName(robot.getName());
@@ -33,4 +49,5 @@ public class RobotStateConverter {
 		rs.setY(robot.getY());
 		return rs;
 	}
+	
 }

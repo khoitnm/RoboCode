@@ -60,7 +60,7 @@ public class OutlanderStraight extends OutlanderBase {
 	}
     
     @Override
-	protected void moveAwayFromTarget(Event e, double bearing) {
+	protected void setMoveAwayFromTarget(double bearing) {
 //		setTurnLeft(90 - bearing);
 	}
 }

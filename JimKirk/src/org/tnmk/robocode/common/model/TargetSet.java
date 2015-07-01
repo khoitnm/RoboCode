@@ -11,7 +11,7 @@ import java.util.Set;
  * 
  * @param <E>
  */
-public class TargetSet<E extends Target> extends HashMap<String, E>{
+public class TargetSet<E extends PredictedTarget> extends HashMap<String, E>{
     private static final long serialVersionUID = 649185821597070216L;
 
 	public List<E> list() {
@@ -22,8 +22,14 @@ public class TargetSet<E extends Target> extends HashMap<String, E>{
 		}
 		return result;
 	}
-
+	public int size(){
+		return this.entrySet().size();
+	}
 	public void set(E e){
 		super.put(e.getState().getName(), e);
 	}
+
+	public boolean containsRobot(String name) {
+	   return get(name) != null;
+    }
 }

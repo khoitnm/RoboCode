@@ -3,24 +3,23 @@ package org.tnmk.robocode.main;
 import java.awt.Color;
 import java.util.List;
 
-import org.apache.commons.lang3.SerializationUtils;
 import org.tnmk.robocode.common.constant.FireStatus;
-import org.tnmk.robocode.common.constant.MoveStatus;
 import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
 import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.FullRobotState;
-import org.tnmk.robocode.common.model.Target;
+import org.tnmk.robocode.common.model.PredictedTarget;
 import org.tnmk.robocode.common.model.TargetSet;
 import org.tnmk.robocode.common.predictor.self.LinearPredictStrategy;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
-import org.tnmk.robocode.common.predictor.self.model.RawEstimateAimResult;
 
 import robocode.HitRobotEvent;
 import robocode.ScannedRobotEvent;
 
 /**
+ * TODO error because of there are some tasks running in many steps, so the code doesn't run into run() method in those steps, it won't can avoidWall in those steps.
+ * 
  * Briareos Hecatonchires: an character in Appleseed anime movie. He's very similar to Outlander (from Outlands soundtrack in Tron Legacy movie)
  * 
  * @author Khoi With AdvancedRobot, the shooting time is different from basic Robot class.
@@ -28,6 +27,7 @@ import robocode.ScannedRobotEvent;
  *         Term: + Bearing: the angle (degree) from pointA to pointB (or vectorA to vectorB). It can be an absolute bearing (compare to North axis) or relative bearing (compare to vectorA)
  */
 public class Briareos extends OutlanderBase {
+	private static final long serialVersionUID = -3795784962177096082L;
 
 	public static double MOVE_DISTANCE = 30200.54;
 	public static double TURN = 0;
@@ -41,27 +41,26 @@ public class Briareos extends OutlanderBase {
 	}
 
 	private FireStatus currentFireStatus = FireStatus.STAND_STILL;
-	private MoveStatus currentMoveStatus = MoveStatus.STAND_STILL;
-	
+
 	// private boolean isFired = false;
 	//
 	// int turnDirection = 1;
 	// int headDirection = 1;
 
-	private TargetSet<Target> targets = new TargetSet<>();
+	private TargetSet<PredictedTarget> aliveTargets = new TargetSet<>();
 	/**
 	 * Note: this target may have bestFirePoint or not, but we always can aim to it.
 	 */
-	private Target aimingTarget = null;
+	private PredictedTarget aimingTarget = null;
 
 	public void run() {
 		super.init();
 
-//		preparePos(500, 500);
-//		preparePos(200, 200);
-		//Standstill (0, 200), (200, 200)
+		// preparePos(500, 500);
+		// preparePos(200, 200);
+		// Standstill (0, 200), (200, 200)
 		// ahead(5);
-//		 preparePos(battleField.getWidth()/2, battleField.getHeight() - 100);
+		// preparePos(battleField.getWidth()/2, battleField.getHeight() - 100);
 		//
 		// turnLeft(70);
 		// setAhead(100000);
@@ -70,15 +69,23 @@ public class Briareos extends OutlanderBase {
 		System.out.println("FINISH PREPARING");
 		finishPrepared = true;
 		while (true) {
-			if (getTime() >= super.paintedTime && getTime() <= paintedTime) {
-				System.out.println("Debug paint");
+			long begin = System.currentTimeMillis();
+			printStatus("Norm");
+			
+			if (isStandStill() && (getX() > battleField.getWidth() - 20 || getX() < 20 || getY() < 20 || getY() > battleField.getHeight() - 20)) {
+				String s = "Debug hit wall";
 			}
-			System.out.println("Normal "+getTime());
-			scanRadarAround();
-			if (isHitRobot()){
-				moveAwayFromTarget(e, bearing);
-			}else if (isStandStill()) {
-				moveToNearestTarget();
+			if (getTime() >= super.paintedTime && getTime() <= paintedTime) {
+				// String msg = "Debug paint";
+			}
+			// begin = printRunTime("Normal Begin", begin);
+			if (isFinishScanRobot()) {
+				// System.out.println("Scaned Targets "+ aliveTargets.size());
+				resetTargetsAfterFinishScan();
+				scanRadarAround();
+			}
+			if (isStandStill()) {
+				setMoveToNearestTarget();
 			}
 			if (isFinishAim()) {
 				if (canFire()) {
@@ -87,11 +94,84 @@ public class Briareos extends OutlanderBase {
 					scanOtherNearestRobot();
 					// It scan based on old data, but it not found other robots yet, so it cannot aim them.
 				}
-				moveToNearestTarget();
+				setMoveToNearestTarget();
 			}
 			avoidWallWhenNecessary(this.battleField.getSafeArea());
-			execute();
+			execute();// execute hitRobot of nextTime
 		}
+	}
+
+	public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+		long begin = System.currentTimeMillis();
+		// System.out.println("OnScannedRobot Begin: "+scannedRobotEvent.getName()+" - "+getTime());
+		if (!finishPrepared) {
+			return;
+		}
+
+		BaseRobotState targetStatus = RobotStateConverter.toTargetState(this, scannedRobotEvent);
+		PredictedTarget target = this.updateStateToCorrespondingTarget(targetStatus);
+		PredictedAimAndFireResult newPredicted = predictTarget(scannedRobotEvent);
+		// begin = printRunTime("\t Predicted Target", begin);
+		target.setPredicted(newPredicted);
+
+		if (isBetterPredictThanAimingTarget(target)) {
+			// Should move to target?
+			// If move, we have to predict aiming again.
+			updateAimingTarget(target);
+			setAimTo(target);
+			// begin = printRunTime("\t Stared Aiming Target", begin);
+		}// else, let it continue aiming to current target.
+
+		printNewPredict(newPredicted);
+		// begin = printRunTime("OnScannedRobot End: "+scannedRobotEvent.getName(), begin);
+	}
+
+	private void printStatus(String title) {
+		String targetStr = "null";
+		if (aimingTarget != null){
+			targetStr = String.format("%s %s", aimingTarget.getState().getName(),  aimingTarget.getState().getPosition());
+		}
+		String msg = String.format("%s %s\t Velo: %.2f \t Heading: %.2f \t Angle: %.2f \t Dist: %4.2f \t Target: %s \t Direct: %s", getTime(), title, getVelocity(), getHeading(), getState().getMoveAngle(), getDistanceRemaining(), targetStr, super.moveDirection);
+		System.out.println(msg);
+	}
+
+	@Override
+	public void onHitRobot(HitRobotEvent hitRobotEvent) {
+		printStatus("HIT:b");
+		if (getConfig().isChangeDirectionWhenRobotHit()) {
+			setMoveAwayAfterHitRobot(hitRobotEvent);
+		}
+		printStatus("HIT:e");
+	}
+
+	private long printRunTime(String desc, long beginTime) {
+		long end = System.currentTimeMillis();
+		System.out.println(desc + " - " + getTime() + " - runtime: " + (end - beginTime) + " ms");
+		return end;
+	}
+
+	protected void resetTargetsAfterFinishScan() {
+		// didn't found aimingTarget in the list of alive robots.
+		if (aimingTarget != null && !aliveTargets.containsRobot(aimingTarget.getState().getName())) {
+			if (!isStartedAim() || isStartedFire()) {
+				aimingTarget = null;
+			}
+		}
+		aliveTargets = new TargetSet<>();
+	}
+
+	protected boolean isStartedAim() {
+		return currentFireStatus.getNumValue() >= FireStatus.STARTED_AIM.getNumValue();
+	}
+
+	private boolean isFinishScanRobot() {
+		return getRadarTurnRemaining() == 0;
+	}
+
+	private void setMoveAwayAfterHitRobot(HitRobotEvent hitRobot) {
+		setTurnLeft(30);
+		moveDirection = -moveDirection;
+		setAhead(moveDirection * 300);
 	}
 
 	private void scanOtherNearestRobot() {
@@ -108,9 +188,8 @@ public class Briareos extends OutlanderBase {
 		}
 		PredictedAimAndFireResult predicted = aimingTarget.getPredicted();
 		if (getTime() == predicted.getAimedTime() && !predicted.isWaitForBetterAim()) {
-			String msg = String.format("%s - THIS FIRE(%s, %s)", getTime(), getX(), getY());
-			System.out.println(msg);
 			Color bulletColor = predicted.getPredictStrategy().getPredictBulletColor();
+			// TODO set bullet color make robot slow a step (tick)???
 			setBulletColor(bulletColor);
 			setFire(predicted.getBestFirePoint().getFirePower());
 
@@ -118,21 +197,20 @@ public class Briareos extends OutlanderBase {
 		}
 	}
 
-	protected void moveToNearestTarget() {
-		Target target = findNearestTargetByDistance();
+	protected void setMoveToNearestTarget() {
+		PredictedTarget target = findNearestAliveTargetByDistance();
 		if (target != null) {
-			moveCloseToTarget(target.getState().getPosition());
+			setMoveCloseToTarget(target.getState().getPosition());
 		} else {
-			moveToOtherSideOfBattleField();
+			setMoveToOtherSideOfBattleField();
 		}
 	}
 
-
-	protected Target findNearestTargetByDistance() {
-		Target nearestTarget = null;
+	protected PredictedTarget findNearestAliveTargetByDistance() {
+		PredictedTarget nearestTarget = null;
 		double nearestDistance = Double.MAX_VALUE;
-		List<Target> targets = this.targets.list();
-		for (Target itarget : targets) {
+		List<PredictedTarget> targets = this.aliveTargets.list();
+		for (PredictedTarget itarget : targets) {
 			double idistance = MathUtils.distance(getState().getPosition(), itarget.getState().getPosition());
 			if (nearestTarget == null || nearestDistance > idistance) {
 				nearestTarget = itarget;
@@ -148,45 +226,13 @@ public class Briareos extends OutlanderBase {
 		}
 	}
 
-	// private void fireAsPredicted() {
-	// if (aimingTarget.getPredicted() == null) {
-	// return;
-	// }
-	// if (getTime() == aimingTarget.getPredicted().getAimedTime() && !aimingTarget.getPredicted().isWaitForBetterAim()) {
-	// String msg = String.format("%s - THIS FIRE(%s, %s)", getTime(), getX(), getY());
-	// System.out.println(msg);
-	// Color bulletColor = aimingTarget.getPredicted().getPredictStrategy().getPredictBulletColor();
-	// setBulletColor(bulletColor);
-	// setFire(aimingTarget.getPredicted().getBestFirePoint().getFirePower());
-	//
-	// isFired = true;
-	// }
-	// }
-
-	// private void runNewMoveIfFinishOldMove() {
-	// // Turn
-	// if (getTurnRemaining() == 0) {
-	// System.out.println("\t CHANGE TURN");
-	// turnDirection = -turnDirection;
-	// setTurnLeft(turnDirection * TURN);
-	// }
-	//
-	// // Ahead
-	// if (getDistanceRemaining() == 0) {
-	// System.out.println("\t CHANGE DEADING");
-	// turnDirection = -turnDirection;
-	// setTurnLeft(turnDirection * TURN);
-	// headDirection = -headDirection;
-	// setAhead(headDirection * MOVE_DISTANCE);
-	// }
-	// }
 	/**
 	 * shorter aim time
 	 * 
 	 * @param targetStatus
 	 * @return
 	 */
-	protected boolean isBetterPredictThanAimingTarget(Target newTarget) {
+	protected boolean isBetterPredictThanAimingTarget(PredictedTarget newTarget) {
 		// If never aim before, or that aiming was old, use the new one.
 		if (aimingTarget == null || aimingTarget.getPredicted().getAimedTime() < getTime()) {
 			return true;
@@ -209,11 +255,11 @@ public class Briareos extends OutlanderBase {
 		}
 	}
 
-	protected void updateAimingTarget(Target target) {
+	protected void updateAimingTarget(PredictedTarget target) {
 		this.setAimingTarget(target);
 	}
 
-	protected void aimTo(Target target) {
+	protected void setAimTo(PredictedTarget target) {
 		double gunTurnRightDirection;
 		if (target.getPredicted().isFoundBestPoint()) {
 			gunTurnRightDirection = target.getPredicted().getAimResult().getGunTurnRightDirection();
@@ -243,71 +289,18 @@ public class Briareos extends OutlanderBase {
 	}
 
 	protected boolean isStandStill() {
-		if (getDistanceRemaining() == 0 || getVelocity() == 0) {
-			currentMoveStatus = MoveStatus.STAND_STILL;
-		}
-		return currentMoveStatus.getNumValue() <= MoveStatus.STAND_STILL.getNumValue();
+		return (getDistanceRemaining() == 0 || getVelocity() == 0);
 	}
 
-	protected Target updateStateToCorrespondingTarget(BaseRobotState targetState) {
-		Target target = new Target(targetState);
-		this.targets.set(target);
+	protected PredictedTarget updateStateToCorrespondingTarget(BaseRobotState targetState) {
+		PredictedTarget target = new PredictedTarget(targetState);
+		this.aliveTargets.set(target);
 		return target;
 	}
 
-	public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-		if (!finishPrepared) {
-			return;
-		}
-
-		BaseRobotState targetStatus = RobotStateConverter.toTargetState(this, scannedRobotEvent);
-		Target target = this.updateStateToCorrespondingTarget(targetStatus);
-		PredictedAimAndFireResult newPredicted = predictTarget(scannedRobotEvent);
-		target.setPredicted(newPredicted);
-
-		if (isBetterPredictThanAimingTarget(target)) {
-			// Should move to target?
-			// If move, we have to predict aiming again.
-			updateAimingTarget(target);
-			aimTo(target);
-		}// else, let it continue aiming to current target.
-
-		printNewPredict(newPredicted);
-
-		// if (newPredicted.isFoundBestPoint()) {
-		// long newFiredTime = newPredicted.getFiredTime();
-		// Long currentFiredTime = aimingTarget.getPredicted().getFiredTime();
-		// if (aimingTarget.getPredicted() == null || currentFiredTime == null) {
-		// aimingTarget.getPredicted() = newPredicted;
-		// double gunTurnDirection = newPredicted.getAimResult().getGunTurnRightDirection();
-		// setTurnGunRight(gunTurnDirection);
-		// } else {
-		// if (newFiredTime < currentFiredTime || (newFiredTime == currentFiredTime && newPredicted.getAimedTime() < aimingTarget.getPredicted().getAimedTime())) {
-		// aimingTarget.getPredicted() = newPredicted;
-		// double gunTurnDirection = newPredicted.getAimResult().getGunTurnRightDirection();
-		// setTurnGunRight(gunTurnDirection);
-		// }
-		// }
-		// }
-		// if (isFired || aimingTarget.getPredicted() == null || getTime() > aimingTarget.getPredicted().getAimedTime()) {
-		// FullRobotState targetState = RobotStateConverter.toTargetState(this, scannedRobotEvent);
-		// if (getConfig().isMoveCloseToTarget()) {
-		// moveHelper.moveCloseToTarget(targetState.getPosition());
-		// }
-		// aimingTarget.getPredicted() = aimTarget(scannedRobotEvent);
-		// if (aimingTarget.getPredicted().getBestFirePoint() == null || GunHelper.isTooFarFromTarget(aimingTarget.getPredicted())) {
-		// aimingTarget.getPredicted().setWaitForBetterAim(true);
-		// }
-		// }
-	}
-	@Override
-	public void onHitRobot(HitRobotEvent e) {
-		System.out.println("Hit Robot at "+getTime());
-		currentMoveStatus = MoveStatus.HIT_ROBOT;
-	}
-	private void printNewPredict(PredictedAimAndFireResult newPredicted) {
-		if (!newPredicted.getPredictStrategy().getClass().equals(LinearPredictStrategy.class)){
-			System.out.println("Debug predict not linear");
+	protected void printNewPredict(PredictedAimAndFireResult newPredicted) {
+		if (!newPredicted.getPredictStrategy().getClass().equals(LinearPredictStrategy.class)) {
+			String msg = "Debug predict not linear";
 		}
 		String currentPredictText = "";
 		if (aimingTarget != null && aimingTarget.getPredicted() != null) {
@@ -331,22 +324,14 @@ public class Briareos extends OutlanderBase {
 		return predictHelper.predictBestStepsToAimAndFire(getTime(), this.getGunCoolingRate(), getGunHeat(), maxPower, getGunHeading(), thisState, targetState);
 	}
 
-	// public PredictedAimAndFireResult aimTarget(ScannedRobotEvent targetEvent) {
-	// PredictedAimAndFireResult predicted = predictTarget(targetEvent);
-	// if (predicted.getBestFirePoint() != null) {
-	// double turnRightAngle = predicted.getAimResult().getGunTurnRightDirection();
-	// setTurnGunRight(turnRightAngle);
-	// isFired = false;
-	// }
-	// return predicted;
-	// }
-
-	public Target getAimingTarget() {
+	public PredictedTarget getAimingTarget() {
 		return aimingTarget;
 	}
 
-	public void setAimingTarget(Target aimingTarget) {
-//		this.aimingTarget = SerializationUtils.clone(aimingTarget);
-		this.aimingTarget = aimingTarget;
+	public void setAimingTarget(PredictedTarget aimingTarget) {
+		// this.aimingTarget = SerializationUtils.clone(aimingTarget);
+		// TODO copy properties.
+		this.aimingTarget = new PredictedTarget(aimingTarget.getState());
+		this.aimingTarget.setPredicted(aimingTarget.getPredicted());
 	}
 }

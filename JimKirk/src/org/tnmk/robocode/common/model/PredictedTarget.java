@@ -5,18 +5,18 @@ import java.io.Serializable;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
 
 
-public class Target implements Serializable{
+public class PredictedTarget implements Serializable{
     private static final long serialVersionUID = -944104881676726239L;
 
 	private final BaseRobotState state;
 	
 	private PredictedAimAndFireResult predicted;
 
-	public Target(BaseRobotState state){
+	public PredictedTarget(BaseRobotState state){
 		this.state = state;
 	}
 	
-	public boolean isSameTarget(Target target){
+	public boolean isSameTarget(PredictedTarget target){
 		return this.getState().getName().equals(target.getState().getName());
 	}
 	

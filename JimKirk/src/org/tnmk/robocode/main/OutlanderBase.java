@@ -107,7 +107,7 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 	public void avoidWallWhenNecessary(Area safeArea) {
 		FullRobotState robotState = RobotStateConverter.toRobotState(this);
 		if (robotState.getX() > 700 || robotState.getY() > 550 || robotState.getX() < 120 || robotState.getY() < 120) {
-			System.out.println("Debug");
+			String msg = "Debug";
 		}
 		Double shouldTurnRightDirection = WallSmoothHelper.shouldAvoidWall(safeArea, robotState);
 		if (shouldTurnRightDirection != null) {
@@ -247,6 +247,7 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 	}
 
 	/**
+	 * This method used only if we don't predict target position.
 	 * @param bearingFromRobotHeading
 	 *            this is the relative bearing from our robot's body heading to target.
 	 */
@@ -257,15 +258,15 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 		setTurnGunRight(turnRightDegree);
 	}
 
-	protected void moveToOtherSideOfBattleField() {
-		double distance = moveHelper.turnToOtherSideOfBattleField();
+	protected void setMoveToOtherSideOfBattleField() {
+		double distance = moveHelper.setTurnToOtherSideOfBattleField();
 		setAhead(moveDirection * distance);
     }
-	public void moveCloseToTarget(Point targetPoint) {
-		double distance = moveHelper.turnCloseToTarget(targetPoint);
+	public void setMoveCloseToTarget(Point targetPoint) {
+		double distance = moveHelper.setTurnCloseToTarget(targetPoint);
 		setAhead(moveDirection * distance);
 	}
-	protected void moveAwayFromTarget(Event e, double bearing) {
+	protected void setMoveAwayFromTarget(double bearing) {
 		setTurnLeft(90 - bearing);
 		setAhead(moveDirection * 300);
 	}
@@ -276,9 +277,8 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 	@Override
 	public void onHitByBullet(HitByBulletEvent e) {
 		if (getConfig().isChangeDirectionWhenBulletHit()) {
-			moveAwayFromTarget(e, e.getBearing());
+			setMoveAwayFromTarget(e.getBearing());
 		}
-		
 	}
 
 	protected boolean canFire() {

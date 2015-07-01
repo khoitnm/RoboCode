@@ -32,6 +32,7 @@ public class OutlanderStandStill extends OutlanderBase {
 		
 
 		while (true) {
+			System.out.println("Normal "+getTime());
 			execute();
 		}
 	}

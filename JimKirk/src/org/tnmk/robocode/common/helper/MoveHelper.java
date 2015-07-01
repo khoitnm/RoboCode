@@ -12,6 +12,7 @@ import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.main.OutlanderBase;
 
 import robocode.AdvancedRobot;
+import robocode.HitRobotEvent;
 import robocode.Robot;
 import robocode.Rules;
 import robocode.ScannedRobotEvent;
@@ -31,21 +32,26 @@ public class MoveHelper implements Serializable{
 	public static boolean isNearMoveAngle(double currentMoveAngle, double targetMoveAngle){
 		return Math.abs(currentMoveAngle - targetMoveAngle) < MAX_DIFFERENT_OF_NEAR_ANGLES;
 	}
-	/**
-	 * This method is correct, no need to debug.
-	 * @param robot
-	 * @param scannedRobotEvent
-	 * @return
-	 */
-	public static Point reckonTargetPosition(Robot robot, ScannedRobotEvent scannedRobotEvent) {
-		Point point = new Point();
-		double angleToEnemy = scannedRobotEvent.getBearing();
-		double angle = Math.toRadians(robot.getHeading() + angleToEnemy);
-		point.x = (robot.getX() + Math.sin(angle) * scannedRobotEvent.getDistance());
-		point.y = (robot.getY() + Math.cos(angle) * scannedRobotEvent.getDistance());
-		return point;
+	public static Point reckonTargetPosition(Robot thisRobot, HitRobotEvent targetRobotEvent) {
+		return reckonTargetPosition(thisRobot, targetRobotEvent.getBearing(), ROBOT_SIZE);
 	}
 
+	/**
+	 * This method is correct, no need to debug.
+	 * @param thisRobot
+	 * @param targetRobotEvent
+	 * @return
+	 */
+	public static Point reckonTargetPosition(Robot thisRobot, ScannedRobotEvent targetRobotEvent) {
+		return reckonTargetPosition(thisRobot, targetRobotEvent.getBearing(), targetRobotEvent.getDistance());
+	}
+	public static Point reckonTargetPosition(Robot thisRobot, double bearingToEnemy, double distanceToTarget) {
+		Point point = new Point();
+		double angle = Math.toRadians(thisRobot.getHeading() + bearingToEnemy);
+		point.x = (thisRobot.getX() + Math.sin(angle) * distanceToTarget);
+		point.y = (thisRobot.getY() + Math.cos(angle) * distanceToTarget);
+		return point;
+	}
 	public static BattleField createBattleField(Robot robot) {
 		BattleField battleField = new BattleField(robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
 		int sentrySize = 0;
@@ -83,7 +89,7 @@ public class MoveHelper implements Serializable{
 			targetX = battleField.getSafeArea().getRight();
 			targetY = battleField.getSafeArea().getTop();
 		}
-		moveTo(targetX, targetY);
+		setMoveTo(targetX, targetY);
 	}
 
 	/**
@@ -95,7 +101,6 @@ public class MoveHelper implements Serializable{
 		FullRobotState robotState = RobotStateConverter.toRobotState(robot);
 		return MathUtils.calculateTurnRightDirectionToTarget(robotState.getMoveAngle(), robot.getX(), robot.getY(), targetX, targetY);
 	}
-
 	public void moveTo(double targetX, double targetY) {
 		double sourceX = robot.getX();
 		double sourceY = robot.getY();
@@ -103,8 +108,15 @@ public class MoveHelper implements Serializable{
 		robot.turnRight(bearing);
 		robot.ahead(MathUtils.distance(sourceX, sourceY, targetX, targetY));
 	}
+	public void setMoveTo(double targetX, double targetY) {
+		double sourceX = robot.getX();
+		double sourceY = robot.getY();
+		double bearing = calculateTurnRightAngleToTarget(targetX, targetY);
+		robot.setTurnRight(bearing);
+		robot.setAhead(MathUtils.distance(sourceX, sourceY, targetX, targetY));
+	}
 
-	public double turnCloseToTarget(Point targetPoint) {
+	public double setTurnCloseToTarget(Point targetPoint) {
 		FullRobotState thisState = RobotStateConverter.toRobotState(robot);
 		double distance = MathUtils.distance(thisState.getPosition(), targetPoint);
 		if (distance < MAX_DISTANCE_TO_TARGET) return distance;//Don't need to try harder to get more closer to target.
@@ -195,11 +207,11 @@ public class MoveHelper implements Serializable{
         }
 		
 	}
-	public double turnToOtherSideOfBattleField() {
+	public double setTurnToOtherSideOfBattleField() {
 		Point center = this.battleField.getCenter();
 		double otherSideX = center.getX() + (center.getX() - robot.getX());
 		double otherSideY = center.getY() + (center.getY() - robot.getY());
-	    moveTo(otherSideX, otherSideY);
+	    setMoveTo(otherSideX, otherSideY);
 	    return battleField.getWidth()+battleField.getHeight();
     }
 }
