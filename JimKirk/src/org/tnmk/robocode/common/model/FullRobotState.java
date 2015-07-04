@@ -1,10 +1,14 @@
 package org.tnmk.robocode.common.model;
 
+import org.tnmk.robocode.main.ModernRobot;
+
 import robocode.Rules;
+import robocode.util.Utils;
 
 
 public class FullRobotState extends BaseRobotState{
     private static final long serialVersionUID = -9122595279962389587L;
+    
 	public static final double DISTANCE_REMAINING_UNKNOWN = Double.MAX_VALUE;
 	public static final double TURN_REMAINING_UNKOWN = Double.MAX_VALUE;
 	public static final double MAX_VELOCITY_UNKOWN = 0;
@@ -14,6 +18,21 @@ public class FullRobotState extends BaseRobotState{
 	private double distanceRemaining = DISTANCE_REMAINING_UNKNOWN;
 	private double maxTurnRate = MAX_TURNRATE_UNKOWN;
 	private double turnRemaining = TURN_REMAINING_UNKOWN;
+	
+	private double moveDirection = ModernRobot.DIRECTION_AHEAD;//We should put direction into this status to trace real direction when velocity is 0.
+	
+	public double getMoveAngle() {
+		if (Utils.isNear(velocity, 0)){
+			if (moveDirection > 0) {
+				return heading;
+			} else {
+				double rs = heading - 180;
+				return (rs + 360) % 360;// to ensure that 0 <= angle <= 360
+			}
+		}else{
+			return super.getMoveAngle();
+		}
+	}
 	
 	/**
 	 * If don't know remain distance, assume that it running with the same speed for the rest
@@ -68,6 +87,12 @@ public class FullRobotState extends BaseRobotState{
     }
 	public void setMaxTurnRate(double maxTurnRate) {
 	    this.maxTurnRate = maxTurnRate;
+    }
+	public double getMoveDirection() {
+	    return moveDirection;
+    }
+	public void setMoveDirection(double direction) {
+	    this.moveDirection = direction;
     }
 
 }

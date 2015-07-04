@@ -26,10 +26,8 @@ public class WallSmoothHelper {
 	 * This constant define that distance. 
 	 */
 	public static final double DISTANCE_TO_TURN_PERPENDICULAR_ANGLE = 115;
-	/**
-	 * Total size, not radius of robot.
-	 */
-	private static final double ROBOT_SIZE = 20;
+
+	public static final double ROBOT_RADIUS = 18;
 
 	/**
 	 * @param area
@@ -92,7 +90,7 @@ public class WallSmoothHelper {
 	}
 
 	public static boolean isAlmostHitWall(double distanceToWall) {
-		return (distanceToWall - (Rules.MAX_VELOCITY + ROBOT_SIZE)) < 0;
+		return distanceToWall < Rules.MAX_VELOCITY*2 + ROBOT_RADIUS;
 	}
 
 	public static boolean isAlmostHitWallAfterTurnPerpendicularAngle(double distanceToWall) {
@@ -176,6 +174,7 @@ public class WallSmoothHelper {
 			double minTurnLeft = Math.min(distanceTurnLeftToRightWall, distanceTurnLeftToTopWall);
 			double minTurnRight = Math.min(distanceTurnRightToRightWall, distanceTurnRightToTopWall);
 			double maxDistanceToWall = Math.max(minTurnLeft, minTurnRight);
+			debugWhenNoWayAvoidWall(distanceTurnLeftToRightWall,distanceTurnLeftToTopWall, distanceTurnRightToRightWall, distanceTurnRightToTopWall );
 			if (isAlmostHitWall(maxDistanceToWall)) {
 				if (minTurnLeft < minTurnRight) {
 					targetAngle = TURN_RIGHT_DIRECTION;
@@ -192,6 +191,7 @@ public class WallSmoothHelper {
 			double minTurnLeft = Math.min(distanceTurnLeftToRightWall, distanceTurnLeftToBottomWall);
 			double minTurnRight = Math.min(distanceTurnRightToRightWall, distanceTurnRightToBottomWall);
 			double maxDistanceToWall = Math.max(minTurnLeft, minTurnRight);
+			debugWhenNoWayAvoidWall(distanceTurnLeftToRightWall,distanceTurnLeftToBottomWall, distanceTurnRightToRightWall, distanceTurnRightToBottomWall );
 			if (isAlmostHitWall(maxDistanceToWall)) {
 				if (minTurnLeft < minTurnRight) {
 					targetAngle = TURN_BOTTOM_DIRECTION;					
@@ -208,6 +208,7 @@ public class WallSmoothHelper {
 			double minTurnLeft = Math.min(distanceTurnLeftToLeftWall, distanceTurnLeftToBottomWall);
 			double minTurnRight = Math.min(distanceTurnRightToLeftWall, distanceTurnRightToBottomWall);
 			double maxDistanceToWall = Math.max(minTurnLeft, minTurnRight);
+			debugWhenNoWayAvoidWall(distanceTurnLeftToLeftWall,distanceTurnLeftToBottomWall, distanceTurnRightToLeftWall, distanceTurnRightToBottomWall );
 			if (isAlmostHitWall(maxDistanceToWall)) {
 				if (minTurnLeft < minTurnRight) {
 					targetAngle = TURN_LEFT_DIRECTION;
@@ -224,6 +225,7 @@ public class WallSmoothHelper {
 			double minTurnLeft = Math.min(distanceTurnLeftToLeftWall, distanceTurnLeftToTopWall);
 			double minTurnRight = Math.min(distanceTurnRightToLeftWall, distanceTurnRightToTopWall);
 			double maxDistanceToWall = Math.max(minTurnLeft, minTurnRight);
+			debugWhenNoWayAvoidWall(distanceTurnLeftToLeftWall,distanceTurnLeftToTopWall, distanceTurnRightToLeftWall, distanceTurnRightToTopWall );
 			if (isAlmostHitWall(maxDistanceToWall)) {
 				if (minTurnLeft < minTurnRight) {
 					targetAngle = TURN_TOP_DIRECTION;
@@ -238,5 +240,13 @@ public class WallSmoothHelper {
 		} else {
 			return MathUtils.normalizeDegree(targetAngle - moveAngle);
 		}
+	}
+	
+	private static void debugWhenNoWayAvoidWall(double distanceLeftToWallA, double distanceLeftToWallB, double distanceRightToWallA, double distanceRightToWallB){
+		double max = Math.max(distanceLeftToWallA, Math.max(distanceLeftToWallB, Math.max(distanceRightToWallA, distanceRightToWallB)));
+		if (isAlmostHitWall(max)){
+			System.out.println("Cannot avoid wall");
+		}
+		
 	}
 }

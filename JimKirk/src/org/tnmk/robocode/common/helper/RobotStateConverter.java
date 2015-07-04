@@ -3,6 +3,7 @@ package org.tnmk.robocode.common.helper;
 import org.tnmk.robocode.common.math.Point;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.FullRobotState;
+import org.tnmk.robocode.main.ModernRobot;
 
 import robocode.AdvancedRobot;
 import robocode.HitRobotEvent;
@@ -38,8 +39,9 @@ public class RobotStateConverter {
 		rs.setY(targetPos.y);
 		return rs;
     }
-	public static FullRobotState toRobotState(AdvancedRobot robot){
+	public static FullRobotState toRobotState(ModernRobot robot){
 		FullRobotState rs = new FullRobotState();
+		rs.setMoveDirection(robot.getMoveDirection());
 		rs.setName(robot.getName());
 		rs.setDistanceRemaining(robot.getDistanceRemaining());
 		rs.setHeading(robot.getHeading());

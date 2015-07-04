@@ -17,7 +17,9 @@ public class BaseRobotState implements Serializable {
 	// CONVENTION SET-GET
 	// ====================================================================
 	/**
+	 * TODO calculate moveAngle is wrong when velocity is 0
 	 * @return heading is only the body angle, but if velocity is negative, the angle is conversed. So we need to re-calculate move angle
+	 * Calculate moveAngle base on velocity.
 	 */
 	public double getMoveAngle() {
 		if (velocity >= 0) {

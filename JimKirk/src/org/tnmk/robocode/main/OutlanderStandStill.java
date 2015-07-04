@@ -15,7 +15,7 @@ import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
 import robocode.ScannedRobotEvent;
 import robocode.StatusEvent;
 
-public class OutlanderStandStill extends OutlanderBase {
+public class OutlanderStandStill extends ModernRobot {
 
 	public OutlanderStandStill() {
 		super();

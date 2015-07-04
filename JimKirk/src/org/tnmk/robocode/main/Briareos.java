@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.tnmk.robocode.common.constant.FireStatus;
 import org.tnmk.robocode.common.helper.GunHelper;
+import org.tnmk.robocode.common.helper.MoveHelper;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
 import org.tnmk.robocode.common.math.MathUtils;
 import org.tnmk.robocode.common.model.BaseRobotState;
@@ -26,7 +27,7 @@ import robocode.ScannedRobotEvent;
  * 
  *         Term: + Bearing: the angle (degree) from pointA to pointB (or vectorA to vectorB). It can be an absolute bearing (compare to North axis) or relative bearing (compare to vectorA)
  */
-public class Briareos extends OutlanderBase {
+public class Briareos extends ModernRobot {
 	private static final long serialVersionUID = -3795784962177096082L;
 
 	public static double MOVE_DISTANCE = 30200.54;
@@ -34,8 +35,8 @@ public class Briareos extends OutlanderBase {
 	public static int DISTANCE_LOOP = 5;
 	public static int FIRE_COUNT = 3;
 
-	boolean finishPrepared = false;
-
+	private boolean finishPrepared = false;
+	private HitRobotEvent hitRobotEvent = null;
 	public Briareos() {
 		super();
 	}
@@ -70,6 +71,7 @@ public class Briareos extends OutlanderBase {
 		finishPrepared = true;
 		while (true) {
 			long begin = System.currentTimeMillis();
+			System.out.println(getTime() + "------------------------------------");
 			printStatus("Norm");
 			
 			if (isStandStill() && (getX() > battleField.getWidth() - 20 || getX() < 20 || getY() < 20 || getY() > battleField.getHeight() - 20)) {
@@ -84,7 +86,16 @@ public class Briareos extends OutlanderBase {
 				resetTargetsAfterFinishScan();
 				scanRadarAround();
 			}
-			if (isStandStill()) {
+			
+			if (isHitRobot()){
+				printStatus("HIT:b");
+				if (getConfig().isChangeDirectionWhenRobotHit()) {
+					printStatus("MoveAwayAfterHitRobot "+hitRobotEvent.getName());
+					setMoveAwayAfterHitRobot(hitRobotEvent);
+				}
+				printStatus("HIT:e");
+				this.hitRobotEvent = null;
+			}else if (isStandStill()) {
 				setMoveToNearestTarget();
 			}
 			if (isFinishAim()) {
@@ -97,9 +108,14 @@ public class Briareos extends OutlanderBase {
 				setMoveToNearestTarget();
 			}
 			avoidWallWhenNecessary(this.battleField.getSafeArea());
+			
 			execute();// execute hitRobot of nextTime
 		}
 	}
+
+	private boolean isHitRobot() {
+	    return this.hitRobotEvent != null;
+    }
 
 	public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
 		long begin = System.currentTimeMillis();
@@ -126,24 +142,22 @@ public class Briareos extends OutlanderBase {
 		// begin = printRunTime("OnScannedRobot End: "+scannedRobotEvent.getName(), begin);
 	}
 
-	private void printStatus(String title) {
+	/**
+	 * TODO must distinguise between hit to robot (move away from target) and standstill (move close to target).
+	 * When we do that, in the same step: at first, it move away from target. But then in run(), it misunderstand that robot is standstill -> move close to target.
+	 */
+	@Override
+	public void onHitRobot(HitRobotEvent hitRobotEvent) {
+		this.hitRobotEvent = hitRobotEvent;
+	}
+	protected void printStatus(String title) {
 		String targetStr = "null";
 		if (aimingTarget != null){
 			targetStr = String.format("%s %s", aimingTarget.getState().getName(),  aimingTarget.getState().getPosition());
 		}
-		String msg = String.format("%s %s\t Velo: %.2f \t Heading: %.2f \t Angle: %.2f \t Dist: %4.2f \t Target: %s \t Direct: %s", getTime(), title, getVelocity(), getHeading(), getState().getMoveAngle(), getDistanceRemaining(), targetStr, super.moveDirection);
+		String msg = String.format("%s %s\t Pos: %s\tVelo: %.2f\tHeading: %.2f\tAngle: %.2f\tDist: %4.2f\tTarget: %s\tDirect: %s", getTime(), title, getState().getPosition(), getVelocity(), getHeading(), getState().getMoveAngle(), getDistanceRemaining(), targetStr, getMoveDirection());
 		System.out.println(msg);
 	}
-
-	@Override
-	public void onHitRobot(HitRobotEvent hitRobotEvent) {
-		printStatus("HIT:b");
-		if (getConfig().isChangeDirectionWhenRobotHit()) {
-			setMoveAwayAfterHitRobot(hitRobotEvent);
-		}
-		printStatus("HIT:e");
-	}
-
 	private long printRunTime(String desc, long beginTime) {
 		long end = System.currentTimeMillis();
 		System.out.println(desc + " - " + getTime() + " - runtime: " + (end - beginTime) + " ms");
@@ -169,9 +183,9 @@ public class Briareos extends OutlanderBase {
 	}
 
 	private void setMoveAwayAfterHitRobot(HitRobotEvent hitRobot) {
-		setTurnLeft(30);
-		moveDirection = -moveDirection;
-		setAhead(moveDirection * 300);
+		reverseDirection();
+		setTurnLeft(30);				
+		setAhead(MoveHelper.DEFAULT_DISTANCE);
 	}
 
 	private void scanOtherNearestRobot() {
@@ -201,8 +215,10 @@ public class Briareos extends OutlanderBase {
 		PredictedTarget target = findNearestAliveTargetByDistance();
 		if (target != null) {
 			setMoveCloseToTarget(target.getState().getPosition());
+			printStatus("MoveCloseToTarget "+target.getState().getName()+""+target.getState().getPosition());
 		} else {
 			setMoveToOtherSideOfBattleField();
+			printStatus("MoveToOtherSideOfBattleField");
 		}
 	}
 
@@ -289,6 +305,7 @@ public class Briareos extends OutlanderBase {
 	}
 
 	protected boolean isStandStill() {
+		//TODO we may mistunderstand that it stands still with hit robot or hit wall.
 		return (getDistanceRemaining() == 0 || getVelocity() == 0);
 	}
 

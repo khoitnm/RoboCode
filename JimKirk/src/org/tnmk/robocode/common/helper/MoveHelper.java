@@ -9,7 +9,7 @@ import org.tnmk.robocode.common.model.Area;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.model.FullRobotState;
-import org.tnmk.robocode.main.OutlanderBase;
+import org.tnmk.robocode.main.ModernRobot;
 
 import robocode.AdvancedRobot;
 import robocode.HitRobotEvent;
@@ -18,6 +18,7 @@ import robocode.Rules;
 import robocode.ScannedRobotEvent;
 
 public class MoveHelper implements Serializable{
+	public static final double DEFAULT_DISTANCE = 10000;
 	public static final double ROBOT_SIZE = 50;
 	public static final double MOVE_CLOSE_TO_TARGET_MIN_ANGLE = 20;
 	public static final double MIN_TURN_RATE = Rules.getTurnRate(Rules.MAX_VELOCITY);
@@ -55,8 +56,8 @@ public class MoveHelper implements Serializable{
 	public static BattleField createBattleField(Robot robot) {
 		BattleField battleField = new BattleField(robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
 		int sentrySize = 0;
-		if (robot instanceof OutlanderBase){
-			OutlanderBase outlanderBase = (OutlanderBase)robot;
+		if (robot instanceof ModernRobot){
+			ModernRobot outlanderBase = (ModernRobot)robot;
 			if (outlanderBase.getConfig().isMoveOnlyInSafeZone()){
 				sentrySize = robot.getSentryBorderSize();
 			}
@@ -66,9 +67,9 @@ public class MoveHelper implements Serializable{
 		return battleField;
 	}
 
-	private AdvancedRobot robot;
+	private ModernRobot robot;
 
-	public MoveHelper(AdvancedRobot robot) {
+	public MoveHelper(ModernRobot robot) {
 		this.robot = robot;
 		battleField = createBattleField(robot);
 	}
@@ -115,7 +116,10 @@ public class MoveHelper implements Serializable{
 		robot.setTurnRight(bearing);
 		robot.setAhead(MathUtils.distance(sourceX, sourceY, targetX, targetY));
 	}
-
+	/**
+	 * @param targetPoint
+	 * @return will move distance
+	 */
 	public double setTurnCloseToTarget(Point targetPoint) {
 		FullRobotState thisState = RobotStateConverter.toRobotState(robot);
 		double distance = MathUtils.distance(thisState.getPosition(), targetPoint);
@@ -127,85 +131,8 @@ public class MoveHelper implements Serializable{
 			turnRightDirection += MOVE_CLOSE_TO_TARGET_MIN_ANGLE;
 		}
 		robot.setTurnRight(turnRightDirection);
-		return distance*2;
-	}
-
-	public void avoidWallIfNecessary(){
-		
-	}
-	/**
-	 * Reckon which wall our robot is heading to.
-	 * @param steps
-	 * @return
-	 */
-	public HitAreaResult reckonHitAreaFromInside(BaseRobotState robotState, Area area){
-		double moveAngle = robotState.getMoveAngle() % 360;
-		
-		HitAreaResult result = new HitAreaResult();
-		result.setHitArea(area);
-		result.setRobotMoveAngle(moveAngle);
-		
-		if (moveAngle > 0 && moveAngle < 180){//RIGHT wall
-			
-		}
-		if (moveAngle > 90 && moveAngle < 270){//BOTTOM wall
-			
-		}
-		if (moveAngle > 180){//LEFT wall
-		}
-		if (moveAngle > 270 || moveAngle < 90){//TOP wall
-		}
-
-		
-		if (moveAngle == 0){
-			result.setHitWall(area.getWallTop());
-			result.setHitPoint(new Point(robotState.getX(), result.getHitWall().getPointA().getY()));
-		}else if (moveAngle == 90){
-			result.setHitWall(area.getWallRight());
-			result.setHitPoint(new Point(result.getHitWall().getPointA().getX(), robotState.getY()));
-		}else if (moveAngle == 180){
-			result.setHitWall(area.getWallTop());
-			result.setHitPoint(new Point(robotState.getX(), result.getHitWall().getPointA().getY()));
-		}else if (moveAngle == 270){
-			result.setHitWall(area.getWallLeft());
-			result.setHitPoint(new Point(result.getHitWall().getPointA().getX(), robotState.getY()));
-		}
-		return result;
-	}
-	public static class HitAreaResult{
-		private Area hitArea;
-		private LineSegment hitWall;
-		private Point hitPoint;
-		/**
-		 * The angle which robot is running.
-		 */
-		private double robotMoveAngle;
-		
-		public Area getHitArea() {
-			return hitArea;
-		}
-		public void setHitArea(Area hitArea) {
-			this.hitArea = hitArea;
-		}
-		public LineSegment getHitWall() {
-			return hitWall;
-		}
-		public void setHitWall(LineSegment hitWall) {
-			this.hitWall = hitWall;
-		}
-		public Point getHitPoint() {
-			return hitPoint;
-		}
-		public void setHitPoint(Point hitPoint) {
-			this.hitPoint = hitPoint;
-		}
-		public double getRobotMoveAngle() {
-	        return robotMoveAngle;
-        }
-		public void setRobotMoveAngle(double robotMoveAngle) {
-	        this.robotMoveAngle = robotMoveAngle;
-        }
-		
+//		return distance*2;
+		return DEFAULT_DISTANCE;
 	}
 	public double setTurnToOtherSideOfBattleField() {
 		Point center = this.battleField.getCenter();

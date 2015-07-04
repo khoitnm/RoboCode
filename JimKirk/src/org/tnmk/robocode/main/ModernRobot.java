@@ -21,18 +21,18 @@ import org.tnmk.robocode.common.predictor.self.model.FindingBestFirePointResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
 
-import robocode.AdvancedRobot;
-import robocode.Event;
 import robocode.HitByBulletEvent;
-import robocode.HitRobotEvent;
+import robocode.util.Utils;
 
 /**
  * @author Khoi With AdvancedRobot, the shooting time is different from basic Robot class.
  * 
  *         Term: + Bearing: the angle (degree) from pointA to pointB (or vectorA to vectorB). It can be an absolute bearing (compare to North axis) or relative bearing (compare to vectorA)
  */
-public abstract class OutlanderBase extends AdvancedRobot implements Serializable {
+public abstract class ModernRobot extends WithDirectionRobot implements Serializable {
+
 	private static final long serialVersionUID = -5706564831794738218L;
+
 	private static final Color COLOR_PREDICTED_TARGET_AIMED = Color.MAGENTA;
 	private static final Color COLOR_PREDICTED_TARGET_HIT = Color.PINK;
 	private static final Color COLOR_CURRENT_TARGET = Color.WHITE;
@@ -58,13 +58,11 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 	public static final Color ROBOT_BULLET01_COLOR = new Color(255, 255, 210);
 	private static final int LINE_SIZE = 20;
 
-	// protected Cloner cloner;
 	protected BattleField battleField;
 	protected FireByDistance fireByDistance;
 	protected MoveHelper moveHelper;
 	protected PredictManager predictHelper;
-	
-	protected int moveDirection = 1;
+
 	/**
 	 * @Deprecated replaced by aimingTarget
 	 */
@@ -74,7 +72,7 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 
 	private Config config = new Config();
 
-	public OutlanderBase() {
+	public ModernRobot() {
 		super();
 		// cloner = new Cloner();
 		// We don't want it to clone Enum class, which will cause '==' operator doesn't work correctly. View more at http://stackoverflow.com/questions/665860/deep-clone-utility-recomendation (comment of Mostafa Zeinali)
@@ -111,8 +109,16 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 		}
 		Double shouldTurnRightDirection = WallSmoothHelper.shouldAvoidWall(safeArea, robotState);
 		if (shouldTurnRightDirection != null) {
+			String msg = String.format("AvoidWall, turnRight %.2f", shouldTurnRightDirection);
+			printStatus(msg);
 			this.setTurnRight(shouldTurnRightDirection);
 		}
+	}
+
+	protected void printStatus(String title) {
+		String targetStr = "null";
+		String msg = String.format("%s %s\t Velo: %.2f \t Head: %.2f \t Angle: %.2f(%s) \t Dist: %4.2f \t Target: %s", getTime(), title, getVelocity(), getHeading(), getState().getMoveAngle(), getMoveDirection(), getDistanceRemaining(), targetStr);
+		System.out.println(msg);
 	}
 
 	public void paint(String... msgs) {
@@ -237,6 +243,9 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 		graphic.drawString(string, x, (line + 1) * LINE_SIZE);
 	}
 
+	// ADDITIONAL MOVE HELPER
+	// -------------------------------------------------------------------------------------------------------------------------------------------
+
 	/**
 	 * @param bearingFromRobotHeading
 	 *            this is the relative bearing from our robot's body heading to target.
@@ -248,6 +257,7 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 
 	/**
 	 * This method used only if we don't predict target position.
+	 * 
 	 * @param bearingFromRobotHeading
 	 *            this is the relative bearing from our robot's body heading to target.
 	 */
@@ -260,15 +270,17 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 
 	protected void setMoveToOtherSideOfBattleField() {
 		double distance = moveHelper.setTurnToOtherSideOfBattleField();
-		setAhead(moveDirection * distance);
-    }
+		setAhead(distance);
+	}
+
 	public void setMoveCloseToTarget(Point targetPoint) {
 		double distance = moveHelper.setTurnCloseToTarget(targetPoint);
-		setAhead(moveDirection * distance);
+		setAhead(distance);
 	}
+
 	protected void setMoveAwayFromTarget(double bearing) {
 		setTurnLeft(90 - bearing);
-		setAhead(moveDirection * 300);
+		setAhead(MoveHelper.DEFAULT_DISTANCE);
 	}
 
 	/**
@@ -281,6 +293,21 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 		}
 	}
 
+	// OVERRIDE MOVEMENT HANDLING
+	// -------------------------------------------------------------------------------------------------------------------------------------------
+	@Override
+	public void setTurnRight(double degrees) {
+		String msg = String.format("%s - \tsetTurnRight(%.1f)", getTime(), degrees);
+		System.out.println(msg);
+		super.setTurnRight(degrees);
+	}
+
+	@Override
+	public void setTurnLeft(double degrees) {
+		this.setTurnRight(-degrees);
+	}
+
+	// MOVEMENT HANDLING -------------------------------------------------------------------------------------------------------------------------------------------
 	protected boolean canFire() {
 		return getGunHeat() == 0;
 	}
@@ -292,5 +319,4 @@ public abstract class OutlanderBase extends AdvancedRobot implements Serializabl
 	public void setConfig(Config config) {
 		this.config = config;
 	}
-
 }

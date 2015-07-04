@@ -23,7 +23,7 @@ import robocode.StatusEvent;
  *         to vectorB). It can be an absolute bearing (compare to North axis) or
  *         relative bearing (compare to vectorA)
  */
-public class OutlanderStandAim extends OutlanderBase {
+public class OutlanderStandAim extends ModernRobot {
 	public static double MOVE_DISTANCE = 30200.54;
 	public static double TURN = 0;
 	public static int DISTANCE_LOOP = 5;

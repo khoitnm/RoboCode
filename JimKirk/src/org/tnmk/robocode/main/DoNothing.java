@@ -3,7 +3,7 @@ package org.tnmk.robocode.main;
 import robocode.ScannedRobotEvent;
 
 
-public class DoNothing extends OutlanderBase {
+public class DoNothing extends ModernRobot {
 
 	public DoNothing() {
 		super();
