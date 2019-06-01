@@ -1,7 +1,7 @@
-#Introduction
+# Introduction
 This project is my robot for the game RoboCode (https://robocode.sourceforge.io/)
 
-#Terms
+# Terms
 ## Overview
 - Source: our robot
 - Target: other robot which is scanned by radar.
