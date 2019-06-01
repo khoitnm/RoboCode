@@ -14,3 +14,10 @@ This project is my robot for the game RoboCode (https://robocode.sourceforge.io/
 
 ## Actions 
 StandStill -> Start Aim -> Aimed (Finsh aiming) -> Start Fire -> Fired (Finished firing == bullet hit target)
+
+## Robot Guideline
+Create your robot
+http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Project
+
+Start your robot
+http://robowiki.net/wiki/Robocode/Getting_Started
