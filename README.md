@@ -24,3 +24,7 @@ http://robowiki.net/wiki/Robocode/Running_from_Eclipse
 
 Start your robot
 http://robowiki.net/wiki/Robocode/Getting_Started
+
+# Troubleshoot
+In order to RoboCode can recognize your Robot jar, the jar's filename must be the same as the robot's classname (case sensitive?)
+And your Robot should need the properties file to include some information.
