@@ -1,4 +1,4 @@
-package tnmk;
+package org.tnmk.robocode.simplerobot;
 
 import robocode.*;
 

@@ -16,15 +16,31 @@ This project is my robot for the game RoboCode (https://robocode.sourceforge.io/
 StandStill -> Start Aim -> Aimed (Finsh aiming) -> Start Fire -> Fired (Finished firing == bullet hit target)
 
 ## Robot Guideline
-Create your robot
+### Create your robot
 http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Project
 http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Robot
 http://robowiki.net/wiki/Robocode/Add_a_Robot_Project
 http://robowiki.net/wiki/Robocode/Running_from_Eclipse
 
-Start your robot
+**The correct setup of your Robot:**
+- package name: anything
+- class name: 
+    - this is the robot name
+    - you can put any name here
+- properties:
+    - This file describes what should be the main class of Robot.  
+    - At the same package and have the same name of robot's class.
+- build jar:
+    - the final jar file must have the same name of robot's name 
+
+### Start your robot
 http://robowiki.net/wiki/Robocode/Getting_Started
 
 # Troubleshoot
 In order to RoboCode can recognize your Robot jar, the jar's filename must be the same as the robot's classname (case sensitive?)
 And your Robot should need the properties file to include some information.
+
+In application > Preferences > Development Options: 
+- You will point to the folder which will contains package of robot classes, for example: /SourceCode/RoboCode/simple-robot/target/classes
+- Anyway, this folder should not contains different folder point to the same robot's class name. Otherwise, the application will confuse and pickup the first one.  
+For example, if you point to /SourceCode/RoboCode/simple-robot/target/, that folder will have ./classes/ and *.jar files which are both store robot's classes. It will cause problem.
