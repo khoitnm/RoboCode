@@ -1,8 +1,8 @@
-package org.tnmk.robocode.simplerobot;
+package org.tnmk.robocode.robot;
 
 import robocode.*;
 
-public class SimpleRobot extends Robot {
+public class BeginnerBasicRobot extends Robot {
     public void run() {
         while (true) {
             ahead(100);

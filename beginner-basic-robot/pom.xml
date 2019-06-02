@@ -40,7 +40,7 @@
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
-                            <finalName>finaljar/SimpleRobot</finalName>
+                            <finalName>finaljar/BeginnerBasicRobot</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
                     </execution>

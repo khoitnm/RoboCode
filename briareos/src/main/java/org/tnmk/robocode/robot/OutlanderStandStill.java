@@ -1,4 +1,4 @@
-package org.tnmk.robocode.main;
+package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.robot.Config;
 import org.tnmk.robocode.common.robot.ModernRobot;

@@ -1,4 +1,4 @@
-package org.tnmk.robocode.main;
+package org.tnmk.robocode.robot;
 
 import java.util.LinkedList;
 import java.util.List;
