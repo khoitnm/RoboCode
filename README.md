@@ -1,5 +1,7 @@
 # Introduction
-This project is my robot for the game RoboCode (https://robocode.sourceforge.io/)
+This project is my robot for the game RoboCode
+- https://robocode.sourceforge.io/
+- https://github.com/robo-code/robocode
 
 # Terms
 ## Overview
