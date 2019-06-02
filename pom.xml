@@ -11,6 +11,7 @@
         <module>common</module>
         <module>briareos</module>
         <module>beginner-basic-robot</module>
+        <module>beginner-advanced-robot</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -26,12 +27,25 @@
         <dependency>
             <groupId>net.sf.robocode</groupId>
             <artifactId>robocode.api</artifactId>
-            <version>1.9.3.6</version>
-            <scope>system</scope>
-            <systemPath>/home/khoi/robocode/libs/robocode.jar
-            </systemPath>
         </dependency>
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>tnmk.robocode</groupId>
+                <artifactId>common</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
 
+            <dependency>
+                <groupId>net.sf.robocode</groupId>
+                <artifactId>robocode.api</artifactId>
+                <version>1.9.3.6</version>
+                <scope>system</scope>
+                <systemPath>/home/khoi/robocode/libs/robocode.jar
+                </systemPath>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
