@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>tnmk.robocode</groupId>
-    <artifactId>robots</artifactId>
+    <artifactId>robotcode</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>common</module>
@@ -25,41 +25,39 @@
         <dependency>
             <groupId>net.sf.robocode</groupId>
             <artifactId>robocode.api</artifactId>
-            <version>1.9.2.1</version>
+<!--            <version>1.9.2.1</version>-->
+            <version>1.9.3.6</version>
+            <scope>system</scope>
+            <systemPath>/home/khoi/robocode/libs/robocode.jar
+            </systemPath>
         </dependency>
-        <dependency>
-            <groupId>math.geom2d</groupId>
-            <artifactId>javaGeom</artifactId>
-            <version>0.11.1</version>
-        </dependency>
-
     </dependencies>
 
-    <build>
-        <!--  <finalName>${project.artifactId}-${project.version}</finalName>-->
-        <plugins>
-            <!--
-            Build project including dependencies
-            View more at https://www.baeldung.com/executable-jar-with-maven
-             -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+<!--    <build>-->
+<!--        &lt;!&ndash;  <finalName>${project.artifactId}-${project.version}</finalName>&ndash;&gt;-->
+<!--        <plugins>-->
+<!--            &lt;!&ndash;-->
+<!--            Build project including dependencies-->
+<!--            View more at https://www.baeldung.com/executable-jar-with-maven-->
+<!--             &ndash;&gt;-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>single</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <descriptorRefs>-->
+<!--                                <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--                            </descriptorRefs>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
 
 </project>

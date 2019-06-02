@@ -12,11 +12,11 @@
     <artifactId>simple-robot</artifactId>
 
 
-    <dependencies>
-        <dependency>
-            <groupId>tnmk.robocode</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>tnmk.robocode</groupId>-->
+<!--            <artifactId>common</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
+<!--    </dependencies>-->
 </project>
