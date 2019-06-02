@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>tnmk.robocode</groupId>
-    <artifactId>simple-robot</artifactId>
+    <artifactId>beginner-basic-robot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
