@@ -23,6 +23,7 @@ StandStill -> Start Aim -> Aimed (Finsh aiming) -> Start Fire -> Fired (Finished
 - http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Robot
 - http://robowiki.net/wiki/Robocode/Add_a_Robot_Project
 - http://robowiki.net/wiki/Robocode/Running_from_Eclipse
+- http://robowiki.net/wiki/Robocode/Developers_Guide_for_building_Robocode
 
 **The correct setup of your Robot:**
 - robot package name: 
