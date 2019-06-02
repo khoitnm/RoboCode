@@ -10,7 +10,7 @@
     <modules>
         <module>common</module>
         <module>briareos</module>
-        <module>simple-robot</module>
+        <module>beginner-basic-robot</module>
     </modules>
     <packaging>pom</packaging>
 
