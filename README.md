@@ -23,15 +23,20 @@ http://robowiki.net/wiki/Robocode/Add_a_Robot_Project
 http://robowiki.net/wiki/Robocode/Running_from_Eclipse
 
 **The correct setup of your Robot:**
-- package name: anything
-- class name: 
-    - this is the robot name
-    - you can put any name here
+- robot package name: 
+    - You can use any name here anything
+    - For example: org.tnmk.robocode.robot
+- robot class name: 
+    - This is the robot name
+    - You can put any name here
+    - For example: BeginnerBasicRobot (in package org.tnmk.robocode.robot)
 - properties:
     - This file describes what should be the main class of Robot.  
     - At the same package and have the same name of robot's class.
+    - For example: org.tnmk.robocode.robot.BeginnerBasicRobot.properties
 - build jar:
-    - the final jar file must have the same name of robot's name 
+    - The final jar file must have the same name of robot's name 
+    - For example: BeginnerBasicRobot.jar
 
 ### Start your robot
 http://robowiki.net/wiki/Robocode/Getting_Started
