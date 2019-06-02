@@ -2,12 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <!-- NOTE: Don't declare parent project, otherwise, it will create jar-with-dependencies.jar and we cannot rename it. Hence RoboCode cannot load our Robot -->
-    <!--    <parent>-->
-    <!--        <artifactId>robots</artifactId>-->
-    <!--        <groupId>tnmk.robocode</groupId>-->
-    <!--        <version>1.0-SNAPSHOT</version>-->
-    <!--    </parent>-->
+    <parent>
+        <artifactId>robots</artifactId>
+        <groupId>tnmk.robocode</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>tnmk.robocode</groupId>
     <artifactId>simple-robot</artifactId>
@@ -19,20 +18,14 @@
             <artifactId>common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>net.sf.robocode</groupId>
-            <artifactId>robocode.api</artifactId>
-            <version>1.9.3.6</version>
-            <scope>system</scope>
-            <systemPath>/home/khoi/robocode/libs/robocode.jar
-            </systemPath>
-        </dependency>
     </dependencies>
 
     <build>
-        <!--        <finalName>SimpleRobot</finalName>-->
         <plugins>
-            <!-- Rename *-jar-with-dependencies to exactly the same name as robot's Class name. Otherwise, RoboCode cannot load our Robot -->
+            <!--
+                Rename *-jar-with-dependencies to exactly the same name as robot's Class name. Otherwise, RoboCode cannot load our Robot
+                In RoboCode, when you point to a folder, that folder must not contain any other jar or classes with the same name. Otherwise, you'll got error cannot load your robot.
+            -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.1</version>
@@ -47,21 +40,9 @@
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
-                            <finalName>SimpleRobot</finalName>
+                            <finalName>finaljar/SimpleRobot</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <!-- Remove default jar file because we need to load jar-with-dependencies and that jar name must match with the robot's class name!!! -->
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.2</version>
-                <executions>
-                    <execution>
-                        <id>default-jar</id>
-                        <!-- put the default-jar in the none phase to skip it from being created -->
-                        <phase>none</phase>
                     </execution>
                 </executions>
             </plugin>
