@@ -18,7 +18,7 @@ This project is my robot for the game RoboCode
 StandStill -> Start Aim -> Aimed (Finsh aiming) -> Start Fire -> Fired (Finished firing == bullet hit target)
 
 ## Robot Guideline
-### Create your robot
+### Prerequisite steps to run your robot
 - http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Project
 - http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Robot
 - http://robowiki.net/wiki/Robocode/Add_a_Robot_Project
@@ -43,6 +43,9 @@ StandStill -> Start Aim -> Aimed (Finsh aiming) -> Start Fire -> Fired (Finished
 
 ### Start your robot
 http://robowiki.net/wiki/Robocode/Getting_Started
+
+### Implement your robot
+http://mark.random-article.com/robocode/index.html
 
 # Troubleshoot
 In order to RoboCode can recognize your Robot jar, the jar's filename must be the same as the robot's classname (case sensitive?)
