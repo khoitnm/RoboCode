@@ -44,7 +44,7 @@ public class BeginnerBasicRobot extends Robot {
 
     public void onScannedRobot(ScannedRobotEvent e) {
         fire(1);
-        log("Basic fight");
+        log("Basic fire");
     }
 
     private void log(String message) {
