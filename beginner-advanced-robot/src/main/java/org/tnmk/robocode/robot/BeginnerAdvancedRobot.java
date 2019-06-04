@@ -11,27 +11,51 @@ import robocode.ScannedRobotEvent;
 public class BeginnerAdvancedRobot extends AdvancedRobot {
     private static int loopIndex = 0;
     public void run() {
-        while (true) {
-            ahead(80);
-            log("Advance Ahead 1");
-            turnGunRight(360);
-            log("Advance Turn Gun Right 1");
+        setAdjustGunForRobotTurn(true);
+        setAdjustRadarForGunTurn(true);
+        setAdjustRadarForRobotTurn(true);
 
-            //For basic Robot, you needs 2 ticks to execute the above 2 actions
-            //For advanced Robot, you only need 1 tick to execute them (by calling execute())
+        while (true) {
+            log("Start Advance Ahead 1");
+            setAhead(80);
+            log("Finish Advance Ahead 1");//16 ticks
+
+            log("Start Advance Turn Radar Right 1");
+            setTurnRadarRight(360);
+            log("Finish Advance Turn Radar Right 1");
+
+            log("Start Advance Turn Gun Right 1");
+            setTurnGunRight(360);
+            log("Finish Advance Turn Gun Right 1");//20 ticks
+
+            //Differently from Basic Robot, for Advanced Robot, when you execute, 3 above actions will be executed at the same time.
             //  when you execute:
             //  - the above action ahead() may need about 10 ticks (max velocity is 8) to finish,
             //  - and turnGunRight() need 360/20=18 ticks to finish.
             //  => So, in total, you need 18 ticks before the execute() is processed?
+            log("Start Advance execute tree actions at the same time 1");
             execute();
-            log("Advance execute 1");
+            log("Finish Advance execute tree actions at the same time 1");
+            log("-----------------------------------");
 
-            back(80);
-            log("Advance Back");
-            turnGunRight(360);
-            log("Advance Turn Gun Right 2");
+            log("Start Advance Back");
+            setBack(80);
+            log("Finish Advance Back");
+
+            log("Start Advance Turn Radar Right 2");
+            setTurnRadarRight(360);
+            log("Finish Advance Turn Radar Right 2");
+
+            log("Start Advance Turn Gun Right 2");
+            setTurnGunRight(360);
+            log("Finish Advance Turn Gun Right 2");
+
+            log("Start Advance execute tree actions at the same time 2");
             execute();
-            log("Advance execute 2");
+            log("Finish Advance execute tree actions at the same time 2");
+
+            log("-----------------------------------");
+            log("==============================================");
             loopIndex++;
         }
     }
