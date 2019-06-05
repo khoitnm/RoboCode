@@ -37,16 +37,13 @@ public class BeginnerAdvancedRobot extends AdvancedRobot {
                 log("Finish Advance Turn Gun Right 1");//20 ticks
             }
 
-            //Differently from Basic Robot, for Advanced Robot, when you execute, 3 above actions will be executed at the same time.
-            //  when you execute:
-            //  - the above action ahead() may need about 10 ticks (max velocity is 8) to finish,
-            //  - and turnGunRight() need 360/20=18 ticks to finish.
-            //  => So, in total, you need 18 ticks before the execute() is processed?
+            //Differently from Basic Robot, for Advanced Robot, when the execute() is finished, 3 above actions will be started at the same time.
             log("Start Advance execute tree actions at the same time 1");
             execute();
             log("Finish Advance execute tree actions at the same time 1");
             log("-----------------------------------");
 
+            //We need this condition. Otherwise, the robot will be `back()` immediately right after the above `setAhead()` is started.
             if (DoubleUtils.isConsideredZero(this.getVelocity())) {
                 log("Start Advance Back");
                 back(80);
@@ -64,10 +61,6 @@ public class BeginnerAdvancedRobot extends AdvancedRobot {
                 turnGunRight(360);
                 log("Finish Advance Turn Gun Right 2");
             }
-
-//            log("Start Advance execute tree actions at the same time 2");
-//            execute();
-//            log("Finish Advance execute tree actions at the same time 2");
 
             log("-----------------------------------");
             log("==============================================");
