@@ -1,6 +1,7 @@
 package org.tnmk.robocode.robot;
 
-import org.tnmk.robocode.common.number.DoubleUtils;
+import org.tnmk.common.number.DoubleUtils;
+import org.tnmk.robocode.common.log.LogHelper;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
@@ -80,8 +81,7 @@ public class BeginnerAdvancedRobot extends AdvancedRobot {
     }
 
     private void log(String message) {
-        String finalMessage = String.format("[%s] \t loop[%s] \t %s \t %s", this.getTime(), loopIndex, System.nanoTime(), message);
-        out.println(finalMessage);
+        LogHelper.logRobot(this, loopIndex, message);
     }
 
 }

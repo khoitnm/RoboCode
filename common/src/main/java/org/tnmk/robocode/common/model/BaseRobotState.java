@@ -2,7 +2,7 @@ package org.tnmk.robocode.common.model;
 
 import java.io.Serializable;
 
-import org.tnmk.robocode.common.math.Point;
+import org.tnmk.common.math.Point;
 
 public class BaseRobotState implements Serializable {
     private static final long serialVersionUID = -9050612832099625440L;

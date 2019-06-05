@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.helper;
 
-import org.tnmk.robocode.common.math.Point;
+import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.FullRobotState;
 

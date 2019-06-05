@@ -2,8 +2,8 @@ package org.tnmk.robocode.common.model;
 
 import java.io.Serializable;
 
-import org.tnmk.robocode.common.math.LineSegment;
-import org.tnmk.robocode.common.math.Point;
+import org.tnmk.common.math.LineSegment;
+import org.tnmk.common.math.Point;
 
 /**
  * @author Khoi This class is immutable, so it has only getter methods.

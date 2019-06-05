@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.model;
 
-import org.tnmk.robocode.common.math.Point;
+import org.tnmk.common.math.Point;
 
 public class BattleField extends Area {
     private static final long serialVersionUID = 5003534200184843218L;

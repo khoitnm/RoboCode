@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.math;
+package org.tnmk.common.math;
 
 import java.io.Serializable;
 

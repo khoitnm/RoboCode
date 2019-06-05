@@ -1,7 +1,6 @@
 package org.tnmk.robocode.common.predictor.self.model;
 
-import org.tnmk.robocode.common.math.Point;
-import org.tnmk.robocode.common.predictor.self.PredictStrategy;
+import org.tnmk.common.math.Point;
 
 /**
  * @author Khoi The point where bullet hit target

@@ -7,7 +7,7 @@ import org.tnmk.robocode.common.constant.FireStatus;
 import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.robocode.common.helper.MoveHelper;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
-import org.tnmk.robocode.common.math.MathUtils;
+import org.tnmk.common.math.MathUtils;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.common.model.PredictedTarget;

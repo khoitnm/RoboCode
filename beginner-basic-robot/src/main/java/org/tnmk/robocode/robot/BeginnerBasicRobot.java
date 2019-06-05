@@ -1,5 +1,6 @@
 package org.tnmk.robocode.robot;
 
+import org.tnmk.robocode.common.log.LogHelper;
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
 
@@ -48,7 +49,7 @@ public class BeginnerBasicRobot extends Robot {
     }
 
     private void log(String message) {
-        String finalMessage = String.format("[%s] \t loop[%s] \t %s \t %s", this.getTime(), loopIndex, System.nanoTime(), message);
-        out.println(finalMessage);
+        LogHelper.logRobot(this, loopIndex, message);
+
     }
 }

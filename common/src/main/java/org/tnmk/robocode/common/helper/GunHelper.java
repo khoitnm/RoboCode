@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.helper;
 
-import org.tnmk.robocode.common.math.MathUtils;
+import org.tnmk.common.math.MathUtils;
 import org.tnmk.robocode.common.model.AimAndFireResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
 

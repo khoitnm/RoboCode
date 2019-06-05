@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.util.List;
 
 import org.tnmk.robocode.common.helper.MoveHelper;
-import org.tnmk.robocode.common.math.MathUtils;
-import org.tnmk.robocode.common.math.Point;
+import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.predictor.self.model.FindingBestFirePointResult;
 import org.tnmk.robocode.common.predictor.self.model.FirePredictRequest;

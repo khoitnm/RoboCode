@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.helper;
+package org.tnmk.common.collection;
 
 import java.util.ArrayList;
 import java.util.List;

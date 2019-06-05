@@ -2,16 +2,12 @@ package org.tnmk.robocode.common.helper;
 
 import java.io.Serializable;
 
-import org.tnmk.robocode.common.math.LineSegment;
-import org.tnmk.robocode.common.math.MathUtils;
-import org.tnmk.robocode.common.math.Point;
-import org.tnmk.robocode.common.model.Area;
-import org.tnmk.robocode.common.model.BaseRobotState;
+import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.model.FullRobotState;
 
 import org.tnmk.robocode.common.robot.ModernRobot;
-import robocode.AdvancedRobot;
 import robocode.HitRobotEvent;
 import robocode.Robot;
 import robocode.Rules;

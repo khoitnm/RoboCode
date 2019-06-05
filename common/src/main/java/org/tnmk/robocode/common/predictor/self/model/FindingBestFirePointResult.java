@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.tnmk.robocode.common.math.LineSegment;
+import org.tnmk.common.math.LineSegment;
 
 public class FindingBestFirePointResult implements Serializable {
     private static final long serialVersionUID = -7193042179679613688L;

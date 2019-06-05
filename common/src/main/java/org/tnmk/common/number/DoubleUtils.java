@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.number;
+package org.tnmk.common.number;
 
 public class DoubleUtils {
 

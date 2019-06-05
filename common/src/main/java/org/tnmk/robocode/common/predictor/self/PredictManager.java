@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.tnmk.robocode.common.helper.MoveHelper;
-import org.tnmk.robocode.common.math.MathUtils;
+import org.tnmk.common.math.MathUtils;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.model.FullRobotState;

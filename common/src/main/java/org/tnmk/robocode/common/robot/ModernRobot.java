@@ -9,9 +9,9 @@ import org.tnmk.robocode.common.helper.FireByDistance;
 import org.tnmk.robocode.common.helper.MoveHelper;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
 import org.tnmk.robocode.common.helper.WallSmoothHelper;
-import org.tnmk.robocode.common.math.LineSegment;
-import org.tnmk.robocode.common.math.MathUtils;
-import org.tnmk.robocode.common.math.Point;
+import org.tnmk.common.math.LineSegment;
+import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.model.Area;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.BattleField;
@@ -22,7 +22,6 @@ import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
 
 import robocode.HitByBulletEvent;
-import robocode.util.Utils;
 
 /**
  * @author Khoi With AdvancedRobot, the shooting time is different from basic Robot class.

@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.predictor.ibm;
 
-import org.tnmk.robocode.common.math.Point;
+import org.tnmk.common.math.Point;
 /**
  * http://www.ibm.com/developerworks/library/j-pred-targeting/
  * @author Khoi

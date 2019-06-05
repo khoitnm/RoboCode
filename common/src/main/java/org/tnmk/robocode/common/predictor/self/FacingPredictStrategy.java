@@ -3,7 +3,7 @@ package org.tnmk.robocode.common.predictor.self;
 import java.awt.Color;
 
 import org.tnmk.robocode.common.helper.GunHelper;
-import org.tnmk.robocode.common.math.MathUtils;
+import org.tnmk.common.math.MathUtils;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.predictor.self.model.FirePredictRequest;
 import org.tnmk.robocode.common.predictor.self.model.PredictStateResult;

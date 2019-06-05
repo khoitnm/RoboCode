@@ -1,8 +1,6 @@
-package org.tnmk.robocode.common.math;
+package org.tnmk.common.math;
 
 import java.io.Serializable;
-
-import math.geom2d.conic.Circle2D;
 
 /**
  * @author Khoi http://2000clicks.com/mathhelp/GeometryConicSectionCircleIntersection.aspx (x−centerX)^2+(y−centerY)^2 =radius^2,
