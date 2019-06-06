@@ -55,3 +55,6 @@ In application > Preferences > Development Options:
 - You will point to the folder which will contains package of robot classes, for example: `/SourceCode/RoboCode/simple-robot/target/classes`
 - Anyway, this folder should not contains different folder point to the same robot's class name. Otherwise, the application will confuse and pickup the first one.  
 For example, if you point to `/SourceCode/RoboCode/simple-robot/target/`, that folder will have `./classes/` and `*.jar` files which are both store robot's classes. It will cause problem.
+---------------------------------------------------
+If a robot fails to complete his turn in the time allotted, the turn will be skipped. 
+https://stackoverflow.com/questions/33527613/onscannedrobot-method-never-being-called
