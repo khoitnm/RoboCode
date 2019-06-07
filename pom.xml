@@ -12,6 +12,7 @@
         <module>briareos</module>
         <module>beginner-basic-robot</module>
         <module>beginner-advanced-robot</module>
+        <module>the-unfolding-robot</module>
     </modules>
     <packaging>pom</packaging>
 
