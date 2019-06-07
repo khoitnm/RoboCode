@@ -10,13 +10,23 @@ import robocode.util.Utils;
  * By PEZ
  */
 public class RadarBotLockHelper {
-    public static void onScannedRobot(RadarBotLockContext radarBotLockContext, ScannedRobotEvent e) {
+    /**
+     * Behavior when seeing the target
+     * @param radarBotLockContext
+     * @param scannedRobotEvent
+     */
+    public static void onScannedRobot(RadarBotLockContext radarBotLockContext, ScannedRobotEvent scannedRobotEvent) {
         AdvancedRobot robot = radarBotLockContext.getRobot();
-        radarBotLockContext.setEnemyAbsoluteBearing(robot.getHeadingRadians() + e.getBearingRadians());
+        radarBotLockContext.setEnemyAbsoluteBearing(robot.getHeadingRadians() + scannedRobotEvent.getBearingRadians());
         radarBotLockContext.setTimeSinceLastSeenEnemy(0);
     }
 
-    public static void doScanner(RadarBotLockContext radarBotLockContext) {
+    /**
+     * set turn radar stick to the target.
+     * @param radarBotLockContext
+     * This method is usually used in the main loop.
+     */
+    public static void setTurnRadar(RadarBotLockContext radarBotLockContext) {
         AdvancedRobot robot = radarBotLockContext.getRobot();
         radarBotLockContext.setTimeSinceLastSeenEnemy(radarBotLockContext.getTimeSinceLastSeenEnemy()+ 1);
         double radarOffset = Double.POSITIVE_INFINITY;

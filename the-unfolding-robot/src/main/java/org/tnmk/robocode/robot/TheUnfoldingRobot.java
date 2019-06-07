@@ -29,7 +29,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
                 setAhead(80* direction);
             }
 
-            RadarBotLockHelper.doScanner(radarBotLockContext);
+            RadarBotLockHelper.setTurnRadar(radarBotLockContext);
             execute();
             loopIndex++;
         }
