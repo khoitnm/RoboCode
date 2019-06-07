@@ -5,11 +5,18 @@ import robocode.AdvancedRobot;
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
 
+/**
+ * View more at http://old.robowiki.net/robowiki?Radar
+ */
 public class RadarFactorLockHelper {
     /**
      *  A FACTOR of 3 or greater will expand the lock so quickly it reaches the widest lock almost right away. This works the same way Infinity Lock does, but avoids slippage by keeping the enemy in the centre of the lock.
      */
     public static final double FACTOR_INFINITE_LOCK = 3;
+    /**
+     * 2.1 gives a cool-looking expanding lock at the start of the round.
+     */
+    private static final double FACTOR_STICKY_LOCK = 2.1;
 
 
     /**
@@ -34,5 +41,9 @@ public class RadarFactorLockHelper {
 
     public static void infiniteLock(AdvancedRobot robot, ScannedRobotEvent scannedRobotEvent){
         factorLock(robot, scannedRobotEvent, FACTOR_INFINITE_LOCK);
+    }
+
+    public static void stickyLock(AdvancedRobot robot, ScannedRobotEvent scannedRobotEvent){
+        factorLock(robot, scannedRobotEvent, FACTOR_STICKY_LOCK);
     }
 }

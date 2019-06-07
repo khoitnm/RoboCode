@@ -18,15 +18,16 @@ public class TheUnfoldingRobot extends AdvancedRobot {
         setAdjustGunForRobotTurn(true);
         setAdjustRadarForGunTurn(true);
         setAdjustRadarForRobotTurn(true);
+        int direction = -1;
 
         while (true) {
+            //Run back and forth
             if (DoubleUtils.isConsideredZero(this.getVelocity())) {
-                log("Start Advance Ahead 1");
-                setAhead(Double.POSITIVE_INFINITY);
-                log("Finish Advance Ahead 1");//16 ticks
+                direction = - direction;
+                setAhead(80* direction);
             }
 
-            if (DoubleUtils.isConsideredZero(getRadarTurnRemaining())) {
+            if (getRadarTurnRemaining() == 0) {
                 setTurnRadarRight(Double.POSITIVE_INFINITY);
             }
 
@@ -36,8 +37,9 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     }
 
     public void onScannedRobot(ScannedRobotEvent e) {
-        RadarFactorLockHelper.infiniteLock(this, e);
-        fire(1);
+        RadarFactorLockHelper.stickyLock(this, e);
+        setFire(1);
+//        execute();
         log("Advance fire");
     }
 
