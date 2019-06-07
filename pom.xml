@@ -43,8 +43,7 @@
                 <artifactId>robocode.api</artifactId>
                 <version>1.9.3.6</version>
                 <scope>system</scope>
-                <systemPath>/home/khoi/robocode/libs/robocode.jar
-                </systemPath>
+                <systemPath>D:/SourceCode/RoboCode/robocode/libs/robocode.jar</systemPath>
             </dependency>
         </dependencies>
     </dependencyManagement>
