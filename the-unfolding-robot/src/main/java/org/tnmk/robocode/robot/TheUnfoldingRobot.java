@@ -2,7 +2,8 @@ package org.tnmk.robocode.robot;
 
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.log.LogHelper;
-import org.tnmk.robocode.common.radar.RadarFactorLockHelper;
+import org.tnmk.robocode.common.radar.botlock.RadarBotLockContext;
+import org.tnmk.robocode.common.radar.botlock.RadarBotLockHelper;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
@@ -13,6 +14,7 @@ import robocode.ScannedRobotEvent;
  */
 public class TheUnfoldingRobot extends AdvancedRobot {
     private static int loopIndex = 0;
+    private RadarBotLockContext radarBotLockContext = new RadarBotLockContext(this);
 
     public void run() {
         setAdjustGunForRobotTurn(true);
@@ -27,19 +29,15 @@ public class TheUnfoldingRobot extends AdvancedRobot {
                 setAhead(80* direction);
             }
 
-            if (getRadarTurnRemaining() == 0) {
-                setTurnRadarRight(Double.POSITIVE_INFINITY);
-            }
-
+            RadarBotLockHelper.doScanner(radarBotLockContext);
             execute();
             loopIndex++;
         }
     }
 
     public void onScannedRobot(ScannedRobotEvent e) {
-        RadarFactorLockHelper.stickyLock(this, e);
+        RadarBotLockHelper.onScannedRobot(radarBotLockContext, e);
         setFire(1);
-//        execute();
         log("Advance fire");
     }
 

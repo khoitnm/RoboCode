@@ -1,8 +1,7 @@
-package org.tnmk.robocode.common.radar;
+package org.tnmk.robocode.common.radar.factorlock;
 
 
 import robocode.AdvancedRobot;
-import robocode.Robot;
 import robocode.ScannedRobotEvent;
 
 /**
