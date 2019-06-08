@@ -1,6 +1,7 @@
 package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.log.LogHelper;
+import org.tnmk.robocode.common.movement.antigravity.DustBunnyAntiGravityMovement;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorContext;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorHelper;
 import org.tnmk.robocode.common.paint.HiTechPainter;
@@ -20,6 +21,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     private RadarBotLockContext radarBotLockContext = new RadarBotLockContext(this);
     private OscillatorContext oscillatorContext = new OscillatorContext(this);
     private GFTAimGun gftAimGun = new GFTAimGun(this);
+    private DustBunnyAntiGravityMovement dustBunnyAntiGravityMovement = new DustBunnyAntiGravityMovement(this);
 
     public void run() {
         HiTechPainter.paint(this);
@@ -36,6 +38,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+        dustBunnyAntiGravityMovement.onScannedRobot(scannedRobotEvent);
         RadarBotLockHelper.onScannedRobot(radarBotLockContext, scannedRobotEvent);
         OscillatorHelper.setMovement(oscillatorContext, scannedRobotEvent, 185, 200);
         gftAimGun.onScannedRobot(scannedRobotEvent);
