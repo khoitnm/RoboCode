@@ -1,10 +1,9 @@
 package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.log.LogHelper;
-import org.tnmk.robocode.common.movement.backandforth.BackAndForthContext;
-import org.tnmk.robocode.common.movement.backandforth.BackAndForthHelper;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorContext;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorHelper;
+import org.tnmk.robocode.common.paint.CyganAndBrownPainter;
 import org.tnmk.robocode.common.radar.botlock.RadarBotLockContext;
 import org.tnmk.robocode.common.radar.botlock.RadarBotLockHelper;
 import org.tnmk.robocode.common.robot.gft.GFTAimGun;
@@ -23,6 +22,8 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     private GFTAimGun gftAimGun = new GFTAimGun(this);
 
     public void run() {
+        CyganAndBrownPainter.paint(this);
+
         setAdjustGunForRobotTurn(true);
         setAdjustRadarForGunTurn(true);
         setAdjustRadarForRobotTurn(true);
