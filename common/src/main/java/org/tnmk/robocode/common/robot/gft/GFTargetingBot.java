@@ -7,13 +7,19 @@ import robocode.util.Utils;
 import java.awt.*;
 import java.awt.geom.Point2D;
 
+/**
+ * This class is copied from http://old.robowiki.net/robowiki?GFTargetingBot.
+ * I didn't change anything.
+ * This class is used to illustrated how to apply GFTMovement, GFTUtils and GFTWave.
+ * The {@link GFTAimGun} is used to encapsulate only aiming target logic which is used in this robot.
+ */
 public class GFTargetingBot extends AdvancedRobot {
 	private static final double BULLET_POWER = 1.9;
 	
 	private static double lateralDirection;
 	private static double lastEnemyVelocity;
 	private static GFTMovement movement;
-	
+
 	public GFTargetingBot() {
 		movement = new GFTMovement(this);	
 	}

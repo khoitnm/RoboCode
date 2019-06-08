@@ -37,7 +37,5 @@ public class GFTAimGun {
 		if (robot.getEnergy() >= BULLET_POWER) {
 			robot.addCustomEvent(wave);
 		}
-//		movement.onScannedRobot(e);
-//		setTurnRadarRightRadians(Utils.normalRelativeAngle(enemyAbsoluteBearing - getRadarHeadingRadians()) * 2);
 	}
 }
