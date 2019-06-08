@@ -4,7 +4,7 @@ import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.FullRobotState;
 
-import org.tnmk.robocode.common.robot.deprecated.ModernRobot;
+import org.tnmk.robocode.common.robot.tnmkmodernrobot.ModernRobot;
 import robocode.AdvancedRobot;
 import robocode.HitRobotEvent;
 import robocode.ScannedRobotEvent;

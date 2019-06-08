@@ -1,6 +1,6 @@
 package org.tnmk.robocode.robot;
 
-import org.tnmk.robocode.common.robot.deprecated.ModernRobot;
+import org.tnmk.robocode.common.robot.tnmkmodernrobot.ModernRobot;
 import robocode.ScannedRobotEvent;
 
 

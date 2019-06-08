@@ -11,7 +11,7 @@ import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedAimResult;
 import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
 
-import org.tnmk.robocode.common.robot.deprecated.ModernRobot;
+import org.tnmk.robocode.common.robot.tnmkmodernrobot.ModernRobot;
 import robocode.ScannedRobotEvent;
 import robocode.StatusEvent;
 

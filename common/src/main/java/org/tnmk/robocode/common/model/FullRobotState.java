@@ -1,7 +1,7 @@
 package org.tnmk.robocode.common.model;
 
 
-import org.tnmk.robocode.common.robot.deprecated.ModernRobot;
+import org.tnmk.robocode.common.robot.tnmkmodernrobot.ModernRobot;
 import robocode.Rules;
 import robocode.util.Utils;
 

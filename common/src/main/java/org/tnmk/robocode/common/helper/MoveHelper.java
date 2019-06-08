@@ -7,7 +7,7 @@ import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.model.FullRobotState;
 
-import org.tnmk.robocode.common.robot.deprecated.ModernRobot;
+import org.tnmk.robocode.common.robot.tnmkmodernrobot.ModernRobot;
 import robocode.HitRobotEvent;
 import robocode.Robot;
 import robocode.Rules;

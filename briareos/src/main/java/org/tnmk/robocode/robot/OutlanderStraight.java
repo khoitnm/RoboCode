@@ -6,7 +6,7 @@ import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.common.predictor.self.PredictWrapper;
 import org.tnmk.robocode.common.predictor.self.model.PredictStateResult;
 
-import org.tnmk.robocode.common.robot.deprecated.ModernRobot;
+import org.tnmk.robocode.common.robot.tnmkmodernrobot.ModernRobot;
 import robocode.StatusEvent;
 
 /**
