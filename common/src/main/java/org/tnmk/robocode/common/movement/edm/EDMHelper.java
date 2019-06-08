@@ -16,16 +16,16 @@ import static java.lang.Math.sin;
  * 
  * @author jdev
  */
-public class EnemyDodgingMovement {
+public class EDMHelper {
  
-    private static final int ACTIVITY_AREA_MARGIN = 20;
-    private static final int FIELD_OF_VISION = 50;
+    private static final int ACTIVITY_AREA_MARGIN = 200;//20
+    private static final int FIELD_OF_VISION = 500;//50
     private static final int DANGER_DISTANCE = FIELD_OF_VISION * 3;
  
     private final Robot robot;
     private final Rectangle activityArea;
  
-    public EnemyDodgingMovement(Robot robot) {
+    public EDMHelper(Robot robot) {
         this.robot = robot;
  
         activityArea = new Rectangle(ACTIVITY_AREA_MARGIN, ACTIVITY_AREA_MARGIN,
@@ -34,7 +34,7 @@ public class EnemyDodgingMovement {
     }
  
     /**
-     * Method to calculate farest point from enemies
+     * Method to calculate furthest point from enemies
      * @param enemies position of enemies
      * @return farest point from enemies
      */
