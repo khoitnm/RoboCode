@@ -38,11 +38,11 @@ public abstract class WithDirectionRobot extends AdvancedRobot implements Serial
 	}
 
 	public void reverseDirection() {
-		double velocity = getVelocity();
-		if (!Utils.isNear(velocity, 0)) {
-			String msg = String.format("Cannot change direction when velocity %.2f is different from 0.", velocity);
-			throw new RuntimeException(msg);
-		}
+//		double velocity = getVelocity();
+//		if (!Utils.isNear(velocity, 0)) {
+//			String msg = String.format("Cannot change direction when velocity %.2f is different from 0.", velocity);
+//			throw new RuntimeException(msg);
+//		}
 		this.moveDirection = -this.moveDirection;
 	}
 
