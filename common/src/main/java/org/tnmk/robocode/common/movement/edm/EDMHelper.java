@@ -19,7 +19,7 @@ import static java.lang.Math.sin;
 public class EDMHelper {
  
     private static final int ACTIVITY_AREA_MARGIN = 200;//20
-    private static final int FIELD_OF_VISION = 500;//50
+    private static final int FIELD_OF_VISION = 100;//50
     private static final int DANGER_DISTANCE = FIELD_OF_VISION * 3;
  
     private final Robot robot;
