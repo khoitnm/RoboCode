@@ -1,6 +1,7 @@
 /**
  * <pre>
  * Concept:
+ * - http://old.robowiki.net/robowiki?GuessFactorTargeting/Tutorial
  * - Waves: http://robowiki.net/wiki/Waves
  * - GuessFactors: http://robowiki.net/wiki/GuessFactors
  * - GuessFactor Targeting: http://robowiki.net/wiki/GuessFactor_Targeting_(traditional)

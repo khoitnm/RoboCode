@@ -7,6 +7,7 @@ import org.tnmk.robocode.common.movement.oscillator.OscillatorContext;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorHelper;
 import org.tnmk.robocode.common.radar.botlock.RadarBotLockContext;
 import org.tnmk.robocode.common.radar.botlock.RadarBotLockHelper;
+import org.tnmk.robocode.common.robot.gft.GFTAimGun;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
@@ -18,8 +19,9 @@ import robocode.ScannedRobotEvent;
 public class TheUnfoldingRobot extends AdvancedRobot {
     private static int loopIndex = 0;
     private RadarBotLockContext radarBotLockContext = new RadarBotLockContext(this);
-    private BackAndForthContext backAndForthContext = new BackAndForthContext(this);
     private OscillatorContext oscillatorContext = new OscillatorContext(this);
+    private GFTAimGun gftAimGun = new GFTAimGun(this);
+
     public void run() {
         setAdjustGunForRobotTurn(true);
         setAdjustRadarForGunTurn(true);
@@ -35,9 +37,8 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         RadarBotLockHelper.onScannedRobot(radarBotLockContext, scannedRobotEvent);
         OscillatorHelper.setMovement(oscillatorContext, scannedRobotEvent, 185, 200);
-        setFire(1);
+        gftAimGun.onScannedRobot(scannedRobotEvent);
         execute();
-        log("Advance fire");
     }
 
     private void log(String message) {
