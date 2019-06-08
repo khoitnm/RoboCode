@@ -65,6 +65,7 @@ http://mark.random-article.com/robocode/index.html
 
 Movement:
   - Anti-Gravity: http://robowiki.net/wiki/Anti-Gravity_Tutorial
+  - Enemy Dodging Movement: http://robowiki.net/wiki/Enemy_Dodging_Movement
 
 # Some interesting Robots
 http://robowiki.net/wiki/DrussGT
