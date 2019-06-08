@@ -45,7 +45,27 @@ StandStill -> Start Aim -> Aimed (Finsh aiming) -> Start Fire -> Fired (Finished
 http://robowiki.net/wiki/Robocode/Getting_Started
 
 ### Implement your robot
+Best diagram to show terms in RoboCode:
+https://coggle.it/diagram/51ade2c0e354014b1c00a43c/t/robocode-strategies/a19ae89e8368aa6171bd485adc1017fae44904e554ae9272fec52f6bb85c2294
+
+List of sample code: http://old.robowiki.net/robowiki?CodeSnippets
+
+Some tutorial, terms and algorithm for your robot: http://robowiki.net/wiki/Tutorials
+
+Aim Target:
+  - Waves: http://robowiki.net/wiki/Waves    
+  - GuessFactors: 
+    - http://robowiki.net/wiki/GuessFactors
+    - http://robowiki.net/wiki/GuessFactor_Targeting_(traditional)
+  - Displacement Vector: http://robowiki.net/wiki/Displacement_Vector  
+  - Play It Forward:
+    - http://robowiki.net/wiki/Play_It_Forward        
+    
 http://mark.random-article.com/robocode/index.html
+
+# Some interesting Robots
+http://robowiki.net/wiki/DrussGT
+http://robowiki.net/wiki/Diamond
 
 # Troubleshoot
 In order to RoboCode can recognize your Robot jar, the jar's filename must be the same as the robot's classname (case sensitive?)

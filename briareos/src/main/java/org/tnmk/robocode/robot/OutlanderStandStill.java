@@ -1,7 +1,7 @@
 package org.tnmk.robocode.robot;
 
-import org.tnmk.robocode.common.robot.Config;
-import org.tnmk.robocode.common.robot.ModernRobot;
+import org.tnmk.robocode.common.robot.deprecated.Config;
+import org.tnmk.robocode.common.robot.deprecated.ModernRobot;
 
 public class OutlanderStandStill extends ModernRobot {
 

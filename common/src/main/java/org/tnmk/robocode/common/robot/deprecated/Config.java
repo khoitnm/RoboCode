@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.robot;
+package org.tnmk.robocode.common.robot.deprecated;
 
 import java.io.Serializable;
 
