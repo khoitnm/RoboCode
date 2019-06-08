@@ -6,7 +6,7 @@ import org.tnmk.robocode.common.movement.oscillator.OscillatorHelper;
 import org.tnmk.robocode.common.paint.HiTechPainter;
 import org.tnmk.robocode.common.radar.botlock.RadarBotLockContext;
 import org.tnmk.robocode.common.radar.botlock.RadarBotLockHelper;
-import org.tnmk.robocode.common.robot.gft.GFTAimGun;
+import org.tnmk.robocode.common.robot.gft.oldalgorithm.GFTAimGun;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
