@@ -1,5 +1,9 @@
 package org.tnmk.robocode.common.movement.edm;
 
+import com.sun.corba.se.impl.orbutil.graph.Graph;
+import org.tnmk.robocode.common.log.LogHelper;
+import org.tnmk.robocode.common.paint.PaintHelper;
+import robocode.AdvancedRobot;
 import robocode.Robot;
 
 import java.awt.*;
@@ -13,37 +17,49 @@ import static java.lang.Math.sin;
 
 /**
  * This class is implement Enemy dodging movement method
- * 
+ *
  * @author jdev
  */
 public class EDMHelper {
- 
-    private static final int ACTIVITY_AREA_MARGIN = 200;//20
-    private static final int FIELD_OF_VISION = 100;//50
+
+    /**
+     * How far it should see enemies.
+     */
+    private static final int FIELD_OF_VISION = 500;//50
     private static final int DANGER_DISTANCE = FIELD_OF_VISION * 3;
- 
+
     private final Robot robot;
+    /**
+     * The area this robot will actually move inside.
+     * Usually, it won't move into sentryBorder's area because those border areas are protected by sentry bots.
+     */
     private final Rectangle activityArea;
- 
+
     public EDMHelper(Robot robot) {
         this.robot = robot;
- 
-        activityArea = new Rectangle(ACTIVITY_AREA_MARGIN, ACTIVITY_AREA_MARGIN,
-                (int)robot.getBattleFieldWidth() - ACTIVITY_AREA_MARGIN * 2,
-                (int)robot.getBattleFieldHeight() - ACTIVITY_AREA_MARGIN * 2);
+
+        int activity_margin = this.robot.getSentryBorderSize();
+        activityArea = new Rectangle(activity_margin, activity_margin,
+                (int) robot.getBattleFieldWidth() - activity_margin * 2,
+                (int) robot.getBattleFieldHeight() - activity_margin * 2);
+
+        Graphics2D graphics2D = this.robot.getGraphics();
+        graphics2D.setColor(Color.WHITE);
+        graphics2D.drawRect(activityArea.x, activityArea.y, activityArea.width, activityArea.height);
     }
- 
+
     /**
      * Method to calculate furthest point from enemies
+     *
      * @param enemies position of enemies
      * @return farest point from enemies
      */
     public Point2D.Double getDestination(Collection<Point2D.Double> enemies) {
         final Collection<EDMPoint> points = getPoints(FIELD_OF_VISION, enemies);
- 
+
         double maxAvgDist = 0;
         EDMPoint destination = null;
- 
+
         for (EDMPoint p : points) {
             double avgDist = calculateAvgDistance(p, enemies);
             if (avgDist > maxAvgDist) {
@@ -51,16 +67,17 @@ public class EDMHelper {
                 destination = p;
             }
         }
- 
+
         return destination;
     }
- 
+
     /**
      * Returns the collection of points, which are located on circle with radius = <code>dist</code> and with center
      * in [<code>robot.getX()</code>, <code>robot.getY()</code>]
-     * @param dist distance to probably destination points from robot
+     *
+     * @param dist    distance to probably destination points from robot
      * @param enemies enemies positions
-     * @return Returns the collection of points 
+     * @return Returns the collection of points
      */
     private Collection<EDMPoint> getPoints(double dist, Collection<Point2D.Double> enemies) {
         final Collection<EDMPoint> points = new LinkedList<EDMPoint>();
@@ -68,20 +85,21 @@ public class EDMHelper {
         for (double angle = 0; angle < PI * 2; angle += PI / 9) {
             final EDMPoint p = new EDMPoint(myPos.x + sin(angle) * dist,
                     myPos.y + cos(angle) * dist);
- 
+
             if (!activityArea.contains(p)) {
                 continue;
             }
             p.avgDistance = calculateAvgDistance(p, enemies);
             points.add(p);
         }
- 
+
         return points;
     }
- 
+
     /**
      * Calculates avarenge distance from point <code>point</code> to enemies in <code>enemies</code>
-     * @param point point to calculate averenge distance
+     *
+     * @param point   point to calculate averenge distance
      * @param enemies enemies positions
      * @return averenge distance
      */
@@ -93,20 +111,28 @@ public class EDMHelper {
             if (p.distance(robot.getX(), robot.getY()) > DANGER_DISTANCE) {
                 continue;
             }
- 
+
             distanceSum += distance;
             closeEnemyCount++;
         }
- 
-        return distanceSum / (double)(closeEnemyCount > 0 ? closeEnemyCount : 1);
+
+        return distanceSum / (double) (closeEnemyCount > 0 ? closeEnemyCount : 1);
     }
- 
+
+    public void paintEnemiesAndDestination(AdvancedRobot robot, Collection<Point2D.Double> enemies, Point2D.Double destination) {
+        Graphics2D graphics2D = robot.getGraphics();
+        paintEnemies(graphics2D, enemies);
+        PaintHelper.paintPoint(graphics2D, 3, Color.CYAN, destination, "Destination");
+        LogHelper.logAdvanceRobot(robot, 0, "decorate destination " + destination);
+    }
+
     /**
      * Paints a EDM's model
-     * @param g graphics to paint
+     *
+     * @param g       graphics to decorate. Usually {@link Robot#getGraphics()}
      * @param enemies enemies positions
      */
-    public void paint(Graphics2D g, Collection<Point2D.Double> enemies) {
+    private void paintEnemies(Graphics2D g, Collection<Point2D.Double> enemies) {
         g.setColor(Color.WHITE);
         final Collection<EDMPoint> points = getPoints(FIELD_OF_VISION, enemies);
         double maxAvgDist = 0;
@@ -119,9 +145,9 @@ public class EDMHelper {
                 maxAvgDist = p.avgDistance;
             }
         }
- 
+
         for (EDMPoint rp : points) {
- 
+
             int radius = 4;
             int gb = (int) (255 * (rp.avgDistance - minAvgDist) / (maxAvgDist - minAvgDist));
             if (gb < 0) {
@@ -136,11 +162,11 @@ public class EDMHelper {
                 g.drawOval((int) Math.round(rp.x - radius / 2), (int) Math.round(rp.y - radius / 2), radius, radius);
             }
         }
- 
+
         g.setColor(Color.BLUE);
         final int fieldOfVisionRadius = DANGER_DISTANCE * 2;
-        g.drawOval((int)robot.getX() - fieldOfVisionRadius / 2, (int)robot.getY() - fieldOfVisionRadius / 2,
+        g.drawOval((int) robot.getX() - fieldOfVisionRadius / 2, (int) robot.getY() - fieldOfVisionRadius / 2,
                 fieldOfVisionRadius, fieldOfVisionRadius);
     }
- 
+
 }

@@ -8,12 +8,12 @@ import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
 import java.awt.geom.Point2D;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class EnemyDodgeMovement {
     private final AdvancedRobot robot;
+
+
     private final EDMHelper edmHelper;
     private final Map<String, Point2D.Double> enemiesPositions = Collections.synchronizedMap(new HashMap<>());
 
@@ -28,7 +28,8 @@ public class EnemyDodgeMovement {
         enemiesPositions.put(scannedRobotEvent.getName(), targetPositionPoint2D);
 
         Point2D.Double currentPosition2D = new Point2D.Double(robot.getX(), robot.getY());
-        Point2D.Double destinationPosition2D = edmHelper.getDestination(enemiesPositions.values());
+        Collection<Point2D.Double> enemiesPositionsPoint2Ds = enemiesPositions.values();
+        Point2D.Double destinationPosition2D = edmHelper.getDestination(enemiesPositionsPoint2Ds);
         Point currentPosition = PointConverter.toPoint(currentPosition2D);
         Point destinationPosition = PointConverter.toPoint(destinationPosition2D);
 
@@ -36,6 +37,12 @@ public class EnemyDodgeMovement {
         robot.setTurnRight(moveAngle);
 //        double distance = currentPosition2D.distance(destinationPosition2D);
         robot.setAhead(Double.POSITIVE_INFINITY);
+
+        edmHelper.paintEnemiesAndDestination(this.robot, enemiesPositionsPoint2Ds, destinationPosition2D);
     }
 
+
+    public EDMHelper getEdmHelper() {
+        return edmHelper;
+    }
 }

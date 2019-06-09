@@ -226,6 +226,14 @@ public abstract class ModernRobot extends WithDirectionRobot implements Serializ
 		graphic.drawLine((int) point.x, (int) point.y - pointSize, (int) point.x, (int) point.y + pointSize);
 	}
 
+	/**
+	 * @deprecated replaced by {@link org.tnmk.robocode.common.paint.PaintHelper#paintPoint(Graphics, int, Color, Point, String)}
+	 * @param pointSize
+	 * @param color
+	 * @param point
+	 * @param printText
+	 */
+	@Deprecated
 	public void paintPoint(int pointSize, Color color, Point point, String printText) {
 		Graphics graphic = getGraphics();
 		graphic.setColor(color);
@@ -236,6 +244,13 @@ public abstract class ModernRobot extends WithDirectionRobot implements Serializ
 		graphic.drawLine((int) point.x, (int) point.y - pointSize, (int) point.x, (int) point.y + pointSize);
 	}
 
+	/**
+	 * @param string
+	 * @param x
+	 * @param line
+	 * @deprecated replaced by {@link org.tnmk.robocode.common.paint.PaintHelper#paintText(Graphics, String, int, int)}
+	 */
+	@Deprecated
 	public void paintText(String string, int x, int line) {
 		Graphics graphic = getGraphics();
 		graphic.setColor(Color.WHITE);

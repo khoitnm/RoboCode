@@ -4,10 +4,8 @@ import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.movement.antigravity.DustBunnyAntiGravityMovement;
 import org.tnmk.robocode.common.movement.edm.EnemyDodgeMovement;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorContext;
-import org.tnmk.robocode.common.movement.oscillator.OscillatorHelper;
-import org.tnmk.robocode.common.paint.HiTechPainter;
+import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import org.tnmk.robocode.common.radar.botlock.RadarBotLockContext;
-import org.tnmk.robocode.common.radar.botlock.RadarBotLockHelper;
 import org.tnmk.robocode.common.radar.scanall.ScanAllRobotsRadar;
 import org.tnmk.robocode.common.robot.gft.oldalgorithm.GFTAimGun;
 import robocode.AdvancedRobot;
@@ -28,7 +26,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     private ScanAllRobotsRadar scanAllRobotsRadar = new ScanAllRobotsRadar(this);
     public void run() {
         enemyDodgeMovement = new EnemyDodgeMovement(this);
-        HiTechPainter.paint(this);
+        HiTechDecorator.decorate(this);
 
         setAdjustGunForRobotTurn(true);
         setAdjustRadarForGunTurn(true);
@@ -43,6 +41,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+
         dustBunnyAntiGravityMovement.onScannedRobot(scannedRobotEvent);
 //        RadarBotLockHelper.onScannedRobot(radarBotLockContext, scannedRobotEvent);
 //        OscillatorHelper.setMovement(oscillatorContext, scannedRobotEvent, 185, 200);
