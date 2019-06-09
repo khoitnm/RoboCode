@@ -63,6 +63,10 @@ Aim Target:
     
 http://mark.random-article.com/robocode/index.html
 
+Movement:
+  - Anti-Gravity: http://robowiki.net/wiki/Anti-Gravity_Tutorial
+  - Enemy Dodging Movement: http://robowiki.net/wiki/Enemy_Dodging_Movement
+
 # Some interesting Robots
 http://robowiki.net/wiki/DrussGT
 http://robowiki.net/wiki/Diamond
@@ -75,6 +79,17 @@ In application > Preferences > Development Options:
 - You will point to the folder which will contains package of robot classes, for example: `/SourceCode/RoboCode/simple-robot/target/classes`
 - Anyway, this folder should not contains different folder point to the same robot's class name. Otherwise, the application will confuse and pickup the first one.  
 For example, if you point to `/SourceCode/RoboCode/simple-robot/target/`, that folder will have `./classes/` and `*.jar` files which are both store robot's classes. It will cause problem.
+
+# Debug by Logging
+Use `robot.out.println("XXX");`
+Then, when starting game, click to the name of the robot, it will shows logs for that specific robot.
+
+# Debug by Painting
+In the code, use `robot.getGraphics().drawXxx()` methods.
+When viewing log of a specific robot, you can see it's painting log by click to button "Paint"
+
+
 ---------------------------------------------------
+
 If a robot fails to complete his turn in the time allotted, the turn will be skipped. 
 https://stackoverflow.com/questions/33527613/onscannedrobot-method-never-being-called

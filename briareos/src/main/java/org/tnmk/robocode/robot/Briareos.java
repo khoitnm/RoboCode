@@ -79,7 +79,7 @@ public class Briareos extends ModernRobot {
 				String s = "Debug hit wall";
 			}
 			if (getTime() >= super.paintedTime && getTime() <= paintedTime) {
-				// String msg = "Debug paint";
+				// String msg = "Debug decorate";
 			}
 			// begin = printRunTime("Normal Begin", begin);
 			if (isFinishScanRobot()) {

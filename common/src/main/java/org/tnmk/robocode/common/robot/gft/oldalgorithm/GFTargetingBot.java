@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.robot.gft;
+package org.tnmk.robocode.common.robot.gft.oldalgorithm;
 
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;

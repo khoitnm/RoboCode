@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.robot.gft;
+package org.tnmk.robocode.common.robot.gft.oldalgorithm;
 
 import java.awt.geom.Point2D;
 
