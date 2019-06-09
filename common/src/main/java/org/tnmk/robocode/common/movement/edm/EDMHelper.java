@@ -21,14 +21,16 @@ import static java.lang.Math.sin;
 public class EDMHelper {
 
     /**
-     * How far it should see enemies.
+     * How far the potential destination away from the robot's current position.
      */
-    private static final int FIELD_OF_VISION = 500;//50
-    private static final int DANGER_DISTANCE = FIELD_OF_VISION * 3;
+    private static final int DESTINATION_DISTANCE = 100;//50
+    private static final int DANGEROUS_DISTANCE = DESTINATION_DISTANCE * 5;
+    private static final boolean IGNORE_ENEMIES_OUTSIDE_DANGEROUS_AREA = false;
+
     /**
-     * The number of potential destination calculation.
+     * The number of potential destination calculation???
      */
-    private static final int POTENTIAL_DESTINATIONS_COUNT = 18;
+    private static final int POTENTIAL_DESTINATIONS_COUNT = 9;
 
     // PAINT CONSTANTS
     private static final Color DESTINATION_PAINT_COLOR = Color.GREEN;
@@ -58,10 +60,10 @@ public class EDMHelper {
      * Method to calculate furthest point from enemies
      *
      * @param enemies position of enemies
-     * @return farest point from enemies
+     * @return furthest point from enemies. Note: if {@link #IGNORE_ENEMIES_OUTSIDE_DANGEROUS_AREA}, the result could be null because it cannot found any enemy.
      */
     public Point2D.Double getDestination(Collection<Point2D.Double> enemies) {
-        final Collection<EDMPoint> points = getPoints(FIELD_OF_VISION, enemies);
+        final Collection<EDMPoint> points = getPoints(DESTINATION_DISTANCE, enemies);
 
         double maxAvgDist = 0;
         EDMPoint destination = null;
@@ -106,14 +108,15 @@ public class EDMHelper {
      *
      * @param point   point to calculate averenge distance
      * @param enemies enemies positions
-     * @return averenge distance
+     * @return average distance
+     * Note, if we ignore enemies outside dangerous area, the result could be 0.
      */
     private double calculateAvgDistance(Point2D.Double point, Collection<Point2D.Double> enemies) {
         double distanceSum = 0;
         int closeEnemyCount = 0;
         for (Point2D.Double p : enemies) {
             final double distance = p.distance(point);
-            if (p.distance(robot.getX(), robot.getY()) > DANGER_DISTANCE) {
+            if (IGNORE_ENEMIES_OUTSIDE_DANGEROUS_AREA && p.distance(robot.getX(), robot.getY()) > DANGEROUS_DISTANCE) {
                 continue;
             }
 
@@ -141,7 +144,7 @@ public class EDMHelper {
      */
     private void paintEnemies(Graphics2D g, Collection<Point2D.Double> enemies) {
         g.setColor(Color.WHITE);
-        final Collection<EDMPoint> points = getPoints(FIELD_OF_VISION, enemies);
+        final Collection<EDMPoint> points = getPoints(DESTINATION_DISTANCE, enemies);
         double maxAvgDist = 0;
         double minAvgDist = Double.MAX_VALUE;
         for (EDMPoint p : points) {
@@ -171,7 +174,7 @@ public class EDMHelper {
         }
 
         g.setColor(Color.BLUE);
-        final int fieldOfVisionRadius = DANGER_DISTANCE * 2;
+        final int fieldOfVisionRadius = DANGEROUS_DISTANCE * 2;
         g.drawOval((int) robot.getX() - fieldOfVisionRadius / 2, (int) robot.getY() - fieldOfVisionRadius / 2,
                 fieldOfVisionRadius, fieldOfVisionRadius);
     }
