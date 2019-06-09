@@ -1,5 +1,6 @@
 package org.tnmk.robocode.common.paint;
 
+import com.sun.istack.internal.Nullable;
 import org.tnmk.common.math.Point;
 import robocode.Robot;
 
@@ -17,9 +18,9 @@ public class PaintHelper {
      * @param pointSize
      * @param color
      * @param point
-     * @param printText the text next to the point
+     * @param printText the text next to the point. Could be null
      */
-    public static void paintPoint(Graphics graphic, int pointSize, Color color, Point2D point, String printText) {
+    public static void paintPoint(Graphics graphic, int pointSize, Color color, Point2D point,@Nullable String printText) {
         graphic.setColor(color);
         if (printText != null) {
             graphic.drawString(printText + point, (int) point.getX() + pointSize, (int) point.getY());

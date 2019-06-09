@@ -1,7 +1,5 @@
 package org.tnmk.robocode.common.movement.edm;
 
-import com.sun.corba.se.impl.orbutil.graph.Graph;
-import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.paint.PaintHelper;
 import robocode.AdvancedRobot;
 import robocode.Robot;
@@ -27,6 +25,14 @@ public class EDMHelper {
      */
     private static final int FIELD_OF_VISION = 500;//50
     private static final int DANGER_DISTANCE = FIELD_OF_VISION * 3;
+    /**
+     * The number of potential destination calculation.
+     */
+    private static final int POTENTIAL_DESTINATIONS_COUNT = 18;
+
+    // PAINT CONSTANTS
+    private static final Color DESTINATION_PAINT_COLOR = Color.GREEN;
+    private static final int DESTINATION_PAINT_SIZE = 3;//pixels
 
     private final Robot robot;
     /**
@@ -44,7 +50,7 @@ public class EDMHelper {
                 (int) robot.getBattleFieldHeight() - activity_margin * 2);
 
         Graphics2D graphics2D = this.robot.getGraphics();
-        graphics2D.setColor(Color.WHITE);
+        graphics2D.setColor(Color.GRAY);
         graphics2D.drawRect(activityArea.x, activityArea.y, activityArea.width, activityArea.height);
     }
 
@@ -82,9 +88,8 @@ public class EDMHelper {
     private Collection<EDMPoint> getPoints(double dist, Collection<Point2D.Double> enemies) {
         final Collection<EDMPoint> points = new LinkedList<EDMPoint>();
         final Point2D.Double myPos = new Point2D.Double(robot.getX(), robot.getY());
-        for (double angle = 0; angle < PI * 2; angle += PI / 9) {
-            final EDMPoint p = new EDMPoint(myPos.x + sin(angle) * dist,
-                    myPos.y + cos(angle) * dist);
+        for (double angle = 0; angle < PI * 2; angle += PI / POTENTIAL_DESTINATIONS_COUNT) {
+            final EDMPoint p = new EDMPoint(myPos.x + sin(angle) * dist, myPos.y + cos(angle) * dist);
 
             if (!activityArea.contains(p)) {
                 continue;
@@ -122,10 +127,12 @@ public class EDMHelper {
     public void paintEnemiesAndDestination(AdvancedRobot robot, Collection<Point2D.Double> enemies, Point2D.Double destination) {
         Graphics2D graphics2D = robot.getGraphics();
         paintEnemies(graphics2D, enemies);
-        PaintHelper.paintPoint(graphics2D, 3, Color.CYAN, destination, "Destination");
-        LogHelper.logAdvanceRobot(robot, 0, "decorate destination " + destination);
+        paintDestination(graphics2D, destination);
     }
 
+    private void paintDestination(Graphics2D graphics2D, Point2D.Double destination){
+        PaintHelper.paintPoint(graphics2D, DESTINATION_PAINT_SIZE, DESTINATION_PAINT_COLOR, destination, null);
+    }
     /**
      * Paints a EDM's model
      *
