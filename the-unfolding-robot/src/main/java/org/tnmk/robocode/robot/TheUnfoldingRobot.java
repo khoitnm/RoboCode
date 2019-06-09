@@ -19,6 +19,9 @@ import robocode.ScannedRobotEvent;
 public class TheUnfoldingRobot extends AdvancedRobot {
     private static int loopIndex = 0;
     private RadarBotLockContext radarBotLockContext = new RadarBotLockContext(this);
+
+    private TheUnfoldingMovement theUnfoldingMovement = new TheUnfoldingMovement(this);
+
     private OscillatorContext oscillatorContext = new OscillatorContext(this);
     private GFTAimGun gftAimGun = new GFTAimGun(this);
     private DustBunnyAntiGravityMovement dustBunnyAntiGravityMovement = new DustBunnyAntiGravityMovement(this);
@@ -41,11 +44,11 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-
-        dustBunnyAntiGravityMovement.onScannedRobot(scannedRobotEvent);
+        theUnfoldingMovement.onScannedRobot(scannedRobotEvent);
+//        dustBunnyAntiGravityMovement.onScannedRobot(scannedRobotEvent);
 //        RadarBotLockHelper.onScannedRobot(radarBotLockContext, scannedRobotEvent);
 //        OscillatorHelper.setMovement(oscillatorContext, scannedRobotEvent, 185, 200);
-        enemyDodgeMovement.onScannedRobot(scannedRobotEvent);
+//        enemyDodgeMovement.onScannedRobot(scannedRobotEvent);
         gftAimGun.onScannedRobot(scannedRobotEvent);
         execute();
     }
