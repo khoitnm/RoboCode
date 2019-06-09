@@ -35,6 +35,7 @@ public class EDMHelper {
     // PAINT CONSTANTS
     private static final Color DESTINATION_PAINT_COLOR = Color.GREEN;
     private static final int DESTINATION_PAINT_SIZE = 3;//pixels
+    private static final Color DANGEROUS_PAINT_COLOR = Color.RED;
 
     private final Robot robot;
     /**
@@ -62,7 +63,7 @@ public class EDMHelper {
      * @param enemies position of enemies
      * @return furthest point from enemies. Note: if {@link #IGNORE_ENEMIES_OUTSIDE_DANGEROUS_AREA}, the result could be null because it cannot found any enemy.
      */
-    public Point2D.Double getDestination(Collection<Point2D.Double> enemies) {
+    public DestinationCalculation getDestination(Collection<Point2D.Double> enemies) {
         final Collection<EDMPoint> points = getPoints(DESTINATION_DISTANCE, enemies);
 
         double maxAvgDist = 0;
@@ -76,9 +77,26 @@ public class EDMHelper {
             }
         }
 
-        return destination;
+        return new DestinationCalculation(destination, points);
     }
 
+    public static class DestinationCalculation{
+        private final EDMPoint destination;
+        private final Collection<EDMPoint> enemies;
+
+        private DestinationCalculation(EDMPoint destination, Collection<EDMPoint> enemies) {
+            this.destination = destination;
+            this.enemies = enemies;
+        }
+
+        public EDMPoint getDestination() {
+            return destination;
+        }
+
+        public Collection<EDMPoint> getEnemies() {
+            return enemies;
+        }
+    }
     /**
      * Returns the collection of points, which are located on circle with radius = <code>dist</code> and with center
      * in [<code>robot.getX()</code>, <code>robot.getY()</code>]
@@ -127,7 +145,7 @@ public class EDMHelper {
         return distanceSum / (double) (closeEnemyCount > 0 ? closeEnemyCount : 1);
     }
 
-    public void paintEnemiesAndDestination(AdvancedRobot robot, Collection<Point2D.Double> enemies, Point2D.Double destination) {
+    public void paintEnemiesAndDestination(AdvancedRobot robot, Collection<EDMPoint> enemies, Point2D.Double destination) {
         Graphics2D graphics2D = robot.getGraphics();
         paintEnemies(graphics2D, enemies);
         paintDestination(graphics2D, destination);
@@ -137,17 +155,16 @@ public class EDMHelper {
         PaintHelper.paintPoint(graphics2D, DESTINATION_PAINT_SIZE, DESTINATION_PAINT_COLOR, destination, null);
     }
     /**
-     * Paints a EDM's model
+     * Paints a EDM's model with color from Red (dangerous destinations) to White (safe destinations)
      *
      * @param g       graphics to decorate. Usually {@link Robot#getGraphics()}
      * @param enemies enemies positions
      */
-    private void paintEnemies(Graphics2D g, Collection<Point2D.Double> enemies) {
+    private void paintEnemies(Graphics2D g, Collection<EDMPoint> enemies) {
         g.setColor(Color.WHITE);
-        final Collection<EDMPoint> points = getPoints(DESTINATION_DISTANCE, enemies);
         double maxAvgDist = 0;
         double minAvgDist = Double.MAX_VALUE;
-        for (EDMPoint p : points) {
+        for (EDMPoint p : enemies) {
             if (p.avgDistance < minAvgDist) {
                 minAvgDist = p.avgDistance;
             }
@@ -156,7 +173,7 @@ public class EDMHelper {
             }
         }
 
-        for (EDMPoint rp : points) {
+        for (EDMPoint rp : enemies) {
 
             int radius = 4;
             int gb = (int) (255 * (rp.avgDistance - minAvgDist) / (maxAvgDist - minAvgDist));
@@ -173,10 +190,13 @@ public class EDMHelper {
             }
         }
 
-        g.setColor(Color.BLUE);
-        final int fieldOfVisionRadius = DANGEROUS_DISTANCE * 2;
+        painDangerousArea(g);
+    }
+
+    private void painDangerousArea(Graphics2D g){
+        g.setColor(DANGEROUS_PAINT_COLOR);
+        final int fieldOfVisionRadius = DANGEROUS_DISTANCE;
         g.drawOval((int) robot.getX() - fieldOfVisionRadius / 2, (int) robot.getY() - fieldOfVisionRadius / 2,
                 fieldOfVisionRadius, fieldOfVisionRadius);
     }
-
 }
