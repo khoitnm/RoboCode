@@ -3,7 +3,6 @@ package org.tnmk.robocode.robot;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
-import org.tnmk.robocode.common.robot.gft.oldalgorithm.GFTAimGun;
 import robocode.AdvancedRobot;
 import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
@@ -28,6 +27,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
         setAdjustRadarForRobotTurn(true);
 
         theUnfoldingRadar.initiateRun();
+        theUnfoldingMovement.initiateRun();
 //        while (true) {
 //            BotLockRadarHelper.setTurnRadar(radarBotLockContext);
 //            execute();

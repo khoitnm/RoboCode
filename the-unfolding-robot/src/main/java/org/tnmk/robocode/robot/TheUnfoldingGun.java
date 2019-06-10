@@ -10,11 +10,11 @@ public class TheUnfoldingGun {
      * The furthest distance which we should fire on target in one-on-one fights.
      * Note: this distance should never be lower than {@link TheUnfoldingMovement#IDEAL_ENEMY_OSCILLATOR_DISTANCE}
      */
-    public static final double FURTHEST_DISTANCE_TO_FIRE_ONE_ON_ONE = 400;
+    public static final double FURTHEST_DISTANCE_TO_FIRE_ONE_ON_ONE = 300;
     /**
      * For each additional enemies, increase the fire distance by this percentage.
      */
-    private static final double PERCENTAGE_INCREASING_DISTANCE_FOR_EACH_ADDITIONAL_ENEMY = 0.2;
+    private static final double PERCENTAGE_INCREASING_DISTANCE_FOR_EACH_ADDITIONAL_ENEMY = 0.25;
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
@@ -37,8 +37,9 @@ public class TheUnfoldingGun {
     /**
      * When the distance is too far, don't fire.
      * However, if there's so many enemies, fire bullets even if the distance is far because there could be a change we hit other enemies accidentally.
+     *
      * @param aimedEnemyDistance the current distance between our robot and a target enemy.
-     * @param enemiesCount the total of remain enemies.
+     * @param enemiesCount       the total of remain enemies.
      * @return
      */
     private boolean shouldFire(double aimedEnemyDistance, int enemiesCount) {

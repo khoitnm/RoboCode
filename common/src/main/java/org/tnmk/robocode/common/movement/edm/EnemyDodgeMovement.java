@@ -30,6 +30,10 @@ public class EnemyDodgeMovement {
         this.edmHelper = new EDMHelper(robot);
     }
 
+    public void initiateRun(){
+        this.edmHelper.initiateRun();
+    }
+
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         Collection<Point2D> enemiesPositionsPoint2Ds = getEnemiesPositionsFromContext();
         EDMHelper.DestinationCalculation destinationCalculation = edmHelper.getDestination(enemiesPositionsPoint2Ds);

@@ -23,6 +23,10 @@ public class TheUnfoldingMovement {
         enemyDodgeMovement = new EnemyDodgeMovement(robot, allEnemiesObservationContext);
     }
 
+    public void initiateRun(){
+        enemyDodgeMovement.initiateRun();
+    }
+
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         if (allEnemiesObservationContext.countEnemies() <= 1) {
             moveOscillatorWithIdealDistance(scannedRobotEvent);

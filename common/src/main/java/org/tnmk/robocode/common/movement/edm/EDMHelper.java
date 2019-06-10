@@ -42,11 +42,13 @@ public class EDMHelper {
      * The area this robot will actually move inside.
      * Usually, it won't move into sentryBorder's area because those border areas are protected by sentry bots.
      */
-    private final Rectangle activityArea;
+    private Rectangle activityArea;
 
     public EDMHelper(Robot robot) {
         this.robot = robot;
+    }
 
+    public void initiateRun(){
         int activity_margin = this.robot.getSentryBorderSize();
         activityArea = new Rectangle(activity_margin, activity_margin,
                 (int) robot.getBattleFieldWidth() - activity_margin * 2,
