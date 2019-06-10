@@ -13,8 +13,6 @@ import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
 
 /**
- * View more at http://robowiki.net/wiki/Melee_Radar
- * <p/>
  * The biggest flaw of this algorithm: sometimes radar couldn't find enough robots.
  * Then it has to scan 360 degree multiple times to find out all enemies before revert scanning.<br/>
  * <p/>
