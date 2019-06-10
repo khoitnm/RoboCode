@@ -13,6 +13,9 @@ import robocode.AdvancedRobot;
 import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
 
+/**
+ * http://robowiki.net/wiki/Melee_Radar
+ */
 public class AllEnemiesScanRadar implements InitiableRun, LoopableRun, Scannable, RobotDeathTrackable {
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
