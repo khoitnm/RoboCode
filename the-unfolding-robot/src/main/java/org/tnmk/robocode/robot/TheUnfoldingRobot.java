@@ -1,14 +1,10 @@
 package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.log.LogHelper;
-import org.tnmk.robocode.common.movement.antigravity.DustBunnyAntiGravityMovement;
-import org.tnmk.robocode.common.movement.edm.EnemyDodgeMovement;
-import org.tnmk.robocode.common.movement.oscillator.OscillatorContext;
+import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
-import org.tnmk.robocode.common.radar.botlock.RadarBotLockContext;
-import org.tnmk.robocode.common.radar.scanall.ScanAllRobotsRadar;
-import org.tnmk.robocode.common.robot.gft.oldalgorithm.GFTAimGun;
 import robocode.AdvancedRobot;
+import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
 
 /**
@@ -18,35 +14,38 @@ import robocode.ScannedRobotEvent;
  */
 public class TheUnfoldingRobot extends AdvancedRobot {
     private static int loopIndex = 0;
-    private RadarBotLockContext radarBotLockContext = new RadarBotLockContext(this);
-    private OscillatorContext oscillatorContext = new OscillatorContext(this);
-    private GFTAimGun gftAimGun = new GFTAimGun(this);
-    private DustBunnyAntiGravityMovement dustBunnyAntiGravityMovement = new DustBunnyAntiGravityMovement(this);
-    private EnemyDodgeMovement enemyDodgeMovement;
-    private ScanAllRobotsRadar scanAllRobotsRadar = new ScanAllRobotsRadar(this);
+    private AllEnemiesObservationContext allEnemiesObservationContext = new AllEnemiesObservationContext(this);
+    private TheUnfoldingMovement theUnfoldingMovement = new TheUnfoldingMovement(this, allEnemiesObservationContext);
+    private TheUnfoldingRadar theUnfoldingRadar = new TheUnfoldingRadar(this, allEnemiesObservationContext);
+    private TheUnfoldingGun theUnfoldingGun = new TheUnfoldingGun(this,allEnemiesObservationContext);
+
     public void run() {
-        enemyDodgeMovement = new EnemyDodgeMovement(this);
         HiTechDecorator.decorate(this);
 
         setAdjustGunForRobotTurn(true);
         setAdjustRadarForGunTurn(true);
         setAdjustRadarForRobotTurn(true);
 
-        scanAllRobotsRadar.scanAll();
-//        while (true) {
-//            RadarBotLockHelper.setTurnRadar(radarBotLockContext);
-//            execute();
-//            loopIndex++;
-//        }
+        theUnfoldingRadar.runInit();
+        theUnfoldingMovement.runInit();
+        execute();
+
+        while (true) {
+            theUnfoldingRadar.runLoop();
+            execute();
+            loopIndex++;
+        }
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+        theUnfoldingRadar.onScannedRobot(scannedRobotEvent);
+        theUnfoldingMovement.onScannedRobot(scannedRobotEvent);
+        theUnfoldingGun.onScannedRobot(scannedRobotEvent);
+        execute();
+    }
 
-        dustBunnyAntiGravityMovement.onScannedRobot(scannedRobotEvent);
-//        RadarBotLockHelper.onScannedRobot(radarBotLockContext, scannedRobotEvent);
-//        OscillatorHelper.setMovement(oscillatorContext, scannedRobotEvent, 185, 200);
-        enemyDodgeMovement.onScannedRobot(scannedRobotEvent);
-        gftAimGun.onScannedRobot(scannedRobotEvent);
+    public void onRobotDeath(RobotDeathEvent robotDeathEvent){
+        theUnfoldingRadar.onRobotDeath(robotDeathEvent);
         execute();
     }
 

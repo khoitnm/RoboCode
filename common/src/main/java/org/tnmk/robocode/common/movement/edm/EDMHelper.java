@@ -42,11 +42,13 @@ public class EDMHelper {
      * The area this robot will actually move inside.
      * Usually, it won't move into sentryBorder's area because those border areas are protected by sentry bots.
      */
-    private final Rectangle activityArea;
+    private Rectangle activityArea;
 
     public EDMHelper(Robot robot) {
         this.robot = robot;
+    }
 
+    public void runInit(){
         int activity_margin = this.robot.getSentryBorderSize();
         activityArea = new Rectangle(activity_margin, activity_margin,
                 (int) robot.getBattleFieldWidth() - activity_margin * 2,
@@ -62,22 +64,23 @@ public class EDMHelper {
      *
      * @param enemies position of enemies
      * @return furthest point from enemies. Note: if {@link #IGNORE_ENEMIES_OUTSIDE_DANGEROUS_AREA}, the result could be null because it cannot found any enemy.
+     * Note: one flaw of this algorithm is that when the destination calculation could return a result which is blocked by an enemy. (you can test with a RamFire enemy and Crazy enemy)
      */
-    public DestinationCalculation getDestination(Collection<Point2D.Double> enemies) {
-        final Collection<EDMPoint> points = getPoints(DESTINATION_DISTANCE, enemies);
+    public DestinationCalculation getDestination(Collection<Point2D> enemies) {
+        final Collection<EDMPoint> potentialDestinations = getPotentialDestinations(DESTINATION_DISTANCE, enemies);
 
-        double maxAvgDist = 0;
+        double maxAvgDistance = 0;
         EDMPoint destination = null;
 
-        for (EDMPoint p : points) {
-            double avgDist = calculateAvgDistance(p, enemies);
-            if (avgDist > maxAvgDist) {
-                maxAvgDist = avgDist;
-                destination = p;
+        for (EDMPoint potentialDestination : potentialDestinations) {
+            double avgDistance = calculateAvgDistance(potentialDestination, enemies);
+            if (avgDistance > maxAvgDistance) {
+                maxAvgDistance = avgDistance;
+                destination = potentialDestination;
             }
         }
 
-        return new DestinationCalculation(destination, points);
+        return new DestinationCalculation(destination, potentialDestinations);
     }
 
     public static class DestinationCalculation{
@@ -105,11 +108,12 @@ public class EDMHelper {
      * @param enemies enemies positions
      * @return Returns the collection of points
      */
-    private Collection<EDMPoint> getPoints(double dist, Collection<Point2D.Double> enemies) {
+    private Collection<EDMPoint> getPotentialDestinations(double dist, Collection<Point2D> enemies) {
         final Collection<EDMPoint> points = new LinkedList<EDMPoint>();
-        final Point2D.Double myPos = new Point2D.Double(robot.getX(), robot.getY());
+        //FIXME there's a bug if myPos is outside of activityArea (but it still inside the battlefield).
+        final Point2D myPos = new Point2D.Double(robot.getX(), robot.getY());
         for (double angle = 0; angle < PI * 2; angle += PI / POTENTIAL_DESTINATIONS_COUNT) {
-            final EDMPoint p = new EDMPoint(myPos.x + sin(angle) * dist, myPos.y + cos(angle) * dist);
+            final EDMPoint p = new EDMPoint(myPos.getX() + sin(angle) * dist, myPos.getY() + cos(angle) * dist);
 
             if (!activityArea.contains(p)) {
                 continue;
@@ -124,17 +128,17 @@ public class EDMHelper {
     /**
      * Calculates avarenge distance from point <code>point</code> to enemies in <code>enemies</code>
      *
-     * @param point   point to calculate averenge distance
+     * @param potentialDestination   point to calculate averenge distance
      * @param enemies enemies positions
      * @return average distance
      * Note, if we ignore enemies outside dangerous area, the result could be 0.
      */
-    private double calculateAvgDistance(Point2D.Double point, Collection<Point2D.Double> enemies) {
+    private double calculateAvgDistance(Point2D potentialDestination, Collection<Point2D> enemies) {
         double distanceSum = 0;
         int closeEnemyCount = 0;
-        for (Point2D.Double p : enemies) {
-            final double distance = p.distance(point);
-            if (IGNORE_ENEMIES_OUTSIDE_DANGEROUS_AREA && p.distance(robot.getX(), robot.getY()) > DANGEROUS_DISTANCE) {
+        for (Point2D enemy : enemies) {
+            final double distance = enemy.distance(potentialDestination);
+            if (IGNORE_ENEMIES_OUTSIDE_DANGEROUS_AREA && enemy.distance(robot.getX(), robot.getY()) > DANGEROUS_DISTANCE) {
                 continue;
             }
 
@@ -145,13 +149,13 @@ public class EDMHelper {
         return distanceSum / (double) (closeEnemyCount > 0 ? closeEnemyCount : 1);
     }
 
-    public void paintEnemiesAndDestination(AdvancedRobot robot, Collection<EDMPoint> enemies, Point2D.Double destination) {
+    public void paintEnemiesAndDestination(AdvancedRobot robot, Collection<EDMPoint> enemies, Point2D destination) {
         Graphics2D graphics2D = robot.getGraphics();
         paintEnemies(graphics2D, enemies);
         paintDestination(graphics2D, destination);
     }
 
-    private void paintDestination(Graphics2D graphics2D, Point2D.Double destination){
+    private void paintDestination(Graphics2D graphics2D, Point2D destination){
         PaintHelper.paintPoint(graphics2D, DESTINATION_PAINT_SIZE, DESTINATION_PAINT_COLOR, destination, null);
     }
     /**

@@ -5,7 +5,7 @@ import org.tnmk.common.math.Point;
 import java.awt.geom.Point2D;
 
 public class PointConverter {
-    public static Point toPoint(Point2D.Double point2DDouble){
-        return new Point(point2DDouble.x, point2DDouble.y);
+    public static Point toPoint(Point2D point2D){
+        return new Point(point2D.getX(), point2D.getY());
     }
 }

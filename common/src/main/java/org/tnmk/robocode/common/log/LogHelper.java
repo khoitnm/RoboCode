@@ -5,6 +5,16 @@ import robocode.Robot;
 
 public class LogHelper {
 
+    public static void logAdvanceRobot(AdvancedRobot robot, String message) {
+        String finalMessage = String.format("[%s] " +
+                        "\t velocity %s " +
+                        "\t distanceRemaining %s " +
+                        "\t %s",
+                robot.getTime(), robot.getVelocity(), robot.getDistanceRemaining(), message);
+        robot.out.println(finalMessage);
+    }
+
+
     public static void logAdvanceRobot(AdvancedRobot robot, int loopIndex, String message) {
         String finalMessage = String.format("[%s] " +
                         "\t loop[%s] " +

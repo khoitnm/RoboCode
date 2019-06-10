@@ -1,7 +1,6 @@
 package org.tnmk.robocode.common.paint;
 
 import com.sun.istack.internal.Nullable;
-import org.tnmk.common.math.Point;
 import robocode.Robot;
 
 import java.awt.*;
@@ -20,13 +19,33 @@ public class PaintHelper {
      * @param point
      * @param printText the text next to the point. Could be null
      */
-    public static void paintPoint(Graphics graphic, int pointSize, Color color, Point2D point,@Nullable String printText) {
+    public static void paintPoint(Graphics graphic, int pointSize, Color color, Point2D point, @Nullable String printText) {
         graphic.setColor(color);
         if (printText != null) {
             graphic.drawString(printText + point, (int) point.getX() + pointSize, (int) point.getY());
         }
         graphic.drawLine((int) point.getX() - pointSize, (int) point.getY(), (int) point.getX() + pointSize, (int) point.getY());
         graphic.drawLine((int) point.getX(), (int) point.getY() - pointSize, (int) point.getX(), (int) point.getY() + pointSize);
+    }
+
+    public static void paintLine(Graphics2D graphics, Point2D pointA, Point2D pointB, int width, @Nullable Color color) {
+        if (color != null) {
+            graphics.setColor(color);
+        }
+        if (width > 1) {
+            graphics.setStroke(new BasicStroke(width));
+//            for (double i = -width / 2; i < width / 2; i++) {
+//                graphics.drawLine((int) (pointA.getX() + i), (int) (pointA.getY() + i), (int) (pointB.getX() + i), (int) (pointB.getY() + i));
+//            }
+        } else {
+            graphics.setStroke(new BasicStroke(1));
+//            graphics.drawLine((int) pointA.getX(), (int) pointA.getY(), (int) pointB.getX(), (int) pointB.getY());
+        }
+        graphics.drawLine((int) pointA.getX(), (int) pointA.getY(), (int) pointB.getX(), (int) pointB.getY());
+    }
+
+    public static void paintLine(Graphics2D graphics, Point2D pointA, Point2D pointB, @Nullable Color color) {
+        paintLine(graphics, pointA, pointB, 1, color);
     }
 
     /**
