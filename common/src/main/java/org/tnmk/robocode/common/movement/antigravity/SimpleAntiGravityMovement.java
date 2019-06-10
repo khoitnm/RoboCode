@@ -8,6 +8,7 @@ import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,6 +30,7 @@ public class SimpleAntiGravityMovement implements Scannable {
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         Point2D force = reckonForce(this.robot, this.allEnemiesObservationContext);
         moveFollowTheForce(this.robot, force);
+        SimpleAntiGravityPainter.paintForce(this.robot, force, Color.YELLOW);
     }
 
     private static void moveFollowTheForce(AdvancedRobot robot, Point2D force) {
