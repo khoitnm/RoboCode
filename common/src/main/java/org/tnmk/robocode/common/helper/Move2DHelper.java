@@ -1,6 +1,8 @@
 package org.tnmk.robocode.common.helper;
 
+import org.tnmk.common.converter.PointConverter;
 import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.model.FullRobotState;
 import robocode.AdvancedRobot;
 import robocode.HitRobotEvent;
@@ -36,19 +38,11 @@ public class Move2DHelper implements Serializable {
         return new Point2D.Double(x, y);
     }
 
-
-    /**
-     * @param robot
-     * @param moveDirection
-     * @param targetX
-     * @param targetY
-     */
-    public void setMoveToDestinationByTurnRight(AdvancedRobot robot, int moveDirection, double targetX, double targetY) {
-        double sourceX = robot.getX();
-        double sourceY = robot.getY();
-        double bearing = calculateTurnRightAngleToTarget(robot, moveDirection, targetX, targetY);
-        robot.setTurnRight(bearing);
-        robot.setAhead(MathUtils.distance(sourceX, sourceY, targetX, targetY));
+    public static void setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(AdvancedRobot robot, Point2D destination) {
+        Point2D currentPosition = new Point2D.Double(robot.getX(), robot.getY());
+        double moveAngle = MathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), currentPosition.getX(), currentPosition.getY(), destination.getX(), destination.getY());
+        robot.setTurnRight(moveAngle);
+        robot.setAhead(Double.POSITIVE_INFINITY);//if you want it to stop at the destination, use setAhead(distance to destination + some additional distance for turning direction)
     }
 
     /**
@@ -57,10 +51,9 @@ public class Move2DHelper implements Serializable {
      * @param robot
      * @param destination
      */
-    public static void setMoveTo(AdvancedRobot robot, Point2D destination) {
+    public static void setMoveToDestinationWithShortestPath(AdvancedRobot robot, Point2D destination) {
         double destX = destination.getX();
         double destY = destination.getY();
-        Point2D currentPosition2D = new Point2D.Double(robot.getX(), robot.getY());
 
         /* Calculate the difference bettwen the current position and the target position. */
         destX = destX - robot.getX();
@@ -83,40 +76,5 @@ public class Move2DHelper implements Serializable {
          * from 0.
          */
         robot.setAhead(Math.cos(goAngle) * Math.hypot(destX, destY));
-    }
-
-    /**
-     * @param targetX
-     * @param targetY
-     * @return angle degree toward the target
-     */
-    public double calculateTurnRightAngleToTarget(AdvancedRobot robot, int moveDirection, double targetX, double targetY) {
-        double moveAngle = getMoveAngle(robot, moveDirection);
-        return MathUtils.calculateTurnRightDirectionToTarget(moveAngle, robot.getX(), robot.getY(), targetX, targetY);
-    }
-
-    /**
-     * Result 0 <= angle <= 360
-     *
-     * @param robot
-     * @param moveDirection
-     * @return
-     */
-    public double getMoveAngle(Robot robot, int moveDirection) {
-        if (Utils.isNear(robot.getVelocity(), 0)) {
-            if (moveDirection > 0) {
-                return robot.getHeading();
-            } else {
-                double rs = robot.getHeading() - 180;
-                return (rs + 360) % 360;// to ensure that 0 <= angle <= 360
-            }
-        } else {
-            if (robot.getVelocity() >= 0) {
-                return robot.getHeading();
-            } else {
-                double rs = robot.getHeading() - 180;
-                return (rs + 360) % 360;// to ensure that 0 <= angle <= 360
-            }
-        }
     }
 }

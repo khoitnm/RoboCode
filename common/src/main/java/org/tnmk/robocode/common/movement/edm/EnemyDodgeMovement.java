@@ -56,7 +56,7 @@ public class EnemyDodgeMovement {
      * @param destinationPosition2D
      */
     private void moveToDestination(Point2D destinationPosition2D) {
-        Move2DHelper.setMoveTo(robot, destinationPosition2D);
+        Move2DHelper.setMoveToDestinationWithShortestPath(robot, destinationPosition2D);
 
 //        Point2D currentPosition2D = new Point2D.Double(robot.getX(), robot.getY());
 //
