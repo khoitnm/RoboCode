@@ -2,13 +2,14 @@ package org.tnmk.robocode.common.radar.scanall;
 
 import robocode.AdvancedRobot;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This context data will be share by Radar, Movement and Gun.
- * However, data inside this should be added by Radar only. It shouldn't be added by Movement.
+ * This context data will be shared by implementations of Radar, Movement and Gun.
+ * However, data inside this should be changed by Radar only. It shouldn't be changed by Movement or Gun.
  */
 public class AllEnemiesObservationContext {
     private final AdvancedRobot robot;
@@ -17,6 +18,10 @@ public class AllEnemiesObservationContext {
 
     public AllEnemiesObservationContext(AdvancedRobot robot) {
         this.robot = robot;
+    }
+
+    public Collection<Enemy> getEnemies(){
+        return enemiesMapByName.values();
     }
 
     public Map<String, Enemy> getEnemiesMapByName() {

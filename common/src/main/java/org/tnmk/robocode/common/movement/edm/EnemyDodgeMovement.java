@@ -2,6 +2,8 @@ package org.tnmk.robocode.common.movement.edm;
 
 import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.robot.InitiableRun;
+import org.tnmk.robocode.common.robot.Scannable;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
@@ -9,7 +11,7 @@ import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class EnemyDodgeMovement {
+public class EnemyDodgeMovement implements InitiableRun, Scannable {
     private final AdvancedRobot robot;
     private final EDMHelper edmHelper;
     /**
