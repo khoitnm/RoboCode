@@ -66,20 +66,20 @@ public class EDMHelper {
      * @return furthest point from enemies. Note: if {@link #IGNORE_ENEMIES_OUTSIDE_DANGEROUS_AREA}, the result could be null because it cannot found any enemy.
      */
     public DestinationCalculation getDestination(Collection<Point2D> enemies) {
-        final Collection<EDMPoint> points = getPoints(DESTINATION_DISTANCE, enemies);
+        final Collection<EDMPoint> potentialDestinations = getPotentialDestinations(DESTINATION_DISTANCE, enemies);
 
-        double maxAvgDist = 0;
+        double maxAvgDistance = 0;
         EDMPoint destination = null;
 
-        for (EDMPoint p : points) {
-            double avgDist = calculateAvgDistance(p, enemies);
-            if (avgDist > maxAvgDist) {
-                maxAvgDist = avgDist;
-                destination = p;
+        for (EDMPoint potentialDestination : potentialDestinations) {
+            double avgDistance = calculateAvgDistance(potentialDestination, enemies);
+            if (avgDistance > maxAvgDistance) {
+                maxAvgDistance = avgDistance;
+                destination = potentialDestination;
             }
         }
 
-        return new DestinationCalculation(destination, points);
+        return new DestinationCalculation(destination, potentialDestinations);
     }
 
     public static class DestinationCalculation{
@@ -107,7 +107,7 @@ public class EDMHelper {
      * @param enemies enemies positions
      * @return Returns the collection of points
      */
-    private Collection<EDMPoint> getPoints(double dist, Collection<Point2D> enemies) {
+    private Collection<EDMPoint> getPotentialDestinations(double dist, Collection<Point2D> enemies) {
         final Collection<EDMPoint> points = new LinkedList<EDMPoint>();
         //FIXME there's a bug if myPos is outside of activityArea (but it still inside the battlefield).
         final Point2D myPos = new Point2D.Double(robot.getX(), robot.getY());
