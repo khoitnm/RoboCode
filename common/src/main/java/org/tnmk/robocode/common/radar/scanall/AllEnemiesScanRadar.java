@@ -13,7 +13,12 @@ import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
 
 /**
- * http://robowiki.net/wiki/Melee_Radar
+ * View more at http://robowiki.net/wiki/Melee_Radar
+ * <p/>
+ * The biggest flaw of this algorithm: sometimes radar couldn't find enough robots.
+ * Then it has to scan 360 degree multiple times to find out all enemies before revert scanning.<br/>
+ * <p/>
+ * The root cause is inside the core of RoboCode's {@link robocode.Robot#onScannedRobot(ScannedRobotEvent)}.<br/>
  */
 public class AllEnemiesScanRadar implements LoopableRun, Scannable, RobotDeathTrackable {
     private final AdvancedRobot robot;
