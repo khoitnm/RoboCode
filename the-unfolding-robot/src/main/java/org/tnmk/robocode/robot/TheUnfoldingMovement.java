@@ -1,12 +1,15 @@
 package org.tnmk.robocode.robot;
 
+import org.tnmk.robocode.common.movement.antigravity.SimpleAntiGravityMovement;
 import org.tnmk.robocode.common.movement.edm.EnemyDodgeMovement;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorMovement;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.robot.InitiableRun;
+import org.tnmk.robocode.common.robot.Scannable;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
-public class TheUnfoldingMovement {
+public class TheUnfoldingMovement implements InitiableRun, Scannable {
     public static final double IDEAL_ENEMY_OSCILLATOR_DISTANCE = 150;
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
@@ -14,6 +17,7 @@ public class TheUnfoldingMovement {
 
     private final OscillatorMovement oscillatorMovement;
     private final EnemyDodgeMovement enemyDodgeMovement;
+    private final SimpleAntiGravityMovement antiGravityMovement;
 
     public TheUnfoldingMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
@@ -21,6 +25,7 @@ public class TheUnfoldingMovement {
 
         oscillatorMovement = new OscillatorMovement(robot);
         enemyDodgeMovement = new EnemyDodgeMovement(robot, allEnemiesObservationContext);
+        antiGravityMovement = new SimpleAntiGravityMovement(robot, allEnemiesObservationContext);
     }
 
     public void runInit(){
@@ -31,7 +36,8 @@ public class TheUnfoldingMovement {
         if (allEnemiesObservationContext.countEnemies() <= 1) {
             moveOscillatorWithIdealDistance(scannedRobotEvent);
         } else {
-            enemyDodgeMovement.onScannedRobot(scannedRobotEvent);
+            antiGravityMovement.onScannedRobot(scannedRobotEvent);
+//            enemyDodgeMovement.onScannedRobot(scannedRobotEvent);
         }
     }
 

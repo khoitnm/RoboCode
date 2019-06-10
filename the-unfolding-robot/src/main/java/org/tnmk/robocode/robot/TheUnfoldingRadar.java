@@ -3,12 +3,15 @@ package org.tnmk.robocode.robot;
 import org.tnmk.robocode.common.radar.botlock.BotLockRadar;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesScanRadar;
+import org.tnmk.robocode.common.robot.InitiableRun;
+import org.tnmk.robocode.common.robot.LoopableRun;
+import org.tnmk.robocode.common.robot.Scannable;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
 
-public class TheUnfoldingRadar {
+public class TheUnfoldingRadar implements InitiableRun, LoopableRun, Scannable {
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 

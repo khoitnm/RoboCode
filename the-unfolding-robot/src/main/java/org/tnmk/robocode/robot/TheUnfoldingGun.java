@@ -1,11 +1,12 @@
 package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.robot.Scannable;
 import org.tnmk.robocode.common.robot.gft.oldalgorithm.GFTAimGun;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
-public class TheUnfoldingGun {
+public class TheUnfoldingGun implements Scannable {
     /**
      * The furthest distance which we should fire on target in one-on-one fights.
      * Note: this distance should never be lower than {@link TheUnfoldingMovement#IDEAL_ENEMY_OSCILLATOR_DISTANCE}
