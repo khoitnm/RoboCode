@@ -27,6 +27,10 @@ public class AllEnemiesObservationContext {
         this.enemiesMapByName.put(enemy.getName(), enemy);
     }
 
+    public int countEnemies(){
+        return this.enemiesMapByName.size();
+    }
+
     public Enemy getEnemy(String enemyName){
         return this.enemiesMapByName.get(enemyName);
     }

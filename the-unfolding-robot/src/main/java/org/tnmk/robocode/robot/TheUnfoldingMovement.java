@@ -24,8 +24,7 @@ public class TheUnfoldingMovement {
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        int enemiesCount = allEnemiesObservationContext.getEnemiesMapByName().size();
-        if (enemiesCount <= 1) {
+        if (allEnemiesObservationContext.countEnemies() <= 1) {
             moveOscillatorWithIdealDistance(scannedRobotEvent);
         } else {
             enemyDodgeMovement.onScannedRobot(scannedRobotEvent);

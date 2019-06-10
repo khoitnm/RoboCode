@@ -35,9 +35,7 @@ public class TheUnfoldingRadar {
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         allEnemiesScanRadar.onScannedRobot(scannedRobotEvent);
-        Map<String, Enemy> enemiesMapByName = allEnemiesObservationContext.getEnemiesMapByName();
-        int enemiesCount = enemiesMapByName.size();
-        if (enemiesCount <= 1) {
+        if (allEnemiesObservationContext.countEnemies() <= 1) {
             botLockRadar.onScannedRobot(scannedRobotEvent);
         } else {
             //Do nothing, still continue scanAll.
