@@ -48,7 +48,7 @@ public class AllEnemiesScanRadar {
         reverseRadarWhenFinishedScanningAllEnemiesInARound();
     }
 
-    private boolean isFinishInitiateScan360() {
+    public boolean isFinishInitiateScan360() {
         return robot.getTime() >= 360 / RobotPhysics.RADAR_TURN_VELOCITY;
     }
 
