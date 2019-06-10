@@ -23,8 +23,8 @@ public class TheUnfoldingMovement {
         enemyDodgeMovement = new EnemyDodgeMovement(robot, allEnemiesObservationContext);
     }
 
-    public void initiateRun(){
-        enemyDodgeMovement.initiateRun();
+    public void runInit(){
+        enemyDodgeMovement.runInit();
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {

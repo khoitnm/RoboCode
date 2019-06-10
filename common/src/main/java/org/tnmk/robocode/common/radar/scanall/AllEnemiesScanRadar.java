@@ -10,8 +10,7 @@ import java.awt.geom.Point2D;
 
 public class AllEnemiesScanRadar {
     private final AdvancedRobot robot;
-    private boolean finishScanInitiate360 = false;
-
+    private ScanMode scanMode = ScanMode.INIT_360;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
 
@@ -20,11 +19,18 @@ public class AllEnemiesScanRadar {
         this.allEnemiesObservationContext = allEnemiesObservationContext;
     }
 
-    public void initiateRun(){
+    public void runInit(){
         this.robot.setTurnRadarRight(360);
     }
 
-    public boolean isFinishScanInitiate360() {
+    public void runLoop(){
+        if (scanMode != ScanMode.ALL_ENEMIES && isFinishInitiateScan360()){
+            scanMode = ScanMode.ALL_ENEMIES;
+            scanAllEnemies();
+        }
+    }
+
+    public boolean isFinishInitiateScan360() {
         return robot.getTime() >= 360 / RobotPhysics.RADAR_TURN_VELOCITY;
     }
 
@@ -38,9 +44,7 @@ public class AllEnemiesScanRadar {
      * @param scannedRobotEvent
      */
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        if (isFinishScanInitiate360()){
-            scanAllEnemies();
-        }
+
 
         Enemy enemy = new Enemy();
         enemy.setBearing(scannedRobotEvent.getBearing());

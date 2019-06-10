@@ -1,8 +1,6 @@
 package org.tnmk.robocode.common.movement.edm;
 
-import org.tnmk.common.converter.PointConverter;
-import org.tnmk.common.math.MathUtils;
-import org.tnmk.common.math.Point;
+import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
@@ -30,8 +28,8 @@ public class EnemyDodgeMovement {
         this.edmHelper = new EDMHelper(robot);
     }
 
-    public void initiateRun(){
-        this.edmHelper.initiateRun();
+    public void runInit(){
+        this.edmHelper.runInit();
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
@@ -57,14 +55,17 @@ public class EnemyDodgeMovement {
      *
      * @param destinationPosition2D
      */
-    private void moveToDestination(Point2D.Double destinationPosition2D) {
-        Point2D.Double currentPosition2D = new Point2D.Double(robot.getX(), robot.getY());
-        Point currentPosition = PointConverter.toPoint(currentPosition2D);
-        Point destinationPosition = PointConverter.toPoint(destinationPosition2D);
+    private void moveToDestination(Point2D destinationPosition2D) {
+        Move2DHelper.setMoveTo(robot, destinationPosition2D);
 
-        double moveAngle = MathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), currentPosition, destinationPosition);
-        robot.setTurnRight(moveAngle);
-        robot.setAhead(Double.POSITIVE_INFINITY);
+//        Point2D currentPosition2D = new Point2D.Double(robot.getX(), robot.getY());
+//
+//        Point currentPosition = PointConverter.toPoint(currentPosition2D);
+//        Point destinationPosition = PointConverter.toPoint(destinationPosition2D);
+//
+//        double moveAngle = MathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), currentPosition, destinationPosition);
+//        robot.setTurnRight(moveAngle);
+//        robot.setAhead(Double.POSITIVE_INFINITY);
     }
 
 }

@@ -26,14 +26,15 @@ public class TheUnfoldingRobot extends AdvancedRobot {
         setAdjustRadarForGunTurn(true);
         setAdjustRadarForRobotTurn(true);
 
-        theUnfoldingRadar.initiateRun();
-        theUnfoldingMovement.initiateRun();
+        theUnfoldingRadar.runInit();
+        theUnfoldingMovement.runInit();
         execute();
-//        while (true) {
-//            BotLockRadarHelper.setTurnRadar(radarBotLockContext);
-//            execute();
-//            loopIndex++;
-//        }
+
+        while (true) {
+            theUnfoldingRadar.runLoop();
+            execute();
+            loopIndex++;
+        }
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {

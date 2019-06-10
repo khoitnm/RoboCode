@@ -26,13 +26,17 @@ public class TheUnfoldingRadar {
     /**
      * This method should be trigger in the beginning of {@link Robot#run()}, but not in the while-loop block.
      */
-    public void initiateRun() {
-        allEnemiesScanRadar.initiateRun();
+    public void runInit() {
+        allEnemiesScanRadar.runInit();
+    }
+
+    public void runLoop(){
+        allEnemiesScanRadar.runLoop();
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         allEnemiesScanRadar.onScannedRobot(scannedRobotEvent);
-        if (allEnemiesScanRadar.isFinishScanInitiate360() && allEnemiesObservationContext.countEnemies() <= 1) {
+        if (allEnemiesScanRadar.isFinishInitiateScan360() && allEnemiesObservationContext.countEnemies() <= 1) {
             botLockRadar.onScannedRobot(scannedRobotEvent);
         } else {
             //Do nothing, still continue scanAllEnemies.

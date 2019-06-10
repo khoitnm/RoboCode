@@ -48,7 +48,7 @@ public class EDMHelper {
         this.robot = robot;
     }
 
-    public void initiateRun(){
+    public void runInit(){
         int activity_margin = this.robot.getSentryBorderSize();
         activityArea = new Rectangle(activity_margin, activity_margin,
                 (int) robot.getBattleFieldWidth() - activity_margin * 2,
