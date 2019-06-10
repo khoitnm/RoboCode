@@ -91,7 +91,7 @@ public class SimpleAntiGravityMovement implements Scannable {
             Point2D enemyPosition = enemy.getPosition();
             double absBearing = reckonAbsoluteBearingBetweenTwoPoints(enemyPosition, robotPosition);
             double distance = enemyPosition.distance(robotPosition);
-            double forceWeight = 1 / (distance);
+            double forceWeight = 1 / (distance * distance);
             Point2D force = new Point2D.Double(-(Math.sin(absBearing) * forceWeight), -(Math.cos(absBearing) * forceWeight));
             finalForce = Point2DUtils.plus(finalForce, force);
             forces.add(force);
@@ -122,7 +122,7 @@ public class SimpleAntiGravityMovement implements Scannable {
         for (Point2D position : positions) {
             double absBearing = reckonAbsoluteBearingBetweenTwoPoints(position, robotPosition);
             double distance = position.distance(robotPosition);
-            double forceWeight = 1 / (distance);
+            double forceWeight = 1 / (distance * distance);
             Point2D force = new Point2D.Double(-(Math.sin(absBearing) * forceWeight), -(Math.cos(absBearing) * forceWeight));
 
             forces.add(force);

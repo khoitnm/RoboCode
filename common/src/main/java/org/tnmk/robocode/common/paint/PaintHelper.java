@@ -34,12 +34,8 @@ public class PaintHelper {
         }
         if (width > 1) {
             graphics.setStroke(new BasicStroke(width));
-//            for (double i = -width / 2; i < width / 2; i++) {
-//                graphics.drawLine((int) (pointA.getX() + i), (int) (pointA.getY() + i), (int) (pointB.getX() + i), (int) (pointB.getY() + i));
-//            }
         } else {
             graphics.setStroke(new BasicStroke(1));
-//            graphics.drawLine((int) pointA.getX(), (int) pointA.getY(), (int) pointB.getX(), (int) pointB.getY());
         }
         graphics.drawLine((int) pointA.getX(), (int) pointA.getY(), (int) pointB.getX(), (int) pointB.getY());
     }
