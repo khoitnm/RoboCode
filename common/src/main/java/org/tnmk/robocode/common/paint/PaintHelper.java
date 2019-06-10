@@ -28,20 +28,23 @@ public class PaintHelper {
         graphic.drawLine((int) point.getX(), (int) point.getY() - pointSize, (int) point.getX(), (int) point.getY() + pointSize);
     }
 
-    public static void paintLine(Graphics graphics, Point2D pointA, Point2D pointB, int width, @Nullable Color color) {
+    public static void paintLine(Graphics2D graphics, Point2D pointA, Point2D pointB, int width, @Nullable Color color) {
         if (color != null) {
             graphics.setColor(color);
         }
         if (width > 1) {
-            for (double i = -width / 2; i < width / 2; i++) {
-                graphics.drawLine((int) (pointA.getX() + i), (int) (pointA.getY() + i), (int) (pointB.getX() + i), (int) (pointB.getY() + i));
-            }
+            graphics.setStroke(new BasicStroke(width));
+//            for (double i = -width / 2; i < width / 2; i++) {
+//                graphics.drawLine((int) (pointA.getX() + i), (int) (pointA.getY() + i), (int) (pointB.getX() + i), (int) (pointB.getY() + i));
+//            }
         } else {
-            paintLine(graphics, pointA, pointB, color);
+            graphics.setStroke(new BasicStroke(1));
+//            graphics.drawLine((int) pointA.getX(), (int) pointA.getY(), (int) pointB.getX(), (int) pointB.getY());
         }
+        graphics.drawLine((int) pointA.getX(), (int) pointA.getY(), (int) pointB.getX(), (int) pointB.getY());
     }
 
-    public static void paintLine(Graphics graphics, Point2D pointA, Point2D pointB, @Nullable Color color) {
+    public static void paintLine(Graphics2D graphics, Point2D pointA, Point2D pointB, @Nullable Color color) {
         paintLine(graphics, pointA, pointB, 1, color);
     }
 

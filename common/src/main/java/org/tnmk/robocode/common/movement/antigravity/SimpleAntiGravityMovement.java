@@ -65,11 +65,11 @@ public class SimpleAntiGravityMovement implements Scannable {
         Collection<Enemy> enemies = allEnemiesObservationContext.getEnemies();
         ForceResult enemiesForceResult = reckonForceOfEnemies(robotPosition, enemies);
 
-        Graphics graphics = robot.getGraphics();
+        Graphics2D graphics = robot.getGraphics();
         Point2D finalForce = Point2DUtils.plus(staticForceResult.getFinalForce(), enemiesForceResult.getFinalForce());
-        SimpleAntiGravityPainter.paintStaticForces(graphics, robot, staticForceResult);
-        SimpleAntiGravityPainter.paintEnemiesForce(graphics, robot, enemiesForceResult);
-        SimpleAntiGravityPainter.paintForce(graphics, robot, finalForce, 3, Color.GREEN);
+        SimpleAntiGravityPainterUtils.paintStaticForces(graphics, robot, staticForceResult);
+        SimpleAntiGravityPainterUtils.paintEnemiesForce(graphics, robot, enemiesForceResult);
+        SimpleAntiGravityPainterUtils.paintForce(graphics, robot, finalForce, 3, Color.GREEN);
         return finalForce;
     }
 
@@ -81,24 +81,17 @@ public class SimpleAntiGravityMovement implements Scannable {
     private static ForceResult reckonForceOfEnemies(Point2D robotPosition, Collection<Enemy> enemies) {
         ForceResult forceResult = new ForceResult();
         Point2D finalForce = new Point2D.Double();
-//        double forceX = 0, forceY = 0;
-
         for (Enemy enemy : enemies) {
             Point2D enemyPosition = enemy.getPosition();
             double absBearing = reckonAbsoluteBearingBetweenTwoPoints(enemyPosition, robotPosition);
             double distance = enemyPosition.distance(robotPosition);
-//            double forceWeight = 1 / (distance * distance) / enemy.getEnergy();
             double forceWeight = 1 / (distance);
             Point2D force = new Point2D.Double(-(Math.sin(absBearing) * forceWeight), - (Math.cos(absBearing) * forceWeight));
             finalForce = Point2DUtils.plus(finalForce, force);
             forceResult.getForces().add(force);
-//            forceX -= Math.sin(absBearing) * forceWeight;
-//            forceY -= Math.cos(absBearing) * forceWeight;
         }
         forceResult.setFinalForce(finalForce);
         return forceResult;
-//        Point2D force = new Point2D.Double(forceX, forceY);
-//        return force;
     }
 
     private static Collection<Point2D> constructStaticPositions(Robot robot) {
@@ -106,21 +99,19 @@ public class SimpleAntiGravityMovement implements Scannable {
         Point2D closestHorizonBottomWallPosition = new Point2D.Double(robot.getX(), 0);
         Point2D closestVerticalLeftWallPosition = new Point2D.Double(0, robot.getY());
         Point2D closestVerticalRightWallPosition = new Point2D.Double(robot.getBattleFieldWidth(), robot.getY());
-//        Point2D middleBattlePosition = new Point2D.Double(robot.getBattleFieldWidth() / 2, robot.getBattleFieldHeight() / 2);
+        Point2D middleBattlePosition = new Point2D.Double(robot.getBattleFieldWidth() / 2, robot.getBattleFieldHeight() / 2);
         Collection<Point2D> staticPositions = Arrays.asList(
                 closestHorizonBottomWallPosition
                 , closestHorizonTopWallPosition
                 , closestVerticalLeftWallPosition
                 , closestVerticalRightWallPosition
-//                ,middleBattlePosition
+                ,middleBattlePosition
         );
         return staticPositions;
     }
 
     private static ForceResult reckonForceOfStaticPositions(Point2D robotPosition, Collection<Point2D> positions) {
         ForceResult forceResult = new ForceResult();
-
-//        double forceX = 0, forceY = 0;
         Point2D finalForce = new Point2D.Double();
         for (Point2D position : positions) {
             double absBearing = reckonAbsoluteBearingBetweenTwoPoints(position, robotPosition);
@@ -129,12 +120,8 @@ public class SimpleAntiGravityMovement implements Scannable {
             Point2D force = new Point2D.Double(-(Math.sin(absBearing) * forceWeight), -(Math.cos(absBearing) * forceWeight));
             forceResult.getForces().add(force);
             finalForce = Point2DUtils.plus(finalForce, force);
-//            forceX -= Math.sin(absBearing) * forceWeight;
-//            forceY -= Math.cos(absBearing) * forceWeight;
         }
         forceResult.setFinalForce(finalForce);
-//        Point2D force = new Point2D.Double(forceX, forceY);
-//        return force;
         return forceResult;
     }
 
