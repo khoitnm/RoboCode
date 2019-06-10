@@ -36,7 +36,8 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
         if (allEnemiesObservationContext.countEnemies() <= 1) {
             moveOscillatorWithIdealDistance(scannedRobotEvent);
         } else {
-            antiGravityMovement.onScannedRobot(scannedRobotEvent);
+            moveOscillatorWithIdealDistance(scannedRobotEvent);
+//            antiGravityMovement.onScannedRobot(scannedRobotEvent);
 //            enemyDodgeMovement.onScannedRobot(scannedRobotEvent);
         }
     }
