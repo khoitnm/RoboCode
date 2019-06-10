@@ -109,6 +109,7 @@ public class EDMHelper {
      */
     private Collection<EDMPoint> getPoints(double dist, Collection<Point2D> enemies) {
         final Collection<EDMPoint> points = new LinkedList<EDMPoint>();
+        //FIXME there's a bug if myPos is outside of activityArea (but it still inside the battlefield).
         final Point2D myPos = new Point2D.Double(robot.getX(), robot.getY());
         for (double angle = 0; angle < PI * 2; angle += PI / POTENTIAL_DESTINATIONS_COUNT) {
             final EDMPoint p = new EDMPoint(myPos.getX() + sin(angle) * dist, myPos.getY() + cos(angle) * dist);

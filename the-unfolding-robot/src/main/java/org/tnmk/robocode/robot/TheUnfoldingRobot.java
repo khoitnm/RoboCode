@@ -28,6 +28,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
 
         theUnfoldingRadar.initiateRun();
         theUnfoldingMovement.initiateRun();
+        execute();
 //        while (true) {
 //            BotLockRadarHelper.setTurnRadar(radarBotLockContext);
 //            execute();

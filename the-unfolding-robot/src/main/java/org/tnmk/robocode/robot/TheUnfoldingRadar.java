@@ -2,14 +2,11 @@ package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.radar.botlock.BotLockRadar;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
-import org.tnmk.robocode.common.radar.scanall.Enemy;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesScanRadar;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
-
-import java.util.Map;
 
 public class TheUnfoldingRadar {
     private final AdvancedRobot robot;
@@ -30,15 +27,15 @@ public class TheUnfoldingRadar {
      * This method should be trigger in the beginning of {@link Robot#run()}, but not in the while-loop block.
      */
     public void initiateRun() {
-        allEnemiesScanRadar.scanAll();
+        allEnemiesScanRadar.initiateRun();
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         allEnemiesScanRadar.onScannedRobot(scannedRobotEvent);
-        if (allEnemiesObservationContext.countEnemies() <= 1) {
+        if (allEnemiesScanRadar.isFinishScanInitiate360() && allEnemiesObservationContext.countEnemies() <= 1) {
             botLockRadar.onScannedRobot(scannedRobotEvent);
         } else {
-            //Do nothing, still continue scanAll.
+            //Do nothing, still continue scanAllEnemies.
         }
     }
 

@@ -1,5 +1,6 @@
 package org.tnmk.robocode.common.radar.scanall;
 
+import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.helper.Move2DHelper;
 import robocode.AdvancedRobot;
 import robocode.RobotDeathEvent;
@@ -9,7 +10,7 @@ import java.awt.geom.Point2D;
 
 public class AllEnemiesScanRadar {
     private final AdvancedRobot robot;
-
+    private boolean finishScanInitiate360 = false;
 
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
@@ -19,8 +20,16 @@ public class AllEnemiesScanRadar {
         this.allEnemiesObservationContext = allEnemiesObservationContext;
     }
 
-    public void scanAll() {
-        this.robot.turnRadarRightRadians(Double.POSITIVE_INFINITY);
+    public void initiateRun(){
+        this.robot.setTurnRadarRight(360);
+    }
+
+    public boolean isFinishScanInitiate360() {
+        return robot.getTime() >= 360 / RobotPhysics.RADAR_TURN_VELOCITY;
+    }
+
+    public void scanAllEnemies() {
+        this.robot.setTurnRadarRightRadians(Double.POSITIVE_INFINITY);
     }
 
     /**
@@ -29,6 +38,10 @@ public class AllEnemiesScanRadar {
      * @param scannedRobotEvent
      */
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+        if (isFinishScanInitiate360()){
+            scanAllEnemies();
+        }
+
         Enemy enemy = new Enemy();
         enemy.setBearing(scannedRobotEvent.getBearing());
         enemy.setDistance(scannedRobotEvent.getDistance());
