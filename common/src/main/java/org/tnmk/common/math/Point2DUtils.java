@@ -7,7 +7,7 @@ public class Point2DUtils {
         return new Point2D.Double(a.getX() + b.getX(), a.getY() + b.getY());
     }
 
-    public static Point2D multiple(Point2D point, int length) {
+    public static Point2D multiple(Point2D point, double length) {
         return new Point2D.Double(point.getX() * length, point.getY() * length);
     }
 }

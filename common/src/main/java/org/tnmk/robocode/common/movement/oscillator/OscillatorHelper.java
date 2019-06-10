@@ -1,7 +1,8 @@
 package org.tnmk.robocode.common.movement.oscillator;
 
 import org.tnmk.common.number.DoubleUtils;
-import org.tnmk.robocode.common.log.LogHelper;
+import org.tnmk.robocode.common.radar.scanall.Enemy;
+import org.tnmk.robocode.common.radar.scanall.EnemyMapper;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
@@ -17,16 +18,21 @@ public class OscillatorHelper {
     /**
      * @param context
      * @param scannedRobotEvent
-     * @param moveDistance how far you want to move (e.g. 185)
-     * @param enemyDistance how far you want to stay away from your target enemy (e.g. 200)
+     * @param moveDistance      how far you want to move (e.g. 185)
+     * @param enemyDistance     how far you want to stay away from your target enemy (e.g. 200)
      */
-    public static void setMovement(OscillatorContext context, ScannedRobotEvent scannedRobotEvent, int moveDistance, int enemyDistance){
+    public static void setMovement(OscillatorContext context, ScannedRobotEvent scannedRobotEvent, double moveDistance, int enemyDistance) {
+        Enemy enemy = EnemyMapper.toEnemy(context.getRobot(), scannedRobotEvent);
+        setMovement(context, enemy, moveDistance, enemyDistance);
+    }
+
+    public static void setMovement(OscillatorContext context, Enemy enemy, double moveDistance, int enemyDistance) {
         //** it is from onScannedRobot
         AdvancedRobot robot = context.getRobot();
         if (DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
             context.reverseDirection();
             robot.setAhead(moveDistance * context.getDirection());
         }
-        robot.setTurnRightRadians(scannedRobotEvent.getBearingRadians() + Math.PI/2 - 0.5236 * context.getDirection() * (scannedRobotEvent.getDistance() > enemyDistance ? 1 : -1));
+        robot.setTurnRightRadians(enemy.getBearingRadians() + Math.PI / 2 - 0.5236 * context.getDirection() * (enemy.getDistance() > enemyDistance ? 1 : -1));
     }
 }

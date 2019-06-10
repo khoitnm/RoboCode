@@ -1,7 +1,6 @@
 package org.tnmk.robocode.common.radar.scanall;
 
 import com.sun.istack.internal.NotNull;
-
 import java.awt.geom.Point2D;
 
 public class Enemy {
@@ -77,5 +76,9 @@ public class Enemy {
 
     public void setPosition(Point2D position) {
         this.position = position;
+    }
+
+    public double getBearingRadians() {
+        return Math.toRadians(this.getBearing());
     }
 }
