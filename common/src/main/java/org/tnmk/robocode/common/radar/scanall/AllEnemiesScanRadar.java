@@ -44,8 +44,6 @@ public class AllEnemiesScanRadar {
      * @param scannedRobotEvent
      */
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-
-
         Enemy enemy = new Enemy();
         enemy.setBearing(scannedRobotEvent.getBearing());
         enemy.setDistance(scannedRobotEvent.getDistance());
