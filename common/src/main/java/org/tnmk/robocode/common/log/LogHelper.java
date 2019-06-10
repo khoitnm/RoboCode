@@ -9,8 +9,17 @@ public class LogHelper {
         String finalMessage = String.format("[%s] " +
                         "\t velocity %s " +
                         "\t distanceRemaining %s " +
+                        "\t heading %s" +
+                        "\t radarHeading %s" +
+                        "\t radarTurnRemaining %s" +
                         "\t %s",
-                robot.getTime(), robot.getVelocity(), robot.getDistanceRemaining(), message);
+                robot.getTime(),
+                robot.getVelocity(),
+                robot.getDistanceRemaining(),
+                robot.getHeading(),
+                robot.getRadarHeading(),
+                robot.getRadarTurnRemaining(),
+                message);
         robot.out.println(finalMessage);
     }
 

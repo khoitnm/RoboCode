@@ -5,13 +5,14 @@ import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesScanRadar;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.LoopableRun;
+import org.tnmk.robocode.common.robot.RobotDeathTrackable;
 import org.tnmk.robocode.common.robot.Scannable;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
 
-public class TheUnfoldingRadar implements InitiableRun, LoopableRun, Scannable {
+public class TheUnfoldingRadar implements InitiableRun, LoopableRun, Scannable, RobotDeathTrackable {
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
@@ -29,24 +30,29 @@ public class TheUnfoldingRadar implements InitiableRun, LoopableRun, Scannable {
     /**
      * This method should be trigger in the beginning of {@link Robot#run()}, but not in the while-loop block.
      */
+    @Override
     public void runInit() {
         allEnemiesScanRadar.runInit();
     }
 
-    public void runLoop(){
+    @Override
+    public void runLoop() {
         allEnemiesScanRadar.runLoop();
     }
 
+    @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         allEnemiesScanRadar.onScannedRobot(scannedRobotEvent);
-        if (allEnemiesScanRadar.isFinishInitiateScan360() && allEnemiesObservationContext.countEnemies() <= 1) {
+        int totalExistingEnemies = robot.getOthers();
+        if (allEnemiesScanRadar.isFinishInitiateScan360() && totalExistingEnemies <= 1) {
             botLockRadar.onScannedRobot(scannedRobotEvent);
         } else {
             //Do nothing, still continue scanAllEnemies.
         }
     }
 
-    public void onRobotDeath(RobotDeathEvent robotDeathEvent){
+    @Override
+    public void onRobotDeath(RobotDeathEvent robotDeathEvent) {
         allEnemiesScanRadar.onRobotDeath(robotDeathEvent);
     }
 

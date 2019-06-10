@@ -33,7 +33,8 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        if (allEnemiesObservationContext.countEnemies() <= 1) {
+        int totalExistingEnemies = robot.getOthers();
+        if (totalExistingEnemies <= 1) {
             moveOscillatorWithIdealDistance(scannedRobotEvent);
         } else {
             moveOscillatorWithIdealDistance(scannedRobotEvent);

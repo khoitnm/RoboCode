@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import robocode.Robot;
 
 /**
  * This context data will be shared by implementations of Radar, Movement and Gun.
@@ -32,6 +33,10 @@ public class AllEnemiesObservationContext {
         this.enemiesMapByName.put(enemy.getName(), enemy);
     }
 
+    /**
+     * @return This method just count scanned enemies.<br/>
+     * To count all actual existing enemies, use {@link Robot#getOthers()}.
+     */
     public int countEnemies(){
         return this.enemiesMapByName.size();
     }

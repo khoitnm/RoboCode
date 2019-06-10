@@ -30,7 +30,8 @@ public class TheUnfoldingGun implements Scannable {
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        if (shouldFire(scannedRobotEvent.getDistance(), allEnemiesObservationContext.countEnemies())) {
+        int totalExistingEnemies = robot.getOthers();
+        if (shouldFire(scannedRobotEvent.getDistance(), totalExistingEnemies)) {
             gftAimGun.onScannedRobot(scannedRobotEvent);
         }
     }
