@@ -1,7 +1,6 @@
 package org.tnmk.robocode.common.paint;
 
 import com.sun.istack.internal.Nullable;
-import org.tnmk.common.math.Point;
 import robocode.Robot;
 
 import java.awt.*;
@@ -29,11 +28,21 @@ public class PaintHelper {
         graphic.drawLine((int) point.getX(), (int) point.getY() - pointSize, (int) point.getX(), (int) point.getY() + pointSize);
     }
 
-    public static void paintLine(Graphics graphics, Point2D pointA, Point2D pointB, @Nullable Color color) {
+    public static void paintLine(Graphics graphics, Point2D pointA, Point2D pointB, int width, @Nullable Color color) {
         if (color != null) {
             graphics.setColor(color);
         }
-        graphics.drawLine((int) pointA.getX(), (int) pointA.getY(), (int) pointB.getX(), (int) pointB.getY());
+        if (width > 1) {
+            for (double i = -width / 2; i < width / 2; i++) {
+                graphics.drawLine((int) (pointA.getX() + i), (int) (pointA.getY() + i), (int) (pointB.getX() + i), (int) (pointB.getY() + i));
+            }
+        } else {
+            paintLine(graphics, pointA, pointB, color);
+        }
+    }
+
+    public static void paintLine(Graphics graphics, Point2D pointA, Point2D pointB, @Nullable Color color) {
+        paintLine(graphics, pointA, pointB, 1, color);
     }
 
     /**
