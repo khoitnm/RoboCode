@@ -8,8 +8,9 @@ import robocode.ScannedRobotEvent;
 public class TheUnfoldingGun {
     /**
      * The furthest distance which we should fire on target in one-on-one fights.
+     * Note: this distance should never be lower than {@link TheUnfoldingMovement#IDEAL_ENEMY_OSCILLATOR_DISTANCE}
      */
-    private static final double FURTHEST_DISTANCE_TO_FIRE_ONE_ON_ONE = 400;
+    public static final double FURTHEST_DISTANCE_TO_FIRE_ONE_ON_ONE = 400;
     /**
      * For each additional enemies, increase the fire distance by this percentage.
      */

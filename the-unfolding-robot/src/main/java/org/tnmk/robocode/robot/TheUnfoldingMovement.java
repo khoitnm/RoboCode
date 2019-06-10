@@ -7,7 +7,7 @@ import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
 public class TheUnfoldingMovement {
-    private static final double IDEAL_ENEMY_OSCILLATOR_DISTANCE = 150;
+    public static final double IDEAL_ENEMY_OSCILLATOR_DISTANCE = 150;
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
