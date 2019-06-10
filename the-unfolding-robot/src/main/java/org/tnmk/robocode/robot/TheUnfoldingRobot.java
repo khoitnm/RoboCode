@@ -18,7 +18,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     private AllEnemiesObservationContext allEnemiesObservationContext = new AllEnemiesObservationContext(this);
     private TheUnfoldingMovement theUnfoldingMovement = new TheUnfoldingMovement(this, allEnemiesObservationContext);
     private TheUnfoldingRadar theUnfoldingRadar = new TheUnfoldingRadar(this, allEnemiesObservationContext);
-    private GFTAimGun gftAimGun = new GFTAimGun(this);
+    private TheUnfoldingGun theUnfoldingGun = new TheUnfoldingGun(this,allEnemiesObservationContext);
 
     public void run() {
         HiTechDecorator.decorate(this);
@@ -38,12 +38,13 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         theUnfoldingRadar.onScannedRobot(scannedRobotEvent);
         theUnfoldingMovement.onScannedRobot(scannedRobotEvent);
-        gftAimGun.onScannedRobot(scannedRobotEvent);
+        theUnfoldingGun.onScannedRobot(scannedRobotEvent);
         execute();
     }
 
     public void onRobotDeath(RobotDeathEvent robotDeathEvent){
         theUnfoldingRadar.onRobotDeath(robotDeathEvent);
+        execute();
     }
 
     private void log(String message) {

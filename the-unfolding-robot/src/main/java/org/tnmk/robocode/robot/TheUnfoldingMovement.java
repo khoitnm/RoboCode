@@ -7,7 +7,7 @@ import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
 public class TheUnfoldingMovement {
-    private static final double IDEAL_ENEMY_DISTANCE = 600;
+    private static final double IDEAL_ENEMY_OSCILLATOR_DISTANCE = 150;
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
@@ -33,10 +33,20 @@ public class TheUnfoldingMovement {
     }
 
     private void moveOscillatorWithIdealDistance(ScannedRobotEvent scannedRobotEvent) {
-        double battleFieldSize = Math.min(robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
-        double haftBattleFieldSize = battleFieldSize * 0.5;
-        double thirdFourBattleFieldSize = battleFieldSize * 0.75;
-        int enemyDistance = (int) Math.min(thirdFourBattleFieldSize, Math.max(haftBattleFieldSize, IDEAL_ENEMY_DISTANCE));
+        int enemyDistance = (int) calculateSuitableEnemyDistance(IDEAL_ENEMY_OSCILLATOR_DISTANCE);
         oscillatorMovement.onScannedRobot(scannedRobotEvent, enemyDistance);
+    }
+
+    private double calculateSuitableEnemyDistance(double idealDistance) {
+        double battleFieldSize = Math.min(robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
+        double haftBattleFieldSize = battleFieldSize * 0.1;
+        double thirdFourBattleFieldSize = battleFieldSize * 0.75;
+        double idealEnemyDistance = calculateSuitableEnemyDistanceInAppropriateLimit(idealDistance, haftBattleFieldSize, thirdFourBattleFieldSize);
+        return idealEnemyDistance;
+    }
+
+    private double calculateSuitableEnemyDistanceInAppropriateLimit(double idealDistance, double minDistance, double maxDistance) {
+        double ideal = Math.min(maxDistance, Math.max(minDistance, idealDistance));
+        return ideal;
     }
 }
