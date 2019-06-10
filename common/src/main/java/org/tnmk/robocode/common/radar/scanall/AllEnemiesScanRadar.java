@@ -7,14 +7,14 @@ import robocode.ScannedRobotEvent;
 
 import java.awt.geom.Point2D;
 
-public class ScanAllRobotsRadar {
+public class AllEnemiesScanRadar {
     private final AdvancedRobot robot;
 
 
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
 
-    public ScanAllRobotsRadar(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
+    public AllEnemiesScanRadar(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
     }

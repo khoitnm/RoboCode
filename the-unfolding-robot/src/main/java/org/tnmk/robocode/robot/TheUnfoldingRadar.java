@@ -3,7 +3,7 @@ package org.tnmk.robocode.robot;
 import org.tnmk.robocode.common.radar.botlock.BotLockRadar;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.radar.scanall.Enemy;
-import org.tnmk.robocode.common.radar.scanall.ScanAllRobotsRadar;
+import org.tnmk.robocode.common.radar.scanall.AllEnemiesScanRadar;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 import robocode.RobotDeathEvent;
@@ -16,25 +16,25 @@ public class TheUnfoldingRadar {
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
     private final BotLockRadar botLockRadar;
-    private ScanAllRobotsRadar scanAllRobotsRadar;
+    private AllEnemiesScanRadar allEnemiesScanRadar;
 
     public TheUnfoldingRadar(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
 
         this.botLockRadar = new BotLockRadar(robot);
-        this.scanAllRobotsRadar = new ScanAllRobotsRadar(robot, allEnemiesObservationContext);
+        this.allEnemiesScanRadar = new AllEnemiesScanRadar(robot, allEnemiesObservationContext);
     }
 
     /**
      * This method should be trigger in the beginning of {@link Robot#run()}, but not in the while-loop block.
      */
     public void initiateRun() {
-        scanAllRobotsRadar.scanAll();
+        allEnemiesScanRadar.scanAll();
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        scanAllRobotsRadar.onScannedRobot(scannedRobotEvent);
+        allEnemiesScanRadar.onScannedRobot(scannedRobotEvent);
         Map<String, Enemy> enemiesMapByName = allEnemiesObservationContext.getEnemiesMapByName();
         int enemiesCount = enemiesMapByName.size();
         if (enemiesCount <= 1) {
@@ -45,7 +45,7 @@ public class TheUnfoldingRadar {
     }
 
     public void onRobotDeath(RobotDeathEvent robotDeathEvent){
-        scanAllRobotsRadar.onRobotDeath(robotDeathEvent);
+        allEnemiesScanRadar.onRobotDeath(robotDeathEvent);
     }
 
 }
