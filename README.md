@@ -50,7 +50,13 @@ https://coggle.it/diagram/51ade2c0e354014b1c00a43c/t/robocode-strategies/a19ae89
 
 List of sample code: http://old.robowiki.net/robowiki?CodeSnippets
 
-Some tutorial, terms and algorithm for your robot: http://robowiki.net/wiki/Tutorials
+Some tutorial, terms and algorithm for your robot: 
+- http://robowiki.net/wiki/Tutorials
+- https://www.ibm.com/developerworks/library/j-robotips/index.html
+
+Radar:
+  - Basic information: http://robowiki.net/wiki/Melee_Radar
+  - https://www.ibm.com/developerworks/library/j-radar/index.html
 
 Aim Target:
   - Waves: http://robowiki.net/wiki/Waves    
@@ -64,8 +70,11 @@ Aim Target:
 http://mark.random-article.com/robocode/index.html
 
 Movement:
-  - Anti-Gravity: http://robowiki.net/wiki/Anti-Gravity_Tutorial
+  - Anti-Gravity: 
+    - Basic implementation: http://robowiki.net/wiki/Anti-Gravity_Tutorial
+    - Detail implementation: https://www.ibm.com/developerworks/java/library/j-antigrav/index.html?ca=drs-
   - Enemy Dodging Movement: http://robowiki.net/wiki/Enemy_Dodging_Movement
+  - Wall Smoothing: http://robowiki.net/wiki/Wall_Smoothing
 
 # Some interesting Robots
 http://robowiki.net/wiki/DrussGT
