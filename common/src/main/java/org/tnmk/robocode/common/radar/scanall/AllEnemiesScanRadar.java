@@ -20,6 +20,7 @@ public class AllEnemiesScanRadar {
     }
 
     public void runInit(){
+        //It needs to scan 360 degree to count all enemies in the beginning.
         this.robot.setTurnRadarRight(360);
     }
 
@@ -34,6 +35,7 @@ public class AllEnemiesScanRadar {
         return robot.getTime() >= 360 / RobotPhysics.RADAR_TURN_VELOCITY;
     }
 
+    //TODO We need to separate 2 scanning modes because the implementation of this method could be optimized so that it doesn't need to scan 360 degree.
     public void scanAllEnemies() {
         this.robot.setTurnRadarRightRadians(Double.POSITIVE_INFINITY);
     }
