@@ -64,6 +64,7 @@ public class EDMHelper {
      *
      * @param enemies position of enemies
      * @return furthest point from enemies. Note: if {@link #IGNORE_ENEMIES_OUTSIDE_DANGEROUS_AREA}, the result could be null because it cannot found any enemy.
+     * Note: one flaw of this algorithm is that when the destination calculation could return a result which is blocked by an enemy. (you can test with a RamFire enemy and Crazy enemy)
      */
     public DestinationCalculation getDestination(Collection<Point2D> enemies) {
         final Collection<EDMPoint> potentialDestinations = getPotentialDestinations(DESTINATION_DISTANCE, enemies);
@@ -127,17 +128,17 @@ public class EDMHelper {
     /**
      * Calculates avarenge distance from point <code>point</code> to enemies in <code>enemies</code>
      *
-     * @param point   point to calculate averenge distance
+     * @param potentialDestination   point to calculate averenge distance
      * @param enemies enemies positions
      * @return average distance
      * Note, if we ignore enemies outside dangerous area, the result could be 0.
      */
-    private double calculateAvgDistance(Point2D point, Collection<Point2D> enemies) {
+    private double calculateAvgDistance(Point2D potentialDestination, Collection<Point2D> enemies) {
         double distanceSum = 0;
         int closeEnemyCount = 0;
-        for (Point2D p : enemies) {
-            final double distance = p.distance(point);
-            if (IGNORE_ENEMIES_OUTSIDE_DANGEROUS_AREA && p.distance(robot.getX(), robot.getY()) > DANGEROUS_DISTANCE) {
+        for (Point2D enemy : enemies) {
+            final double distance = enemy.distance(potentialDestination);
+            if (IGNORE_ENEMIES_OUTSIDE_DANGEROUS_AREA && enemy.distance(robot.getX(), robot.getY()) > DANGEROUS_DISTANCE) {
                 continue;
             }
 
