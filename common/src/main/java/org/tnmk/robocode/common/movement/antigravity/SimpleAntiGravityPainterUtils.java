@@ -8,11 +8,11 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class SimpleAntiGravityPainterUtils {
-    public static void paintStaticForces(Graphics2D graphics, AdvancedRobot robot, SimpleAntiGravityMovement.ForceResult staticForceResult) {
+    public static void paintStaticForces(Graphics2D graphics, AdvancedRobot robot, ForceResult staticForceResult) {
         paintForceResult(graphics, robot, staticForceResult, Color.GRAY);
     }
 
-    private static void paintForceResult(Graphics2D graphics, AdvancedRobot robot, SimpleAntiGravityMovement.ForceResult forceResult, Color color) {
+    private static void paintForceResult(Graphics2D graphics, AdvancedRobot robot, ForceResult forceResult, Color color) {
         for (Point2D force : forceResult.getForces()) {
             paintForce(graphics, robot, force, 1, color);
         }
@@ -26,7 +26,7 @@ public class SimpleAntiGravityPainterUtils {
         PaintHelper.paintLine(graphics, robotPosition, targetPosition, width, color);
     }
 
-    public static void paintEnemiesForce(Graphics2D graphics, AdvancedRobot robot, SimpleAntiGravityMovement.ForceResult enemiesForceResult) {
+    public static void paintEnemiesForce(Graphics2D graphics, AdvancedRobot robot, ForceResult enemiesForceResult) {
         paintForceResult(graphics, robot, enemiesForceResult, Color.RED);
     }
 }
