@@ -2,7 +2,7 @@ package org.tnmk.robocode.common.helper;
 
 import org.tnmk.common.math.MathUtils;
 import org.tnmk.robocode.common.model.AimAndFireResult;
-import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
+import org.tnmk.robocode.common.gun.predictor.self.model.PredictedAimAndFireResult;
 
 import robocode.Rules;
 

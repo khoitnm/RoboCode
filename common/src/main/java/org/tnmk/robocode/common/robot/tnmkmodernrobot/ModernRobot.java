@@ -16,10 +16,10 @@ import org.tnmk.robocode.common.model.Area;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.model.FullRobotState;
-import org.tnmk.robocode.common.predictor.self.PredictManager;
-import org.tnmk.robocode.common.predictor.self.model.FindingBestFirePointResult;
-import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
-import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
+import org.tnmk.robocode.common.gun.predictor.self.PredictManager;
+import org.tnmk.robocode.common.gun.predictor.self.model.FindingBestFirePointResult;
+import org.tnmk.robocode.common.gun.predictor.self.model.PredictedAimAndFireResult;
+import org.tnmk.robocode.common.gun.predictor.self.model.PredictedFirePoint;
 
 import robocode.HitByBulletEvent;
 

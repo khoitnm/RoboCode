@@ -2,7 +2,7 @@ package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.Scannable;
-import org.tnmk.robocode.common.robot.gft.oldalgorithm.GFTAimGun;
+import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 

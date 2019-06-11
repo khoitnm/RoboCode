@@ -2,7 +2,7 @@ package org.tnmk.robocode.common.model;
 
 import java.io.Serializable;
 
-import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
+import org.tnmk.robocode.common.gun.predictor.self.model.PredictedAimAndFireResult;
 
 
 public class PredictedTarget implements Serializable{

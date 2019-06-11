@@ -12,8 +12,8 @@ import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.common.model.PredictedTarget;
 import org.tnmk.robocode.common.model.TargetSet;
-import org.tnmk.robocode.common.predictor.self.LinearPredictStrategy;
-import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
+import org.tnmk.robocode.common.gun.predictor.self.LinearPredictStrategy;
+import org.tnmk.robocode.common.gun.predictor.self.model.PredictedAimAndFireResult;
 
 import org.tnmk.robocode.common.robot.tnmkmodernrobot.ModernRobot;
 import robocode.HitRobotEvent;
