@@ -3,7 +3,7 @@ package org.tnmk.robocode.robot;
 import org.tnmk.robocode.common.movement.antigravity.SimpleAntiGravityMovement;
 import org.tnmk.robocode.common.movement.edm.EnemyDodgeMovement;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorMovement;
-import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.Scannable;
 import robocode.AdvancedRobot;
@@ -29,13 +29,15 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
     }
 
     public void runInit(){
-        enemyDodgeMovement.runInit();
+//        enemyDodgeMovement.runInit();
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        if (allEnemiesObservationContext.countEnemies() <= 1) {
+        int totalExistingEnemies = robot.getOthers();
+        if (totalExistingEnemies <= 1) {
             moveOscillatorWithIdealDistance(scannedRobotEvent);
         } else {
+//            moveOscillatorWithIdealDistance(scannedRobotEvent);
             antiGravityMovement.onScannedRobot(scannedRobotEvent);
 //            enemyDodgeMovement.onScannedRobot(scannedRobotEvent);
         }

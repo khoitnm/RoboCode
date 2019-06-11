@@ -5,12 +5,12 @@ import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.List;
 
+import org.tnmk.common.math.AngleUtils;
 import org.tnmk.robocode.common.helper.FireByDistance;
 import org.tnmk.robocode.common.helper.MoveHelper;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
 import org.tnmk.robocode.common.helper.WallSmoothHelper;
 import org.tnmk.common.math.LineSegment;
-import org.tnmk.common.math.MathUtils;
 import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.model.Area;
 import org.tnmk.robocode.common.model.BaseRobotState;
@@ -265,7 +265,7 @@ public abstract class ModernRobot extends WithDirectionRobot implements Serializ
 	 *            this is the relative bearing from our robot's body heading to target.
 	 */
 	protected void setTurnRadarToTarget(double bearingFromRobotHeading) {
-		double turnRightDegree = MathUtils.normalizeDegree(getHeading() - getRadarHeading() + bearingFromRobotHeading);
+		double turnRightDegree = AngleUtils.normalizeDegree(getHeading() - getRadarHeading() + bearingFromRobotHeading);
 		setTurnRadarRight(turnRightDegree);
 	}
 
@@ -276,7 +276,7 @@ public abstract class ModernRobot extends WithDirectionRobot implements Serializ
 	 *            this is the relative bearing from our robot's body heading to target.
 	 */
 	protected void setTurnGunToTarget(double bearingFromRobotHeading) {
-		double turnRightDegree = MathUtils.normalizeDegree(getHeading() - getGunHeading() + bearingFromRobotHeading);
+		double turnRightDegree = AngleUtils.normalizeDegree(getHeading() - getGunHeading() + bearingFromRobotHeading);
 		String msg = String.format("GUN Right(%s) - turnRemain:%s", turnRightDegree, getGunTurnRemaining());
 		System.out.println(msg);
 		setTurnGunRight(turnRightDegree);

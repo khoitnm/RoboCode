@@ -7,10 +7,19 @@ public class LogHelper {
 
     public static void logAdvanceRobot(AdvancedRobot robot, String message) {
         String finalMessage = String.format("[%s] " +
-                        "\t velocity %s " +
-                        "\t distanceRemaining %s " +
+                        "\t velocity %.2f " +
+                        "\t distanceRemaining %.2f " +
+                        "\t heading %.2f" +
+//                        "\t radarHeading %.2f" +
+//                        "\t radarTurnRemaining %.2f" +
                         "\t %s",
-                robot.getTime(), robot.getVelocity(), robot.getDistanceRemaining(), message);
+                robot.getTime(),
+                robot.getVelocity(),
+                robot.getDistanceRemaining(),
+                robot.getHeading(),
+//                robot.getRadarHeading(),
+//                robot.getRadarTurnRemaining(),
+                message);
         robot.out.println(finalMessage);
     }
 

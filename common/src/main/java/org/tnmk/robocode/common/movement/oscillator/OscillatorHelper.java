@@ -1,8 +1,8 @@
 package org.tnmk.robocode.common.movement.oscillator;
 
 import org.tnmk.common.number.DoubleUtils;
-import org.tnmk.robocode.common.radar.scanall.Enemy;
-import org.tnmk.robocode.common.radar.scanall.EnemyMapper;
+import org.tnmk.robocode.common.model.enemy.Enemy;
+import org.tnmk.robocode.common.model.enemy.EnemyMapper;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 

@@ -1,11 +1,9 @@
 package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.log.LogHelper;
-import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
-import robocode.AdvancedRobot;
-import robocode.RobotDeathEvent;
-import robocode.ScannedRobotEvent;
+import robocode.*;
 
 /**
  * The very simple robot which extends features from {@link AdvancedRobot}
@@ -17,7 +15,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     private AllEnemiesObservationContext allEnemiesObservationContext = new AllEnemiesObservationContext(this);
     private TheUnfoldingMovement theUnfoldingMovement = new TheUnfoldingMovement(this, allEnemiesObservationContext);
     private TheUnfoldingRadar theUnfoldingRadar = new TheUnfoldingRadar(this, allEnemiesObservationContext);
-    private TheUnfoldingGun theUnfoldingGun = new TheUnfoldingGun(this,allEnemiesObservationContext);
+    private TheUnfoldingGun theUnfoldingGun = new TheUnfoldingGun(this, allEnemiesObservationContext);
 
     public void run() {
         HiTechDecorator.decorate(this);
@@ -30,11 +28,11 @@ public class TheUnfoldingRobot extends AdvancedRobot {
         theUnfoldingMovement.runInit();
         execute();
 
-        while (true) {
-            theUnfoldingRadar.runLoop();
-            execute();
-            loopIndex++;
-        }
+//        while (true) {
+//            theUnfoldingRadar.runLoop();
+//            execute();
+//            loopIndex++;
+//        }
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
@@ -44,11 +42,15 @@ public class TheUnfoldingRobot extends AdvancedRobot {
         execute();
     }
 
-    public void onRobotDeath(RobotDeathEvent robotDeathEvent){
+    public void onRobotDeath(RobotDeathEvent robotDeathEvent) {
         theUnfoldingRadar.onRobotDeath(robotDeathEvent);
         execute();
     }
 
+    @Override
+    public void onCustomEvent(CustomEvent customEvent) {
+        theUnfoldingRadar.onCustomEvent(customEvent);
+    }
     private void log(String message) {
         LogHelper.logAdvanceRobot(this, loopIndex, message);
     }

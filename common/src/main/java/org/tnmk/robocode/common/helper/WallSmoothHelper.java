@@ -1,5 +1,6 @@
 package org.tnmk.robocode.common.helper;
 
+import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.MathUtils;
 import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.model.Area;
@@ -236,7 +237,7 @@ public class WallSmoothHelper {
 		if (targetAngle == null) {
 			return null;
 		} else {
-			return MathUtils.normalizeDegree(targetAngle - moveAngle);
+			return AngleUtils.normalizeDegree(targetAngle - moveAngle);
 		}
 	}
 	
