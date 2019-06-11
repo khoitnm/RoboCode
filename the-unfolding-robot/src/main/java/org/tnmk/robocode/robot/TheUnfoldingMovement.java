@@ -29,7 +29,7 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
     }
 
     public void runInit(){
-        enemyDodgeMovement.runInit();
+//        enemyDodgeMovement.runInit();
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
@@ -37,8 +37,8 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
         if (totalExistingEnemies <= 1) {
             moveOscillatorWithIdealDistance(scannedRobotEvent);
         } else {
-            moveOscillatorWithIdealDistance(scannedRobotEvent);
-//            antiGravityMovement.onScannedRobot(scannedRobotEvent);
+//            moveOscillatorWithIdealDistance(scannedRobotEvent);
+            antiGravityMovement.onScannedRobot(scannedRobotEvent);
 //            enemyDodgeMovement.onScannedRobot(scannedRobotEvent);
         }
     }

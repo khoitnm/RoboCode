@@ -1,5 +1,6 @@
 package org.tnmk.robocode.common.radar.scanall;
 
+import org.tnmk.robocode.common.model.enemy.Enemy;
 import robocode.AdvancedRobot;
 
 import java.util.Collection;

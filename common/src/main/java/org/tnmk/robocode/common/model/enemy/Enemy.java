@@ -1,18 +1,40 @@
-package org.tnmk.robocode.common.radar.scanall;
+package org.tnmk.robocode.common.model.enemy;
 
 import com.sun.istack.internal.NotNull;
 import java.awt.geom.Point2D;
+import robocode.Robot;
+import robocode.ScannedRobotEvent;
 
+/**
+ * This class represent all information of an enemy as a result of {@link Robot#onScannedRobot(ScannedRobotEvent)}
+ */
 public class Enemy {
     @NotNull
     private String name;
+
+    @NotNull
     private double energy;
+
+    @NotNull
     private double heading;
+
+    @NotNull
     private double bearing;
+
+    @NotNull
     private double distance;
+
+    @NotNull
     private double velocity;
+
+    @NotNull
     private boolean isSentryRobot;
+
+    @NotNull
     private Point2D position;
+
+    @NotNull
+    private double time;
 
     public String getName() {
         return name;
@@ -80,5 +102,13 @@ public class Enemy {
 
     public double getBearingRadians() {
         return Math.toRadians(this.getBearing());
+    }
+
+    public double getTime() {
+        return time;
+    }
+
+    public void setTime(double time) {
+        this.time = time;
     }
 }

@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.movement.oscillator;
 
-import org.tnmk.robocode.common.radar.scanall.Enemy;
+import org.tnmk.robocode.common.model.enemy.Enemy;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 

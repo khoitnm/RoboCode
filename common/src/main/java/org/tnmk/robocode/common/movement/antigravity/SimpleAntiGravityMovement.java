@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import org.tnmk.common.math.Point2DUtils;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
-import org.tnmk.robocode.common.radar.scanall.Enemy;
+import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.robot.Scannable;
 import robocode.AdvancedRobot;
 import robocode.Robot;

@@ -3,9 +3,7 @@ package org.tnmk.robocode.robot;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
-import robocode.AdvancedRobot;
-import robocode.RobotDeathEvent;
-import robocode.ScannedRobotEvent;
+import robocode.*;
 
 /**
  * The very simple robot which extends features from {@link AdvancedRobot}
@@ -26,14 +24,15 @@ public class TheUnfoldingRobot extends AdvancedRobot {
         setAdjustRadarForGunTurn(true);
         setAdjustRadarForRobotTurn(true);
 
+        theUnfoldingRadar.runInit();
         theUnfoldingMovement.runInit();
         execute();
 
-        while (true) {
-            theUnfoldingRadar.runLoop();
-            execute();
-            loopIndex++;
-        }
+//        while (true) {
+//            theUnfoldingRadar.runLoop();
+//            execute();
+//            loopIndex++;
+//        }
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
@@ -48,6 +47,10 @@ public class TheUnfoldingRobot extends AdvancedRobot {
         execute();
     }
 
+    @Override
+    public void onCustomEvent(CustomEvent customEvent) {
+        theUnfoldingRadar.onCustomEvent(customEvent);
+    }
     private void log(String message) {
         LogHelper.logAdvanceRobot(this, loopIndex, message);
     }
