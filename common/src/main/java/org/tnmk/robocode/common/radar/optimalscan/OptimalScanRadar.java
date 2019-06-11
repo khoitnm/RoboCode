@@ -1,9 +1,13 @@
 package org.tnmk.robocode.common.radar.optimalscan;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.Point2DUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
@@ -15,8 +19,6 @@ import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.RobotDeathTrackable;
 import org.tnmk.robocode.common.robot.Scannable;
 import robocode.*;
-
-import static robocode.util.Utils.normalRelativeAngle;
 
 /**
  * https://www.ibm.com/developerworks/library/j-radar/index.html
@@ -53,30 +55,78 @@ public class OptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrac
     }
 
     private void sweep() {
-        double maxBearingAbs = 0, maxBearing = 0;
-        int scannedBots = 0;
+        double normRadarTurnRight;
+        double minPositionNormBearing = 180;
+        double maxPositionNormBearing = -180;
 
         Collection<Enemy> enemies = this.allEnemiesObservationContext.getEnemies();
-        for (Enemy enemy : enemies) {
-            if (enemy != null && EnemyHelper.isEnemyNew(enemy, robot.getTime())) {
-                double bearing = normalRelativeAngle(robot.getHeading() + enemy.getBearing() - robot.getRadarHeading());
-                if (Math.abs(bearing) > maxBearingAbs) {
-                    maxBearingAbs = Math.abs(bearing);
-                    maxBearing = bearing;
+        if (enemies.isEmpty()) {
+            normRadarTurnRight = 360;
+        } else {
+            for (Enemy enemy : enemies) {
+                Point2D robotPosition = new Double(robot.getX(), robot.getY());
+                double positionNormBearing = Point2DUtils.reckonNormalizeAngle(robotPosition, enemy.getPosition());
+                if (minPositionNormBearing > positionNormBearing) {
+                    minPositionNormBearing = positionNormBearing;
                 }
-                scannedBots++;
+                if (maxPositionNormBearing < positionNormBearing) {
+                    maxPositionNormBearing = positionNormBearing;
+                }
+            }
+
+            //-360 to 360
+            double normMaxMin = AngleUtils.normalizeDegree(maxPositionNormBearing - minPositionNormBearing);
+            double normRadarHeading = AngleUtils.normalizeDegree(robot.getRadarHeading());
+            if (normMaxMin < 0) {//A: shortest path: max turn right to reach min
+                if (normRadarHeading < 0) {
+                    if (normRadarHeading > minPositionNormBearing) {//Aa
+                        normRadarTurnRight = AngleUtils.normalizeDegree(maxPositionNormBearing - normRadarHeading);//target - currentHeading
+                    } else {//Ab
+                        //keep radarTurnLeftDirection the same
+                        double normRadarToMin = minPositionNormBearing - normRadarHeading;//turn right (>0)
+                        double normRadarToMax = maxPositionNormBearing - normRadarHeading;//turn left (<0)
+                        if (Math.abs(normRadarToMin) < Math.abs(normRadarToMax)) {
+                            normRadarTurnRight = normRadarToMin;
+                        } else {
+                            normRadarTurnRight = normRadarToMax;
+                        }
+                    }
+                } else {
+                    if (normRadarHeading < maxPositionNormBearing) {//Ad
+                        normRadarTurnRight = AngleUtils.normalizeDegree(minPositionNormBearing - normRadarHeading);//target - currentHeading
+                    } else {//Ac == Ab
+                        //keep radarTurnLeftDirection the same
+                        double normRadarToMin = minPositionNormBearing - normRadarHeading;//turn right (>0)
+                        double normRadarToMax = maxPositionNormBearing - normRadarHeading;//turn left (<0)
+                        if (Math.abs(normRadarToMin) < Math.abs(normRadarToMax)) {
+                            normRadarTurnRight = normRadarToMin;
+                        } else {
+                            normRadarTurnRight = normRadarToMax;
+                        }
+                    }
+                }
+            } else {//B, C, D: normMaxMin >= 0: shortest path: max turn left to reach min
+                if (normRadarHeading < minPositionNormBearing) {
+                    normRadarTurnRight = AngleUtils.normalizeDegree(maxPositionNormBearing - normRadarHeading);//target - currentHeading
+                    //keep the same
+                } else if (normRadarHeading > maxPositionNormBearing) {
+                    normRadarTurnRight = AngleUtils.normalizeDegree(minPositionNormBearing - normRadarHeading);//target - currentHeading
+                } else {
+                    double normRadarToMin = minPositionNormBearing - normRadarHeading;//turn right (>0)
+                    double normRadarToMax = maxPositionNormBearing - normRadarHeading;//turn left (<0)
+                    if (Math.abs(normRadarToMin) < Math.abs(normRadarToMax)) {
+                        normRadarTurnRight = normRadarToMin;
+                    } else {
+                        normRadarTurnRight = normRadarToMax;
+                    }
+                }
             }
         }
 
-
-        double radarTurn = 180 * radarDirection;
-        if (scannedBots == robot.getOthers()) {
-            radarTurn = maxBearing + MathUtils.sign(maxBearing) * SAFE_EXTRA_SCAN_DEGREE;
-        }
-
-        robot.setTurnRadarRight(radarTurn);
-        radarDirection = MathUtils.sign(radarTurn);
-        printSweep(robot, radarTurn, enemies);
+        normRadarTurnRight += MathUtils.sign(normRadarTurnRight) * SAFE_EXTRA_SCAN_DEGREE;
+        robot.setTurnRadarRight(normRadarTurnRight);
+        radarDirection = -radarDirection;
+        printSweep(robot, normRadarTurnRight, enemies);
     }
 
     private void printSweep(AdvancedRobot robot, double radarTurn, Collection<Enemy> enemies) {
