@@ -5,4 +5,21 @@ public class RobotPhysics {
      * speed of radar (degree)
      */
     public static final int RADAR_TURN_VELOCITY = 45;
+
+    /**
+     * The full size of a robot.
+     */
+    public static final double ROBOT_SIZE = 50;
+
+    public static final double ROBOT_MAX_VELOCITY = 8;
+    public static final double ROBOT_STOP_ACCELERATION = 2;
+    /**
+     * velocity from 8 -> 6 -> 4 -> 2 -> 0: 5 ticks
+     */
+    public static final double ROBOT_TICKS_TO_STOP_FROM_FULL_SPEED = 5;
+    /**
+     * When a robot at full speed, the distance for it to stop is 20
+     * velocity from 8 -> 6 -> 4 -> 2 -> 0: distance 20
+     */
+    public static final double ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED = 20;
 }
