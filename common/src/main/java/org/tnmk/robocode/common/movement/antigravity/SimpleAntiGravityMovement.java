@@ -45,7 +45,7 @@ public class SimpleAntiGravityMovement implements InitiableRun, Scannable {
     public void runInit() {
         double battleWidth = robot.getBattleFieldWidth();
         double battleHeight = robot.getBattleFieldHeight();
-        double safePaddingMovementDistance = RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED * 2;
+        double safePaddingMovementDistance = (RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE * 2) * 2;
         safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance, battleHeight - safePaddingMovementDistance);
         maxPossibleMoveDistance = Math.min(battleWidth, battleHeight);
         maxPossibleEnemiesCount = 1 + (int) (maxPossibleMoveDistance / RobotPhysics.ROBOT_SIZE);
@@ -74,7 +74,7 @@ public class SimpleAntiGravityMovement implements InitiableRun, Scannable {
         Optional<Point2D> avoidWallDestinationOptional = Move2DHelper.reckonMaximumDestination(robotPosition, destination, safeMovementArea);
         destination = avoidWallDestinationOptional.orElse(destination);
         PaintHelper.paintPoint(robot.getGraphics(), 4, Color.BLUE, destination, null);
-        Move2DHelper.setMoveToDestinationWithShortestPath(robot, destination);
+        Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, destination);
 //        moveFollowTheForce(this.robot, force);
     }
 
