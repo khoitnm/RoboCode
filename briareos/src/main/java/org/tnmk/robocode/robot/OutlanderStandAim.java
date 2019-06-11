@@ -7,9 +7,9 @@ import org.tnmk.robocode.common.constant.AimStatus;
 import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
 import org.tnmk.robocode.common.model.FullRobotState;
-import org.tnmk.robocode.common.predictor.self.model.PredictedAimAndFireResult;
-import org.tnmk.robocode.common.predictor.self.model.PredictedAimResult;
-import org.tnmk.robocode.common.predictor.self.model.PredictedFirePoint;
+import org.tnmk.robocode.common.gun.predictor.self.model.PredictedAimAndFireResult;
+import org.tnmk.robocode.common.gun.predictor.self.model.PredictedAimResult;
+import org.tnmk.robocode.common.gun.predictor.self.model.PredictedFirePoint;
 
 import org.tnmk.robocode.common.robot.tnmkmodernrobot.ModernRobot;
 import robocode.ScannedRobotEvent;
