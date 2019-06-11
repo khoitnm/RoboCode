@@ -34,7 +34,7 @@ public class Enemy {
     private Point2D position;
 
     @NotNull
-    private double time;
+    private long time;
 
     public String getName() {
         return name;
@@ -104,11 +104,11 @@ public class Enemy {
         return Math.toRadians(this.getBearing());
     }
 
-    public double getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(double time) {
+    public void setTime(long time) {
         this.time = time;
     }
 }

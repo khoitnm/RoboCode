@@ -11,7 +11,6 @@ import org.tnmk.common.math.Point2DUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
-import org.tnmk.robocode.common.model.enemy.EnemyHelper;
 import org.tnmk.robocode.common.model.enemy.EnemyMapper;
 import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.CustomableEvent;
@@ -27,7 +26,7 @@ public class OptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrac
     /**
      * Scan a little bit more degree to make sure that all enemies have not moved outside the radar's scan area since the last time they are scanned.
      */
-    private static final double SAFE_EXTRA_SCAN_DEGREE = RobotPhysics.RADAR_TURN_VELOCITY / 2;
+    private static final double SAFE_EXTRA_SCAN_DEGREE = RobotPhysics.RADAR_TURN_VELOCITY;
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
@@ -54,6 +53,7 @@ public class OptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrac
         }
     }
 
+    //TODO refactor
     private void sweep() {
         double normRadarTurnRight;
         double minPositionNormBearing = 180;
@@ -130,8 +130,8 @@ public class OptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrac
     }
 
     private void printSweep(AdvancedRobot robot, double radarTurn, Collection<Enemy> enemies) {
-        List<Boolean> isEnemiesUpdated = enemies.stream().map(enemy -> EnemyHelper.isEnemyNew(enemy, robot.getTime())).collect(Collectors.toList());
-        LogHelper.logAdvanceRobot(robot, "New sweep " + radarTurn + ", enemies updated: " + isEnemiesUpdated);
+        List<Long> enemiesUpdatedTime = enemies.stream().map(enemy -> robot.getTime() - enemy.getTime()).collect(Collectors.toList());
+        LogHelper.logAdvanceRobot(robot, "New sweep " + radarTurn + ", enemies updated: " + enemiesUpdatedTime);
     }
 
     @Override
