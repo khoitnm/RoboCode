@@ -3,14 +3,13 @@ package org.tnmk.robocode.common.movement.antigravity;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.awt.geom.Rectangle2D;
+import java.util.*;
 import org.tnmk.common.math.Point2DUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
+import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.Scannable;
@@ -27,12 +26,14 @@ public class SimpleAntiGravityMovement implements InitiableRun, Scannable {
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
+    private static Rectangle2D safeMovementArea;
     private static double maxPossibleMoveDistance;
     private static double maxSafeMoveDistance;
     private static int maxPossibleEnemiesCount;
     private static int maxActualEnemiesCount;
     private static double movementIncrement;
     private static double maxForceWithoutHittingWall;
+
 
     public SimpleAntiGravityMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
@@ -44,6 +45,8 @@ public class SimpleAntiGravityMovement implements InitiableRun, Scannable {
     public void runInit() {
         double battleWidth = robot.getBattleFieldWidth();
         double battleHeight = robot.getBattleFieldHeight();
+        double safePaddingMovementDistance = RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED * 2;
+        safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance, battleHeight - safePaddingMovementDistance);
         maxPossibleMoveDistance = Math.min(battleWidth, battleHeight);
         maxPossibleEnemiesCount = 1 + (int) (maxPossibleMoveDistance / RobotPhysics.ROBOT_SIZE);
         maxActualEnemiesCount = robot.getOthers();
@@ -66,7 +69,12 @@ public class SimpleAntiGravityMovement implements InitiableRun, Scannable {
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         Point2D force = reckonForce(this.robot, this.allEnemiesObservationContext);
-        Move2DHelper.setMoveToDestinationWithShortestPath(robot, force);
+        Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
+        Point2D destination = Point2DUtils.plus(robotPosition, force);
+        Optional<Point2D> avoidWallDestinationOptional = Move2DHelper.reckonMaximumDestination(robotPosition, destination, safeMovementArea);
+        destination = avoidWallDestinationOptional.orElse(destination);
+        PaintHelper.paintPoint(robot.getGraphics(), 4, Color.BLUE, destination, null);
+        Move2DHelper.setMoveToDestinationWithShortestPath(robot, destination);
 //        moveFollowTheForce(this.robot, force);
     }
 

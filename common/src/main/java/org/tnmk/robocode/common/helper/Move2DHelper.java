@@ -1,23 +1,43 @@
 package org.tnmk.robocode.common.helper;
 
-import org.tnmk.common.converter.PointConverter;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
+import java.util.Optional;
 import org.tnmk.common.math.MathUtils;
-import org.tnmk.common.math.Point;
-import org.tnmk.robocode.common.model.FullRobotState;
 import robocode.AdvancedRobot;
 import robocode.HitRobotEvent;
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
-import java.awt.geom.Point2D;
-import java.io.Serializable;
-
 public class Move2DHelper implements Serializable {
     public static final double ROBOT_SIZE = 50;
 
     public static Point2D reckonTargetPosition(Robot thisRobot, HitRobotEvent targetRobotEvent) {
         return reckonTargetPosition(thisRobot, targetRobotEvent.getBearing(), ROBOT_SIZE);
+    }
+
+    /**
+     * @param pointA
+     * @param pointB
+     * @param xC     x of PointC which is on the same line of PointA -> PointB
+     * @return yC (y of PointC)
+     */
+    public static double reckonYOfPointCOnTheSameLine(Point2D pointA, Point2D pointB, double xC) {
+        double yC = ((xC - pointA.getX()) / (pointB.getX() - pointA.getX()) * (pointB.getY() - pointA.getY())) + pointA.getY();
+        return yC;
+    }
+
+    /**
+     * @param pointA
+     * @param pointB
+     * @param yC     y of PointC which is on the same line of PointA -> PointB
+     * @return xC (x of PointC)
+     */
+    public static double reckonXOfPointCOnTheSameLine(Point2D pointA, Point2D pointB, double yC) {
+        double xC = ((yC - pointA.getY()) / (pointB.getY() - pointA.getY()) * (pointB.getX() - pointA.getX())) + pointA.getX();
+        return xC;
     }
 
     /**
@@ -76,5 +96,33 @@ public class Move2DHelper implements Serializable {
          * from 0.
          */
         robot.setAhead(Math.cos(goAngle) * Math.hypot(destX, destY));
+    }
+
+    /**
+     * @param pointA    should be inside limitArea
+     * @param pointB    could be outside limitArea
+     * @param limitArea
+     * @return if pointB is inside the limitArea, return empty.
+     */
+    public static Optional<Point2D> reckonMaximumDestination(Point2D pointA, Point2D pointB, Rectangle2D limitArea) {
+        if (pointB.getY() > limitArea.getMaxY()) {
+            double yC = limitArea.getMaxY();
+            double xC = reckonXOfPointCOnTheSameLine(pointA, pointB, yC);
+            return Optional.of(new Point2D.Double(xC, yC));
+        } else if (pointB.getY() < limitArea.getMinY()) {
+            double yC = limitArea.getMinY();
+            double xC = reckonXOfPointCOnTheSameLine(pointA, pointB, yC);
+            return Optional.of(new Point2D.Double(xC, yC));
+        } else if (pointB.getX() > limitArea.getMaxX()) {
+            double xC = limitArea.getMaxX();
+            double yC = reckonYOfPointCOnTheSameLine(pointA, pointB, xC);
+            return Optional.of(new Point2D.Double(xC, yC));
+        } else if (pointB.getX() < limitArea.getMinX()) {
+            double xC = limitArea.getMinX();
+            double yC = reckonYOfPointCOnTheSameLine(pointA, pointB, xC);
+            return Optional.of(new Point2D.Double(xC, yC));
+        } else {
+            return Optional.empty();
+        }
     }
 }
