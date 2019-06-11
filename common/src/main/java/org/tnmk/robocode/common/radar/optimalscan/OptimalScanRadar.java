@@ -12,7 +12,7 @@ import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyMapper;
-import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.CustomableEvent;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.RobotDeathTrackable;
@@ -106,7 +106,7 @@ public class OptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrac
     }
 
     /**
-     * @param normRadarHeading the normalized heading radar of current robot (-180 to 180)
+     * @param normRadarHeading       the normalized heading radar of current robot (-180 to 180)
      * @param minPositionNormBearing the min (in enemies list) normalized bearing angle compare to root (-180 to 180). View {@link #reckonMinMaxPositionNormBearing(AdvancedRobot, Collection)}
      * @param maxPositionNormBearing the similar meaning of minPositionNormBearing
      * @return reckon the nearest angel which robot's radar must turn to reach either the enemy with min bearing or max bearing(in term of angle, not distance).

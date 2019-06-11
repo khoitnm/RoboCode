@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.radar.scanall;
+package org.tnmk.robocode.common.radar;
 
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import robocode.AdvancedRobot;

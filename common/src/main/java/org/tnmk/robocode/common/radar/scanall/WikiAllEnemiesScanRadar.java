@@ -3,6 +3,7 @@ package org.tnmk.robocode.common.radar.scanall;
 import java.util.LinkedHashMap;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyMapper;
+import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.RobotDeathTrackable;
 import org.tnmk.robocode.common.robot.Scannable;

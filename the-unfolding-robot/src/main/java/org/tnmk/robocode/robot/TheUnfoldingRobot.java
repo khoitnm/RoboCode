@@ -1,7 +1,7 @@
 package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.log.LogHelper;
-import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.*;
 

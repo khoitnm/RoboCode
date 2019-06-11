@@ -2,7 +2,7 @@ package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.radar.botlock.BotLockRadar;
 import org.tnmk.robocode.common.radar.optimalscan.OptimalScanRadar;
-import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.CustomableEvent;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.RobotDeathTrackable;

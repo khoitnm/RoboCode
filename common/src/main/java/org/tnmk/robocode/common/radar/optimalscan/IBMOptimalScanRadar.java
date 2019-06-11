@@ -9,7 +9,7 @@ import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHelper;
 import org.tnmk.robocode.common.model.enemy.EnemyMapper;
-import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.CustomableEvent;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.RobotDeathTrackable;
@@ -20,6 +20,7 @@ import static robocode.util.Utils.normalRelativeAngle;
 
 /**
  * https://www.ibm.com/developerworks/library/j-radar/index.html
+ * Flaw: still scan redundant areas because the calculation was based on the old enemy's bearing angle (which based on old robot's position, not based on the current robot's position).
  */
 public class IBMOptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrackable, CustomableEvent {
     /**

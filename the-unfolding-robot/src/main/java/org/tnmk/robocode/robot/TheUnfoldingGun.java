@@ -1,6 +1,6 @@
 package org.tnmk.robocode.robot;
 
-import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.Scannable;
 import org.tnmk.robocode.common.robot.gft.oldalgorithm.GFTAimGun;
 import robocode.AdvancedRobot;

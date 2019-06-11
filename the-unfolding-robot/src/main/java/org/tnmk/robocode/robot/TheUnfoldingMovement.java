@@ -3,7 +3,7 @@ package org.tnmk.robocode.robot;
 import org.tnmk.robocode.common.movement.antigravity.SimpleAntiGravityMovement;
 import org.tnmk.robocode.common.movement.edm.EnemyDodgeMovement;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorMovement;
-import org.tnmk.robocode.common.radar.scanall.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.Scannable;
 import robocode.AdvancedRobot;
