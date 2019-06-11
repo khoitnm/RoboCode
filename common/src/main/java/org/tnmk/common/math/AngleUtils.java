@@ -7,7 +7,7 @@ public class AngleUtils {
      * efficient movement. To normalize a bearing, use the following function:
      *
      * @param angleDegree angle in degree
-     * @return
+     * @return normalized angle (-180 to 180)
      */
     public static double normalizeDegree(double angleDegree) {
         while (angleDegree > 180){

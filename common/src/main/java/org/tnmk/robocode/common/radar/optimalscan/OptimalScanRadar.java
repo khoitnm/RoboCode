@@ -1,10 +1,10 @@
 package org.tnmk.robocode.common.radar.optimalscan;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import javafx.util.Pair;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.MathUtils;
 import org.tnmk.common.math.Point2DUtils;
@@ -55,78 +55,98 @@ public class OptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrac
 
     //TODO refactor
     private void sweep() {
-        double normRadarTurnRight;
-        double minPositionNormBearing = 180;
-        double maxPositionNormBearing = -180;
-
         Collection<Enemy> enemies = this.allEnemiesObservationContext.getEnemies();
+        double normRadarTurnRight;
         if (enemies.isEmpty()) {
             normRadarTurnRight = 360;
         } else {
-            for (Enemy enemy : enemies) {
-                Point2D robotPosition = new Double(robot.getX(), robot.getY());
-                double positionNormBearing = Point2DUtils.reckonNormalizeAngle(robotPosition, enemy.getPosition());
-                if (minPositionNormBearing > positionNormBearing) {
-                    minPositionNormBearing = positionNormBearing;
-                }
-                if (maxPositionNormBearing < positionNormBearing) {
-                    maxPositionNormBearing = positionNormBearing;
-                }
-            }
-
-            //-360 to 360
-            double normMaxMin = AngleUtils.normalizeDegree(maxPositionNormBearing - minPositionNormBearing);
-            double normRadarHeading = AngleUtils.normalizeDegree(robot.getRadarHeading());
-            if (normMaxMin < 0) {//A: shortest path: max turn right to reach min
-                if (normRadarHeading < 0) {
-                    if (normRadarHeading > minPositionNormBearing) {//Aa
-                        normRadarTurnRight = AngleUtils.normalizeDegree(maxPositionNormBearing - normRadarHeading);//target - currentHeading
-                    } else {//Ab
-                        //keep radarTurnLeftDirection the same
-                        double normRadarToMin = minPositionNormBearing - normRadarHeading;//turn right (>0)
-                        double normRadarToMax = maxPositionNormBearing - normRadarHeading;//turn left (<0)
-                        if (Math.abs(normRadarToMin) < Math.abs(normRadarToMax)) {
-                            normRadarTurnRight = normRadarToMin;
-                        } else {
-                            normRadarTurnRight = normRadarToMax;
-                        }
-                    }
-                } else {
-                    if (normRadarHeading < maxPositionNormBearing) {//Ad
-                        normRadarTurnRight = AngleUtils.normalizeDegree(minPositionNormBearing - normRadarHeading);//target - currentHeading
-                    } else {//Ac == Ab
-                        //keep radarTurnLeftDirection the same
-                        double normRadarToMin = minPositionNormBearing - normRadarHeading;//turn right (>0)
-                        double normRadarToMax = maxPositionNormBearing - normRadarHeading;//turn left (<0)
-                        if (Math.abs(normRadarToMin) < Math.abs(normRadarToMax)) {
-                            normRadarTurnRight = normRadarToMin;
-                        } else {
-                            normRadarTurnRight = normRadarToMax;
-                        }
-                    }
-                }
-            } else {//B, C, D: normMaxMin >= 0: shortest path: max turn left to reach min
-                if (normRadarHeading < minPositionNormBearing) {
-                    normRadarTurnRight = AngleUtils.normalizeDegree(maxPositionNormBearing - normRadarHeading);//target - currentHeading
-                    //keep the same
-                } else if (normRadarHeading > maxPositionNormBearing) {
-                    normRadarTurnRight = AngleUtils.normalizeDegree(minPositionNormBearing - normRadarHeading);//target - currentHeading
-                } else {
-                    double normRadarToMin = minPositionNormBearing - normRadarHeading;//turn right (>0)
-                    double normRadarToMax = maxPositionNormBearing - normRadarHeading;//turn left (<0)
-                    if (Math.abs(normRadarToMin) < Math.abs(normRadarToMax)) {
-                        normRadarTurnRight = normRadarToMin;
-                    } else {
-                        normRadarTurnRight = normRadarToMax;
-                    }
-                }
-            }
+            normRadarTurnRight = sweepWhenFoundSomeEnemies(robot, enemies);
         }
 
         normRadarTurnRight += MathUtils.sign(normRadarTurnRight) * SAFE_EXTRA_SCAN_DEGREE;
         robot.setTurnRadarRight(normRadarTurnRight);
         radarDirection = -radarDirection;
         printSweep(robot, normRadarTurnRight, enemies);
+    }
+
+    private double sweepWhenFoundSomeEnemies(AdvancedRobot robot, Collection<Enemy> enemies) {
+        double normRadarTurnRight;
+
+        Pair<Double, Double> minMaxPositionNormBearing = reckonMinMaxPositionNormBearing(robot, enemies);
+        double minPositionNormBearing = minMaxPositionNormBearing.getKey();
+        double maxPositionNormBearing = minMaxPositionNormBearing.getValue();
+
+        //-180 to 180
+        double normMaxMin = AngleUtils.normalizeDegree(maxPositionNormBearing - minPositionNormBearing);
+        double normRadarHeading = AngleUtils.normalizeDegree(robot.getRadarHeading());
+        if (normMaxMin < 0) {//A: shortest path: maxBearing turn right to reach minBearing
+            if (normRadarHeading < 0) {
+                if (normRadarHeading > minPositionNormBearing) {//Aa
+                    normRadarTurnRight = AngleUtils.normalizeDegree(maxPositionNormBearing - normRadarHeading);//target - currentHeading
+                } else {//Ab
+                    normRadarTurnRight = reckonNormRadarTurnRightToNearestEnemyPosition(normRadarHeading, minPositionNormBearing, maxPositionNormBearing);
+                }
+            } else {
+                if (normRadarHeading < maxPositionNormBearing) {//Ad
+                    normRadarTurnRight = AngleUtils.normalizeDegree(minPositionNormBearing - normRadarHeading);//target - currentHeading
+                } else {//Ac == Ab
+                    normRadarTurnRight = reckonNormRadarTurnRightToNearestEnemyPosition(normRadarHeading, minPositionNormBearing, maxPositionNormBearing);
+                }
+            }
+        } else {//B, C, D: normMaxMin >= 0: shortest path: maxBearing turn left to reach minBearing
+            if (normRadarHeading < minPositionNormBearing) {
+                normRadarTurnRight = AngleUtils.normalizeDegree(maxPositionNormBearing - normRadarHeading);//target - currentHeading
+            } else if (normRadarHeading > maxPositionNormBearing) {
+                normRadarTurnRight = AngleUtils.normalizeDegree(minPositionNormBearing - normRadarHeading);//target - currentHeading
+            } else {
+                normRadarTurnRight = reckonNormRadarTurnRightToNearestEnemyPosition(normRadarHeading, minPositionNormBearing, maxPositionNormBearing);
+            }
+        }
+        return normRadarTurnRight;
+    }
+
+    /**
+     * @param normRadarHeading the normalized heading radar of current robot (-180 to 180)
+     * @param minPositionNormBearing the min (in enemies list) normalized bearing angle compare to root (-180 to 180). View {@link #reckonMinMaxPositionNormBearing(AdvancedRobot, Collection)}
+     * @param maxPositionNormBearing the similar meaning of minPositionNormBearing
+     * @return reckon the nearest angel which robot's radar must turn to reach either the enemy with min bearing or max bearing(in term of angle, not distance).
+     */
+    private double reckonNormRadarTurnRightToNearestEnemyPosition(double normRadarHeading, double minPositionNormBearing, double maxPositionNormBearing) {
+        double normRadarToMin = minPositionNormBearing - normRadarHeading;//turn right (>0)
+        double normRadarToMax = maxPositionNormBearing - normRadarHeading;//turn left (<0)
+        double normRadarTurnRight;
+        if (Math.abs(normRadarToMin) < Math.abs(normRadarToMax)) {
+            normRadarTurnRight = normRadarToMin;
+        } else {
+            normRadarTurnRight = normRadarToMax;
+        }
+        return normRadarTurnRight;
+    }
+
+    /**
+     * @param robot
+     * @param enemies
+     * @return normalized bearing angles (-180 to 180) from robot's position to enemies' positions.<br/>
+     * <ul>
+     * <li>key: minPositionNormBearing</li>
+     * <li>value: maxPositionNormBearing</li>
+     * </ul>
+     * Note: those value are calculated based on the current robot's position. So they can be different from {@link Enemy#getBearing()} which was calculated based on the old robot's position (when enemy was scanned)
+     */
+    private Pair<Double, Double> reckonMinMaxPositionNormBearing(AdvancedRobot robot, Collection<Enemy> enemies) {
+        double minPositionNormBearing = 180;
+        double maxPositionNormBearing = -180;
+        for (Enemy enemy : enemies) {
+            Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
+            double positionNormBearing = Point2DUtils.reckonNormalizeAngle(robotPosition, enemy.getPosition());
+            if (minPositionNormBearing > positionNormBearing) {
+                minPositionNormBearing = positionNormBearing;
+            }
+            if (maxPositionNormBearing < positionNormBearing) {
+                maxPositionNormBearing = positionNormBearing;
+            }
+        }
+        return new Pair<>(minPositionNormBearing, maxPositionNormBearing);
     }
 
     private void printSweep(AdvancedRobot robot, double radarTurn, Collection<Enemy> enemies) {
