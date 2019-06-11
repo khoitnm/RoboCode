@@ -28,10 +28,13 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
         antiGravityMovement = new SimpleAntiGravityMovement(robot, allEnemiesObservationContext);
     }
 
+    @Override
     public void runInit(){
+        antiGravityMovement.runInit();
 //        enemyDodgeMovement.runInit();
     }
 
+    @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         int totalExistingEnemies = robot.getOthers();
         if (totalExistingEnemies <= 1) {

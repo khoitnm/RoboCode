@@ -8,7 +8,9 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 
 public class SimpleAntiGravityPainterUtils {
-    private static final double FORCE_LENGTH = 30000000d;//This value suitable for battle field 1000x1000
+    //    private static final double FORCE_LENGTH = 30000000d;//This value suitable for battle field 1000x1000
+    private static final double FORCE_LENGTH = 1d;//This value suitable for battle field 1000x1000
+
 
     public static void paintStaticForces(Graphics2D graphics, AdvancedRobot robot, ForceResult staticForceResult) {
         paintForceResult(graphics, robot, staticForceResult, Color.GRAY);

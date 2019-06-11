@@ -8,8 +8,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.tnmk.common.math.Point2DUtils;
-import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.constant.RobotPhysics;
+import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
+import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.Scannable;
 import robocode.AdvancedRobot;
 import robocode.Robot;
@@ -20,9 +23,16 @@ import robocode.util.Utils;
  * View more at http://robowiki.net/wiki/Anti-Gravity_Tutorial
  * One weakness: the direction change so quickly which make robot cannot adapt. As a result, it cannot move fast and far.
  */
-public class SimpleAntiGravityMovement implements Scannable {
+public class SimpleAntiGravityMovement implements InitiableRun, Scannable {
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
+
+    private static double maxPossibleMoveDistance;
+    private static double maxSafeMoveDistance;
+    private static int maxPossibleEnemiesCount;
+    private static int maxActualEnemiesCount;
+    private static double movementIncrement;
+    private static double maxForceWithoutHittingWall;
 
     public SimpleAntiGravityMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
@@ -31,17 +41,41 @@ public class SimpleAntiGravityMovement implements Scannable {
 
 
     @Override
+    public void runInit() {
+        double battleWidth = robot.getBattleFieldWidth();
+        double battleHeight = robot.getBattleFieldHeight();
+        maxPossibleMoveDistance = Math.min(battleWidth, battleHeight);
+        maxPossibleEnemiesCount = 1 + (int) (maxPossibleMoveDistance / RobotPhysics.ROBOT_SIZE);
+        maxActualEnemiesCount = robot.getOthers();
+
+        double haftMaxPossibleMoveDistance = maxPossibleMoveDistance / 2;
+        double safePaddingDistance = (maxPossibleEnemiesCount / 4) * RobotPhysics.ROBOT_SIZE;
+        maxSafeMoveDistance = Math.max(haftMaxPossibleMoveDistance, maxPossibleMoveDistance - safePaddingDistance);
+
+        movementIncrement = 10 * (maxPossibleEnemiesCount / maxActualEnemiesCount);
+        maxForceWithoutHittingWall = this.maxPossibleMoveDistance - RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED;
+
+        robot.out.println("maxPossibleMoveDistance" + maxPossibleMoveDistance);
+        robot.out.println("maxPossibleEnemiesCount" + maxPossibleEnemiesCount);
+        robot.out.println("maxActualEnemiesCount" + maxActualEnemiesCount);
+        robot.out.println("maxSafeMoveDistance" + maxSafeMoveDistance);
+        robot.out.println("movementIncrement" + movementIncrement);
+
+    }
+
+    @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         Point2D force = reckonForce(this.robot, this.allEnemiesObservationContext);
-        moveFollowTheForce(this.robot, force);
+        Move2DHelper.setMoveToDestinationWithShortestPath(robot, force);
+//        moveFollowTheForce(this.robot, force);
     }
 
     private static void moveFollowTheForce(AdvancedRobot robot, Point2D force) {
         double angle = Math.atan2(force.getX(), force.getY());
-
         if (force.getY() == 0 && force.getY() == 0) {
             // If no force, do nothing
         } else if (Math.abs(angle - robot.getHeadingRadians()) < Math.PI / 2) {
+
             double turnRightRadian = Utils.normalRelativeAngle(angle - robot.getHeadingRadians());
             robot.setTurnRightRadians(turnRightRadian);
             robot.setAhead(Double.POSITIVE_INFINITY);
@@ -57,7 +91,7 @@ public class SimpleAntiGravityMovement implements Scannable {
      * @param allEnemiesObservationContext store all information of enemy robots.
      * @return
      */
-    private static Point2D reckonForce(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
+    private Point2D reckonForce(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
 
         Collection<Point2D> staticPositions = constructStaticPositions(robot);
@@ -83,7 +117,7 @@ public class SimpleAntiGravityMovement implements Scannable {
      * @param enemies
      * @return absolute vector of the force.
      */
-    private static ForceResult reckonForceOfEnemies(Point2D robotPosition, Collection<Enemy> enemies) {
+    private ForceResult reckonForceOfEnemies(Point2D robotPosition, Collection<Enemy> enemies) {
         Point2D finalForce = new Point2D.Double();
         List<Point2D> forces = new ArrayList<>();
 
@@ -91,8 +125,11 @@ public class SimpleAntiGravityMovement implements Scannable {
             Point2D enemyPosition = enemy.getPosition();
             double absBearing = reckonAbsoluteBearingBetweenTwoPoints(enemyPosition, robotPosition);
             double distance = enemyPosition.distance(robotPosition);
-            double forceWeight = 1 / (distance * distance);
+            double forceWeight = calculateForceWeight(distance);
             Point2D force = new Point2D.Double(-(Math.sin(absBearing) * forceWeight), -(Math.cos(absBearing) * forceWeight));
+            robot.out.println(String.format("enemy \t name %s \t forceWeight %.2f ", enemy.getName(), forceWeight));
+            robot.out.println(String.format("enemy \t name %s \t force %s ", enemy.getName(), force));
+
             finalForce = Point2DUtils.plus(finalForce, force);
             forces.add(force);
         }
@@ -116,20 +153,33 @@ public class SimpleAntiGravityMovement implements Scannable {
         return staticPositions;
     }
 
-    private static ForceResult reckonForceOfStaticPositions(Point2D robotPosition, Collection<Point2D> positions) {
+    private ForceResult reckonForceOfStaticPositions(Point2D robotPosition, Collection<Point2D> positions) {
         Point2D finalForce = new Point2D.Double();
         List<Point2D> forces = new ArrayList<>();
         for (Point2D position : positions) {
             double absBearing = reckonAbsoluteBearingBetweenTwoPoints(position, robotPosition);
             double distance = position.distance(robotPosition);
-            double forceWeight = 1 / (distance * distance);
+            double forceWeight = calculateForceWeight(distance);
+
             Point2D force = new Point2D.Double(-(Math.sin(absBearing) * forceWeight), -(Math.cos(absBearing) * forceWeight));
+            robot.out.println(String.format("wall \t wall %s \t forceWeight %.2f", position, forceWeight));
+            robot.out.println(String.format("wall \t wall %s \t force %s ", position, force));
 
             forces.add(force);
             finalForce = Point2DUtils.plus(finalForce, force);
         }
         ForceResult forceResult = new ForceResult(forces, finalForce);
         return forceResult;
+    }
+
+    /**
+     * @param distance
+     * @return
+     */
+    private double calculateForceWeight(double distance) {
+        double result = maxSafeMoveDistance / Math.pow(distance, 2) + movementIncrement * maxSafeMoveDistance / distance;
+        result = Math.min(result, maxSafeMoveDistance);
+        return result;
     }
 
     private static double reckonAbsoluteBearingBetweenTwoPoints(Point2D pointA, Point2D pointB) {
