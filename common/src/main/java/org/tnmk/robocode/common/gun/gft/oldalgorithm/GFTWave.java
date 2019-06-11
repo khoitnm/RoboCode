@@ -31,7 +31,8 @@ class GFTWave extends Condition {
 	GFTWave(AdvancedRobot _robot) {
 		this.robot = _robot;
 	}
-	
+
+	@Override
 	public boolean test() {
 		advance();
 		if (hasArrived()) {
