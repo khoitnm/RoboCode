@@ -10,6 +10,16 @@ import math.geom2d.line.Line2D;
 public final class MathUtils {
 	private MathUtils() {
 	}
+
+	/**
+	 * @param value
+	 * @return For any value, return the sign of that value to indicate whether the value is positive or negative.<br/>
+	 * If the value is zero or positive, return 1.<br/>
+	 * Otherwise (negative), return -1<br/>
+	 */
+	public static int sign(double value) {
+		return value < 0 ? -1 : 1;
+	}
 	/**
 	 * @see http://www.efm.leeds.ac.uk/CIVE/CIVE1140/section01/linear_angular_motion.html
 	 * @param linearSpeed speed of linear movement, positive number.

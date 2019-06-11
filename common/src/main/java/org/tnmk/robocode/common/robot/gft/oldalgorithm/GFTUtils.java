@@ -16,10 +16,6 @@ class GFTUtils {
 		return Math.atan2(target.getX() - source.getX(), target.getY() - source.getY());
 	}
 
-	static int sign(double v) {
-		return v < 0 ? -1 : 1;
-	}
-	
 	static int minMax(int v, int min, int max) {
 		return Math.max(min, Math.min(max, v));
 	}

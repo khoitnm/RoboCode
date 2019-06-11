@@ -1,5 +1,6 @@
 package org.tnmk.robocode.common.robot.gft.oldalgorithm;
 
+import org.tnmk.common.math.MathUtils;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
@@ -22,7 +23,7 @@ public class GFTAimGun {
 		double enemyDistance = e.getDistance();
 		double enemyVelocity = e.getVelocity();
 		if (enemyVelocity != 0) {
-			lateralDirection = GFTUtils.sign(enemyVelocity * Math.sin(e.getHeadingRadians() - enemyAbsoluteBearing));
+			lateralDirection = MathUtils.sign(enemyVelocity * Math.sin(e.getHeadingRadians() - enemyAbsoluteBearing));
 		}
 		GFTWave wave = new GFTWave(robot);
 		wave.gunLocation = new Point2D.Double(robot.getX(), robot.getY());
