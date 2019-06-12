@@ -9,7 +9,7 @@ import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.movement.MovementContext;
-import org.tnmk.robocode.common.movement.SpecialMovementType;
+import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
@@ -95,7 +95,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
 
         AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
 
-        if (movementContext.isNone() || movementContext.is(SpecialMovementType.ANTI_GRAVITY)) {
+        if (movementContext.isNone() || movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
             Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
         }
     }

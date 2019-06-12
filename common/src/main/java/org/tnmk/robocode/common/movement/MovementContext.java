@@ -9,7 +9,7 @@ import robocode.AdvancedRobot;
 public class MovementContext  {
     private final AdvancedRobot robot;
 
-    private SpecialMovementType specialMovementType = SpecialMovementType.NONE;
+    private MoveStrategy moveStrategy = MoveStrategy.NONE;
     /**
      * @deprecated We may not need this,
      * check {@link org.tnmk.robocode.common.helper.Move2DHelper#setMoveToDestinationWithShortestPath(AdvancedRobot, Point2D)} to see how can it change direction without knowing direction.
@@ -23,24 +23,24 @@ public class MovementContext  {
     }
 
     /**
-     * Set specialMovementType is {@link SpecialMovementType#NONE}
+     * Set moveStrategy is {@link MoveStrategy#NONE}
      */
     public void setNone(){
-        this.specialMovementType = SpecialMovementType.NONE;
+        this.moveStrategy = MoveStrategy.NONE;
     }
     /**
      * @return Check if no special movement type
      */
     public boolean isNone() {
-        return specialMovementType == null || specialMovementType == SpecialMovementType.NONE;
+        return moveStrategy == null || moveStrategy == MoveStrategy.NONE;
     }
 
     /**
-     * @param specialMovementType
-     * @return check if the current moveType is equals to specialMovementType
+     * @param moveStrategy
+     * @return check if the current moveType is equals to moveStrategy
      */
-    public boolean is(SpecialMovementType specialMovementType) {
-        return this.specialMovementType == specialMovementType;
+    public boolean is(MoveStrategy moveStrategy) {
+        return this.moveStrategy == moveStrategy;
     }
 
     /**
@@ -59,12 +59,12 @@ public class MovementContext  {
         return direction;
     }
 
-    public SpecialMovementType getSpecialMovementType() {
-        return specialMovementType;
+    public MoveStrategy getMoveStrategy() {
+        return moveStrategy;
     }
 
-    public void setSpecialMovementType(SpecialMovementType specialMovementType) {
-        this.specialMovementType = specialMovementType;
+    public void setMoveStrategy(MoveStrategy moveStrategy) {
+        this.moveStrategy = moveStrategy;
     }
 
     public AdvancedRobot getRobot() {

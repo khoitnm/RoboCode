@@ -1,5 +1,6 @@
 package org.tnmk.robocode.common.movement.backandforth;
 
+import org.tnmk.common.math.MathUtils;
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.movement.MovementContext;
 import robocode.AdvancedRobot;
@@ -16,6 +17,16 @@ public class BackAndForthHelper {
         if (DoubleUtils.isConsideredZero(robot.getVelocity())) {
             context.reverseDirection();
             robot.setAhead(distance * context.getDirection());
+        }
+    }
+
+    public static void setMovement(AdvancedRobot robot, double distance) {
+        if (DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
+            double headingRadian = robot.getHeadingRadians();
+            int direction = MathUtils.sign(Math.cos(headingRadian));
+            int newDirection = -direction;
+            robot.setAhead(newDirection * distance);
+            robot.out.println("heading: " + robot.getHeading() + ", direction: " + direction);
         }
     }
 }
