@@ -6,6 +6,7 @@ import java.util.*;
 import org.tnmk.common.math.Point2DUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.helper.Move2DHelper;
+import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
@@ -76,6 +77,12 @@ public class AntiGravityMovement implements InitiableRun, Scannable {
         Point2D destination = Point2DUtils.plus(robotPosition, force);
         Optional<Point2D> avoidWallDestinationOptional = Move2DHelper.reckonMaximumDestination(robotPosition, destination, safeMovementArea);
         destination = avoidWallDestinationOptional.orElse(destination);
+
+        if (!Move2DHelper.checkInsideRectangle(destination, safeMovementArea)) {
+            String message = String.format("Destination outside safeMovement: current %s\t destination %s\t safe area %s", LogHelper.toString(robotPosition), LogHelper.toString(destination), LogHelper.toString(safeMovementArea));
+            LogHelper.logAdvanceRobot(robot, message);
+        }
+
         AntiGravityPainterUtils.paintFinalDestination(robot, destination);
         Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, destination);
     }

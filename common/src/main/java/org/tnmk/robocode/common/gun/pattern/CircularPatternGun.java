@@ -61,7 +61,7 @@ public class CircularPatternGun implements LoopableRun, Scannable {
         if (!gunStateContext.isAiming()) {
             robot.setTurnGunLeftRadians(gunBearing);
             gunStateContext.aimGun(firePower);
-            LogHelper.logAdvanceRobot(robot, "AimGun " + gunStateContext.getGunState());
+//            LogHelper.logAdvanceRobot(robot, "AimGun " + gunStateContext.getGunState());
             //Gun will be fired by loopRun() when finishing aiming.
         } else {
             // Don't aim the new target until the old target was done!
@@ -134,7 +134,7 @@ public class CircularPatternGun implements LoopableRun, Scannable {
             if (DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
                 robot.setFire(gunStateContext.getBulletPower());
                 gunStateContext.rest();
-                LogHelper.logAdvanceRobot(robot, "Fire!!! " + gunStateContext.getBulletPower());
+//                LogHelper.logAdvanceRobot(robot, "Fire!!! " + gunStateContext.getBulletPower());
             }
         }
     }
