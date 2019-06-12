@@ -81,17 +81,15 @@ public class CircularPatternGun implements LoopableRun, Scannable {
         List<Enemy> latestHistoryItems = enemyHistory.getLatestHistoryItems(5);
         Point2D enemyPosition = enemyHistory.getLatestHistoryItem().getPosition();
         Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
+
+        debugPredictSelfRobot(robot);
+
         long periodForTurningGun = 0;
         for (int i = 0; i < ENEMY_PREDICTION_TIMES; i++) {//this loop is used to improve the correctness of prediction.
             RobotPrediction robotPrediction = MovePredictionHelper.predictPosition(periodForTurningGun, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
             Point2D predictRobotPosition = robotPrediction.getPosition();
 //            String message = String.format("Predict at time %s, position {%.2f, %.2f}", (robot.getTime() + periodForTurningGun), predictRobotPosition.getX(), predictRobotPosition.getY());
 //            LogHelper.logAdvanceRobot(robot, message);
-
-            RobotPrediction testRobotPredictionAfter5 = MovePredictionHelper.predictPosition(5, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
-            String message = String.format("Predict self at time %s, position {%.2f, %.2f}", (robot.getTime() + 5), testRobotPredictionAfter5.getPosition().getX(), testRobotPredictionAfter5.getPosition().getY());
-            LogHelper.logAdvanceRobot(robot, message);
-
 
             double distanceRobotToEnemy = predictRobotPosition.distance(enemyPosition);
             double bulletVelocity = GunUtils.reckonBulletVelocity(firePower);
@@ -107,11 +105,18 @@ public class CircularPatternGun implements LoopableRun, Scannable {
             enemyPositionPrediction.setPosition(enemyPosition);
             enemyPositionPrediction.setTime(timeWhenBulletReachEnemy);
         }
-        debugPredictEnemy(latestHistoryItems);
+//        debugPredictEnemy(latestHistoryItems);
 
         String message = String.format("Final predict enemy at %s, position {%.2f, %.2f}", enemyPositionPrediction.getTime(), enemyPositionPrediction.getPosition().getX(), enemyPositionPrediction.getPosition().getY());
         LogHelper.logAdvanceRobot(robot, message);
         return enemyPositionPrediction;
+    }
+
+    private void debugPredictSelfRobot(AdvancedRobot robot){
+        Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
+        RobotPrediction testRobotPredictionAfter5 = MovePredictionHelper.predictPosition(5, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
+        String message = String.format("Predict self at time %s, position {%.2f, %.2f}", (robot.getTime() + 5), testRobotPredictionAfter5.getPosition().getX(), testRobotPredictionAfter5.getPosition().getY());
+        LogHelper.logAdvanceRobot(robot, message);
     }
 
     private void debugPredictEnemy(List<Enemy> latestHistoryItems){

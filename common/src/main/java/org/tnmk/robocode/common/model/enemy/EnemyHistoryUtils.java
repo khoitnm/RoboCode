@@ -2,28 +2,30 @@ package org.tnmk.robocode.common.model.enemy;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.tnmk.common.math.AngleUtils;
 
 public class EnemyHistoryUtils {
-    public static double averageChangeHeadings(EnemyHistory enemyHistory, int historyItemsCount) {
+    public static double averageChangeHeadingRadian(EnemyHistory enemyHistory, int historyItemsCount) {
         List<Enemy> latestEnemyHistoryItems = enemyHistory.getLatestHistoryItems(historyItemsCount);
-        return averageChangeHeadings(latestEnemyHistoryItems);
+        return averageChangeHeadingRadian(latestEnemyHistoryItems);
     }
 
-    public static double averageChangeHeadings(List<Enemy> latestEnemyHistoryItems) {
-        List<Double> changeHeadings = new ArrayList<>();
+    public static double averageChangeHeadingRadian(List<Enemy> latestEnemyHistoryItems) {
+        List<Double> changeHeadingRadians = new ArrayList<>();
         Enemy previousHistoryItem = null;
         for (Enemy latestEnemyHistoryItem : latestEnemyHistoryItems) {
             if (previousHistoryItem != null) {
-                double changeHeading = latestEnemyHistoryItem.getHeading() - previousHistoryItem.getHeading();
+                double changeHeadingDegree = latestEnemyHistoryItem.getHeading() - previousHistoryItem.getHeading();
+                double changeHeadingRadian = AngleUtils.toRadian(changeHeadingDegree);
                 double changeTime = latestEnemyHistoryItem.getTime() - previousHistoryItem.getTime();
-                double changeHeadingPerTick = changeHeading / changeTime;
-                changeHeadings.add(changeHeadingPerTick);
+                double changeHeadingRadianPerTick = changeHeadingRadian / changeTime;//angular velocity
+                changeHeadingRadians.add(changeHeadingRadianPerTick);
             }
             previousHistoryItem = latestEnemyHistoryItem;
         }
         double avgChangeHeading = 0;
-        if (!changeHeadings.isEmpty()) {
-            avgChangeHeading = changeHeadings.stream().mapToDouble(changeHeading -> changeHeading).average().getAsDouble();
+        if (!changeHeadingRadians.isEmpty()) {
+            avgChangeHeading = changeHeadingRadians.stream().mapToDouble(changeHeading -> changeHeading).average().getAsDouble();
         }
         return avgChangeHeading;
     }
