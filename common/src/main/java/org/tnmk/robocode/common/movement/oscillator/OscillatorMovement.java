@@ -11,13 +11,10 @@ import robocode.ScannedRobotEvent;
  */
 public class OscillatorMovement {
     private final AdvancedRobot robot;
-    private final OscillatorContext oscillatorContext;
     private final MovementContext movementContext;
-
 
     public OscillatorMovement(AdvancedRobot robot, MovementContext movementContext) {
         this.robot = robot;
-        this.oscillatorContext = new OscillatorContext(robot);
         this.movementContext = movementContext;
     }
 
@@ -27,13 +24,13 @@ public class OscillatorMovement {
      */
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent, int enemyDistance) {
         if (movementContext.isNone() || movementContext.is(SpecialMovementType.OSCILLATOR)) {
-            OscillatorHelper.setMovement(oscillatorContext, scannedRobotEvent, Double.POSITIVE_INFINITY, enemyDistance);
+            OscillatorHelper.setMovement(movementContext, scannedRobotEvent, Double.POSITIVE_INFINITY, enemyDistance);
         }
     }
 
     public void onScannedRobot(Enemy enemy, int enemyDistance) {
         if (movementContext.isNone() || movementContext.is(SpecialMovementType.OSCILLATOR)) {
-            OscillatorHelper.setMovement(oscillatorContext, enemy, Double.POSITIVE_INFINITY, enemyDistance);
+            OscillatorHelper.setMovement(movementContext, enemy, Double.POSITIVE_INFINITY, enemyDistance);
         }
     }
 }

@@ -23,7 +23,7 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
 
-        movementContext = new MovementContext();
+        movementContext = new MovementContext(robot);
         oscillatorMovement = new OscillatorMovement(robot, movementContext);
         antiGravityMovement = new AntiGravityMovement(robot, allEnemiesObservationContext, movementContext);
     }

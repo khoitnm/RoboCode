@@ -1,9 +1,8 @@
 package org.tnmk.robocode.common.movement.backandforth;
 
 import org.tnmk.common.number.DoubleUtils;
-import org.tnmk.robocode.common.movement.oscillator.OscillatorContext;
+import org.tnmk.robocode.common.movement.MovementContext;
 import robocode.AdvancedRobot;
-import robocode.ScannedRobotEvent;
 
 /**
  * http://old.robowiki.net/robowiki?Oscillators
@@ -12,7 +11,7 @@ import robocode.ScannedRobotEvent;
  */
 public class BackAndForthHelper {
 
-    public static void setMovement(BackAndForthContext context, int distance) {
+    public static void setMovement(MovementContext context, int distance) {
         AdvancedRobot robot = context.getRobot();
         if (DoubleUtils.isConsideredZero(robot.getVelocity())) {
             context.reverseDirection();

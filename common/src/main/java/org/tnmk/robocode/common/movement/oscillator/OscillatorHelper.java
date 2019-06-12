@@ -3,6 +3,7 @@ package org.tnmk.robocode.common.movement.oscillator;
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyMapper;
+import org.tnmk.robocode.common.movement.MovementContext;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
@@ -21,12 +22,12 @@ public class OscillatorHelper {
      * @param moveDistance      how far you want to move (e.g. 185)
      * @param enemyDistance     how far you want to stay away from your target enemy (e.g. 200)
      */
-    public static void setMovement(OscillatorContext context, ScannedRobotEvent scannedRobotEvent, double moveDistance, int enemyDistance) {
+    public static void setMovement(MovementContext context, ScannedRobotEvent scannedRobotEvent, double moveDistance, int enemyDistance) {
         Enemy enemy = EnemyMapper.toEnemy(context.getRobot(), scannedRobotEvent);
         setMovement(context, enemy, moveDistance, enemyDistance);
     }
 
-    public static void setMovement(OscillatorContext context, Enemy enemy, double moveDistance, int enemyDistance) {
+    public static void setMovement(MovementContext context, Enemy enemy, double moveDistance, int enemyDistance) {
         //** it is from onScannedRobot
         AdvancedRobot robot = context.getRobot();
         if (DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
