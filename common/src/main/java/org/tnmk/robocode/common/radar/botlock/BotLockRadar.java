@@ -24,6 +24,10 @@ public class BotLockRadar {
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+//        Enemy enemy = EnemyMapper.toEnemy(robot, scannedRobotEvent);
+//        String message = String.format("Actual enemy at time %s, position {%.2f, %.2f}", robot.getTime(), enemy.getPosition().getX(), enemy.getPosition().getY());
+//        LogHelper.logAdvanceRobot(robot, message);
+
         enemyAbsoluteBearing = (robot.getHeadingRadians() + scannedRobotEvent.getBearingRadians());
         timeSinceLastSeenEnemy = 0;
 

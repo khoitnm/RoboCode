@@ -2,7 +2,7 @@ package org.tnmk.robocode.common.model.enemy;
 
 import org.tnmk.robocode.common.gun.pattern.EnemyPatternType;
 
-public class EnemyPatternPrediction {
+public class  EnemyPatternPrediction {
     /**
      * This field is never null
      */

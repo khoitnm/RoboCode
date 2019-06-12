@@ -15,7 +15,7 @@ public class EnemyMapper {
         enemy.setName(scannedRobotEvent.getName());
         enemy.setSentryRobot(scannedRobotEvent.isSentryRobot());
         enemy.setVelocity(scannedRobotEvent.getVelocity());
-        Point2D targetPosition = Move2DHelper.reckonTargetPosition(robot, scannedRobotEvent);
+        Point2D targetPosition = Move2DHelper.reckonEnemyPosition(robot, scannedRobotEvent);
         enemy.setPosition(targetPosition);
         enemy.setTime(robot.getTime());
         return enemy;
