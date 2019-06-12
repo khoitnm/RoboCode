@@ -8,6 +8,7 @@ import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunUtils;
+import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
@@ -36,7 +37,9 @@ public class CircularPatternGun implements LoopableRun, Scannable {
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         String enemyName = scannedRobotEvent.getName();
         EnemyPatternPrediction enemyPatternPrediction = allEnemiesObservationContext.getEnemyPatternPrediction(enemyName);
-        aimGun(robot, enemyPatternPrediction.getEnemyHistory(), 1.9);
+        Enemy enemy = enemyPatternPrediction.getEnemyHistory().getLatestHistoryItem();
+        double firePower = GunHelper.findFirePowerByDistance(enemy.getDistance());
+        aimGun(robot, enemyPatternPrediction.getEnemyHistory(), firePower);
     }
 
     /**
