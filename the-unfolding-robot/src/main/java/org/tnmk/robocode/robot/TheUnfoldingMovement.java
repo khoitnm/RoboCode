@@ -1,5 +1,6 @@
 package org.tnmk.robocode.robot;
 
+import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorMovement;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
@@ -12,25 +13,24 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
     public static final double IDEAL_ENEMY_OSCILLATOR_DISTANCE = 150;
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
+    private final MovementContext movementContext;
 
 
     private final OscillatorMovement oscillatorMovement;
-//    private final EnemyDodgeMovement enemyDodgeMovement;
     private final AntiGravityMovement antiGravityMovement;
 
     public TheUnfoldingMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
 
-        oscillatorMovement = new OscillatorMovement(robot);
-//        enemyDodgeMovement = new EnemyDodgeMovement(robot, allEnemiesObservationContext);
-        antiGravityMovement = new AntiGravityMovement(robot, allEnemiesObservationContext);
+        movementContext = new MovementContext();
+        oscillatorMovement = new OscillatorMovement(robot, movementContext);
+        antiGravityMovement = new AntiGravityMovement(robot, allEnemiesObservationContext, movementContext);
     }
 
     @Override
     public void runInit(){
         antiGravityMovement.runInit();
-//        enemyDodgeMovement.runInit();
     }
 
     @Override
@@ -39,9 +39,7 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
         if (totalExistingEnemies <= 1) {
             moveOscillatorWithIdealDistance(scannedRobotEvent);
         } else {
-//            moveOscillatorWithIdealDistance(scannedRobotEvent);
             antiGravityMovement.onScannedRobot(scannedRobotEvent);
-//            enemyDodgeMovement.onScannedRobot(scannedRobotEvent);
         }
     }
 

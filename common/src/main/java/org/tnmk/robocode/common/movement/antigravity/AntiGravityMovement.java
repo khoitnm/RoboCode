@@ -8,6 +8,8 @@ import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
+import org.tnmk.robocode.common.movement.MovementContext;
+import org.tnmk.robocode.common.movement.SpecialMovementType;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.Scannable;
@@ -29,6 +31,7 @@ import robocode.util.Utils;
 public class AntiGravityMovement implements InitiableRun, Scannable {
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
+    private final MovementContext movementContext;
 
     private static Rectangle2D safeMovementArea;
     private static double maxPossibleMoveDistance;
@@ -39,9 +42,10 @@ public class AntiGravityMovement implements InitiableRun, Scannable {
     private static double maxForceWithoutHittingWall;
 
 
-    public AntiGravityMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
+    public AntiGravityMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, MovementContext movementContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
+        this.movementContext = movementContext;
     }
 
 
@@ -50,7 +54,7 @@ public class AntiGravityMovement implements InitiableRun, Scannable {
         double battleWidth = robot.getBattleFieldWidth();
         double battleHeight = robot.getBattleFieldHeight();
         double safePaddingMovementDistance = (RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE * 2) * 2;
-        safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance*2, battleHeight - safePaddingMovementDistance*2);
+        safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance * 2, battleHeight - safePaddingMovementDistance * 2);
         maxPossibleMoveDistance = Math.min(battleWidth, battleHeight);
         maxPossibleEnemiesCount = 1 + (int) (maxPossibleMoveDistance / RobotPhysics.ROBOT_SIZE);
         maxActualEnemiesCount = robot.getOthers();
@@ -73,12 +77,30 @@ public class AntiGravityMovement implements InitiableRun, Scannable {
     //TODO it only change movement when seeing updated enemies. If radar somehow doesn't work as expected, it just stay still!!!
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        Point2D force = reckonForce(this.robot, this.allEnemiesObservationContext);
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
+        Point2D force = reckonForce(this.robot, this.allEnemiesObservationContext);
         Point2D destination = Point2DUtils.plus(robotPosition, force);
+
         Optional<Point2D> avoidWallDestinationOptional = Move2DHelper.reckonMaximumDestination(robotPosition, destination, safeMovementArea);
         Point2D finalDestination = avoidWallDestinationOptional.orElse(destination);
 
+//        Point2D finalDestination = WallSmoothUtils.wallSmoothing(
+//                robotPosition,
+//                destination,
+//                MathUtils.sign(robot.getHeading()), 200,
+//                robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
+//        LogHelper.logAdvanceRobot(robot, "Destination: " + LogHelper.toString(destination) + "\t Final Destination:" + LogHelper.toString(finalDestination));
+
+        debugWhenFinalDestinationOutsideSafeArea(robot, robotPosition, destination, finalDestination, safeMovementArea);
+
+        AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
+
+        if (movementContext.isNone() || movementContext.is(SpecialMovementType.ANTI_GRAVITY)) {
+            Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
+        }
+    }
+
+    private void debugWhenFinalDestinationOutsideSafeArea(AdvancedRobot robot, Point2D robotPosition, Point2D destination, Point2D finalDestination, Rectangle2D safeMovementArea) {
         if (!Move2DHelper.checkInsideRectangle(finalDestination, safeMovementArea)) {
             String message = String.format("Destination outside safeMovement: current %s\t destination %s\t finalDestination %s\t safe area %s",
                     LogHelper.toString(robotPosition),
@@ -87,9 +109,6 @@ public class AntiGravityMovement implements InitiableRun, Scannable {
                     LogHelper.toString(safeMovementArea));
             LogHelper.logAdvanceRobot(robot, message);
         }
-
-        AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
-        Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
     }
 
     /**
