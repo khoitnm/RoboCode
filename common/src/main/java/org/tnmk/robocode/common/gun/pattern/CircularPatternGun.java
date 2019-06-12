@@ -82,7 +82,7 @@ public class CircularPatternGun implements LoopableRun, Scannable {
         Point2D enemyPosition = enemyHistory.getLatestHistoryItem().getPosition();
         Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
 
-        debugPredictSelfRobot(robot);
+//        debugPredictSelfRobot(robot);
 
         long periodForTurningGun = 0;
         for (int i = 0; i < ENEMY_PREDICTION_TIMES; i++) {//this loop is used to improve the correctness of prediction.
@@ -107,8 +107,8 @@ public class CircularPatternGun implements LoopableRun, Scannable {
         }
 //        debugPredictEnemy(latestHistoryItems);
 
-        String message = String.format("Final predict enemy at %s, position {%.2f, %.2f}", enemyPositionPrediction.getTime(), enemyPositionPrediction.getPosition().getX(), enemyPositionPrediction.getPosition().getY());
-        LogHelper.logAdvanceRobot(robot, message);
+//        String message = String.format("Final predict enemy at %s, position {%.2f, %.2f}", enemyPositionPrediction.getTime(), enemyPositionPrediction.getPosition().getX(), enemyPositionPrediction.getPosition().getY());
+//        LogHelper.logAdvanceRobot(robot, message);
         return enemyPositionPrediction;
     }
 
