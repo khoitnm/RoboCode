@@ -129,25 +129,35 @@ public class Move2DHelper implements Serializable {
      * @return if pointB is inside the limitArea, return empty.
      */
     public static Optional<Point2D> reckonMaximumDestination(Point2D pointA, Point2D pointB, Rectangle2D limitArea) {
-        if (pointB.getY() > limitArea.getMaxY()) {
+        Point2D newPointB = pointB;
+        if (pointB.getY() >= limitArea.getMaxY()) {
             double yC = limitArea.getMaxY();
-            double xC = reckonXOfPointCOnTheSameLine(pointA, pointB, yC);
-            return Optional.of(new Point2D.Double(xC, yC));
-        } else if (pointB.getY() < limitArea.getMinY()) {
+            double xC = reckonXOfPointCOnTheSameLine(pointA, newPointB, yC);
+            newPointB = new Point2D.Double(xC, yC);
+        } else if (pointB.getY() <= limitArea.getMinY()) {
             double yC = limitArea.getMinY();
-            double xC = reckonXOfPointCOnTheSameLine(pointA, pointB, yC);
-            return Optional.of(new Point2D.Double(xC, yC));
-        } else if (pointB.getX() > limitArea.getMaxX()) {
-            double xC = limitArea.getMaxX();
-            double yC = reckonYOfPointCOnTheSameLine(pointA, pointB, xC);
-            return Optional.of(new Point2D.Double(xC, yC));
-        } else if (pointB.getX() < limitArea.getMinX()) {
-            double xC = limitArea.getMinX();
-            double yC = reckonYOfPointCOnTheSameLine(pointA, pointB, xC);
-            return Optional.of(new Point2D.Double(xC, yC));
-        } else {
-            return Optional.empty();
+            double xC = reckonXOfPointCOnTheSameLine(pointA, newPointB, yC);
+            newPointB = new Point2D.Double(xC, yC);
         }
+
+        //Don't use else here, we need to check both Y and X
+        if (newPointB.getX() >= limitArea.getMaxX()) {
+            double xC = limitArea.getMaxX();
+            double yC = reckonYOfPointCOnTheSameLine(pointA, newPointB, xC);
+            newPointB = new Point2D.Double(xC, yC);
+        } else if (newPointB.getX() <= limitArea.getMinX()) {
+            double xC = limitArea.getMinX();
+            double yC = reckonYOfPointCOnTheSameLine(pointA, newPointB, xC);
+            newPointB = new Point2D.Double(xC, yC);
+        }
+
+        return Optional.ofNullable(newPointB);
+    }
+
+    public static boolean checkInsideRectangle(Point2D point2D, Rectangle2D rectangle2D) {
+        boolean insideX = point2D.getX() >= rectangle2D.getMinX() && point2D.getX() <= rectangle2D.getMaxX();
+        boolean insideY = point2D.getY() >= rectangle2D.getMinY() && point2D.getY() <= rectangle2D.getMaxY();
+        return insideX && insideY;
     }
 
 }

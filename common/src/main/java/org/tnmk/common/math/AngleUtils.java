@@ -35,4 +35,9 @@ public class AngleUtils {
         double radian = angleDegree * (2 * PI) / 360;
         return radian;
     }
+
+    public static double toDegree(double angleRadian) {
+        double degree = angleRadian * 360 / (2 * PI);
+        return degree;
+    }
 }

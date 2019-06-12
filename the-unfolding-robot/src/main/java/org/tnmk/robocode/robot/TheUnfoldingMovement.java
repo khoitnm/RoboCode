@@ -1,7 +1,6 @@
 package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
-import org.tnmk.robocode.common.movement.edm.EnemyDodgeMovement;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorMovement;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
@@ -16,7 +15,7 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
 
 
     private final OscillatorMovement oscillatorMovement;
-    private final EnemyDodgeMovement enemyDodgeMovement;
+//    private final EnemyDodgeMovement enemyDodgeMovement;
     private final AntiGravityMovement antiGravityMovement;
 
     public TheUnfoldingMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
@@ -24,7 +23,7 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
         this.allEnemiesObservationContext = allEnemiesObservationContext;
 
         oscillatorMovement = new OscillatorMovement(robot);
-        enemyDodgeMovement = new EnemyDodgeMovement(robot, allEnemiesObservationContext);
+//        enemyDodgeMovement = new EnemyDodgeMovement(robot, allEnemiesObservationContext);
         antiGravityMovement = new AntiGravityMovement(robot, allEnemiesObservationContext);
     }
 

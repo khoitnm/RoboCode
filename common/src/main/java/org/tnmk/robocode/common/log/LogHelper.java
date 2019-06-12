@@ -1,13 +1,22 @@
 package org.tnmk.robocode.common.log;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 
 public class LogHelper {
+    public static String toString(Point2D point2D) {
+        return String.format("{%.2f, %.2f}", point2D.getX(), point2D.getY());
+    }
+
+    public static String toString(Rectangle2D rectangle2D){
+        return String.format("{%.2f, %.2f} -> {%.2f, %.2f}", rectangle2D.getMinX(), rectangle2D.getMinY(), rectangle2D.getMaxX(), rectangle2D.getMaxY());
+    }
 
     public static void logAdvanceRobot(AdvancedRobot robot, String message) {
         String finalMessage = String.format("[%s] " +
-                "\t position {%.2f, %.2f}"+
+                        "\t position {%.2f, %.2f}" +
 //                        "\t velocity %.2f " +
 //                        "\t distanceRemaining %.2f " +
 //                        "\t heading %.2f" +
