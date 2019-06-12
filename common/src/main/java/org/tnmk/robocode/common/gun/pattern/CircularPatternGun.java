@@ -49,17 +49,19 @@ public class CircularPatternGun implements Scannable {
     }
 
     private Point2D predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
-        long time;
-        long nextTime;
+        long timeWhenBulletReachEnemy;
+        long periodForBulletToReachEnemy;
         Point2D enemyPosition = enemyHistory.getLatestHistoryItem().getPosition();
         for (int i = 0; i < 10; i++) {//this loop is used to improve the correctness of prediction.
+            //TODO after sometime, the robot position also changed, not just enemyPosition.
+            //  Besides that, we also need to calculate the gunTurning time.
             double distanceRobotToEnemy = MathUtils.distance(robot.getX(), robot.getY(), enemyPosition.getX(), enemyPosition.getY());
             double bulletVelocity = GunUtils.reckonBulletVelocity(firePower);
-            nextTime = Math.round((distanceRobotToEnemy / bulletVelocity));
-            time = robot.getTime() + nextTime;
+            periodForBulletToReachEnemy = Math.round((distanceRobotToEnemy / bulletVelocity));
+            timeWhenBulletReachEnemy = robot.getTime() + periodForBulletToReachEnemy;
 
             List<Enemy> latestHistoryItems = enemyHistory.getLatestHistoryItems(3);
-            enemyPosition = CircularGuessUtils.guessPosition(latestHistoryItems, time);
+            enemyPosition = CircularGuessUtils.guessPosition(latestHistoryItems, timeWhenBulletReachEnemy);
         }
         return enemyPosition;
     }
