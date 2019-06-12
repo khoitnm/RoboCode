@@ -1,8 +1,8 @@
 package org.tnmk.robocode.common.gun.pattern;
 
 import java.awt.geom.Point2D;
+import java.util.List;
 import org.tnmk.robocode.common.model.enemy.Enemy;
-import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyHistoryUtils;
 
 /**
@@ -10,13 +10,13 @@ import org.tnmk.robocode.common.model.enemy.EnemyHistoryUtils;
  */
 public class CircularGuessUtils {
     /**
-     * @param enemyHistory
+     * @param historyItems must be not empty
      * @param when         when is the time that we think the bullet will reach the target.
      * @return guess new enemy's position
      */
-    public static Point2D.Double guessPosition(EnemyHistory enemyHistory, long when) {
-        Enemy enemy = enemyHistory.getLatestHistoryItem();
-        double avgChangeHeading = EnemyHistoryUtils.averageChangeHeadings(enemyHistory, 3);
+    public static Point2D.Double guessPosition(List<Enemy> historyItems, long when) {
+        Enemy enemy = historyItems.get(0);
+        double avgChangeHeading = EnemyHistoryUtils.averageChangeHeadings(historyItems);
         return CircularGuessUtils.guessPosition(enemy, avgChangeHeading, when);
     }
 

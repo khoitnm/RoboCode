@@ -43,6 +43,10 @@ public class EnemyHistory {
         }
     }
 
+    public int countHistoryItems(){
+        return historyItems.size();
+    }
+
     public Enemy getLatestHistoryItem() {
         return historyItems.get(0);
     }

@@ -6,6 +6,10 @@ import java.util.List;
 public class EnemyHistoryUtils {
     public static double averageChangeHeadings(EnemyHistory enemyHistory, int historyItemsCount) {
         List<Enemy> latestEnemyHistoryItems = enemyHistory.getLatestHistoryItems(historyItemsCount);
+        return averageChangeHeadings(latestEnemyHistoryItems);
+    }
+
+    public static double averageChangeHeadings(List<Enemy> latestEnemyHistoryItems) {
         List<Double> changeHeadings = new ArrayList<>();
         Enemy previousHistoryItem = null;
         for (Enemy latestEnemyHistoryItem : latestEnemyHistoryItems) {
@@ -19,7 +23,7 @@ public class EnemyHistoryUtils {
         }
         double avgChangeHeading = 0;
         if (!changeHeadings.isEmpty()) {
-            avgChangeHeading = changeHeadings.stream().mapToDouble(ichangeHeading -> ichangeHeading).average().getAsDouble();
+            avgChangeHeading = changeHeadings.stream().mapToDouble(changeHeading -> changeHeading).average().getAsDouble();
         }
         return avgChangeHeading;
     }

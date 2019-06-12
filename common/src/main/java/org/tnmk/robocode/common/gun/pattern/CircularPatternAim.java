@@ -1,8 +1,10 @@
 package org.tnmk.robocode.common.gun.pattern;
 
 import java.awt.geom.Point2D;
+import java.util.List;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.MathUtils;
+import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import robocode.AdvancedRobot;
 
@@ -16,7 +18,7 @@ public class CircularPatternAim {
      * the gun to the correct angle to fire on the target.
      **/
     public void setGun(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
-        Point2D enemyPosition = predictEnemPositionWhenBulletReachEnemy(robot, enemyHistory, firePower);
+        Point2D enemyPosition = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, firePower);
 
         /**Turn the gun to the correct angle**/
         double robotToEnemyRadian = Math.PI / 2 - Math.atan2(enemyPosition.getY() - robot.getY(), enemyPosition.getX() - robot.getX());
@@ -24,7 +26,7 @@ public class CircularPatternAim {
         robot.setTurnGunLeftRadians(AngleUtils.normaliseRadian(gunOffset));
     }
 
-    private Point2D predictEnemPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower){
+    private Point2D predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
         long time;
         long nextTime;
         Point2D enemyPosition = enemyHistory.getLatestHistoryItem().getPosition();
@@ -32,7 +34,9 @@ public class CircularPatternAim {
             double distanceRobotToEnemy = MathUtils.distance(robot.getX(), robot.getY(), enemyPosition.getX(), enemyPosition.getY());
             nextTime = Math.round((distanceRobotToEnemy / (20 - (3 * firePower))));
             time = robot.getTime() + nextTime;
-            enemyPosition = CircularGuessUtils.guessPosition(enemyHistory, time);
+
+            List<Enemy> latestHistoryItems = enemyHistory.getLatestHistoryItems(3);
+            enemyPosition = CircularGuessUtils.guessPosition(latestHistoryItems, time);
         }
         return enemyPosition;
     }

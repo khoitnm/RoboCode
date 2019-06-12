@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
+import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 
@@ -17,7 +18,7 @@ public class AllEnemiesObservationContext {
     private final AdvancedRobot robot;
 
     private final Map<String, Enemy> enemiesMapByName = Collections.synchronizedMap(new HashMap<>());
-    private final Map<String, EnemyHistory> enemiesHistoriesMapByName = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String, EnemyPatternPrediction> enemiesPatternPredictionsMapByName = Collections.synchronizedMap(new HashMap<>());
 
 
     public AllEnemiesObservationContext(AdvancedRobot robot) {
@@ -34,10 +35,12 @@ public class AllEnemiesObservationContext {
 
     public void addEnemy(Enemy enemy) {
         this.enemiesMapByName.put(enemy.getName(), enemy);
-        EnemyHistory enemyHistory = this.enemiesHistoriesMapByName.get(enemy.getName());
-        if (enemyHistory == null) {
-            enemyHistory = new EnemyHistory(enemy.getName(), enemy);
-            enemiesHistoriesMapByName.put(enemy.getName(), enemyHistory);
+        EnemyPatternPrediction enemyPatternPrediction = this.enemiesPatternPredictionsMapByName.get(enemy.getName());
+        if (enemyPatternPrediction == null) {
+
+            EnemyHistory enemyHistory = new EnemyHistory(enemy.getName(), enemy);
+            enemyPatternPrediction = new EnemyPatternPrediction(enemy.getName(), enemyHistory);
+            enemiesPatternPredictionsMapByName.put(enemy.getName(), enemyPatternPrediction);
         }
     }
 
@@ -54,7 +57,7 @@ public class AllEnemiesObservationContext {
     }
 
     public EnemyHistory getEnemyHistory(String enemyName) {
-        return this.enemiesHistoriesMapByName.get(enemyName);
+        return this.enemiesPatternPredictionsMapByName.get(enemyName).getEnemyHistory();
     }
 
     public void removeEnemy(String enemyName) {
