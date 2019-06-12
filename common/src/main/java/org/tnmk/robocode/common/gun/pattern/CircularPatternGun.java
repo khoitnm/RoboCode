@@ -129,7 +129,7 @@ public class CircularPatternGun implements LoopableRun, Scannable {
 
     @Override
     public void runLoop() {
-        LogHelper.logAdvanceRobot(robot, "GunState: " + gunStateContext.getGunState() + " gunTurnRemaining: " + robot.getGunTurnRemaining());
+//        LogHelper.logAdvanceRobot(robot, "GunState: " + gunStateContext.getGunState() + " gunTurnRemaining: " + robot.getGunTurnRemaining());
         if (gunStateContext.isAiming()) {
             if (DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
                 robot.setFire(gunStateContext.getBulletPower());
