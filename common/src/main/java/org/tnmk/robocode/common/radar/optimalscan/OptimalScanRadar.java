@@ -53,23 +53,23 @@ public class OptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrac
         }
     }
 
-    //TODO refactor
     private void sweep() {
         Collection<Enemy> enemies = this.allEnemiesObservationContext.getEnemies();
         double normRadarTurnRight;
         if (enemies.isEmpty()) {
             normRadarTurnRight = 360;
         } else {
-            normRadarTurnRight = sweepWhenFoundSomeEnemies(robot, enemies);
+            normRadarTurnRight = reckonSweepAngleWhenFoundSomeEnemies(robot, enemies);
         }
 
         normRadarTurnRight += MathUtils.sign(normRadarTurnRight) * SAFE_EXTRA_SCAN_DEGREE;
+        normRadarTurnRight = AngleUtils.normalizeDegree(normRadarTurnRight);
         robot.setTurnRadarRight(normRadarTurnRight);
         radarDirection = -radarDirection;
-        printSweep(robot, normRadarTurnRight, enemies);
+//        printSweep(robot, normRadarTurnRight, enemies);
     }
 
-    private double sweepWhenFoundSomeEnemies(AdvancedRobot robot, Collection<Enemy> enemies) {
+    private double reckonSweepAngleWhenFoundSomeEnemies(AdvancedRobot robot, Collection<Enemy> enemies) {
         double normRadarTurnRight;
 
         Pair<Double, Double> minMaxPositionNormBearing = reckonMinMaxPositionNormBearing(robot, enemies);

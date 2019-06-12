@@ -1,9 +1,11 @@
 package org.tnmk.robocode.robot;
 
-import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
-import robocode.*;
+import robocode.AdvancedRobot;
+import robocode.CustomEvent;
+import robocode.RobotDeathEvent;
+import robocode.ScannedRobotEvent;
 
 /**
  * The very simple robot which extends features from {@link AdvancedRobot}
@@ -24,35 +26,40 @@ public class TheUnfoldingRobot extends AdvancedRobot {
         setAdjustRadarForGunTurn(true);
         setAdjustRadarForRobotTurn(true);
 
+        theUnfoldingGun.runInit();
         theUnfoldingRadar.runInit();
         theUnfoldingMovement.runInit();
         execute();
 
-//        while (true) {
-//            theUnfoldingRadar.runLoop();
-//            execute();
-//            loopIndex++;
-//        }
+        while (true) {
+            theUnfoldingGun.runLoop();
+            execute();
+            loopIndex++;
+        }
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         theUnfoldingRadar.onScannedRobot(scannedRobotEvent);
         theUnfoldingMovement.onScannedRobot(scannedRobotEvent);
         theUnfoldingGun.onScannedRobot(scannedRobotEvent);
-        execute();
+        //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
+        //All of event should trigger robot.setXxx() methods only, they will be triggered in loopRun()
+//        execute();
     }
 
     public void onRobotDeath(RobotDeathEvent robotDeathEvent) {
         theUnfoldingRadar.onRobotDeath(robotDeathEvent);
-        execute();
+        //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
+        //All of event should trigger robot.setXxx() methods only, they will be triggered in loopRun()
+//        execute();
     }
 
     @Override
     public void onCustomEvent(CustomEvent customEvent) {
         theUnfoldingRadar.onCustomEvent(customEvent);
+        theUnfoldingGun.onCustomEvent(customEvent);
+        //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
+        //All of event should trigger robot.setXxx() methods only, they will be triggered in loopRun()
+//        execute();
     }
-    private void log(String message) {
-        LogHelper.logAdvanceRobot(this, loopIndex, message);
-    }
-
 }

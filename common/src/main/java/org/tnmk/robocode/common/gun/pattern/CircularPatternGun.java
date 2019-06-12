@@ -4,11 +4,16 @@ import java.awt.geom.Point2D;
 import java.util.List;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.number.DoubleUtils;
+import org.tnmk.robocode.common.constant.RobotPhysics;
+import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunUtils;
+import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.Scannable;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
@@ -16,13 +21,15 @@ import robocode.ScannedRobotEvent;
 /**
  * https://www.ibm.com/developerworks/library/j-circular/index.html
  */
-public class CircularPatternGun implements Scannable {
+public class CircularPatternGun implements LoopableRun, Scannable {
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
+    private final GunStateContext gunStateContext;
 
-    public CircularPatternGun(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
+    public CircularPatternGun(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, GunStateContext gunStateContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
+        this.gunStateContext = gunStateContext;
     }
 
     @Override
@@ -41,11 +48,23 @@ public class CircularPatternGun implements Scannable {
         Point2D enemyPosition = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, firePower);
 
         /**Turn the gun to the correct angle**/
+        double gunBearing = reckonTurnGunLeftNormRadian(robot, enemyPosition);
+        if (!gunStateContext.isAiming()) {
+            robot.setTurnGunLeftRadians(gunBearing);
+            gunStateContext.aimGun(firePower);
+            LogHelper.logAdvanceRobot(robot, "AimGun " + gunStateContext.getGunState());
+            //Gun will be fired by loopRun() when finishing aiming.
+        } else {
+            // Don't aim the new target until the old target was done!
+            // So don't need to do anything for now.
+        }
+    }
+
+    private double reckonTurnGunLeftNormRadian(AdvancedRobot robot, Point2D enemyPosition) {
         double robotToEnemyRadian = Math.PI / 2 - Math.atan2(enemyPosition.getY() - robot.getY(), enemyPosition.getX() - robot.getX());
         double gunOffset = robot.getGunHeadingRadians() - robotToEnemyRadian;
-        robot.setTurnGunLeftRadians(AngleUtils.normaliseRadian(gunOffset));
-        //TODO fire Gun only after turnGun finish, not now.
-        robot.setFire(firePower);
+        gunOffset = AngleUtils.normaliseRadian(gunOffset);
+        return gunOffset;
     }
 
     private Point2D predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
@@ -56,15 +75,26 @@ public class CircularPatternGun implements Scannable {
             double distanceRobotToEnemy = MathUtils.distance(robot.getX(), robot.getY(), enemyPosition.getX(), enemyPosition.getY());
             double bulletVelocity = GunUtils.reckonBulletVelocity(firePower);
             double periodForBulletToReachEnemy = distanceRobotToEnemy / bulletVelocity;
-            //TODO add turning Gun time
-            //  double periodForTurningGun
-            //  double totalPeriodGun = periodForTurningGun + periodForBulletToReachEnemy
-            long timeWhenBulletReachEnemy = robot.getTime() + Math.round(periodForBulletToReachEnemy);
+
+            double gunBearing = reckonTurnGunLeftNormRadian(robot, enemyPosition);
+            double periodForTurningGun = gunBearing / AngleUtils.toRadian(RobotPhysics.GUN_TURN_VELOCITY);
+            double totalPeriodGun = periodForTurningGun + periodForBulletToReachEnemy;
+            long timeWhenBulletReachEnemy = robot.getTime() + Math.round(totalPeriodGun);
 
             enemyPosition = CircularGuessUtils.guessPosition(latestHistoryItems, timeWhenBulletReachEnemy);
         }
         return enemyPosition;
     }
 
-
+    @Override
+    public void runLoop() {
+        LogHelper.logAdvanceRobot(robot, "GunState: " + gunStateContext.getGunState() + " gunTurnRemaining: " + robot.getGunTurnRemaining());
+        if (gunStateContext.isAiming()) {
+            if (DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
+                robot.setFire(gunStateContext.getBulletPower());
+                gunStateContext.rest();
+                LogHelper.logAdvanceRobot(robot, "Fire!!! " + gunStateContext.getBulletPower());
+            }
+        }
+    }
 }

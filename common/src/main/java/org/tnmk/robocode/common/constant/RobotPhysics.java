@@ -5,14 +5,25 @@ public class RobotPhysics {
      * speed of radar (degree)
      */
     public static final int RADAR_TURN_VELOCITY = 45;
+    /**
+     * speed of turning gun (degree)
+     */
+    public static final double GUN_TURN_VELOCITY = 20;
 
+    public static final double ROBOT_MAX_VELOCITY = 8;
+    /**
+     * When stopping, robot's velocity will reduce {@link #ROBOT_DECCELERATION} per tick.
+     */
+    public static final double ROBOT_DECCELERATION = 2;
+    /**
+     * When starting running, robot's velocity will increase {@link #ROBOT_ACCELERATION} per tick.
+     */
+    public static final double ROBOT_ACCELERATION = 1;
     /**
      * The full size of a robot.
      */
     public static final double ROBOT_SIZE = 50;
 
-    public static final double ROBOT_MAX_VELOCITY = 8;
-    public static final double ROBOT_STOP_ACCELERATION = 2;
     /**
      * velocity from 8 -> 6 -> 4 -> 2 -> 0: 5 ticks
      */
