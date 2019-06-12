@@ -17,14 +17,14 @@ import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
-import org.tnmk.robocode.common.robot.Scannable;
+import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
 /**
  * https://www.ibm.com/developerworks/library/j-circular/index.html
  */
-public class CircularPatternGun implements LoopableRun, Scannable {
+public class CircularPatternGun implements LoopableRun, OnScannedRobotControl {
     private static final int ENEMY_PREDICTION_TIMES = 3;
 
     private final AdvancedRobot robot;
@@ -72,7 +72,7 @@ public class CircularPatternGun implements LoopableRun, Scannable {
     private static double reckonTurnGunLeftNormRadian(Point2D robotPosition, Point2D enemyPosition, double gunHeadingRadians) {
         double robotToEnemyRadian = Math.PI / 2 - Math.atan2(enemyPosition.getY() - robotPosition.getY(), enemyPosition.getX() - robotPosition.getX());
         double gunOffset = gunHeadingRadians - robotToEnemyRadian;
-        gunOffset = AngleUtils.normaliseRadian(gunOffset);
+        gunOffset = AngleUtils.normalizeRadian(gunOffset);
         return gunOffset;
     }
 

@@ -2,6 +2,6 @@ package org.tnmk.robocode.common.robot;
 
 import robocode.CustomEvent;
 
-public interface CustomableEvent {
+public interface OnCustomEventControl {
     void onCustomEvent(CustomEvent customEvent);
 }

@@ -2,6 +2,6 @@ package org.tnmk.robocode.common.robot;
 
 import robocode.RobotDeathEvent;
 
-public interface RobotDeathTrackable {
+public interface OnRobotDeathControl {
     void onRobotDeath(RobotDeathEvent robotDeathEvent);
 }

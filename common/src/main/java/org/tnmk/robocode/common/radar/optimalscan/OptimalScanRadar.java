@@ -13,16 +13,16 @@ import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyMapper;
 import org.tnmk.robocode.common.model.enemy.EnemyUtils;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
-import org.tnmk.robocode.common.robot.CustomableEvent;
+import org.tnmk.robocode.common.robot.OnCustomEventControl;
 import org.tnmk.robocode.common.robot.InitiableRun;
-import org.tnmk.robocode.common.robot.RobotDeathTrackable;
-import org.tnmk.robocode.common.robot.Scannable;
+import org.tnmk.robocode.common.robot.OnRobotDeathControl;
+import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.*;
 
 /**
  * https://www.ibm.com/developerworks/library/j-radar/index.html
  */
-public class OptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrackable, CustomableEvent {
+public class OptimalScanRadar implements InitiableRun, OnScannedRobotControl, OnRobotDeathControl, OnCustomEventControl {
     /**
      * Scan a little bit more degree to make sure that all enemies have not moved outside the radar's scan area since the last time they are scanned.
      */

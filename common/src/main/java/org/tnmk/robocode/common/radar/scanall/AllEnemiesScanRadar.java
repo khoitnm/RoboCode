@@ -9,8 +9,8 @@ import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyMapper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
-import org.tnmk.robocode.common.robot.RobotDeathTrackable;
-import org.tnmk.robocode.common.robot.Scannable;
+import org.tnmk.robocode.common.robot.OnRobotDeathControl;
+import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
 import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
@@ -25,7 +25,7 @@ import robocode.ScannedRobotEvent;
  * The root cause is inside the core of RoboCode's {@link robocode.Robot#onScannedRobot(ScannedRobotEvent)}.<br/>
  */
 @Deprecated
-public class AllEnemiesScanRadar implements LoopableRun, Scannable, RobotDeathTrackable {
+public class AllEnemiesScanRadar implements LoopableRun, OnScannedRobotControl, OnRobotDeathControl {
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 

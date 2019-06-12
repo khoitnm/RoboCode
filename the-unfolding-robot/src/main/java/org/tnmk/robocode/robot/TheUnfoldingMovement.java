@@ -2,20 +2,24 @@ package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
+import org.tnmk.robocode.common.movement.avoidhitenemy.AvoidHitEnemyMovement;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorMovement;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
-import org.tnmk.robocode.common.robot.Scannable;
+import org.tnmk.robocode.common.robot.LoopableRun;
+import org.tnmk.robocode.common.robot.OnHitRobotControl;
+import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
+import robocode.HitRobotEvent;
 import robocode.ScannedRobotEvent;
 
-public class TheUnfoldingMovement implements InitiableRun, Scannable {
+public class TheUnfoldingMovement implements InitiableRun, LoopableRun,  OnScannedRobotControl, OnHitRobotControl {
     public static final double IDEAL_ENEMY_OSCILLATOR_DISTANCE = 150;
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final MovementContext movementContext;
 
-
+    private final AvoidHitEnemyMovement avoidHitEnemyMovement;
     private final OscillatorMovement oscillatorMovement;
     private final AntiGravityMovement antiGravityMovement;
 
@@ -26,11 +30,17 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
         movementContext = new MovementContext(robot);
         oscillatorMovement = new OscillatorMovement(robot, movementContext);
         antiGravityMovement = new AntiGravityMovement(robot, allEnemiesObservationContext, movementContext);
+        avoidHitEnemyMovement = new AvoidHitEnemyMovement(robot, movementContext);
     }
 
     @Override
     public void runInit(){
         antiGravityMovement.runInit();
+    }
+
+    @Override
+    public void runLoop() {
+        avoidHitEnemyMovement.runLoop();
     }
 
     @Override
@@ -41,6 +51,12 @@ public class TheUnfoldingMovement implements InitiableRun, Scannable {
         } else {
             antiGravityMovement.onScannedRobot(scannedRobotEvent);
         }
+    }
+
+
+    @Override
+    public void onHitRobot(HitRobotEvent hitRobotEvent) {
+        avoidHitEnemyMovement.onHitRobot(hitRobotEvent);
     }
 
     private void moveOscillatorWithIdealDistance(ScannedRobotEvent scannedRobotEvent) {

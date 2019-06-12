@@ -12,7 +12,7 @@ import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.SpecialMovementType;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
-import org.tnmk.robocode.common.robot.Scannable;
+import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
@@ -28,7 +28,7 @@ import robocode.util.Utils;
  * Don't move follow the direction of the force. Instead, I change the {@link #reckonForceWeight(double)} so that we can have an appropriate destination point inside the {@link #safeMovementArea}.<br/>
  * Then when moving, I use {@link Move2DHelper#setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(AdvancedRobot, Point2D)} instead of {@link Move2DHelper#setMoveToDestinationWithShortestPath(AdvancedRobot, Point2D)}.<br/>
  */
-public class AntiGravityMovement implements InitiableRun, Scannable {
+public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl {
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final MovementContext movementContext;

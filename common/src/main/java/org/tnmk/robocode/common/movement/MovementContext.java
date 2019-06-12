@@ -23,6 +23,12 @@ public class MovementContext  {
     }
 
     /**
+     * Set specialMovementType is {@link SpecialMovementType#NONE}
+     */
+    public void setNone(){
+        this.specialMovementType = SpecialMovementType.NONE;
+    }
+    /**
      * @return Check if no special movement type
      */
     public boolean isNone() {

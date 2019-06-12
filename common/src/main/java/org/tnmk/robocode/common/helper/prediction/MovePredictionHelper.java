@@ -35,8 +35,8 @@ public class MovePredictionHelper {
         Point2D nextPosition = currentPosition;
 
         for (int i = 0; i < expectPredictionTimePeriod || DoubleUtils.isConsideredZero(nextVelocity); i++) {
-            double movingX = nextVelocity * Math.sin(AngleUtils.normaliseRadian(nextHeadingRadian));
-            double movingY = nextVelocity * Math.cos(AngleUtils.normaliseRadian(nextHeadingRadian));
+            double movingX = nextVelocity * Math.sin(AngleUtils.normalizeRadian(nextHeadingRadian));
+            double movingY = nextVelocity * Math.cos(AngleUtils.normalizeRadian(nextHeadingRadian));
             nextPosition = new Point2D.Double(nextPosition.getX() + movingX, nextPosition.getY() + movingY);
 
             nextDistanceRemaining -= nextVelocity;

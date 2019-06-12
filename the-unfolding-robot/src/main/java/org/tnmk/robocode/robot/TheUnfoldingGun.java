@@ -6,15 +6,15 @@ import org.tnmk.robocode.common.gun.pattern.CircularPatternGun;
 import org.tnmk.robocode.common.gun.pattern.EnemyPatternType;
 import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
-import org.tnmk.robocode.common.robot.CustomableEvent;
+import org.tnmk.robocode.common.robot.OnCustomEventControl;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.LoopableRun;
-import org.tnmk.robocode.common.robot.Scannable;
+import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
 import robocode.CustomEvent;
 import robocode.ScannedRobotEvent;
 
-public class TheUnfoldingGun implements InitiableRun, LoopableRun, Scannable, CustomableEvent {
+public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobotControl, OnCustomEventControl {
     /**
      * The furthest distance which we should fire on target in one-on-one fights.
      * Note: this distance should never be lower than {@link TheUnfoldingMovement#IDEAL_ENEMY_OSCILLATOR_DISTANCE}
