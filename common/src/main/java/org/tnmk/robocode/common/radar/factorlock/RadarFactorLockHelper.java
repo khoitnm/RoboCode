@@ -6,7 +6,9 @@ import robocode.ScannedRobotEvent;
 
 /**
  * View more at http://old.robowiki.net/robowiki?Radar
+ * @deprecated Not effective
  */
+@Deprecated
 public class RadarFactorLockHelper {
     /**
      *  A FACTOR of 3 or greater will expand the lock so quickly it reaches the widest lock almost right away. This works the same way Infinity Lock does, but avoids slippage by keeping the enemy in the centre of the lock.

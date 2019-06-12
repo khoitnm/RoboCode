@@ -20,8 +20,9 @@ import static robocode.util.Utils.normalRelativeAngle;
 
 /**
  * https://www.ibm.com/developerworks/library/j-radar/index.html
- * Flaw: still scan redundant areas because the calculation was based on the old enemy's bearing angle (which based on old robot's position, not based on the current robot's position).
+ * @deprecated Flaw: still scan redundant areas because the calculation was based on the old enemy's bearing angle (which based on old robot's position, not based on the current robot's position).
  */
+@Deprecated
 public class IBMOptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrackable, CustomableEvent {
     /**
      * Scan a little bit more degree to make sure that all enemies have not moved outside the radar's scan area since the last time they are scanned.

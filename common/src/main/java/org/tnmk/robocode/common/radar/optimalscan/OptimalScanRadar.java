@@ -8,10 +8,10 @@ import javafx.util.Pair;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.MathUtils;
 import org.tnmk.common.math.Point2DUtils;
-import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyMapper;
+import org.tnmk.robocode.common.model.enemy.EnemyUtils;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.CustomableEvent;
 import org.tnmk.robocode.common.robot.InitiableRun;
@@ -26,13 +26,14 @@ public class OptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrac
     /**
      * Scan a little bit more degree to make sure that all enemies have not moved outside the radar's scan area since the last time they are scanned.
      */
-    private static final double SAFE_EXTRA_SCAN_DEGREE = RobotPhysics.RADAR_TURN_VELOCITY;
+    private static final double SAFE_EXTRA_SCAN_DEGREE = Rules.RADAR_TURN_RATE;
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
     private int radarDirection = 1;
     private boolean isScannedAllEnemiesAtLeastOnce = false;
+    private double additionalScanDegree = SAFE_EXTRA_SCAN_DEGREE;
 
     public OptimalScanRadar(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
@@ -61,12 +62,20 @@ public class OptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrac
         } else {
             normRadarTurnRight = reckonSweepAngleWhenFoundSomeEnemies(robot, enemies);
         }
-
-        normRadarTurnRight += MathUtils.sign(normRadarTurnRight) * SAFE_EXTRA_SCAN_DEGREE;
+        adjustAdditionalScanDegreeBasedOnNumOfOutdatedEnemies(enemies);
+        normRadarTurnRight += MathUtils.sign(normRadarTurnRight) * additionalScanDegree;
         normRadarTurnRight = AngleUtils.normalizeDegree(normRadarTurnRight);
         robot.setTurnRadarRight(normRadarTurnRight);
         radarDirection = -radarDirection;
 //        printSweep(robot, normRadarTurnRight, enemies);
+    }
+
+    private void adjustAdditionalScanDegreeBasedOnNumOfOutdatedEnemies(Collection<Enemy> enemies) {
+        long countNotUpdatedEnemies = enemies.stream().filter(enemy -> !EnemyUtils.isEnemyNew(enemy, robot.getTime())).count();
+        if (countNotUpdatedEnemies == 0) {
+            additionalScanDegree = SAFE_EXTRA_SCAN_DEGREE;
+        }
+        additionalScanDegree += countNotUpdatedEnemies * SAFE_EXTRA_SCAN_DEGREE;
     }
 
     private double reckonSweepAngleWhenFoundSomeEnemies(AdvancedRobot robot, Collection<Enemy> enemies) {

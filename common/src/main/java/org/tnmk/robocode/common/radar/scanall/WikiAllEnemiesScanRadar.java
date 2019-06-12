@@ -14,8 +14,9 @@ import robocode.util.Utils;
 
 /**
  * Copied at http://robowiki.net/wiki/Melee_Radar.
- * It also got the same flaw of {@link AllEnemiesScanRadar}.
+ * @deprecated It also got the same flaw of {@link AllEnemiesScanRadar}.
  */
+@Deprecated
 public class WikiAllEnemiesScanRadar implements LoopableRun, Scannable, RobotDeathTrackable {
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
