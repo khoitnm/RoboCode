@@ -50,7 +50,7 @@ public class AntiGravityMovement implements InitiableRun, Scannable {
         double battleWidth = robot.getBattleFieldWidth();
         double battleHeight = robot.getBattleFieldHeight();
         double safePaddingMovementDistance = (RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE * 2) * 2;
-        safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance, battleHeight - safePaddingMovementDistance);
+        safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance*2, battleHeight - safePaddingMovementDistance*2);
         maxPossibleMoveDistance = Math.min(battleWidth, battleHeight);
         maxPossibleEnemiesCount = 1 + (int) (maxPossibleMoveDistance / RobotPhysics.ROBOT_SIZE);
         maxActualEnemiesCount = robot.getOthers();
