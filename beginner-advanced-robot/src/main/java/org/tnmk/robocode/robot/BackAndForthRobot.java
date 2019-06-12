@@ -29,7 +29,6 @@ public class BackAndForthRobot extends AdvancedRobot {
 
     public void onScannedRobot(ScannedRobotEvent e) {
         fire(1);
-        log("Advance fire");
     }
 
     private void log(String message) {
