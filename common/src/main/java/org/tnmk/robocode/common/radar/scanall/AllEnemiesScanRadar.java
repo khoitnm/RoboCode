@@ -16,6 +16,8 @@ import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
 
 /**
+ * TODO fixbug when robot moved to new corner and robot still see the history enemies, so it just scan to area with any robot and then cannot get updated information.
+ *
  * The biggest flaw of this algorithm: sometimes radar couldn't find enough robots.
  * Then it has to scan 360 degree multiple times to find out all enemies before revert scanning.<br/>
  * <p/>

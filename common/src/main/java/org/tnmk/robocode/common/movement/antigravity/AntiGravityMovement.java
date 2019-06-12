@@ -70,21 +70,26 @@ public class AntiGravityMovement implements InitiableRun, Scannable {
 
     }
 
+    //TODO it only change movement when seeing updated enemies. If radar somehow doesn't work as expected, it just stay still!!!
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         Point2D force = reckonForce(this.robot, this.allEnemiesObservationContext);
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
         Point2D destination = Point2DUtils.plus(robotPosition, force);
         Optional<Point2D> avoidWallDestinationOptional = Move2DHelper.reckonMaximumDestination(robotPosition, destination, safeMovementArea);
-        destination = avoidWallDestinationOptional.orElse(destination);
+        Point2D finalDestination = avoidWallDestinationOptional.orElse(destination);
 
-        if (!Move2DHelper.checkInsideRectangle(destination, safeMovementArea)) {
-            String message = String.format("Destination outside safeMovement: current %s\t destination %s\t safe area %s", LogHelper.toString(robotPosition), LogHelper.toString(destination), LogHelper.toString(safeMovementArea));
+        if (!Move2DHelper.checkInsideRectangle(finalDestination, safeMovementArea)) {
+            String message = String.format("Destination outside safeMovement: current %s\t destination %s\t finalDestination %s\t safe area %s",
+                    LogHelper.toString(robotPosition),
+                    LogHelper.toString(destination),
+                    LogHelper.toString(finalDestination),
+                    LogHelper.toString(safeMovementArea));
             LogHelper.logAdvanceRobot(robot, message);
         }
 
-        AntiGravityPainterUtils.paintFinalDestination(robot, destination);
-        Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, destination);
+        AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
+        Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
     }
 
     /**
