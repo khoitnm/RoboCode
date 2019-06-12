@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.util.List;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.MathUtils;
+import org.tnmk.robocode.common.gun.GunUtils;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
@@ -53,7 +54,8 @@ public class CircularPatternGun implements Scannable {
         Point2D enemyPosition = enemyHistory.getLatestHistoryItem().getPosition();
         for (int i = 0; i < 10; i++) {//this loop is used to improve the correctness of prediction.
             double distanceRobotToEnemy = MathUtils.distance(robot.getX(), robot.getY(), enemyPosition.getX(), enemyPosition.getY());
-            nextTime = Math.round((distanceRobotToEnemy / (20 - (3 * firePower))));
+            double bulletVelocity = GunUtils.reckonBulletVelocity(firePower);
+            nextTime = Math.round((distanceRobotToEnemy / bulletVelocity));
             time = robot.getTime() + nextTime;
 
             List<Enemy> latestHistoryItems = enemyHistory.getLatestHistoryItems(3);
