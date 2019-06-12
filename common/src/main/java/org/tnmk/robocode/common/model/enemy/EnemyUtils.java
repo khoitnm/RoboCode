@@ -2,7 +2,7 @@ package org.tnmk.robocode.common.model.enemy;
 
 import org.tnmk.robocode.common.constant.RobotPhysics;
 
-public class EnemyHelper {
+public class EnemyUtils {
     private static final double STILL_NEW_TIME_PERIOD = 360 / RobotPhysics.RADAR_TURN_VELOCITY;
 
     /**

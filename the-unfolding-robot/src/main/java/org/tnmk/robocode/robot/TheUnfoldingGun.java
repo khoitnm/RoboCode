@@ -1,8 +1,11 @@
 package org.tnmk.robocode.robot;
 
+import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
+import org.tnmk.robocode.common.gun.pattern.CircularPatternGun;
+import org.tnmk.robocode.common.gun.pattern.EnemyPatternType;
+import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.Scannable;
-import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
@@ -21,15 +24,33 @@ public class TheUnfoldingGun implements Scannable {
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
     private GFTAimGun gftAimGun;
+    private CircularPatternGun circularPatternGun;
 
 
     public TheUnfoldingGun(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
         this.gftAimGun = new GFTAimGun(robot);
+        this.circularPatternGun = new CircularPatternGun(robot, allEnemiesObservationContext);
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+        EnemyPatternPrediction enemyPatternPrediction = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName());
+        if (enemyPatternPrediction == null || !enemyPatternPrediction.isIdentifiedPattern()){
+            aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
+        }else{
+            EnemyPatternType enemyPatternType = enemyPatternPrediction.getEnemyPatternType();
+            if (enemyPatternType == EnemyPatternType.CIRCULAR){
+                circularPatternGun.onScannedRobot(scannedRobotEvent);
+            }else{//TODO handle EnemyPatternType.LINEAR
+                aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
+            }
+        }
+
+
+    }
+
+    private void aimGftGunIfCloseEnemyEnough(ScannedRobotEvent scannedRobotEvent){
         int totalExistingEnemies = robot.getOthers();
         if (shouldFire(scannedRobotEvent.getDistance(), totalExistingEnemies)) {
             gftAimGun.onScannedRobot(scannedRobotEvent);

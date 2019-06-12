@@ -7,7 +7,7 @@ import org.tnmk.common.math.MathUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
-import org.tnmk.robocode.common.model.enemy.EnemyHelper;
+import org.tnmk.robocode.common.model.enemy.EnemyUtils;
 import org.tnmk.robocode.common.model.enemy.EnemyMapper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.CustomableEvent;
@@ -59,7 +59,7 @@ public class IBMOptimalScanRadar implements InitiableRun, Scannable, RobotDeathT
 
         Collection<Enemy> enemies = this.allEnemiesObservationContext.getEnemies();
         for (Enemy enemy : enemies) {
-            if (enemy != null && EnemyHelper.isEnemyNew(enemy, robot.getTime())) {
+            if (enemy != null && EnemyUtils.isEnemyNew(enemy, robot.getTime())) {
                 double bearing = normalRelativeAngle(robot.getHeading() + enemy.getBearing() - robot.getRadarHeading());
                 if (Math.abs(bearing) > maxBearingAbs) {
                     maxBearingAbs = Math.abs(bearing);
@@ -81,7 +81,7 @@ public class IBMOptimalScanRadar implements InitiableRun, Scannable, RobotDeathT
     }
 
     private void printSweep(AdvancedRobot robot, double radarTurn, Collection<Enemy> enemies) {
-        List<Boolean> isEnemiesUpdated = enemies.stream().map(enemy -> EnemyHelper.isEnemyNew(enemy, robot.getTime())).collect(Collectors.toList());
+        List<Boolean> isEnemiesUpdated = enemies.stream().map(enemy -> EnemyUtils.isEnemyNew(enemy, robot.getTime())).collect(Collectors.toList());
         LogHelper.logAdvanceRobot(robot, "New sweep " + radarTurn + ", enemies updated: " + isEnemiesUpdated);
     }
 
