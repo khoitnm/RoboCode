@@ -42,6 +42,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, Scannable, Cu
         this.circularPatternGun = new CircularPatternGun(robot, allEnemiesObservationContext, gunStateContext);
     }
 
+    //TODO share aiming context. When aiming for one algorithm, other algorithm shouldn't change aiming direction.
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         EnemyPatternPrediction enemyPatternPrediction = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName());
         if (enemyPatternPrediction == null || !enemyPatternPrediction.isIdentifiedPattern()) {
