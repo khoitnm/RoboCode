@@ -7,6 +7,7 @@ public class LogHelper {
 
     public static void logAdvanceRobot(AdvancedRobot robot, String message) {
         String finalMessage = String.format("[%s] " +
+                "\t position {%.2f, %.2f}"+
 //                        "\t velocity %.2f " +
 //                        "\t distanceRemaining %.2f " +
 //                        "\t heading %.2f" +
@@ -15,6 +16,7 @@ public class LogHelper {
                         "\t gunTurnRemaining %.2f" +
                         "\t %s",
                 robot.getTime(),
+                robot.getX(), robot.getY(),
 //                robot.getVelocity(),
 //                robot.getDistanceRemaining(),
 //                robot.getHeading(),

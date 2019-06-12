@@ -3,12 +3,13 @@ package org.tnmk.robocode.common.gun.pattern;
 import java.awt.geom.Point2D;
 import java.util.List;
 import org.tnmk.common.math.AngleUtils;
-import org.tnmk.common.math.MathUtils;
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunUtils;
 import org.tnmk.robocode.common.helper.GunHelper;
+import org.tnmk.robocode.common.helper.prediction.MovePredictionHelper;
+import org.tnmk.robocode.common.helper.prediction.RobotPrediction;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
@@ -23,6 +24,8 @@ import robocode.ScannedRobotEvent;
  * https://www.ibm.com/developerworks/library/j-circular/index.html
  */
 public class CircularPatternGun implements LoopableRun, Scannable {
+    private static final int ENEMY_PREDICTION_TIMES = 3;
+
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final GunStateContext gunStateContext;
@@ -49,9 +52,10 @@ public class CircularPatternGun implements LoopableRun, Scannable {
      **/
     private void aimGun(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
         Point2D enemyPosition = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, firePower);
-
+        Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
         /**Turn the gun to the correct angle**/
-        double gunBearing = reckonTurnGunLeftNormRadian(robot, enemyPosition);
+
+        double gunBearing = reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
         if (!gunStateContext.isAiming()) {
             robot.setTurnGunLeftRadians(gunBearing);
             gunStateContext.aimGun(firePower);
@@ -63,9 +67,9 @@ public class CircularPatternGun implements LoopableRun, Scannable {
         }
     }
 
-    private double reckonTurnGunLeftNormRadian(AdvancedRobot robot, Point2D enemyPosition) {
-        double robotToEnemyRadian = Math.PI / 2 - Math.atan2(enemyPosition.getY() - robot.getY(), enemyPosition.getX() - robot.getX());
-        double gunOffset = robot.getGunHeadingRadians() - robotToEnemyRadian;
+    private static double reckonTurnGunLeftNormRadian(Point2D robotPosition, Point2D enemyPosition, double gunHeadingRadians) {
+        double robotToEnemyRadian = Math.PI / 2 - Math.atan2(enemyPosition.getY() - robotPosition.getY(), enemyPosition.getX() - robotPosition.getX());
+        double gunOffset = gunHeadingRadians - robotToEnemyRadian;
         gunOffset = AngleUtils.normaliseRadian(gunOffset);
         return gunOffset;
     }
@@ -73,15 +77,26 @@ public class CircularPatternGun implements LoopableRun, Scannable {
     private Point2D predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
         List<Enemy> latestHistoryItems = enemyHistory.getLatestHistoryItems(3);
         Point2D enemyPosition = enemyHistory.getLatestHistoryItem().getPosition();
-        for (int i = 0; i < 10; i++) {//this loop is used to improve the correctness of prediction.
-            //TODO after sometime, the robot position also changed, not just enemyPosition.
-            double distanceRobotToEnemy = MathUtils.distance(robot.getX(), robot.getY(), enemyPosition.getX(), enemyPosition.getY());
-            double bulletVelocity = GunUtils.reckonBulletVelocity(firePower);
-            double periodForBulletToReachEnemy = distanceRobotToEnemy / bulletVelocity;
+        Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
+        long periodForTurningGun = 0;
+        for (int i = 0; i < ENEMY_PREDICTION_TIMES; i++) {//this loop is used to improve the correctness of prediction.
+            RobotPrediction robotPrediction = MovePredictionHelper.predictPosition(periodForTurningGun, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
+            Point2D predictRobotPosition = robotPrediction.getPosition();
+//            String message = String.format("Predict at time %s, position {%.2f, %.2f}", (robot.getTime() + periodForTurningGun), predictRobotPosition.getX(), predictRobotPosition.getY());
+//            LogHelper.logAdvanceRobot(robot, message);
 
-            double gunBearing = reckonTurnGunLeftNormRadian(robot, enemyPosition);
-            double periodForTurningGun = gunBearing / AngleUtils.toRadian(RobotPhysics.GUN_TURN_VELOCITY);
-            double totalPeriodGun = periodForTurningGun + periodForBulletToReachEnemy;
+            RobotPrediction testRobotPredictionAfter5 = MovePredictionHelper.predictPosition(5, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
+            String message = String.format("Predict at time %s, position {%.2f, %.2f}", (robot.getTime() + 5), testRobotPredictionAfter5.getPosition().getX(), testRobotPredictionAfter5.getPosition().getY());
+            LogHelper.logAdvanceRobot(robot, message);
+
+
+            double distanceRobotToEnemy = predictRobotPosition.distance(enemyPosition);
+            double bulletVelocity = GunUtils.reckonBulletVelocity(firePower);
+            long periodForBulletToReachEnemy = (long) Math.ceil(Math.abs(distanceRobotToEnemy / bulletVelocity));
+
+            double gunBearing = reckonTurnGunLeftNormRadian(predictRobotPosition, enemyPosition, robot.getGunHeadingRadians());
+            periodForTurningGun = (long) Math.ceil(Math.abs(gunBearing / AngleUtils.toRadian(RobotPhysics.GUN_TURN_VELOCITY)));
+            long totalPeriodGun = periodForTurningGun + periodForBulletToReachEnemy;
             long timeWhenBulletReachEnemy = robot.getTime() + Math.round(totalPeriodGun);
 
             enemyPosition = CircularGuessUtils.guessPosition(latestHistoryItems, timeWhenBulletReachEnemy);

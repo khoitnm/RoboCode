@@ -26,8 +26,8 @@ public class TheUnfoldingRobot extends AdvancedRobot {
         setAdjustRadarForGunTurn(true);
         setAdjustRadarForRobotTurn(true);
 
-        theUnfoldingGun.runInit();
         theUnfoldingRadar.runInit();
+        theUnfoldingGun.runInit();
         theUnfoldingMovement.runInit();
         execute();
 

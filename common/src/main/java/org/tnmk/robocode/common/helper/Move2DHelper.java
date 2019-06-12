@@ -15,8 +15,8 @@ import robocode.util.Utils;
 public class Move2DHelper implements Serializable {
     public static final double ROBOT_SIZE = 50;
 
-    public static Point2D reckonTargetPosition(Robot thisRobot, HitRobotEvent targetRobotEvent) {
-        return reckonTargetPosition(thisRobot, targetRobotEvent.getBearing(), ROBOT_SIZE);
+    public static Point2D reckonEnemyPosition(Robot thisRobot, HitRobotEvent targetRobotEvent) {
+        return reckonEnemyPosition(thisRobot, targetRobotEvent.getBearing(), ROBOT_SIZE);
     }
 
     /**
@@ -48,8 +48,8 @@ public class Move2DHelper implements Serializable {
      * @param targetRobotEvent
      * @return
      */
-    public static Point2D reckonTargetPosition(Robot thisRobot, ScannedRobotEvent targetRobotEvent) {
-        return reckonTargetPosition(thisRobot, targetRobotEvent.getBearing(), targetRobotEvent.getDistance());
+    public static Point2D reckonEnemyPosition(Robot thisRobot, ScannedRobotEvent targetRobotEvent) {
+        return reckonEnemyPosition(thisRobot, targetRobotEvent.getBearing(), targetRobotEvent.getDistance());
     }
 
     /**
@@ -58,7 +58,7 @@ public class Move2DHelper implements Serializable {
      * @param distanceToTarget
      * @return
      */
-    public static Point2D reckonTargetPosition(Robot thisRobot, double bearingToEnemy, double distanceToTarget) {
+    public static Point2D reckonEnemyPosition(Robot thisRobot, double bearingToEnemy, double distanceToTarget) {
         double angle = Math.toRadians(thisRobot.getHeading() + bearingToEnemy);
         double x = (thisRobot.getX() + Math.sin(angle) * distanceToTarget);
         double y = (thisRobot.getY() + Math.cos(angle) * distanceToTarget);
@@ -149,4 +149,5 @@ public class Move2DHelper implements Serializable {
             return Optional.empty();
         }
     }
+
 }

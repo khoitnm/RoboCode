@@ -1,5 +1,10 @@
 package org.tnmk.robocode.common.constant;
 
+import robocode.Rules;
+
+/**
+ * View more at {@link Rules}
+ */
 public class RobotPhysics {
     /**
      * speed of radar (degree)
