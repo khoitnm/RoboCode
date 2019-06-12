@@ -1,5 +1,8 @@
 package org.tnmk.robocode.common.radar.botlock;
 
+import org.tnmk.robocode.common.log.LogHelper;
+import org.tnmk.robocode.common.model.enemy.Enemy;
+import org.tnmk.robocode.common.model.enemy.EnemyMapper;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
@@ -24,6 +27,10 @@ public class BotLockRadar {
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+        Enemy enemy = EnemyMapper.toEnemy(robot, scannedRobotEvent);
+        String message = String.format("Actual enemy at time %s, position {%.2f, %.2f}", robot.getTime(), enemy.getPosition().getX(), enemy.getPosition().getY());
+        LogHelper.logAdvanceRobot(robot, message);
+
         enemyAbsoluteBearing = (robot.getHeadingRadians() + scannedRobotEvent.getBearingRadians());
         timeSinceLastSeenEnemy = 0;
 

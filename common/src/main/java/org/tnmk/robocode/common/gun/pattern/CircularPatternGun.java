@@ -8,6 +8,7 @@ import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunUtils;
 import org.tnmk.robocode.common.helper.GunHelper;
+import org.tnmk.robocode.common.helper.prediction.EnemyPositionPrediction;
 import org.tnmk.robocode.common.helper.prediction.MovePredictionHelper;
 import org.tnmk.robocode.common.helper.prediction.RobotPrediction;
 import org.tnmk.robocode.common.log.LogHelper;
@@ -51,7 +52,8 @@ public class CircularPatternGun implements LoopableRun, Scannable {
      * the gun to the correct angle to fire on the target.
      **/
     private void aimGun(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
-        Point2D enemyPosition = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, firePower);
+        EnemyPositionPrediction enemyPositionPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, firePower);
+        Point2D enemyPosition = enemyPositionPrediction.getPosition();
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
         /**Turn the gun to the correct angle**/
 
@@ -74,8 +76,9 @@ public class CircularPatternGun implements LoopableRun, Scannable {
         return gunOffset;
     }
 
-    private Point2D predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
-        List<Enemy> latestHistoryItems = enemyHistory.getLatestHistoryItems(3);
+    private EnemyPositionPrediction predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
+        EnemyPositionPrediction enemyPositionPrediction = new EnemyPositionPrediction();
+        List<Enemy> latestHistoryItems = enemyHistory.getLatestHistoryItems(5);
         Point2D enemyPosition = enemyHistory.getLatestHistoryItem().getPosition();
         Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
         long periodForTurningGun = 0;
@@ -86,7 +89,7 @@ public class CircularPatternGun implements LoopableRun, Scannable {
 //            LogHelper.logAdvanceRobot(robot, message);
 
             RobotPrediction testRobotPredictionAfter5 = MovePredictionHelper.predictPosition(5, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
-            String message = String.format("Predict at time %s, position {%.2f, %.2f}", (robot.getTime() + 5), testRobotPredictionAfter5.getPosition().getX(), testRobotPredictionAfter5.getPosition().getY());
+            String message = String.format("Predict self at time %s, position {%.2f, %.2f}", (robot.getTime() + 5), testRobotPredictionAfter5.getPosition().getX(), testRobotPredictionAfter5.getPosition().getY());
             LogHelper.logAdvanceRobot(robot, message);
 
 
@@ -100,8 +103,23 @@ public class CircularPatternGun implements LoopableRun, Scannable {
             long timeWhenBulletReachEnemy = robot.getTime() + Math.round(totalPeriodGun);
 
             enemyPosition = CircularGuessUtils.guessPosition(latestHistoryItems, timeWhenBulletReachEnemy);
+
+            enemyPositionPrediction.setPosition(enemyPosition);
+            enemyPositionPrediction.setTime(timeWhenBulletReachEnemy);
         }
-        return enemyPosition;
+        debugPredictEnemy(latestHistoryItems);
+
+        String message = String.format("Final predict enemy at %s, position {%.2f, %.2f}", enemyPositionPrediction.getTime(), enemyPositionPrediction.getPosition().getX(), enemyPositionPrediction.getPosition().getY());
+        LogHelper.logAdvanceRobot(robot, message);
+        return enemyPositionPrediction;
+    }
+
+    private void debugPredictEnemy(List<Enemy> latestHistoryItems){
+        for (int i = 0; i < 5; i++) {
+            Point2D testEnemyPosition = CircularGuessUtils.guessPosition(latestHistoryItems, robot.getTime()+i);
+            String message = String.format("predict enemy at time %s, position {%.2f, %.2f}", robot.getTime()+i, testEnemyPosition.getX(), testEnemyPosition.getY());
+            LogHelper.logAdvanceRobot(robot, message);
+        }
     }
 
     @Override

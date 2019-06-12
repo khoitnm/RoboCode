@@ -49,6 +49,10 @@ public class AllEnemiesScanRadar implements LoopableRun, Scannable, RobotDeathTr
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         Enemy enemy = EnemyMapper.toEnemy(this.robot, scannedRobotEvent);
+
+        String message = String.format("Actual enemy at time %s, position {%.2f, %.2f}", robot.getTime(), enemy.getPosition().getX(), enemy.getPosition().getY());
+        LogHelper.logAdvanceRobot(robot, message);
+
         allEnemiesObservationContext.addEnemy(enemy);
         setIfEverScannedAllEnemiesAtLeastOnce();
         reverseRadarWhenFinishedScanningAllEnemiesInARound(scannedRobotEvent.getName());
