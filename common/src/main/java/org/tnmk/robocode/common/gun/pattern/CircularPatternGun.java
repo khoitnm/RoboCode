@@ -49,18 +49,18 @@ public class CircularPatternGun implements Scannable {
     }
 
     private Point2D predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
-        long timeWhenBulletReachEnemy;
-        long periodForBulletToReachEnemy;
+        List<Enemy> latestHistoryItems = enemyHistory.getLatestHistoryItems(3);
         Point2D enemyPosition = enemyHistory.getLatestHistoryItem().getPosition();
         for (int i = 0; i < 10; i++) {//this loop is used to improve the correctness of prediction.
             //TODO after sometime, the robot position also changed, not just enemyPosition.
-            //  Besides that, we also need to calculate the gunTurning time.
             double distanceRobotToEnemy = MathUtils.distance(robot.getX(), robot.getY(), enemyPosition.getX(), enemyPosition.getY());
             double bulletVelocity = GunUtils.reckonBulletVelocity(firePower);
-            periodForBulletToReachEnemy = Math.round((distanceRobotToEnemy / bulletVelocity));
-            timeWhenBulletReachEnemy = robot.getTime() + periodForBulletToReachEnemy;
+            double periodForBulletToReachEnemy = distanceRobotToEnemy / bulletVelocity;
+            //TODO add turning Gun time
+            //  double periodForTurningGun
+            //  double totalPeriodGun = periodForTurningGun + periodForBulletToReachEnemy
+            long timeWhenBulletReachEnemy = robot.getTime() + Math.round(periodForBulletToReachEnemy);
 
-            List<Enemy> latestHistoryItems = enemyHistory.getLatestHistoryItems(3);
             enemyPosition = CircularGuessUtils.guessPosition(latestHistoryItems, timeWhenBulletReachEnemy);
         }
         return enemyPosition;
