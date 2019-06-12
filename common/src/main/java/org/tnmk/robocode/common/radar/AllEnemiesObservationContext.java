@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.tnmk.robocode.common.gun.pattern.EnemyPatternTypeUtils;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
@@ -37,10 +38,12 @@ public class AllEnemiesObservationContext {
         this.enemiesMapByName.put(enemy.getName(), enemy);
         EnemyPatternPrediction enemyPatternPrediction = this.enemiesPatternPredictionsMapByName.get(enemy.getName());
         if (enemyPatternPrediction == null) {
-
             EnemyHistory enemyHistory = new EnemyHistory(enemy.getName(), enemy);
             enemyPatternPrediction = new EnemyPatternPrediction(enemy.getName(), enemyHistory);
             enemiesPatternPredictionsMapByName.put(enemy.getName(), enemyPatternPrediction);
+        } else {
+            enemyPatternPrediction.getEnemyHistory().addToHistory(enemy);
+            EnemyPatternTypeUtils.identifyPatternIfNecessary(enemyPatternPrediction);
         }
     }
 
@@ -62,5 +65,9 @@ public class AllEnemiesObservationContext {
 
     public void removeEnemy(String enemyName) {
         this.enemiesMapByName.remove(enemyName);
+    }
+
+    public EnemyPatternPrediction getEnemyPatternPrediction(String enemyName) {
+        return this.enemiesPatternPredictionsMapByName.get(enemyName);
     }
 }

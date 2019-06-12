@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.model.enemy;
 
-import org.tnmk.robocode.common.gun.pattern.EnemyPattern;
+import org.tnmk.robocode.common.gun.pattern.EnemyPatternType;
 
 public class EnemyPatternPrediction {
     /**
@@ -15,7 +15,7 @@ public class EnemyPatternPrediction {
     /**
      * This field is never null
      */
-    private EnemyPattern enemyPattern = EnemyPattern.UNIDENTIFIED;
+    private EnemyPatternType enemyPatternType = EnemyPatternType.UNIDENTIFIED;
 
     public EnemyPatternPrediction(String enemyName, EnemyHistory enemyHistory) {
         this.enemyName = enemyName;
@@ -23,7 +23,7 @@ public class EnemyPatternPrediction {
     }
 
     public boolean isIdentifiedPattern() {
-        return enemyPattern != EnemyPattern.UNIDENTIFIED;
+        return enemyPatternType != EnemyPatternType.UNIDENTIFIED;
     }
 
     public String getEnemyName() {
@@ -34,11 +34,11 @@ public class EnemyPatternPrediction {
         return enemyHistory;
     }
 
-    public EnemyPattern getEnemyPattern() {
-        return enemyPattern;
+    public EnemyPatternType getEnemyPatternType() {
+        return enemyPatternType;
     }
 
-    public void setEnemyPattern(EnemyPattern enemyPattern) {
-        this.enemyPattern = enemyPattern;
+    public void setEnemyPatternType(EnemyPatternType enemyPatternType) {
+        this.enemyPatternType = enemyPatternType;
     }
 }

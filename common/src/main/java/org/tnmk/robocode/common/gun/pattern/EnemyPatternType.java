@@ -1,5 +1,5 @@
 package org.tnmk.robocode.common.gun.pattern;
 
-public enum EnemyPattern {
+public enum EnemyPatternType {
     LINEAR, CIRCULAR, UNIDENTIFIED
 }
