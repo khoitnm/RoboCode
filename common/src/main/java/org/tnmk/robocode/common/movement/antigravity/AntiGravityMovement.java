@@ -8,8 +8,8 @@ import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
-import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.MoveStrategy;
+import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
@@ -25,7 +25,7 @@ import robocode.util.Utils;
  * the direction change so quickly which make robot cannot adapt. As a result, it cannot move fast and far.
  * <p/>
  * My improvement:<br/>
- * Don't move follow the direction of the force. Instead, I change the {@link #reckonForceWeight(double)} so that we can have an appropriate destination point inside the {@link #safeMovementArea}.<br/>
+ * Don't move follow the direction of the force. Instead, I change the {@link #reckonForceWeight(AntiGravityCalculationContext, double)} so that we can have an appropriate destination point inside the {@link AntiGravityCalculationContext#getSafeMovementArea()}.<br/>
  * Then when moving, I use {@link Move2DHelper#setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(AdvancedRobot, Point2D)} instead of {@link Move2DHelper#setMoveToDestinationWithShortestPath(AdvancedRobot, Point2D)}.<br/>
  */
 public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl {
@@ -33,14 +33,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final MovementContext movementContext;
 
-    private static Rectangle2D safeMovementArea;
-    private static double maxPossibleMoveDistance;
-    private static double maxSafeMoveDistance;
-    private static int maxPossibleEnemiesCount;
-    private static int maxActualEnemiesCount;
-    private static double movementIncrement;
-    private static double maxForceWithoutHittingWall;
-
+    private AntiGravityCalculationContext calculationContext;
 
     public AntiGravityMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, MovementContext movementContext) {
         this.robot = robot;
@@ -54,17 +47,25 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
         double battleWidth = robot.getBattleFieldWidth();
         double battleHeight = robot.getBattleFieldHeight();
         double safePaddingMovementDistance = (RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE * 2) * 2;
-        safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance * 2, battleHeight - safePaddingMovementDistance * 2);
-        maxPossibleMoveDistance = Math.min(battleWidth, battleHeight);
-        maxPossibleEnemiesCount = 1 + (int) (maxPossibleMoveDistance / RobotPhysics.ROBOT_SIZE);
-        maxActualEnemiesCount = robot.getOthers();
+
+
+        Rectangle2D safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance * 2, battleHeight - safePaddingMovementDistance * 2);
+        double maxPossibleMoveDistance = Math.min(battleWidth, battleHeight);
+        int maxPossibleEnemiesCount = 1 + (int) (maxPossibleMoveDistance / RobotPhysics.ROBOT_SIZE);
+        int maxActualEnemiesCount = robot.getOthers();
 
         double haftMaxPossibleMoveDistance = maxPossibleMoveDistance / 2;
         double safePaddingDistance = (maxPossibleEnemiesCount / 4) * RobotPhysics.ROBOT_SIZE;
-        maxSafeMoveDistance = Math.max(haftMaxPossibleMoveDistance, maxPossibleMoveDistance - safePaddingDistance);
+        double maxSafeMoveDistance = Math.max(haftMaxPossibleMoveDistance, maxPossibleMoveDistance - safePaddingDistance);
+        double movementIncrement = 10 * (maxPossibleEnemiesCount / maxActualEnemiesCount);
 
-        movementIncrement = 10 * (maxPossibleEnemiesCount / maxActualEnemiesCount);
-        maxForceWithoutHittingWall = this.maxPossibleMoveDistance - RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED;
+        calculationContext = new AntiGravityCalculationContext();
+        calculationContext.setMaxActualEnemiesCount(maxActualEnemiesCount);
+        calculationContext.setMaxPossibleEnemiesCount(maxPossibleEnemiesCount);
+        calculationContext.setMaxPossibleMoveDistance(maxPossibleMoveDistance);
+        calculationContext.setMaxSafeMoveDistance(maxSafeMoveDistance);
+        calculationContext.setMovementIncrement(movementIncrement);
+        calculationContext.setSafeMovementArea(safeMovementArea);
 
         robot.out.println("maxPossibleMoveDistance" + maxPossibleMoveDistance);
         robot.out.println("maxPossibleEnemiesCount" + maxPossibleEnemiesCount);
@@ -78,10 +79,10 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
-        Point2D force = reckonForce(this.robot, this.allEnemiesObservationContext);
+        Point2D force = reckonForce(this.calculationContext, this.robot, this.allEnemiesObservationContext);
         Point2D destination = Point2DUtils.plus(robotPosition, force);
 
-        Optional<Point2D> avoidWallDestinationOptional = Move2DHelper.reckonMaximumDestination(robotPosition, destination, safeMovementArea);
+        Optional<Point2D> avoidWallDestinationOptional = Move2DHelper.reckonMaximumDestination(robotPosition, destination, calculationContext.getSafeMovementArea());
         Point2D finalDestination = avoidWallDestinationOptional.orElse(destination);
 
 //        Point2D finalDestination = WallSmoothUtils.wallSmoothing(
@@ -91,7 +92,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
 //                robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
 //        LogHelper.logAdvanceRobot(robot, "Destination: " + LogHelper.toString(destination) + "\t Final Destination:" + LogHelper.toString(finalDestination));
 
-        debugWhenFinalDestinationOutsideSafeArea(robot, robotPosition, destination, finalDestination, safeMovementArea);
+        debugWhenFinalDestinationOutsideSafeArea(robot, robotPosition, destination, finalDestination, calculationContext.getSafeMovementArea());
 
         AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
 
@@ -116,14 +117,14 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
      * @param allEnemiesObservationContext store all information of enemy robots.
      * @return
      */
-    private Point2D reckonForce(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
+    private static Point2D reckonForce(AntiGravityCalculationContext calculationContext, AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
 
         Collection<Point2D> staticPositions = constructStaticPositions(robot);
-        ForceResult staticForceResult = reckonForceOfStaticPositions(robotPosition, staticPositions);
+        ForceResult staticForceResult = reckonForceOfStaticPositions(calculationContext, robotPosition, staticPositions);
 
         Collection<Enemy> enemies = allEnemiesObservationContext.getEnemies();
-        ForceResult enemiesForceResult = reckonForceOfEnemies(robotPosition, enemies);
+        ForceResult enemiesForceResult = reckonForceOfEnemies(calculationContext, robotPosition, enemies);
 
         Point2D finalForce = Point2DUtils.plus(staticForceResult.getFinalForce(), enemiesForceResult.getFinalForce());
         AntiGravityPainterUtils.paintForceResults(robot, staticForceResult, enemiesForceResult, finalForce);
@@ -136,7 +137,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
      * @param enemies
      * @return absolute vector of the force.
      */
-    private ForceResult reckonForceOfEnemies(Point2D robotPosition, Collection<Enemy> enemies) {
+    private static ForceResult reckonForceOfEnemies(AntiGravityCalculationContext calculationContext, Point2D robotPosition, Collection<Enemy> enemies) {
         Point2D finalForce = new Point2D.Double();
         List<Point2D> forces = new ArrayList<>();
 
@@ -144,7 +145,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
             Point2D enemyPosition = enemy.getPosition();
             double absBearing = reckonAbsoluteBearingBetweenTwoPoints(enemyPosition, robotPosition);
             double distance = enemyPosition.distance(robotPosition);
-            double forceWeight = reckonForceWeight(distance);
+            double forceWeight = reckonForceWeight(calculationContext, distance);
             Point2D force = new Point2D.Double(-(Math.sin(absBearing) * forceWeight), -(Math.cos(absBearing) * forceWeight));
 //            robot.out.println(String.format("enemy \t name %s \t forceWeight %.2f ", enemy.getName(), forceWeight));
 //            robot.out.println(String.format("enemy \t name %s \t force %s ", enemy.getName(), force));
@@ -157,28 +158,34 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
     }
 
     private static Collection<Point2D> constructStaticPositions(Robot robot) {
+        Collection<Point2D> wallsPositions = constructWallsPositions(robot);
+        Point2D middleBattlePosition = new Point2D.Double(robot.getBattleFieldWidth() / 2, robot.getBattleFieldHeight() / 2);
+        Collection<Point2D> staticPositions = new ArrayList<>(wallsPositions);
+        staticPositions.add(middleBattlePosition);
+        return staticPositions;
+    }
+
+    private static Collection<Point2D> constructWallsPositions(Robot robot) {
         Point2D closestHorizonTopWallPosition = new Point2D.Double(robot.getX(), robot.getBattleFieldHeight());
         Point2D closestHorizonBottomWallPosition = new Point2D.Double(robot.getX(), 0);
         Point2D closestVerticalLeftWallPosition = new Point2D.Double(0, robot.getY());
         Point2D closestVerticalRightWallPosition = new Point2D.Double(robot.getBattleFieldWidth(), robot.getY());
-        Point2D middleBattlePosition = new Point2D.Double(robot.getBattleFieldWidth() / 2, robot.getBattleFieldHeight() / 2);
         Collection<Point2D> staticPositions = Arrays.asList(
                 closestHorizonBottomWallPosition
                 , closestHorizonTopWallPosition
                 , closestVerticalLeftWallPosition
                 , closestVerticalRightWallPosition
-                , middleBattlePosition
         );
         return staticPositions;
     }
 
-    private ForceResult reckonForceOfStaticPositions(Point2D robotPosition, Collection<Point2D> positions) {
+    private static ForceResult reckonForceOfStaticPositions(AntiGravityCalculationContext calculationContext, Point2D robotPosition, Collection<Point2D> positions) {
         Point2D finalForce = new Point2D.Double();
         List<Point2D> forces = new ArrayList<>();
         for (Point2D position : positions) {
             double absBearing = reckonAbsoluteBearingBetweenTwoPoints(position, robotPosition);
             double distance = position.distance(robotPosition);
-            double forceWeight = reckonForceWeight(distance);
+            double forceWeight = reckonForceWeight(calculationContext, distance);
 
             Point2D force = new Point2D.Double(-(Math.sin(absBearing) * forceWeight), -(Math.cos(absBearing) * forceWeight));
 //            robot.out.println(String.format("wall \t wall %s \t forceWeight %.2f", position, forceWeight));
@@ -195,9 +202,9 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
      * @param distance
      * @return
      */
-    private double reckonForceWeight(double distance) {
-        double result = maxSafeMoveDistance / Math.pow(distance, 2) + movementIncrement * maxSafeMoveDistance / distance;
-        result = Math.min(result, maxSafeMoveDistance);
+    private static double reckonForceWeight(AntiGravityCalculationContext calculationContext, double distance) {
+        double result = calculationContext.getMaxSafeMoveDistance() / Math.pow(distance, 2) + calculationContext.getMovementIncrement() * calculationContext.getMaxSafeMoveDistance() / distance;
+        result = Math.min(result, calculationContext.getMaxSafeMoveDistance());
         return result;
     }
 

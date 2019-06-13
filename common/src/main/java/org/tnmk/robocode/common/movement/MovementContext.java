@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import robocode.AdvancedRobot;
 
 /**
+ * The context to manage {@link MoveStrategy}.<br/>
  * This class help us to know which movement strategy is using.
  */
 public class MovementContext  {
