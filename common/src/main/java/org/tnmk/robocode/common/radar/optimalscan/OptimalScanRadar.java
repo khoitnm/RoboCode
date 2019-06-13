@@ -64,7 +64,6 @@ public class OptimalScanRadar implements InitiableRun, OnScannedRobotControl, On
         }
         adjustAdditionalScanDegreeBasedOnNumOfOutdatedEnemies(enemies);
         normRadarTurnRight += MathUtils.sign(normRadarTurnRight) * additionalScanDegree;
-        normRadarTurnRight = AngleUtils.normalizeDegree(normRadarTurnRight);
         robot.setTurnRadarRight(normRadarTurnRight);
         radarDirection = -radarDirection;
 //        printSweep(robot, normRadarTurnRight, enemies);
