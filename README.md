@@ -15,9 +15,9 @@ My two main robots are:
     - Hitting wall or Enemies: reverse direction
 
 2. <strong>TheUnfoldingRobot</strong> (implemented 2019):
-  - This is my main robot with huge improvement compare to Briareos. 
+  - My advanced robot compare to Briareos.
     I named it after reading the book "Reinventing Organizations": the robot is on the journey of unfolding itself.
-  - In general, it will behave differently when 1-on-1 and melee (battle with many bots).  
+  - In general, it will behave differently when 1-on-1 and melee (battle with many bots). It combine different strategies for Radar, Gun and Movement differently depend on the situations.
   - Radar: 
     - Melee: Optimal Scan (just scan area with enemies, don't scan redundant areas)
     - One-on-One: Lock bot radar.
@@ -51,9 +51,9 @@ StandStill -> Start Aim -> Aimed (Finsh aiming) -> Start Fire -> Fired (Finished
 - http://robowiki.net/wiki/Robocode/Running_from_Eclipse
 - http://robowiki.net/wiki/Robocode/Developers_Guide_for_building_Robocode
 
-**The correct setup of your Robot:**
+**The correct setup of your Robot in your source code project:**
 - robot package name: 
-    - You can use any name here anything
+    - You can use any name here
     - For example: `org.tnmk.robocode.robot`
 - robot class name: 
     - This is the robot name
@@ -102,7 +102,7 @@ Movement:
   - Anti-Gravity: 
     - Basic implementation: http://robowiki.net/wiki/Anti-Gravity_Tutorial
     - Detail implementation: https://www.ibm.com/developerworks/java/library/j-antigrav/index.html?ca=drs-
-  - Enemy Dodging Movement: http://robowiki.net/wiki/Enemy_Dodging_Movement
+  - Enemy Dodging Movement: http://robowiki.net/wiki/Enemy_Dodging_Movement (it seems not to be as effective as anti-gravity, but much simplier to implement)
   - Wall Smoothing: 
     - http://robowiki.net/wiki/Wall_Smoothing
     - http://robowiki.net/wiki/Wall_Smoothing/Implementations
