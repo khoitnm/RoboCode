@@ -19,7 +19,7 @@ public class AntiGravityPainterUtils {
     }
 
     public static void paintFinalDestination(AdvancedRobot robot, Point2D destination) {
-        PaintHelper.paintPoint(robot.getGraphics(), 4, Color.BLUE, destination, null);
+        PaintHelper.paintPoint(robot.getGraphics(), 12, Color.GREEN, destination, null);
     }
 
     public static void paintStaticForces(Graphics2D graphics, AdvancedRobot robot, ForceResult staticForceResult) {

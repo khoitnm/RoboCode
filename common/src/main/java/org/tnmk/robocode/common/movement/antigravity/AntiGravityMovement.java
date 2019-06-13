@@ -47,7 +47,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
     public void runInit() {
         double battleWidth = robot.getBattleFieldWidth();
         double battleHeight = robot.getBattleFieldHeight();
-        double safePaddingMovementDistance = 2 * (RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE * 2);
+        double safePaddingMovementDistance = RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE;
 
 
         Rectangle2D safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance * 2, battleHeight - safePaddingMovementDistance * 2);
@@ -98,7 +98,16 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
         if (movementContext.isNone() || movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
             AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
             movementContext.setMoveStrategy(MoveStrategy.ANTI_GRAVITY);
-            Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
+
+            if (GeoMathUtils.checkInsideRectangle(finalDestination, calculationContext.getSafeMovementArea())) {
+                Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
+            } else {
+                //This logic makes sure that the robot won't run into the wall when it's outside the safeMovementArea (close to walls).
+                //However, this kind of movement shouldn't be the long-term movement because the destination outside the safeArea mostly close to current position.
+                //Hence it will make robot move just a very short distance, and becomes an easy victim.
+                //Therefore, the safeMovement area should be small!
+                Move2DHelper.setMoveToDestinationWithShortestPath(robot, finalDestination);
+            }
         }
     }
 
