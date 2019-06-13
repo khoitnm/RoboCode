@@ -13,8 +13,8 @@ public class RunAwayHelper {
         //Don't need to go back 180 degree, turn 90 degree instead to avoid stuck back & forth forever.
         //If the newHeading is still fail (another HitRobotEvent will be triggered), the next time it will turn 90 degree again.
         //Eventually, it will find a void to get out of crash.
-        double newHeadingRadian = robot.getHeadingRadians();
         double normHitBearing = AngleUtils.normalizeDegree(hitBearing);
+        double newHeadingRadian;
         if (0 < normHitBearing) {
             newHeadingRadian = robot.getHeadingRadians() + PI / 2;
         } else {
