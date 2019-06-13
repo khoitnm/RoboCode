@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.gun.gft.oldalgorithm;
 
-import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
@@ -33,7 +33,7 @@ public class GFTAimGun implements OnScannedRobotControl {
         double enemyDistance = scannedRobotEvent.getDistance();
         double enemyVelocity = scannedRobotEvent.getVelocity();
         if (enemyVelocity != 0) {
-            lateralDirection = MathUtils.sign(enemyVelocity * Math.sin(scannedRobotEvent.getHeadingRadians() - enemyAbsoluteBearing));
+            lateralDirection = GeoMathUtils.sign(enemyVelocity * Math.sin(scannedRobotEvent.getHeadingRadians() - enemyAbsoluteBearing));
         }
 
         GFTWave wave = new GFTWave(robot);

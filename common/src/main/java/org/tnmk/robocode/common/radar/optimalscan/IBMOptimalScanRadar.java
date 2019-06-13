@@ -3,7 +3,7 @@ package org.tnmk.robocode.common.radar.optimalscan;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
@@ -73,11 +73,11 @@ public class IBMOptimalScanRadar implements InitiableRun, OnScannedRobotControl,
 
         double radarTurn = 180 * radarDirection;
         if (scannedBots == robot.getOthers()) {
-            radarTurn = maxBearing + MathUtils.sign(maxBearing) * SAFE_EXTRA_SCAN_DEGREE;
+            radarTurn = maxBearing + GeoMathUtils.sign(maxBearing) * SAFE_EXTRA_SCAN_DEGREE;
         }
 
         robot.setTurnRadarRight(radarTurn);
-        radarDirection = MathUtils.sign(radarTurn);
+        radarDirection = GeoMathUtils.sign(radarTurn);
         printSweep(robot, radarTurn, enemies);
     }
 

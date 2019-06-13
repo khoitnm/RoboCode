@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.helper;
 
-import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.model.AimAndFireResult;
 import org.tnmk.robocode.common.gun.predictor.self.model.PredictedAimAndFireResult;
 
@@ -90,8 +90,8 @@ public class GunHelper {
 	 */
 	public static AimAndFireResult reckonStepsToAimAndFire(int firePower, double gunHeading, double gunX, double gunY, double targetX, double targetY) {
 		AimAndFireResult result = new AimAndFireResult();
-		result.setTurnRightAngle(MathUtils.calculateTurnRightDirectionToTarget(gunHeading, gunX, gunY, targetX, targetY));
-		result.setDistance(MathUtils.distance(gunX, gunY, targetX, targetY));
+		result.setTurnRightAngle(GeoMathUtils.calculateTurnRightDirectionToTarget(gunHeading, gunX, gunY, targetX, targetY));
+		result.setDistance(GeoMathUtils.distance(gunX, gunY, targetX, targetY));
 		result.setAimSteps(reckonGunTurningSteps(result.getTurnRightAngle()));
 		result.setFireSteps(reckonBulletSteps(result.getDistance(), firePower));
 		return result;

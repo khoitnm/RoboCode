@@ -2,8 +2,8 @@ package org.tnmk.robocode.common.gun.predictor.self;
 
 import java.awt.Color;
 
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.helper.GunHelper;
-import org.tnmk.common.math.MathUtils;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.gun.predictor.self.model.FirePredictRequest;
 import org.tnmk.robocode.common.gun.predictor.self.model.PredictStateResult;
@@ -38,9 +38,9 @@ public class FacingPredictStrategy extends BasePredictStrategy {
 	}
 
 	private PredictedFirePoint predictPossibleFirePointsWithSmallDifferentAngle(int maxPower, BaseRobotState targetState, PredictStateResult predictedAimedSource, PredictStateResult predictedAimedTarget) {
-		double sourceAndTargetDistance = MathUtils.distance(predictedAimedSource.getPosition(), predictedAimedTarget.getPosition());
+		double sourceAndTargetDistance = GeoMathUtils.distance(predictedAimedSource.getPosition(), predictedAimedTarget.getPosition());
 		double targetMoveAngle = predictedAimedTarget.getMoveAngle();
-		double aimAngle = MathUtils.absoluteBearing(predictedAimedSource.getX(), predictedAimedSource.getY(), predictedAimedTarget.getX(), predictedAimedTarget.getY());
+		double aimAngle = GeoMathUtils.absoluteBearing(predictedAimedSource.getX(), predictedAimedSource.getY(), predictedAimedTarget.getX(), predictedAimedTarget.getY());
 		double differentAngle = Math.abs(aimAngle - targetMoveAngle) % 180;// It's not important which A - B or B - A, negative or positive is not important.
 		double absCosDifferentAngle = Math.abs(Math.cos(Math.toRadians(differentAngle)));
 		if (absCosDifferentAngle < MIN_DIFFERENT_MOVE_AND_AIM_COS) {
@@ -75,7 +75,7 @@ public class FacingPredictStrategy extends BasePredictStrategy {
 		double correctDistance;
 		int correctFireSteps;
 		if (isInsideBattleField(predictedFiredTarget.getPosition())) {
-			correctDistance = MathUtils.distance(predictedAimedSource.getPosition(), predictedFiredTarget.getPosition());
+			correctDistance = GeoMathUtils.distance(predictedAimedSource.getPosition(), predictedFiredTarget.getPosition());
 			correctFireSteps = (int) Math.ceil(correctDistance / bulletSpeed);
 		} else {
 			predictedFiredTarget = predictedAimedTarget;

@@ -3,6 +3,7 @@ package org.tnmk.robocode.common.movement.antigravity;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.math.Point2DUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.helper.Move2DHelper;
@@ -88,7 +89,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
 //        Point2D finalDestination = WallSmoothUtils.wallSmoothing(
 //                robotPosition,
 //                destination,
-//                MathUtils.sign(robot.getHeading()), 200,
+//                GeoMathUtils.sign(robot.getHeading()), 200,
 //                robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
 //        LogHelper.logAdvanceRobot(robot, "Destination: " + LogHelper.toString(destination) + "\t Final Destination:" + LogHelper.toString(finalDestination));
 
@@ -102,7 +103,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
     }
 
     private void debugWhenFinalDestinationOutsideSafeArea(AdvancedRobot robot, Point2D robotPosition, Point2D destination, Point2D finalDestination, Rectangle2D safeMovementArea) {
-        if (!Move2DHelper.checkInsideRectangle(finalDestination, safeMovementArea)) {
+        if (!GeoMathUtils.checkInsideRectangle(finalDestination, safeMovementArea)) {
             String message = String.format("Destination outside safeMovement: " +
                             "\t current %s" +
                             "\t destination %s" +

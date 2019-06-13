@@ -2,8 +2,8 @@ package org.tnmk.robocode.common.gun.predictor.self;
 
 import java.awt.Color;
 
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.helper.GunHelper;
-import org.tnmk.common.math.MathUtils;
 import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.gun.predictor.self.model.FirePredictRequest;
 import org.tnmk.robocode.common.gun.predictor.self.model.PredictedAimAndFireResult;
@@ -30,7 +30,7 @@ public class VeryClosePredictStrategy extends BasePredictStrategy {
 
 		if (aimSteps <= VERY_CLOSE_STEPS) {
 			Point aimedTargetPosition = aimEstimateResult.getAimedTarget().getPosition();
-			double distnaceAimedRobots = MathUtils.distance(aimEstimateResult.getAimedSource().getPosition(), aimedTargetPosition);
+			double distnaceAimedRobots = GeoMathUtils.distance(aimEstimateResult.getAimedSource().getPosition(), aimedTargetPosition);
 
 			int maxFirePower = (int) Rules.MAX_BULLET_POWER;
 			for (int firePower = maxFirePower; firePower >= 0; firePower--) {

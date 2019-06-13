@@ -29,7 +29,7 @@ public class LineSegment implements Serializable {
 	 * @return angle compare to Y-Axis, in degree, always positive
 	 */
 	public double reckonAngle() {
-		return MathUtils.reckonAngle(pointA, pointB);
+		return GeoMathUtils.reckonAngle(pointA, pointB);
 	}
 
 	public Point getPointA() {

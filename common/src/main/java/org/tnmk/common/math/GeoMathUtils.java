@@ -1,13 +1,14 @@
 package org.tnmk.common.math;
 
+import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.List;
 import math.geom2d.Point2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 
-public final class MathUtils {
-    private MathUtils() {
+public final class GeoMathUtils {
+    private GeoMathUtils() {
     }
 
     /**
@@ -77,7 +78,7 @@ public final class MathUtils {
     }
 
     public static double calculateTurnRightDirectionToTarget(double currentAbsMoveAngle, double currentX, double currentY, double targetX, double targetY) {
-        double absBearingToTarget = MathUtils.absoluteBearing(currentX, currentY, targetX, targetY);
+        double absBearingToTarget = GeoMathUtils.absoluteBearing(currentX, currentY, targetX, targetY);
         double relativeBearing = absBearingToTarget - currentAbsMoveAngle;
         return AngleUtils.normalizeDegree(relativeBearing);
     }
@@ -126,5 +127,11 @@ public final class MathUtils {
 
     public static boolean close(Point pointA, Point pointB) {
         return Math.abs(pointA.getX() - pointB.getX()) < POINT_CLOSE_DISTANCE && Math.abs(pointA.getY() - pointB.getY()) < POINT_CLOSE_DISTANCE;
+    }
+
+    public static boolean checkInsideRectangle(java.awt.geom.Point2D point2D, Rectangle2D rectangle2D) {
+        boolean insideX = point2D.getX() >= rectangle2D.getMinX() && point2D.getX() <= rectangle2D.getMaxX();
+        boolean insideY = point2D.getY() >= rectangle2D.getMinY() && point2D.getY() <= rectangle2D.getMaxY();
+        return insideX && insideY;
     }
 }

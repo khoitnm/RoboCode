@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.common.collection.ListUtils;
 import org.tnmk.common.math.Circle;
 import org.tnmk.common.math.LineSegment;
-import org.tnmk.common.math.MathUtils;
 import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.gun.predictor.self.model.FindingBestFirePointResult;
 import org.tnmk.robocode.common.gun.predictor.self.model.FirePredictRequest;
@@ -49,12 +49,12 @@ public class LinearPredictStrategy extends BasePredictStrategy {
 
 	private List<PredictedFirePoint> predictAvailabelFireTargetPoints(PredictStateResult predictedAimedSource, PredictStateResult predictedAimedTarget) {
 		List<PredictedFirePoint> results = new ArrayList<>();
-		double aimedDistance = MathUtils.distance(predictedAimedSource.getPosition(), predictedAimedTarget.getPosition());
+		double aimedDistance = GeoMathUtils.distance(predictedAimedSource.getPosition(), predictedAimedTarget.getPosition());
 
 		if (predictedAimedTarget.isStandStill()) {
 			PredictedFirePoint result = new PredictedFirePoint();
 			result.set(predictedAimedTarget.getPosition().x, predictedAimedTarget.getPosition().y);
-			double fireDistance = MathUtils.distance(predictedAimedSource.getPosition(), result);
+			double fireDistance = GeoMathUtils.distance(predictedAimedSource.getPosition(), result);
 			double firePower = GunHelper.findFirePowerByDistance(fireDistance);
 			int fireSteps = (int) Math.ceil(aimedDistance / Rules.getBulletSpeed(firePower));
 			result.setFireSteps(fireSteps);
@@ -89,7 +89,7 @@ public class LinearPredictStrategy extends BasePredictStrategy {
 			double bulletMoveDistance = isteps * bulletSpeed;
 			Circle bulletMoveCircle = new Circle(predictedAimedSource.getPosition(), bulletMoveDistance);
 			Circle targetMoveCircle = new Circle(predictedAimedTarget.getPosition(), targetMoveDistance);
-			List<Point> possibleHitPoints = MathUtils.intersectCircles(bulletMoveCircle, targetMoveCircle);
+			List<Point> possibleHitPoints = GeoMathUtils.intersectCircles(bulletMoveCircle, targetMoveCircle);
 			for (Point ipossibleHitPoint : possibleHitPoints) {
 				PredictedFirePoint predictedFiredPoint = new PredictedFirePoint();
 				predictedFiredPoint.set(ipossibleHitPoint.x, ipossibleHitPoint.y);
@@ -124,7 +124,7 @@ public class LinearPredictStrategy extends BasePredictStrategy {
 		double nearestDistance = Double.MAX_VALUE;
 		PredictedFirePoint nearestPoint = null;
 		for (PredictedFirePoint predictedFiredPoint : possibleBulletHitTargetPoints) {
-			double distance = MathUtils.distance(predictedFiredPoint, predictedAimedTarget.getPosition());
+			double distance = GeoMathUtils.distance(predictedFiredPoint, predictedAimedTarget.getPosition());
 			if (distance < nearestDistance) {
 				nearestDistance = distance;
 				nearestPoint = predictedFiredPoint;
@@ -149,7 +149,7 @@ public class LinearPredictStrategy extends BasePredictStrategy {
 		for (PredictedFirePoint predictedFiredPoint : availableFireTargetPoints) {
 			LineSegment targetMoveToHitFiredLine = new LineSegment(predictedAimedTarget.getPosition(), predictedFiredPoint);
 			double targetMoveToHitFiredAngle = targetMoveToHitFiredLine.reckonAngle();
-			if (Math.abs(targetCurrentMoveAngle - targetMoveToHitFiredAngle) > MAX_DIFFERENT_TARGET_MOVE_ANGLE && !MathUtils.close(predictedFiredPoint, predictedAimedTarget.getPosition())) {
+			if (Math.abs(targetCurrentMoveAngle - targetMoveToHitFiredAngle) > MAX_DIFFERENT_TARGET_MOVE_ANGLE && !GeoMathUtils.close(predictedFiredPoint, predictedAimedTarget.getPosition())) {
 				impossibleAnglePoints.add(predictedFiredPoint);
 				allImpossiblePoints.add(predictedFiredPoint);
 				continue;
@@ -159,7 +159,7 @@ public class LinearPredictStrategy extends BasePredictStrategy {
 				outsideBattlePoints.add(predictedFiredPoint);
 				allImpossiblePoints.add(predictedFiredPoint);
 				// Only for debuging
-				double testDistance = MathUtils.distance(targetCurrentMoveLine, predictedFiredPoint);
+				double testDistance = GeoMathUtils.distance(targetCurrentMoveLine, predictedFiredPoint);
 				if (testDistance < 15 && isInsideBattleField(predictedFiredPoint)) {
 					System.out.println("Debug somethign wrong");
 				}
@@ -167,7 +167,7 @@ public class LinearPredictStrategy extends BasePredictStrategy {
 
 				continue;
 			} else {
-				predictedFiredPoint.setDistanceToTargetMove(MathUtils.distance(targetCurrentMoveLine, predictedFiredPoint));
+				predictedFiredPoint.setDistanceToTargetMove(GeoMathUtils.distance(targetCurrentMoveLine, predictedFiredPoint));
 				if (predictedFiredPoint.getDistanceToTargetMove() > MAX_DISTANCE_TO_TARGET_MOVE) {
 					tooFarPoints.add(predictedFiredPoint);
 					allImpossiblePoints.add(predictedFiredPoint);
@@ -201,10 +201,10 @@ public class LinearPredictStrategy extends BasePredictStrategy {
 			@Override
 			public int compare(PredictedFirePoint pA, PredictedFirePoint pB) {
 				if (pA.getDistanceToTargetMove() == null) {
-					pA.setDistanceToTargetMove(MathUtils.distance(targetCurrentMoveLine, pA));
+					pA.setDistanceToTargetMove(GeoMathUtils.distance(targetCurrentMoveLine, pA));
 				}
 				if (pB.getDistanceToTargetMove() == null) {
-					pB.setDistanceToTargetMove(MathUtils.distance(targetCurrentMoveLine, pB));
+					pB.setDistanceToTargetMove(GeoMathUtils.distance(targetCurrentMoveLine, pB));
 				}
 				if (pA.getDistanceToTargetMove() > pB.getDistanceToTargetMove()) {
 					return 1;

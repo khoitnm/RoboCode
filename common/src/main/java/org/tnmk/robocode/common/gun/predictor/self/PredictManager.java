@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.tnmk.robocode.common.helper.MoveHelper;
-import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.model.FullRobotState;
@@ -37,7 +37,7 @@ public class PredictManager  implements Serializable{
 		// Robot will aim while waiting for the gun cool down. So the steps to
 		// aim is equals to the steps to cool gun down.
 		int gunCoolTime = (int) Math.ceil(sourceGunHeat / gunCoolRate) + 1;
-		double estimatedGunTurnRightAngle = MathUtils.calculateTurnRightDirectionToTarget(sourceGunHeading, sourceState.getPosition(), targetState.getPosition());
+		double estimatedGunTurnRightAngle = GeoMathUtils.calculateTurnRightDirectionToTarget(sourceGunHeading, sourceState.getPosition(), targetState.getPosition());
 		int estimatedAimSteps = (int)Math.ceil(Math.abs(estimatedGunTurnRightAngle)/Rules.GUN_TURN_RATE)+1;
 		// if the steps to cool gun down is too short, robot won't have enough steps to aim, so we must calculate aimSteps base on the estimated gunTurnAngle.
 		int aimSteps = Math.max(gunCoolTime, estimatedAimSteps);

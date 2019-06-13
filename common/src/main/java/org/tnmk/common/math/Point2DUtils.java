@@ -14,7 +14,7 @@ public class Point2DUtils {
     /**
      * @param pA
      * @param pB
-     * @return the same as {@link MathUtils#reckonAngle(Point, Point)} and {@link #reckonPositiveAngle(Point2D, Point2D)}. But the value is from -180 to 180
+     * @return the same as {@link GeoMathUtils#reckonAngle(Point, Point)} and {@link #reckonPositiveAngle(Point2D, Point2D)}. But the value is from -180 to 180
      */
     public static double reckonNormalizeAngle(Point2D pA, Point2D pB) {
         double angle = Math.toDegrees(Math.atan2(pB.getX() - pA.getX(), pB.getY() - pA.getY()));

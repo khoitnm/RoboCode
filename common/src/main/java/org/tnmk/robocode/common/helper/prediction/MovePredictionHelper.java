@@ -2,7 +2,7 @@ package org.tnmk.robocode.common.helper.prediction;
 
 import java.awt.geom.Point2D;
 import org.tnmk.common.math.AngleUtils;
-import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import robocode.Rules;
@@ -49,7 +49,7 @@ public class MovePredictionHelper {
             double normTurnRateRadian;
             if (nextTurnRemainingRadian > 0) {
                 double turnRateRadian = Rules.getTurnRateRadians(velocity);
-                normTurnRateRadian = MathUtils.sign(nextTurnRemainingRadian) * turnRateRadian;
+                normTurnRateRadian = GeoMathUtils.sign(nextTurnRemainingRadian) * turnRateRadian;
             }else{
                 normTurnRateRadian = 0;
             }

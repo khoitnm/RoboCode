@@ -5,7 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import java.util.Optional;
 import org.tnmk.common.math.AngleUtils;
-import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
 import robocode.AdvancedRobot;
 import robocode.HitRobotEvent;
@@ -79,7 +79,7 @@ public class Move2DHelper implements Serializable {
      */
     public static void setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(AdvancedRobot robot, Point2D destination) {
         Point2D currentPosition = new Point2D.Double(robot.getX(), robot.getY());
-        double moveAngle = MathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), currentPosition.getX(), currentPosition.getY(), destination.getX(), destination.getY());
+        double moveAngle = GeoMathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), currentPosition.getX(), currentPosition.getY(), destination.getX(), destination.getY());
         robot.setTurnRight(moveAngle);
         robot.setAhead(Double.POSITIVE_INFINITY);//if you want it to stop at the destination, use setAhead(distance to destination + some additional distance for turning direction)
     }
@@ -124,12 +124,17 @@ public class Move2DHelper implements Serializable {
     }
 
     /**
+     * If pointB is outside limitArea, calculate another point inside limitArea which also on the same line.
      * @param pointA    should be inside limitArea
      * @param pointB    could be outside limitArea
      * @param limitArea
-     * @return if pointB is inside the limitArea, return empty.
+     * @return if pointB is inside the limitArea, return pointB.
      */
     public static Optional<Point2D> reckonMaximumDestination(Point2D pointA, Point2D pointB, Rectangle2D limitArea) {
+        if (!GeoMathUtils.checkInsideRectangle(pointA, limitArea)){
+            return Optional.of(pointB);
+        }
+
         Point2D newPointB = pointB;
         if (pointB.getY() >= limitArea.getMaxY()) {
             double yC = limitArea.getMaxY();
@@ -155,15 +160,9 @@ public class Move2DHelper implements Serializable {
         return Optional.ofNullable(newPointB);
     }
 
-    public static boolean checkInsideRectangle(Point2D point2D, Rectangle2D rectangle2D) {
-        boolean insideX = point2D.getX() >= rectangle2D.getMinX() && point2D.getX() <= rectangle2D.getMaxX();
-        boolean insideY = point2D.getY() >= rectangle2D.getMinY() && point2D.getY() <= rectangle2D.getMaxY();
-        return insideX && insideY;
-    }
-
     /**
      * @param robotPosition
-     * @param newHeadingRadian
+     * @param newHeadingRadian this is the radian in-game angle (not the geometry angle)
      * @param normDistance     could be positive or negative
      * @return
      */

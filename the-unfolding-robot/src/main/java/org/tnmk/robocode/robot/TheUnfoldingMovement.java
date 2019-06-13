@@ -2,7 +2,7 @@ package org.tnmk.robocode.robot;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
-import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
@@ -90,7 +90,7 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
         // This ensures that the direction is handled correctly when we want to reverse direction after it hand slowed down and stopped.
         // If we set the direction based on distanceRemaining when it's 0, then direction is always 1 which may not correct.
         if (statusEvent.getStatus().getDistanceRemaining() != 0) {
-            int direction = MathUtils.sign(statusEvent.getStatus().getDistanceRemaining());
+            int direction = GeoMathUtils.sign(statusEvent.getStatus().getDistanceRemaining());
             if (direction != movementContext.getDirection()) {
                 LogHelper.logAdvanceRobot(robot, "Direction: " + direction);
                 movementContext.setDirection(direction);

@@ -3,8 +3,8 @@ package org.tnmk.robocode.common.gun.predictor.self;
 import java.awt.Color;
 import java.util.List;
 
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.helper.MoveHelper;
-import org.tnmk.common.math.MathUtils;
 import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.gun.predictor.self.model.FindingBestFirePointResult;
@@ -53,7 +53,7 @@ public abstract class BasePredictStrategy implements PredictStrategy {
 		PredictedFirePoint bestPoint = result.getFireResult().getFindingBestPointResult().getBestPoint();
 		if (bestPoint != null) {
 			//TODO should we calculate with gunHeading from begin time or from aimed time???
-			double gunTurnRightDirection = MathUtils.calculateTurnRightDirectionToTarget(firePredictRequest.getBeginSourceGunHeading(), aimResult.getSource().getX(), aimResult.getSource().getY(), bestPoint.x, bestPoint.y);
+			double gunTurnRightDirection = GeoMathUtils.calculateTurnRightDirectionToTarget(firePredictRequest.getBeginSourceGunHeading(), aimResult.getSource().getX(), aimResult.getSource().getY(), bestPoint.x, bestPoint.y);
 			aimResult.setGunTurnRightDirection(gunTurnRightDirection);
 			aimResult.setFiredTarget(bestPoint);
 
