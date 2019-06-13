@@ -16,6 +16,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     private TheUnfoldingRadar theUnfoldingRadar = new TheUnfoldingRadar(this, allEnemiesObservationContext);
     private TheUnfoldingGun theUnfoldingGun = new TheUnfoldingGun(this, allEnemiesObservationContext);
 
+    @Override
     public void run() {
         HiTechDecorator.decorate(this);
 
@@ -36,6 +37,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
         }
     }
 
+    @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         theUnfoldingRadar.onScannedRobot(scannedRobotEvent);
         theUnfoldingMovement.onScannedRobot(scannedRobotEvent);
@@ -45,6 +47,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
 //        execute();
     }
 
+    @Override
     public void onRobotDeath(RobotDeathEvent robotDeathEvent) {
         theUnfoldingRadar.onRobotDeath(robotDeathEvent);
         //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
@@ -64,5 +67,14 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     @Override
     public void onHitRobot(HitRobotEvent hitRobotEvent){
         theUnfoldingMovement.onHitRobot(hitRobotEvent);
+    }
+
+    @Override
+    public void onStatus(StatusEvent statusEvent){
+        theUnfoldingMovement.onStatus(statusEvent);
+    }
+    @Override
+    public void onHitWall(HitWallEvent hitWallEvent){
+        theUnfoldingMovement.onHitWall(hitWallEvent);
     }
 }

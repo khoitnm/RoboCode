@@ -24,6 +24,7 @@ public class OscillatorMovement {
      */
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent, int enemyDistance) {
         if (movementContext.isNone() || movementContext.is(MoveStrategy.OSCILLATOR)) {
+            movementContext.setMoveStrategy(MoveStrategy.OSCILLATOR);
             OscillatorHelper.setMovement(movementContext, scannedRobotEvent, Double.POSITIVE_INFINITY, enemyDistance);
         }
     }

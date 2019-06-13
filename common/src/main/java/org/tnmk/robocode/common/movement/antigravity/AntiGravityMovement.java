@@ -97,6 +97,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
         AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
 
         if (movementContext.isNone() || movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
+            movementContext.setMoveStrategy(MoveStrategy.ANTI_GRAVITY);
             Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
         }
     }
