@@ -46,7 +46,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
     public void runInit() {
         double battleWidth = robot.getBattleFieldWidth();
         double battleHeight = robot.getBattleFieldHeight();
-        double safePaddingMovementDistance = (RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE * 2) * 2;
+        double safePaddingMovementDistance = RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE * 2;
 
 
         Rectangle2D safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance * 2, battleHeight - safePaddingMovementDistance * 2);
