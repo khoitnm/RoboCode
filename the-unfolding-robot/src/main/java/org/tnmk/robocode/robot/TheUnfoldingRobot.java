@@ -1,5 +1,6 @@
 package org.tnmk.robocode.robot;
 
+import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.*;

@@ -58,8 +58,8 @@ public class PaintHelper {
         graphic.drawString(string, x, (line + 1) * TEXT_LINE_HEIGHT);
     }
 
-    public static void paintAngleRadian(Graphics2D graphics, Point2D startingPosition, double normAngleRadian, double distance, int lineWeight, Color color) {
-        Point2D destination = Move2DHelper.reckonDestination(startingPosition, normAngleRadian, distance);
+    public static void paintAngleRadian(Graphics2D graphics, Point2D startingPosition, double normAngleRadian, double normDistance, int lineWeight, Color color) {
+        Point2D destination = Move2DHelper.reckonDestination(startingPosition, normAngleRadian, normDistance);
         PaintHelper.paintLine(graphics, startingPosition, destination, lineWeight, color);
 
     }

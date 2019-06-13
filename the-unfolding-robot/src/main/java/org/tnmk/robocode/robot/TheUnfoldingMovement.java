@@ -1,11 +1,14 @@
 package org.tnmk.robocode.robot;
 
+import java.awt.Color;
+import java.awt.geom.Point2D;
 import org.tnmk.common.math.MathUtils;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorMovement;
 import org.tnmk.robocode.common.movement.runaway.RunAwayMovement;
+import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.*;
 import robocode.*;
@@ -76,6 +79,13 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
 
     @Override
     public void onStatus(StatusEvent statusEvent) {
+        RobotStatus status = statusEvent.getStatus();
+        Point2D robotPosition = new Point2D.Double(status.getX(), status.getY());
+        double normAhead = movementContext.getDirection() * 200;
+        double positiveAhead = 300;
+        PaintHelper.paintAngleRadian(robot.getGraphics(), robotPosition, status.getHeadingRadians(), positiveAhead, 1, Color.cyan);
+        PaintHelper.paintAngleRadian(robot.getGraphics(), robotPosition, status.getHeadingRadians(), normAhead, 2, Color.magenta);
+
         // If robot is slowing down and then stop, keep the same direction.
         // This ensures that the direction is handled correctly when we want to reverse direction after it hand slowed down and stopped.
         // If we set the direction based on distanceRemaining when it's 0, then direction is always 1 which may not correct.

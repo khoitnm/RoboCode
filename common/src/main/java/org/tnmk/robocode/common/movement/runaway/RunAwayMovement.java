@@ -31,7 +31,7 @@ public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWal
 
         if (!movementContext.is(MoveStrategy.RUN_AWAY_FROM_ENEMIES)) {
             movementContext.setMoveStrategy(MoveStrategy.RUN_AWAY_FROM_ENEMIES);
-            RunAwayHelper.changeMovementWhenHit(robot, movementContext.getDirection(), hitRobotEvent.getBearing());
+            RunAwayHelper.changeMovementWhenHit(robot, movementContext.getDirection(), hitRobotEvent.getBearingRadians());
         }
     }
 
@@ -50,7 +50,7 @@ public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWal
     public void onHitWall(HitWallEvent hitWallEvent) {
         if (!movementContext.is(MoveStrategy.RUN_AWAY_FROM_WALL)) {
             movementContext.setMoveStrategy(MoveStrategy.RUN_AWAY_FROM_WALL);
-            RunAwayHelper.changeMovementWhenHit(robot, movementContext.getDirection(), hitWallEvent.getBearing());
+            RunAwayHelper.changeMovementWhenHit(robot, movementContext.getDirection(), hitWallEvent.getBearingRadians());
         }
     }
 }
