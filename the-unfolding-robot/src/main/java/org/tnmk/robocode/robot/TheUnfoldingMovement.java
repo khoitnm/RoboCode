@@ -8,17 +8,19 @@ import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorMovement;
 import org.tnmk.robocode.common.movement.runaway.RunAwayMovement;
+import org.tnmk.robocode.common.movement.wallsmooth.WallSmoothMovement;
 import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.*;
 import robocode.*;
 
-public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScannedRobotControl, OnHitRobotControl, OnStatusControl {
+public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScannedRobotControl, OnHitRobotControl, OnStatusControl, OnCustomEventControl {
     public static final double IDEAL_ENEMY_OSCILLATOR_DISTANCE = 150;
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final MovementContext movementContext;
 
+    private final WallSmoothMovement wallSmoothMovement;
     private final RunAwayMovement runAwayMovement;
     private final OscillatorMovement oscillatorMovement;
     private final AntiGravityMovement antiGravityMovement;
@@ -31,11 +33,13 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
         oscillatorMovement = new OscillatorMovement(robot, movementContext);
         antiGravityMovement = new AntiGravityMovement(robot, allEnemiesObservationContext, movementContext);
         runAwayMovement = new RunAwayMovement(robot, movementContext);
+        wallSmoothMovement = new WallSmoothMovement(robot, movementContext);
     }
 
     @Override
     public void runInit() {
         antiGravityMovement.runInit();
+        wallSmoothMovement.runInit();
     }
 
     @Override
@@ -102,5 +106,10 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
 
     public void onHitWall(HitWallEvent hitWallEvent) {
         runAwayMovement.onHitWall(hitWallEvent);
+    }
+
+    @Override
+    public void onCustomEvent(CustomEvent customEvent) {
+        wallSmoothMovement.onCustomEvent(customEvent);
     }
 }

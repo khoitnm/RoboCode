@@ -8,7 +8,9 @@ import java.awt.geom.Rectangle2D;
  * http://robowiki.net/wiki/Wall_Smoothing/Implementations
  * Fast Exact Wall Smoothing (by Cb)<br/>
  * This simple algorithm is based on the Pythagorean theorem. It usually requires less than two iterations, and it returns a exact wall-smoothed destination point.<br/>
+ * @deprecated Still not able to find a good way to apply it! The current project is still using the old {@link org.tnmk.robocode.common.helper.WallSmoothHelper} (with old verbose data structure), but it works.
  */
+@Deprecated
 public class WallSmoothUtils {
     /**
      * Fast Exact Wall Smoothing.

@@ -1,6 +1,5 @@
 package org.tnmk.robocode.robot;
 
-import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.*;
@@ -60,6 +59,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     public void onCustomEvent(CustomEvent customEvent) {
         theUnfoldingRadar.onCustomEvent(customEvent);
         theUnfoldingGun.onCustomEvent(customEvent);
+        theUnfoldingMovement.onCustomEvent(customEvent);
         //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
         //All of event should trigger robot.setXxx() methods only, they will be triggered in loopRun()
 //        execute();

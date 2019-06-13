@@ -13,6 +13,8 @@ import robocode.HitWallEvent;
 
 /**
  * Run away from wall & enemies.
+ * Note: with {@link org.tnmk.robocode.common.movement.wallsmooth.WallSmoothMovement}, only time we can hit a wall is executing {@link MoveStrategy#RUN_AWAY_FROM_ENEMIES}.
+ * Anyway, we still need both {@link MoveStrategy#RUN_AWAY_FROM_ENEMIES} and {@link MoveStrategy#RUN_AWAY_FROM_WALL}
  */
 public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWallControl {
     private final AdvancedRobot robot;

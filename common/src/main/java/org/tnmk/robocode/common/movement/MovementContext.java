@@ -87,4 +87,15 @@ public class MovementContext {
         return robot;
     }
 
+    public boolean isAmong(MoveStrategy... moveStrategies) {
+        for (MoveStrategy strategy : moveStrategies) {
+            if (strategy == this.moveStrategy){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean isNotAmong(MoveStrategy... moveStrategies) {
+        return !isAmong(moveStrategies);
+    }
 }
