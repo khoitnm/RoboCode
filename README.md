@@ -110,3 +110,10 @@ Then, when starting game, click to the name of the robot, it will shows logs for
 ## Debug by Painting
 In the code, use `robot.getGraphics().drawXxx()` methods.
 When viewing log of a specific robot, you can see it's painting log by click to button "Paint"
+
+# Some notes when calculate angles in RoboCode.
+Usually, the bearing and heading values you receive from the game is not the same of the actual values in Geometry maths.
+Hence when calculating sin/cos..., the result will be wrong.
+That's why before applying sin/cos..., you should convert them to geometry angles.
+
+Use `toGeometryRadian(double inGameRadian)` and `toGeometryDegree(double inGameDegree)` before calculate geometry formulas such as `Math.sin(radian)`, `Math.cos(radian)`

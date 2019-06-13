@@ -11,7 +11,7 @@ public class AntiGravityPainterUtils {
     //    private static final double FORCE_LENGTH = 30000000d;//This value suitable for battle field 1000x1000
     private static final double FORCE_LENGTH = 1d;//This value suitable for battle field 1000x1000
 
-    public static void paintForceResults(AdvancedRobot robot, ForceResult staticForceResult, ForceResult enemiesForceResult, Point2D finalForce) {
+    private static void paintForceResults(AdvancedRobot robot, ForceResult staticForceResult, ForceResult enemiesForceResult, Point2D finalForce) {
         Graphics2D graphics = robot.getGraphics();
         AntiGravityPainterUtils.paintStaticForces(graphics, robot, staticForceResult);
         AntiGravityPainterUtils.paintEnemiesForce(graphics, robot, enemiesForceResult);
@@ -19,7 +19,7 @@ public class AntiGravityPainterUtils {
     }
 
     public static void paintFinalDestination(AdvancedRobot robot, Point2D destination) {
-        PaintHelper.paintPoint(robot.getGraphics(), 4, Color.BLUE, destination, null);
+        PaintHelper.paintPoint(robot.getGraphics(), 12, Color.GREEN, destination, null);
     }
 
     public static void paintStaticForces(Graphics2D graphics, AdvancedRobot robot, ForceResult staticForceResult) {

@@ -1,7 +1,7 @@
 package org.tnmk.robocode.common.helper;
 
 import org.tnmk.common.math.AngleUtils;
-import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.model.Area;
 import org.tnmk.robocode.common.model.BaseRobotState;
@@ -70,7 +70,7 @@ public class WallSmoothHelper {
 	 */
 	public static double maxMoveNextToTopWall(double currentMoveAngle, double speed, int turnRight) {
 		double turnRate = Rules.getTurnRate(speed);
-		double moveRadius = MathUtils.reckonMovementRadius(speed, turnRate);
+		double moveRadius = GeoMathUtils.reckonMovementRadius(speed, turnRate);
 		double moveRadiusAngle = (currentMoveAngle - (turnRight * 90) + 360) % 360; // plus 360 to ensure that this value is positive
 		double cos =  Math.cos(Math.toRadians(moveRadiusAngle));
 		return moveRadius * (1 - cos);

@@ -65,7 +65,14 @@ public class MovementContext {
 
 
     public void setDirection(int direction) {
-        this.direction = direction;
+        if (direction == 0) {
+            throw new IllegalArgumentException("Direction cannot be 0");
+        }
+        if (Math.abs(direction) != 1) {
+            this.direction = direction / (Math.abs(direction));
+        } else {
+            this.direction = direction;
+        }
     }
 
     public MoveStrategy getMoveStrategy() {
@@ -80,4 +87,15 @@ public class MovementContext {
         return robot;
     }
 
+    public boolean isAmong(MoveStrategy... moveStrategies) {
+        for (MoveStrategy strategy : moveStrategies) {
+            if (strategy == this.moveStrategy){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean isNotAmong(MoveStrategy... moveStrategies) {
+        return !isAmong(moveStrategies);
+    }
 }

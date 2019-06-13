@@ -59,6 +59,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     public void onCustomEvent(CustomEvent customEvent) {
         theUnfoldingRadar.onCustomEvent(customEvent);
         theUnfoldingGun.onCustomEvent(customEvent);
+        theUnfoldingMovement.onCustomEvent(customEvent);
         //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
         //All of event should trigger robot.setXxx() methods only, they will be triggered in loopRun()
 //        execute();

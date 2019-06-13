@@ -51,5 +51,15 @@ public class RobotStateConverter {
 		rs.setY(robot.getY());
 		return rs;
 	}
+
+	public static BaseRobotState toRobotState(AdvancedRobot robot){
+		BaseRobotState rs = new BaseRobotState();
+		rs.setName(robot.getName());
+		rs.setHeading(robot.getHeading());
+		rs.setVelocity(robot.getVelocity());
+		rs.setX(robot.getX());
+		rs.setY(robot.getY());
+		return rs;
+	}
 	
 }

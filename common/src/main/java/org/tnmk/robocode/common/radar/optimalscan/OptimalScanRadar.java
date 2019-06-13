@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javafx.util.Pair;
 import org.tnmk.common.math.AngleUtils;
-import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.math.Point2DUtils;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
@@ -63,8 +63,7 @@ public class OptimalScanRadar implements InitiableRun, OnScannedRobotControl, On
             normRadarTurnRight = reckonSweepAngleWhenFoundSomeEnemies(robot, enemies);
         }
         adjustAdditionalScanDegreeBasedOnNumOfOutdatedEnemies(enemies);
-        normRadarTurnRight += MathUtils.sign(normRadarTurnRight) * additionalScanDegree;
-        normRadarTurnRight = AngleUtils.normalizeDegree(normRadarTurnRight);
+        normRadarTurnRight += GeoMathUtils.sign(normRadarTurnRight) * additionalScanDegree;
         robot.setTurnRadarRight(normRadarTurnRight);
         radarDirection = -radarDirection;
 //        printSweep(robot, normRadarTurnRight, enemies);

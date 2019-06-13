@@ -3,11 +3,11 @@ package org.tnmk.robocode.robot;
 import java.awt.Color;
 import java.util.List;
 
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.constant.FireStatus;
 import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.robocode.common.helper.MoveHelper;
 import org.tnmk.robocode.common.helper.RobotStateConverter;
-import org.tnmk.common.math.MathUtils;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.FullRobotState;
 import org.tnmk.robocode.common.model.PredictedTarget;
@@ -237,7 +237,7 @@ public class Briareos extends ModernRobot {
         double nearestDistance = Double.MAX_VALUE;
         List<PredictedTarget> targets = this.aliveTargets.list();
         for (PredictedTarget itarget : targets) {
-            double idistance = MathUtils.distance(getState().getPosition(), itarget.getState().getPosition());
+            double idistance = GeoMathUtils.distance(getState().getPosition(), itarget.getState().getPosition());
             if (nearestTarget == null || nearestDistance > idistance) {
                 nearestTarget = itarget;
                 nearestDistance = idistance;

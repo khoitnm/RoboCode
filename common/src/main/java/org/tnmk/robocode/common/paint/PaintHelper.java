@@ -1,10 +1,14 @@
 package org.tnmk.robocode.common.paint;
 
 import com.sun.istack.internal.Nullable;
-import robocode.Robot;
-
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import org.tnmk.robocode.common.helper.Move2DHelper;
+import robocode.Robot;
 
 public class PaintHelper {
     /**
@@ -19,13 +23,15 @@ public class PaintHelper {
      * @param point
      * @param printText the text next to the point. Could be null
      */
-    public static void paintPoint(Graphics graphic, int pointSize, Color color, Point2D point, @Nullable String printText) {
+    public static void paintPoint(Graphics2D graphic, int pointSize, Color color, Point2D point, @Nullable String printText) {
         graphic.setColor(color);
         if (printText != null) {
             graphic.drawString(printText + point, (int) point.getX() + pointSize, (int) point.getY());
         }
-        graphic.drawLine((int) point.getX() - pointSize, (int) point.getY(), (int) point.getX() + pointSize, (int) point.getY());
-        graphic.drawLine((int) point.getX(), (int) point.getY() - pointSize, (int) point.getX(), (int) point.getY() + pointSize);
+        Ellipse2D.Double circle = new Ellipse2D.Double(point.getX(), point.getY(), pointSize, pointSize);
+        graphic.fill(circle);
+//        graphic.drawLine((int) point.getX() - pointSize, (int) point.getY(), (int) point.getX() + pointSize, (int) point.getY());
+//        graphic.drawLine((int) point.getX(), (int) point.getY() - pointSize, (int) point.getX(), (int) point.getY() + pointSize);
     }
 
     public static void paintLine(Graphics2D graphics, Point2D pointA, Point2D pointB, int width, @Nullable Color color) {
@@ -53,5 +59,11 @@ public class PaintHelper {
     public static void paintText(Graphics graphic, String string, int x, int line) {
         graphic.setColor(Color.WHITE);
         graphic.drawString(string, x, (line + 1) * TEXT_LINE_HEIGHT);
+    }
+
+    public static void paintAngleRadian(Graphics2D graphics, Point2D startingPosition, double normAngleRadian, double normDistance, int lineWeight, Color color) {
+        Point2D destination = Move2DHelper.reckonDestination(startingPosition, normAngleRadian, normDistance);
+        PaintHelper.paintLine(graphics, startingPosition, destination, lineWeight, color);
+
     }
 }

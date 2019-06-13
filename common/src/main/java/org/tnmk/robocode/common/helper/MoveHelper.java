@@ -2,7 +2,7 @@ package org.tnmk.robocode.common.helper;
 
 import java.io.Serializable;
 
-import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.math.Point;
 import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.model.FullRobotState;
@@ -99,21 +99,21 @@ public class MoveHelper implements Serializable{
 	 */
 	public double calculateTurnRightAngleToTarget(double targetX, double targetY) {
 		FullRobotState robotState = RobotStateConverter.toRobotState(robot);
-		return MathUtils.calculateTurnRightDirectionToTarget(robotState.getMoveAngle(), robot.getX(), robot.getY(), targetX, targetY);
+		return GeoMathUtils.calculateTurnRightDirectionToTarget(robotState.getMoveAngle(), robot.getX(), robot.getY(), targetX, targetY);
 	}
 	public void moveTo(double targetX, double targetY) {
 		double sourceX = robot.getX();
 		double sourceY = robot.getY();
 		double bearing = calculateTurnRightAngleToTarget(targetX, targetY);
 		robot.turnRight(bearing);
-		robot.ahead(MathUtils.distance(sourceX, sourceY, targetX, targetY));
+		robot.ahead(GeoMathUtils.distance(sourceX, sourceY, targetX, targetY));
 	}
 	public void setMoveTo(double targetX, double targetY) {
 		double sourceX = robot.getX();
 		double sourceY = robot.getY();
 		double bearing = calculateTurnRightAngleToTarget(targetX, targetY);
 		robot.setTurnRight(bearing);
-		robot.setAhead(MathUtils.distance(sourceX, sourceY, targetX, targetY));
+		robot.setAhead(GeoMathUtils.distance(sourceX, sourceY, targetX, targetY));
 	}
 	/**
 	 * @param targetPoint
@@ -121,9 +121,9 @@ public class MoveHelper implements Serializable{
 	 */
 	public double setTurnCloseToTarget(Point targetPoint) {
 		FullRobotState thisState = RobotStateConverter.toRobotState(robot);
-		double distance = MathUtils.distance(thisState.getPosition(), targetPoint);
+		double distance = GeoMathUtils.distance(thisState.getPosition(), targetPoint);
 		if (distance < MAX_DISTANCE_TO_TARGET) return distance;//Don't need to try harder to get more closer to target.
-		double turnRightDirection = MathUtils.calculateTurnRightDirectionToTarget(thisState.getMoveAngle(), thisState.getX(), thisState.getY(), targetPoint.getX(), targetPoint.getY());
+		double turnRightDirection = GeoMathUtils.calculateTurnRightDirectionToTarget(thisState.getMoveAngle(), thisState.getX(), thisState.getY(), targetPoint.getX(), targetPoint.getY());
 		if (turnRightDirection > 0) {
 			turnRightDirection -= MOVE_CLOSE_TO_TARGET_MIN_ANGLE;
 		} else {

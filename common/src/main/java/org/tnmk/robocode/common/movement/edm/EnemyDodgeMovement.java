@@ -65,7 +65,7 @@ public class EnemyDodgeMovement implements InitiableRun, OnScannedRobotControl {
 //        Point currentPosition = PointConverter.toPoint(currentPosition2D);
 //        Point destinationPosition = PointConverter.toPoint(destinationPosition2D);
 //
-//        double moveAngle = MathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), currentPosition, destinationPosition);
+//        double moveAngle = GeoMathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), currentPosition, destinationPosition);
 //        robot.setTurnRight(moveAngle);
 //        robot.setAhead(Double.POSITIVE_INFINITY);
     }

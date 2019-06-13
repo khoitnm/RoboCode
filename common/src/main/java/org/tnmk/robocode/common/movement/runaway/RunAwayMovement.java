@@ -13,6 +13,8 @@ import robocode.HitWallEvent;
 
 /**
  * Run away from wall & enemies.
+ * Note: with {@link org.tnmk.robocode.common.movement.wallsmooth.WallSmoothMovement}, only time we can hit a wall is executing {@link MoveStrategy#RUN_AWAY_FROM_ENEMIES}.
+ * Anyway, we still need both {@link MoveStrategy#RUN_AWAY_FROM_ENEMIES} and {@link MoveStrategy#RUN_AWAY_FROM_WALL}
  */
 public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWallControl {
     private final AdvancedRobot robot;
@@ -31,7 +33,7 @@ public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWal
 
         if (!movementContext.is(MoveStrategy.RUN_AWAY_FROM_ENEMIES)) {
             movementContext.setMoveStrategy(MoveStrategy.RUN_AWAY_FROM_ENEMIES);
-            RunAwayHelper.changeMovementWhenHit(robot, movementContext.getDirection(), hitRobotEvent.getBearing());
+            RunAwayHelper.changeMovementWhenHit(robot, movementContext.getDirection(), hitRobotEvent.getBearingRadians());
         }
     }
 
@@ -50,7 +52,7 @@ public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWal
     public void onHitWall(HitWallEvent hitWallEvent) {
         if (!movementContext.is(MoveStrategy.RUN_AWAY_FROM_WALL)) {
             movementContext.setMoveStrategy(MoveStrategy.RUN_AWAY_FROM_WALL);
-            RunAwayHelper.changeMovementWhenHit(robot, movementContext.getDirection(), hitWallEvent.getBearing());
+            RunAwayHelper.changeMovementWhenHit(robot, movementContext.getDirection(), hitWallEvent.getBearingRadians());
         }
     }
 }

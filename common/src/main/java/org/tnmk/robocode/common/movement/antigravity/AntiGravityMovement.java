@@ -3,6 +3,7 @@ package org.tnmk.robocode.common.movement.antigravity;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.math.Point2DUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.helper.Move2DHelper;
@@ -46,7 +47,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
     public void runInit() {
         double battleWidth = robot.getBattleFieldWidth();
         double battleHeight = robot.getBattleFieldHeight();
-        double safePaddingMovementDistance = (RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE * 2) * 2;
+        double safePaddingMovementDistance = RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE;
 
 
         Rectangle2D safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance * 2, battleHeight - safePaddingMovementDistance * 2);
@@ -88,23 +89,35 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
 //        Point2D finalDestination = WallSmoothUtils.wallSmoothing(
 //                robotPosition,
 //                destination,
-//                MathUtils.sign(robot.getHeading()), 200,
+//                GeoMathUtils.sign(robot.getHeading()), 200,
 //                robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
 //        LogHelper.logAdvanceRobot(robot, "Destination: " + LogHelper.toString(destination) + "\t Final Destination:" + LogHelper.toString(finalDestination));
 
         debugWhenFinalDestinationOutsideSafeArea(robot, robotPosition, destination, finalDestination, calculationContext.getSafeMovementArea());
 
-        AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
-
         if (movementContext.isNone() || movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
+            AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
             movementContext.setMoveStrategy(MoveStrategy.ANTI_GRAVITY);
-            Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
+
+            if (GeoMathUtils.checkInsideRectangle(finalDestination, calculationContext.getSafeMovementArea())) {
+                Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
+            } else {
+                //This logic makes sure that the robot won't run into the wall when it's outside the safeMovementArea (close to walls).
+                //However, this kind of movement shouldn't be the long-term movement because the destination outside the safeArea mostly close to current position.
+                //Hence it will make robot move just a very short distance, and becomes an easy victim.
+                //Therefore, the safeMovement area should be small!
+                Move2DHelper.setMoveToDestinationWithShortestPath(robot, finalDestination);
+            }
         }
     }
 
     private void debugWhenFinalDestinationOutsideSafeArea(AdvancedRobot robot, Point2D robotPosition, Point2D destination, Point2D finalDestination, Rectangle2D safeMovementArea) {
-        if (!Move2DHelper.checkInsideRectangle(finalDestination, safeMovementArea)) {
-            String message = String.format("Destination outside safeMovement: current %s\t destination %s\t finalDestination %s\t safe area %s",
+        if (!GeoMathUtils.checkInsideRectangle(finalDestination, safeMovementArea)) {
+            String message = String.format("Destination outside safeMovement: " +
+                            "\t current %s" +
+                            "\t destination %s" +
+                            "\t finalDestination %s" +
+                            "\t safe area %s",
                     LogHelper.toString(robotPosition),
                     LogHelper.toString(destination),
                     LogHelper.toString(finalDestination),
@@ -128,7 +141,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
         ForceResult enemiesForceResult = reckonForceOfEnemies(calculationContext, robotPosition, enemies);
 
         Point2D finalForce = Point2DUtils.plus(staticForceResult.getFinalForce(), enemiesForceResult.getFinalForce());
-        AntiGravityPainterUtils.paintForceResults(robot, staticForceResult, enemiesForceResult, finalForce);
+//        AntiGravityPainterUtils.paintForceResults(robot, staticForceResult, enemiesForceResult, finalForce);
         return finalForce;
     }
 

@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.gun.gft.oldalgorithm;
 
-import org.tnmk.common.math.MathUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
@@ -42,7 +42,7 @@ public class GFTargetingBot extends AdvancedRobot {
 		double enemyDistance = e.getDistance();
 		double enemyVelocity = e.getVelocity();
 		if (enemyVelocity != 0) {
-			lateralDirection = MathUtils.sign(enemyVelocity * Math.sin(e.getHeadingRadians() - enemyAbsoluteBearing));
+			lateralDirection = GeoMathUtils.sign(enemyVelocity * Math.sin(e.getHeadingRadians() - enemyAbsoluteBearing));
 		}
 		GFTWave wave = new GFTWave(this);
 		wave.gunLocation = new Point2D.Double(getX(), getY());
