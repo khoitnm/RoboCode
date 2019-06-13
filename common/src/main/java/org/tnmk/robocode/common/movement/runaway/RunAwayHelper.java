@@ -15,10 +15,10 @@ public class RunAwayHelper {
         //Eventually, it will find a void to get out of crash.
         double newHeadingRadian = robot.getHeadingRadians();
         double normHitBearing = AngleUtils.normalizeDegree(hitBearing);
-        if (0 < normHitBearing && normHitBearing < 90) {
-            newHeadingRadian = robot.getHeadingRadians() - PI / 2;
-        } else if (normHitBearing < -90) {
+        if (0 < normHitBearing) {
             newHeadingRadian = robot.getHeadingRadians() + PI / 2;
+        } else {
+            newHeadingRadian = robot.getHeadingRadians() - PI / 2;
         }
         robot.setTurnRightRadians(newHeadingRadian);
         robot.setAhead(newMoveDirection * 200);
