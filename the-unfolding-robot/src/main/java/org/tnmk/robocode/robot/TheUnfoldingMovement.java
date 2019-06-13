@@ -1,6 +1,5 @@
 package org.tnmk.robocode.robot;
 
-import java.awt.Color;
 import java.awt.geom.Point2D;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.log.LogHelper;
@@ -12,12 +11,11 @@ import org.tnmk.robocode.common.movement.wallsmooth.WallSmoothMovement;
 import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.*;
+import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.*;
 
 public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScannedRobotControl, OnHitRobotControl, OnStatusControl, OnCustomEventControl {
     public static final double IDEAL_ENEMY_OSCILLATOR_DISTANCE = 150;
-    private static final Color COLOR_AHEAD_DIRECTION = new Color(193, 174, 147);
-    private static final Color COLOR_ACTUAL_MOVE_DIRECTION = new Color(21, 202, 202);
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
@@ -92,8 +90,8 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
         Point2D robotPosition = new Point2D.Double(status.getX(), status.getY());
         double normAhead = movementContext.getDirection() * 200;
         double positiveAhead = 300;
-        PaintHelper.paintAngleRadian(robot.getGraphics(), robotPosition, status.getHeadingRadians(), positiveAhead, 1, COLOR_AHEAD_DIRECTION);
-        PaintHelper.paintAngleRadian(robot.getGraphics(), robotPosition, status.getHeadingRadians(), normAhead, 2, COLOR_ACTUAL_MOVE_DIRECTION);
+        PaintHelper.paintAngleRadian(robot.getGraphics(), robotPosition, status.getHeadingRadians(), positiveAhead, 1, HiTechDecorator.AHEAD_DIRECTION_COLOR);
+        PaintHelper.paintAngleRadian(robot.getGraphics(), robotPosition, status.getHeadingRadians(), normAhead, 2, HiTechDecorator.ACTUAL_MOVE_DIRECTION_COLOR);
 
         // If robot is slowing down and then stop, keep the same direction.
         // This ensures that the direction is handled correctly when we want to reverse direction after it hand slowed down and stopped.

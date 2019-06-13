@@ -5,7 +5,10 @@ import robocode.Robot;
 import java.awt.*;
 
 public class HiTechDecorator {
-    private static final Color ROBOT_BORDY_COLOR = new Color(39, 33, 28);// new Color(51, 153, 153);
+    public static final Color AHEAD_DIRECTION_COLOR = new Color(193, 174, 147);
+    public static final Color ACTUAL_MOVE_DIRECTION_COLOR = new Color(21, 202, 202);
+    public static final Color FINAL_DESTINATION_COLOR = new Color(21, 255, 255);
+    private static final Color ROBOT_BORDY_COLOR = new Color(25, 20, 17);// new Color(51, 153, 153);
     private static final Color ROBOT_RADAR_COLOR = new Color(0, 166, 168);// Color(117, 209, 209);
     private static final Color ROBOT_GUN_COLOR = new Color(21, 202, 202);
     private static final Color SCAN_COLOR = new Color(18, 163, 163);
