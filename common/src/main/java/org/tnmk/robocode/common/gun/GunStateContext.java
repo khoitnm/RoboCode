@@ -1,5 +1,11 @@
 package org.tnmk.robocode.common.gun;
 
+/**
+ * This context can help different GunStrategies knows that the gun is aiming by some strategy.<br/>
+ * So they shouldn't override aiming direction which set by other gun strategies.<br/>
+ * <p/>
+ * This object should be created by some composition gun strategy such as TheUnfoldingGun.
+ */
 public class GunStateContext {
 
     private GunState gunState = GunState.REST;

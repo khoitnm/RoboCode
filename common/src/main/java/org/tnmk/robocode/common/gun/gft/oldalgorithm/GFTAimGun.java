@@ -1,6 +1,7 @@
 package org.tnmk.robocode.common.gun.gft.oldalgorithm;
 
 import org.tnmk.common.math.MathUtils;
+import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
@@ -19,9 +20,11 @@ public class GFTAimGun implements OnScannedRobotControl {
     private static double lastEnemyVelocity;
 
     private final AdvancedRobot robot;
+    private final GunStateContext gunStateContext;
 
-    public GFTAimGun(AdvancedRobot robot) {
+    public GFTAimGun(AdvancedRobot robot, GunStateContext gunStateContext) {
         this.robot = robot;
+        this.gunStateContext = gunStateContext;
     }
 
     @Override
@@ -41,10 +44,14 @@ public class GFTAimGun implements OnScannedRobotControl {
         wave.setSegmentations(enemyDistance, enemyVelocity, lastEnemyVelocity);
         lastEnemyVelocity = enemyVelocity;
         wave.bearing = enemyAbsoluteBearing;
-        robot.setTurnGunRightRadians(Utils.normalRelativeAngle(enemyAbsoluteBearing - robot.getGunHeadingRadians() + wave.mostVisitedBearingOffset()));
-        robot.setFire(wave.bulletPower);
-        if (robot.getEnergy() >= BULLET_POWER) {
-            robot.addCustomEvent(wave);
+        if (!gunStateContext.isAiming()) {
+            gunStateContext.aimGun(wave.bulletPower);
+            robot.setTurnGunRightRadians(Utils.normalRelativeAngle(enemyAbsoluteBearing - robot.getGunHeadingRadians() + wave.mostVisitedBearingOffset()));
+            robot.setFire(wave.bulletPower);
+            gunStateContext.rest();
+            if (robot.getEnergy() >= BULLET_POWER) {
+                robot.addCustomEvent(wave);
+            }
         }
     }
 }

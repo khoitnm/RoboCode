@@ -36,7 +36,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     public TheUnfoldingGun(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
-        this.gftAimGun = new GFTAimGun(robot);
+        this.gftAimGun = new GFTAimGun(robot, gunStateContext);
 
         this.gunStateContext = new GunStateContext();
         this.circularPatternGun = new CircularPatternGun(robot, allEnemiesObservationContext, gunStateContext);
