@@ -65,7 +65,14 @@ public class MovementContext {
 
 
     public void setDirection(int direction) {
-        this.direction = direction;
+        if (direction == 0) {
+            throw new IllegalArgumentException("Direction cannot be 0");
+        }
+        if (Math.abs(direction) != 1) {
+            this.direction = direction / (Math.abs(direction));
+        } else {
+            this.direction = direction;
+        }
     }
 
     public MoveStrategy getMoveStrategy() {
