@@ -1,10 +1,13 @@
 package org.tnmk.robocode.common.paint;
 
 import com.sun.istack.internal.Nullable;
-import robocode.Robot;
-
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import org.tnmk.robocode.common.helper.Move2DHelper;
+import robocode.Robot;
 
 public class PaintHelper {
     /**
@@ -53,5 +56,11 @@ public class PaintHelper {
     public static void paintText(Graphics graphic, String string, int x, int line) {
         graphic.setColor(Color.WHITE);
         graphic.drawString(string, x, (line + 1) * TEXT_LINE_HEIGHT);
+    }
+
+    public static void paintAngleRadian(Graphics2D graphics, Point2D startingPosition, double normAngleRadian, double distance, int lineWeight, Color color) {
+        Point2D destination = Move2DHelper.reckonDestination(startingPosition, normAngleRadian, distance);
+        PaintHelper.paintLine(graphics, startingPosition, destination, lineWeight, color);
+
     }
 }

@@ -2,6 +2,11 @@ package org.tnmk.common.math;
 
 import static java.lang.Math.PI;
 
+/**
+ * Usually, the bearing and heading values you receive from the game is not the same of the actual values in Geometry maths.
+ * Hence when calculating sin/cos..., the result will be wrong.
+ * That's why before applying sin/cos..., you should convert them to geometry angles.
+ */
 public class AngleUtils {
     /**
      * A non-normalized bearing could be smaller than -180 or larger than 180.
@@ -32,20 +37,28 @@ public class AngleUtils {
     }
 
     public static double toRadian(double angleDegree) {
-        double radian = angleDegree * (2 * PI) / 360;
+        double radian = angleDegree * PI / 180;
         return radian;
     }
 
     public static double toDegree(double angleRadian) {
-        double degree = angleRadian * 360 / (2 * PI);
+        double degree = angleRadian * 180 / PI;
         return degree;
     }
 
-    public static double reverseDegree(double degree){
+    public static double reverseDegree(double degree) {
         return normalizeDegree(degree + 180);
     }
 
-    public static double reverseRadian(double radian){
+    public static double reverseRadian(double radian) {
         return normalizeRadian(radian + PI);
+    }
+
+    public static double toGeometryDegree(double inGameDegree) {
+        return 90 - inGameDegree;
+    }
+
+    public static double toGeometryRadian(double inGameRadian) {
+        return PI - inGameRadian;
     }
 }

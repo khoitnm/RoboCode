@@ -94,9 +94,8 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
 
         debugWhenFinalDestinationOutsideSafeArea(robot, robotPosition, destination, finalDestination, calculationContext.getSafeMovementArea());
 
-        AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
-
         if (movementContext.isNone() || movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
+            AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
             movementContext.setMoveStrategy(MoveStrategy.ANTI_GRAVITY);
             Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
         }
@@ -128,7 +127,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
         ForceResult enemiesForceResult = reckonForceOfEnemies(calculationContext, robotPosition, enemies);
 
         Point2D finalForce = Point2DUtils.plus(staticForceResult.getFinalForce(), enemiesForceResult.getFinalForce());
-        AntiGravityPainterUtils.paintForceResults(robot, staticForceResult, enemiesForceResult, finalForce);
+//        AntiGravityPainterUtils.paintForceResults(robot, staticForceResult, enemiesForceResult, finalForce);
         return finalForce;
     }
 

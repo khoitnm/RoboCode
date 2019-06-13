@@ -54,12 +54,12 @@ public class Move2DHelper implements Serializable {
 
     /**
      * @param thisRobot
-     * @param bearingToEnemy
+     * @param bearingToEnemyDegree
      * @param distanceToTarget
      * @return
      */
-    public static Point2D reckonEnemyPosition(Robot thisRobot, double bearingToEnemy, double distanceToTarget) {
-        double angle = Math.toRadians(thisRobot.getHeading() + bearingToEnemy);
+    public static Point2D reckonEnemyPosition(Robot thisRobot, double bearingToEnemyDegree, double distanceToTarget) {
+        double angle = Math.toRadians(thisRobot.getHeading() + bearingToEnemyDegree);
         double x = (thisRobot.getX() + Math.sin(angle) * distanceToTarget);
         double y = (thisRobot.getY() + Math.cos(angle) * distanceToTarget);
         return new Point2D.Double(x, y);
@@ -160,9 +160,18 @@ public class Move2DHelper implements Serializable {
         return insideX && insideY;
     }
 
-    public static Point2D reckonDestination(Point2D robotPosition, double newHeadingRadian, double newAhead) {
-        double x = robotPosition.getX() + Math.cos(newHeadingRadian)* newAhead;
-        double y = robotPosition.getY() + Math.sin(newHeadingRadian)* newAhead;
+    /**
+     * @param robotPosition
+     * @param newHeadingRadian
+     * @param normDistance     could be positive or negative
+     * @return
+     */
+    public static Point2D reckonDestination(Point2D robotPosition, double newHeadingRadian, double normDistance) {
+//        double geoNewHeadingRadian = AngleUtils.toGeometryRadian(newHeadingRadian);
+        //In geometry Maths, cos() is associated to x-coordinate, sin() is associated to y-coordinate.
+        //But the angle in game is different from Geometry Maths, so sin() is associated to x now, and cos() is associated to y now.
+        double x = robotPosition.getX() + Math.sin(newHeadingRadian) * normDistance;
+        double y = robotPosition.getY() + Math.cos(newHeadingRadian) * normDistance;
         return new Point2D.Double(x, y);
     }
 }
