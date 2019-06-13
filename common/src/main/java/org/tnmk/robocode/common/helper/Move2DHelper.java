@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import java.util.Optional;
+import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.MathUtils;
 import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
 import robocode.AdvancedRobot;
@@ -167,11 +168,15 @@ public class Move2DHelper implements Serializable {
      * @return
      */
     public static Point2D reckonDestination(Point2D robotPosition, double newHeadingRadian, double normDistance) {
-//        double geoNewHeadingRadian = AngleUtils.toGeometryRadian(newHeadingRadian);
         //In geometry Maths, cos() is associated to x-coordinate, sin() is associated to y-coordinate.
         //But the angle in game is different from Geometry Maths, so sin() is associated to x now, and cos() is associated to y now.
-        double x = robotPosition.getX() + Math.sin(newHeadingRadian) * normDistance;
-        double y = robotPosition.getY() + Math.cos(newHeadingRadian) * normDistance;
+        //To reverse the normal Geometry Maths formula, we change inGameAngle to Geometry angle.
+        double geoNewHeadingRadian = AngleUtils.toGeometryRadian(newHeadingRadian);
+        double x = robotPosition.getX() + Math.cos(geoNewHeadingRadian) * normDistance;
+        double y = robotPosition.getY() + Math.sin(geoNewHeadingRadian) * normDistance;
+
+//        double x = robotPosition.getX() + Math.sin(newHeadingRadian) * normDistance;
+//        double y = robotPosition.getY() + Math.cos(newHeadingRadian) * normDistance;
         return new Point2D.Double(x, y);
     }
 }

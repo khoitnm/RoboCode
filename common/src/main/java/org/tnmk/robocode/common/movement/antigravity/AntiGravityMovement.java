@@ -46,7 +46,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
     public void runInit() {
         double battleWidth = robot.getBattleFieldWidth();
         double battleHeight = robot.getBattleFieldHeight();
-        double safePaddingMovementDistance = 2* (RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE * 2);
+        double safePaddingMovementDistance = 2 * (RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE * 2);
 
 
         Rectangle2D safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance * 2, battleHeight - safePaddingMovementDistance * 2);
@@ -103,7 +103,11 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
 
     private void debugWhenFinalDestinationOutsideSafeArea(AdvancedRobot robot, Point2D robotPosition, Point2D destination, Point2D finalDestination, Rectangle2D safeMovementArea) {
         if (!Move2DHelper.checkInsideRectangle(finalDestination, safeMovementArea)) {
-            String message = String.format("Destination outside safeMovement: current %s\t destination %s\t finalDestination %s\t safe area %s",
+            String message = String.format("Destination outside safeMovement: " +
+                            "\t current %s" +
+                            "\t destination %s" +
+                            "\t finalDestination %s" +
+                            "\t safe area %s",
                     LogHelper.toString(robotPosition),
                     LogHelper.toString(destination),
                     LogHelper.toString(finalDestination),

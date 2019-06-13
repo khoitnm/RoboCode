@@ -54,11 +54,20 @@ public class AngleUtils {
         return normalizeRadian(radian + PI);
     }
 
+    /**
+     *
+     * @param inGameDegree the in-game angle (degree)
+     * @return change the in game angle to real Geometry Maths angle.
+     */
     public static double toGeometryDegree(double inGameDegree) {
         return 90 - inGameDegree;
     }
 
+    /**
+     * @param inGameRadian the in-game angle (radian)
+     * @return change the in game angle to real Geometry Maths angle.
+     */
     public static double toGeometryRadian(double inGameRadian) {
-        return PI - inGameRadian;
+        return PI/2 - inGameRadian;
     }
 }
