@@ -6,7 +6,7 @@ This project is my robot for the game RoboCode
 
 ## My Robots
 My two main robots are:
-- Briareos (implemented 2015):
+1. <strong>Briareos</strong> (implemented 2015):
   - Radar: scan 360
   - Gun: Use my own implementation. After that, I realized that the idea is similar to Waves algorithm.
   - Movement: 
@@ -14,7 +14,7 @@ My two main robots are:
     - Wall-smooth: implemented by myself. The code is huge, but it works nicely. May need huge refactor.
     - Hitting wall or Enemies: reverse direction
 
-- TheUnfoldingRobot (implemented 2019):
+2. <strong>TheUnfoldingRobot</strong> (implemented 2019):
   - This is my main robot with huge improvement compare to Briareos. 
     I named it after reading the book "Reinventing Organizations": the robot is on the journey of unfolding itself.
   - In general, it will behave differently when 1-on-1 and melee (battle with many bots).  
