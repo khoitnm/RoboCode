@@ -160,4 +160,9 @@ public class Move2DHelper implements Serializable {
         return insideX && insideY;
     }
 
+    public static Point2D reckonDestination(Point2D robotPosition, double newHeadingRadian, double newAhead) {
+        double x = robotPosition.getX() + Math.cos(newHeadingRadian)* newAhead;
+        double y = robotPosition.getY() + Math.sin(newHeadingRadian)* newAhead;
+        return new Point2D.Double(x, y);
+    }
 }
