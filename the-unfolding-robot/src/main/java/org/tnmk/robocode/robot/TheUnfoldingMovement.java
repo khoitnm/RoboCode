@@ -4,8 +4,8 @@ import org.tnmk.common.math.MathUtils;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
-import org.tnmk.robocode.common.movement.runaway.RunAwayMovement;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorMovement;
+import org.tnmk.robocode.common.movement.runaway.RunAwayMovement;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.*;
 import robocode.*;
@@ -76,10 +76,15 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
 
     @Override
     public void onStatus(StatusEvent statusEvent) {
-        int direction = MathUtils.sign(statusEvent.getStatus().getDistanceRemaining());
-        if (direction != movementContext.getDirection()) {
-            LogHelper.logAdvanceRobot(robot, "Direction: " + direction);
-            movementContext.setDirection(direction);
+        // If robot is slowing down and then stop, keep the same direction.
+        // This ensures that the direction is handled correctly when we want to reverse direction after it hand slowed down and stopped.
+        // If we set the direction based on distanceRemaining when it's 0, then direction is always 1 which may not correct.
+        if (statusEvent.getStatus().getDistanceRemaining() != 0) {
+            int direction = MathUtils.sign(statusEvent.getStatus().getDistanceRemaining());
+            if (direction != movementContext.getDirection()) {
+                LogHelper.logAdvanceRobot(robot, "Direction: " + direction);
+                movementContext.setDirection(direction);
+            }
         }
     }
 
