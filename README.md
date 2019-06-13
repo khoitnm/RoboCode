@@ -1,7 +1,33 @@
 # Introduction
+## Overview
 This project is my robot for the game RoboCode
 - https://robocode.sourceforge.io/
 - https://github.com/robo-code/robocode
+
+## My Robots
+My two main robots are:
+- Briareos (implemented 2015):
+  - Radar: scan 360
+  - Gun: Use my own implementation. After that, I realized that the idea is similar to Waves algorithm.
+  - Movement: 
+    - Just random moving in the same direction. 
+    - Wall-smooth: implemented by myself. The code is huge, but it works nicely. May need huge refactor.
+    - Hitting wall or Enemies: reverse direction
+
+- TheUnfoldingRobot (implemented 2019):
+  - This is my main robot with huge improvement compare to Briareos. 
+    I named it after reading the book "Reinventing Organizations": the robot is on the journey of unfolding itself.
+  - In general, it will behave differently when 1-on-1 and melee (battle with many bots).  
+  - Radar: 
+    - Melee: Optimal Scan (just scan area with enemies, don't scan redundant areas)
+    - One-on-One: Lock bot radar.
+  - Gun: Use Waves & GuessFactoring Target + Circular Pattern Prediction.
+  - Movement:
+    - Anti-Gravity movement: 
+      - When near the walls: run directly to the destination point.
+      - In safe area (far away from the walls): run smoothly without changing direction (but it does turn angle heading) to reach the destination. The path may longer but it can avoid being stuck at some small area.
+    - Wall-smooth: reuse the code of Briareos.
+    - Hitting wall or Enemies: reverse direction and turn 90 degree.
 
 # Terms
 ## Overview
