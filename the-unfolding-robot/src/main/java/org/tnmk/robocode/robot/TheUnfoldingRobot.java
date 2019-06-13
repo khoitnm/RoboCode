@@ -2,10 +2,7 @@ package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
-import robocode.AdvancedRobot;
-import robocode.CustomEvent;
-import robocode.RobotDeathEvent;
-import robocode.ScannedRobotEvent;
+import robocode.*;
 
 /**
  * The very simple robot which extends features from {@link AdvancedRobot}
@@ -19,6 +16,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     private TheUnfoldingRadar theUnfoldingRadar = new TheUnfoldingRadar(this, allEnemiesObservationContext);
     private TheUnfoldingGun theUnfoldingGun = new TheUnfoldingGun(this, allEnemiesObservationContext);
 
+    @Override
     public void run() {
         HiTechDecorator.decorate(this);
 
@@ -33,11 +31,13 @@ public class TheUnfoldingRobot extends AdvancedRobot {
 
         while (true) {
             theUnfoldingGun.runLoop();
+            theUnfoldingMovement.runLoop();
             execute();
             loopIndex++;
         }
     }
 
+    @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         theUnfoldingRadar.onScannedRobot(scannedRobotEvent);
         theUnfoldingMovement.onScannedRobot(scannedRobotEvent);
@@ -47,6 +47,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
 //        execute();
     }
 
+    @Override
     public void onRobotDeath(RobotDeathEvent robotDeathEvent) {
         theUnfoldingRadar.onRobotDeath(robotDeathEvent);
         //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
@@ -61,5 +62,19 @@ public class TheUnfoldingRobot extends AdvancedRobot {
         //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
         //All of event should trigger robot.setXxx() methods only, they will be triggered in loopRun()
 //        execute();
+    }
+
+    @Override
+    public void onHitRobot(HitRobotEvent hitRobotEvent){
+        theUnfoldingMovement.onHitRobot(hitRobotEvent);
+    }
+
+    @Override
+    public void onStatus(StatusEvent statusEvent){
+        theUnfoldingMovement.onStatus(statusEvent);
+    }
+    @Override
+    public void onHitWall(HitWallEvent hitWallEvent){
+        theUnfoldingMovement.onHitWall(hitWallEvent);
     }
 }

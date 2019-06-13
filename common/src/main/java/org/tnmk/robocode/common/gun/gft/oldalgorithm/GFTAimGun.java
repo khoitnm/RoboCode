@@ -1,7 +1,7 @@
 package org.tnmk.robocode.common.gun.gft.oldalgorithm;
 
 import org.tnmk.common.math.MathUtils;
-import org.tnmk.robocode.common.robot.Scannable;
+import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
@@ -11,7 +11,7 @@ import java.awt.geom.Point2D;
 /**
  * Copied from http://old.robowiki.net/robowiki?GFTargetingBot
  */
-public class GFTAimGun implements Scannable {
+public class GFTAimGun implements OnScannedRobotControl {
     //TODO make dynamic bullet power based on the distance.
     private static final double BULLET_POWER = 1.9;
 

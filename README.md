@@ -77,7 +77,9 @@ Movement:
     - Basic implementation: http://robowiki.net/wiki/Anti-Gravity_Tutorial
     - Detail implementation: https://www.ibm.com/developerworks/java/library/j-antigrav/index.html?ca=drs-
   - Enemy Dodging Movement: http://robowiki.net/wiki/Enemy_Dodging_Movement
-  - Wall Smoothing: http://robowiki.net/wiki/Wall_Smoothing
+  - Wall Smoothing: 
+    - http://robowiki.net/wiki/Wall_Smoothing
+    - http://robowiki.net/wiki/Wall_Smoothing/Implementations
 
 Utilities functions: https://www.programcreek.com/java-api-examples/index.php?api=robocode.util.Utils
 

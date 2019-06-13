@@ -21,7 +21,7 @@ public class AngleUtils {
         return angleDegree;
     }
 
-    public static double normaliseRadian(double angleRadian) {
+    public static double normalizeRadian(double angleRadian) {
         while (angleRadian > PI) {
             angleRadian -= 2 * PI;
         }
@@ -39,5 +39,13 @@ public class AngleUtils {
     public static double toDegree(double angleRadian) {
         double degree = angleRadian * 360 / (2 * PI);
         return degree;
+    }
+
+    public static double reverseDegree(double degree){
+        return normalizeDegree(degree + 180);
+    }
+
+    public static double reverseRadian(double radian){
+        return normalizeRadian(radian + PI);
     }
 }

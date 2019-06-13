@@ -10,10 +10,10 @@ import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyUtils;
 import org.tnmk.robocode.common.model.enemy.EnemyMapper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
-import org.tnmk.robocode.common.robot.CustomableEvent;
+import org.tnmk.robocode.common.robot.OnCustomEventControl;
 import org.tnmk.robocode.common.robot.InitiableRun;
-import org.tnmk.robocode.common.robot.RobotDeathTrackable;
-import org.tnmk.robocode.common.robot.Scannable;
+import org.tnmk.robocode.common.robot.OnRobotDeathControl;
+import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.*;
 
 import static robocode.util.Utils.normalRelativeAngle;
@@ -23,7 +23,7 @@ import static robocode.util.Utils.normalRelativeAngle;
  * @deprecated Flaw: still scan redundant areas because the calculation was based on the old enemy's bearing angle (which based on old robot's position, not based on the current robot's position).
  */
 @Deprecated
-public class IBMOptimalScanRadar implements InitiableRun, Scannable, RobotDeathTrackable, CustomableEvent {
+public class IBMOptimalScanRadar implements InitiableRun, OnScannedRobotControl, OnRobotDeathControl, OnCustomEventControl {
     /**
      * Scan a little bit more degree to make sure that all enemies have not moved outside the radar's scan area since the last time they are scanned.
      */
