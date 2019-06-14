@@ -89,11 +89,11 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
 //        Point2D finalDestination = WallSmoothUtils.wallSmoothing(
 //                robotPosition,
 //                destination,
-//                GeoMathUtils.sign(robot.getHeading()), 200,
+//                movementContext.getDirection()
 //                robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
 //        LogHelper.logAdvanceRobot(robot, "Destination: " + LogHelper.toString(destination) + "\t Final Destination:" + LogHelper.toString(finalDestination));
 
-        debugWhenFinalDestinationOutsideSafeArea(robot, robotPosition, destination, finalDestination, calculationContext.getSafeMovementArea());
+        //debugWhenFinalDestinationOutsideSafeArea(robot, robotPosition, destination, finalDestination, calculationContext.getSafeMovementArea());
 
         if (movementContext.isNone() || movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
             AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
