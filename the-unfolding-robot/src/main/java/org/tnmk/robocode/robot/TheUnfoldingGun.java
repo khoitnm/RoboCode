@@ -2,7 +2,7 @@ package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
-import org.tnmk.robocode.common.gun.pattern.CircularPatternGun;
+import org.tnmk.robocode.common.gun.pattern.CircularAndLinearPatternGun;
 import org.tnmk.robocode.common.gun.pattern.EnemyPatternType;
 import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
@@ -29,7 +29,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
     private GFTAimGun gftAimGun;
-    private CircularPatternGun circularPatternGun;
+    private CircularAndLinearPatternGun circularAndLinearPatternGun;
     private GunStateContext gunStateContext;
 
 
@@ -39,7 +39,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
         this.gftAimGun = new GFTAimGun(robot, gunStateContext);
-        this.circularPatternGun = new CircularPatternGun(robot, allEnemiesObservationContext, gunStateContext);
+        this.circularAndLinearPatternGun = new CircularAndLinearPatternGun(robot, allEnemiesObservationContext, gunStateContext);
     }
 
     //TODO share aiming context. When aiming for one algorithm, other algorithm shouldn't change aiming direction.
@@ -49,8 +49,8 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
             aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
         } else {
             EnemyPatternType enemyPatternType = enemyPatternPrediction.getEnemyPatternType();
-            if (enemyPatternType == EnemyPatternType.CIRCULAR) {
-                circularPatternGun.onScannedRobot(scannedRobotEvent);
+            if (enemyPatternType == EnemyPatternType.CIRCULAR_AND_LINEAR) {
+                circularAndLinearPatternGun.onScannedRobot(scannedRobotEvent);
             } else {//TODO handle EnemyPatternType.LINEAR & EnemyPatternType.STAY_STILL
                 aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
             }
@@ -92,6 +92,6 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
 
     @Override
     public void runLoop() {
-        circularPatternGun.runLoop();
+        circularAndLinearPatternGun.runLoop();
     }
 }

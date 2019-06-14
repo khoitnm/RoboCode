@@ -25,14 +25,14 @@ import robocode.ScannedRobotEvent;
 /**
  * https://www.ibm.com/developerworks/library/j-circular/index.html
  */
-public class CircularPatternGun implements LoopableRun, OnScannedRobotControl {
+public class CircularAndLinearPatternGun implements LoopableRun, OnScannedRobotControl {
     private static final int ENEMY_PREDICTION_TIMES = 3;
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final GunStateContext gunStateContext;
 
-    public CircularPatternGun(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, GunStateContext gunStateContext) {
+    public CircularAndLinearPatternGun(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, GunStateContext gunStateContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
         this.gunStateContext = gunStateContext;
@@ -102,7 +102,7 @@ public class CircularPatternGun implements LoopableRun, OnScannedRobotControl {
             long totalPeriodGun = periodForTurningGun + periodForBulletToReachEnemy;
             long timeWhenBulletReachEnemy = robot.getTime() + Math.round(totalPeriodGun);
 
-            enemyPosition = CircularGuessUtils.guessPosition(latestHistoryItems, timeWhenBulletReachEnemy);
+            enemyPosition = CircularAndLinearGuessUtils.guessPosition(latestHistoryItems, timeWhenBulletReachEnemy);
 
             enemyPositionPrediction.setPosition(enemyPosition);
             enemyPositionPrediction.setTime(timeWhenBulletReachEnemy);
@@ -123,7 +123,7 @@ public class CircularPatternGun implements LoopableRun, OnScannedRobotControl {
 
     private void debugPredictEnemy(List<Enemy> latestHistoryItems){
         for (int i = 0; i < 5; i++) {
-            Point2D testEnemyPosition = CircularGuessUtils.guessPosition(latestHistoryItems, robot.getTime()+i);
+            Point2D testEnemyPosition = CircularAndLinearGuessUtils.guessPosition(latestHistoryItems, robot.getTime()+i);
             String message = String.format("predict enemy at time %s, position {%.2f, %.2f}", robot.getTime()+i, testEnemyPosition.getX(), testEnemyPosition.getY());
             LogHelper.logAdvanceRobot(robot, message);
         }

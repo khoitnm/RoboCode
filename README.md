@@ -21,7 +21,7 @@ My two main robots are:
   - Radar: 
     - Melee: Optimal Scan (just scan area with enemies, don't scan redundant areas)
     - One-on-One: Lock radar to the enemy.
-  - Gun: Use Waves & GuessFactoring Target + Circular Pattern Prediction.
+  - Gun: Use Waves & GuessFactoring Target + Circular & Linear Pattern Prediction.
   - Movement:
     - Melee:
       - Anti-Gravity movement: 

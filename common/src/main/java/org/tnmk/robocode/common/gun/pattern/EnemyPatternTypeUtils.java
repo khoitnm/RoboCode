@@ -59,11 +59,11 @@ public class EnemyPatternTypeUtils {
             long timeOfLatestDataForPrediction = historyExcludeCurrentEnemyData.get(0).getTime();
             long currentTime = currentEnemyData.getTime();
             long deltaTimeBetweenPredictionAndActual = currentTime - timeOfLatestDataForPrediction;
-            Point2D predictedEnemyBasedOnHistoryExcludeCurrentData = CircularGuessUtils.guessPosition(historyExcludeCurrentEnemyData, currentEnemyData.getTime());
+            Point2D predictedEnemyBasedOnHistoryExcludeCurrentData = CircularAndLinearGuessUtils.guessPosition(historyExcludeCurrentEnemyData, currentEnemyData.getTime());
             Point2D actualEnemyPosition = currentEnemyData.getPosition();
             if (predictMostlyCorrect(deltaTimeBetweenPredictionAndActual, predictedEnemyBasedOnHistoryExcludeCurrentData, actualEnemyPosition)) {
-                debugPrintPredictedPositionAndActualPosition(timeOfLatestDataForPrediction, currentTime, deltaTimeBetweenPredictionAndActual, predictedEnemyBasedOnHistoryExcludeCurrentData, actualEnemyPosition);
-                return EnemyPatternType.CIRCULAR;
+                debugPrintPredictedPositionAndActualPosition(currentEnemyData.getName(), timeOfLatestDataForPrediction, currentTime, deltaTimeBetweenPredictionAndActual, predictedEnemyBasedOnHistoryExcludeCurrentData, actualEnemyPosition);
+                return EnemyPatternType.CIRCULAR_AND_LINEAR;
             } else {
                 //TODO predict Linear
                 return EnemyPatternType.UNIDENTIFIED;
@@ -71,12 +71,13 @@ public class EnemyPatternTypeUtils {
         }
     }
 
-    private static void debugPrintPredictedPositionAndActualPosition(long timeOfLatestDataForPrediction, long currentTime, long deltaTimeBetweenPredictionAndActual, Point2D predictedEnemyPosition, Point2D actualEnemyPosition) {
-        System.out.println("Predicted position: " + LogHelper.toString(predictedEnemyPosition)
+    private static void debugPrintPredictedPositionAndActualPosition(String enemyName, long timeOfLatestDataForPrediction, long currentTime, long deltaTimeBetweenPredictionAndActual, Point2D predictedEnemyPosition, Point2D actualEnemyPosition) {
+        System.out.println("Predicted enemy: " + enemyName
+                + "\n\tposition: " + LogHelper.toString(predictedEnemyPosition)
                 + "\tPredicted time: " + timeOfLatestDataForPrediction + "\tCurrent time: " + currentTime + "\tdeltaTime: " + deltaTimeBetweenPredictionAndActual
                 + "\n\tActual position: " + LogHelper.toString(actualEnemyPosition)
-                + "\n\tPrediction diff: " + predictedEnemyPosition.distance(actualEnemyPosition)
-                + "\n\tPrediction diff per tick: " + predictedEnemyPosition.distance(actualEnemyPosition) / deltaTimeBetweenPredictionAndActual
+                + "\n\tPrediction diff: " + String.format("%.2f", predictedEnemyPosition.distance(actualEnemyPosition))
+                + "\n\tPrediction diff per tick: " + String.format("%.2f", predictedEnemyPosition.distance(actualEnemyPosition) / deltaTimeBetweenPredictionAndActual)
         );
     }
 

@@ -9,7 +9,7 @@ import org.tnmk.robocode.common.model.enemy.EnemyHistoryUtils;
 /**
  * https://www.ibm.com/developerworks/library/j-circular/index.html
  */
-public class CircularGuessUtils {
+public class CircularAndLinearGuessUtils {
     /**
      * @param historyItems must be not empty
      * @param when         when is the time that we think the bullet will reach the target.
@@ -18,7 +18,7 @@ public class CircularGuessUtils {
     public static Point2D.Double guessPosition(List<Enemy> historyItems, long when) {
         Enemy enemy = historyItems.get(0);
         double avgChangeHeadingRadian = EnemyHistoryUtils.averageChangeHeadingRadian(historyItems);
-        return CircularGuessUtils.guessPosition(enemy, avgChangeHeadingRadian, when);
+        return CircularAndLinearGuessUtils.guessPosition(enemy, avgChangeHeadingRadian, when);
     }
 
     /**
