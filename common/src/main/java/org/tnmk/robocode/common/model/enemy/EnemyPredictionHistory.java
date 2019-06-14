@@ -1,8 +1,10 @@
 package org.tnmk.robocode.common.model.enemy;
 
 import org.tnmk.robocode.common.gun.pattern.EnemyMovePattern;
+import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 
-public class EnemyPredictionHistory {
+public class EnemyPredictionHistory extends History<EnemyPrediction>{
+    private static final int ENEMY_MOVE_PATTERN_PREDICTION_SIZE = 20;
     /**
      * This field is never null
      */
@@ -18,16 +20,26 @@ public class EnemyPredictionHistory {
     //  And a EnemyPrediction finalPrediction;
     /**
      * This field is never null
+     * @deprecated use {@link #finalPrediction} instead.
      */
+    @Deprecated
     private EnemyMovePattern enemyMovePattern = EnemyMovePattern.UNIDENTIFIED;
 
+    /**
+     * @deprecated use {@link #finalPrediction} instead.
+     */
+    @Deprecated
     private long predictedTime;
 
+    private EnemyPrediction finalPrediction;
+
     public EnemyPredictionHistory(String enemyName, EnemyHistory enemyHistory) {
+        super(ENEMY_MOVE_PATTERN_PREDICTION_SIZE);
         this.enemyName = enemyName;
         this.enemyHistory = enemyHistory;
     }
 
+    //FIXME
     public void setEnemyPatternType(long predictionTime, EnemyMovePattern enemyMovePattern) {
         this.enemyMovePattern = enemyMovePattern;
         this.predictedTime = predictionTime;
@@ -57,5 +69,13 @@ public class EnemyPredictionHistory {
 
     public void setPredictedTime(long predictedTime) {
         this.predictedTime = predictedTime;
+    }
+
+    public EnemyPrediction getFinalPrediction() {
+        return finalPrediction;
+    }
+
+    public void setFinalPrediction(EnemyPrediction finalPrediction) {
+        this.finalPrediction = finalPrediction;
     }
 }
