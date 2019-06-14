@@ -34,20 +34,13 @@ public class EnemyMovePatternIdentifyHelper {
                 EnemyMovePattern pattern = historicalPatternOptional.get();
                 PatternIdentification patternIdentification = PatternIdentificationCertaintyCalculator.calculateHistoryCertainty(predictionTime, pattern, enemyStatisticContext.getEnemyPredictionHistory());
                 enemyStatisticContext.setPatternIdentification(patternIdentification);
-//                EnemyPrediction futurePrediction = PatternPredictionUtils.predictEnemy(enemyStatisticContext.getEnemyHistory().getLatestHistoryItems(IDEAL_HISTORY_ITEMS_FOR_PREDICTION), predictionTime);
-//                //Historical prediction should be very reliable, so the future prediction should match with the historical prediction.
-//                if (futurePrediction.getEnemyMovePattern() == historicalPatternOptional.get()) {
-//                    System.out.println("Future prediction (ADD): Enemy name: " + enemyStatisticContext.getEnemyName() + ", historicalPattern: " + historicalPatternOptional.get() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
-//                    enemyStatisticContext.addPrediction(futurePrediction);
-//                } else {
-//                    System.out.println("Future prediction (don't add): Enemy name: " + enemyStatisticContext.getEnemyName() + ", newPattern: " + futurePrediction.getEnemyMovePattern());
-//                    //Future prediction is not reliable, so don't add it.
-//                    //Gun strategy should not rely on this pattern prediction.
-//                }
             } else {
-                //If cannot do historical prediction, then we cannot do futurePrediction.
-                //It means we should add any prediction at this moment.
-                //Gun strategy should not rely on this pattern prediction.
+                /**
+                 * If cannot do historical prediction, then we cannot identify any pattern.
+                 * So just use unidentified.
+                 */
+                PatternIdentification patternIdentification= new PatternIdentification(predictionTime, EnemyMovePattern.UNIDENTIFIED, PatternIdentification.DEFAULT_CERTAINTY_WHEN_NO_PREDICTION_HISTORY);
+                enemyStatisticContext.setPatternIdentification(patternIdentification);
             }
         }
     }

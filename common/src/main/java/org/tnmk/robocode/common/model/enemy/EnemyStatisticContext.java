@@ -45,7 +45,7 @@ public class EnemyStatisticContext {
 //    }
 
     public boolean hasCertainPattern() {
-        return patternIdentification != null && patternIdentification.getEnemyMovePattern() != EnemyMovePattern.UNIDENTIFIED;
+        return patternIdentification != null && patternIdentification.getEnemyMovePattern() != EnemyMovePattern.UNIDENTIFIED && patternIdentification.getCertainty() > 0.8;
     }
 
     public EnemyMovePattern getFinalPredictionMovePattern() {

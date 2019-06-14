@@ -33,6 +33,10 @@ public class PatternIdentification {
 
     //TODO add dominantPattern and dominantPatternCertainty
 
+    @Override
+    public String toString(){
+        return String.format("{%s: %.2f}", enemyMovePattern, certainty);
+    }
 
 
     public double getCertainty() {
