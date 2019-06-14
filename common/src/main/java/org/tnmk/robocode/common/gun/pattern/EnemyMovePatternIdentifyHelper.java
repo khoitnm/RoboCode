@@ -23,12 +23,13 @@ public class EnemyMovePatternIdentifyHelper {
     private static final long ENEMY_PATTERN_IDENTIFICATION_EXPIRATION_PERIOD = 30;
 
     /**
-     * @param predictionTime         the current time when we do prediction.
+     * @param predictionTime        the current time when we do prediction.
      * @param enemyStatisticContext at this moment, the first item in this {@link EnemyStatisticContext#getEnemyHistory()} is the current enemy data which has just added in the same tick.
      */
     public static void identifyEnemyPatternIfNecessary(long predictionTime, EnemyStatisticContext enemyStatisticContext) {
-        if (!hasNewIdentifiedPattern(predictionTime, enemyStatisticContext) && hasEnoughReliableHistoryData(enemyStatisticContext)) {
-            Optional<EnemyMovePattern> historicalPatternOptional = EnemyMovePatternIdentifyHelper.predictHistoricalPattern(enemyStatisticContext.getEnemyHistory());
+//        if (!hasNewIdentifiedPattern(predictionTime, enemyStatisticContext) && hasEnoughReliableHistoryData(enemyStatisticContext)) {
+        if (hasEnoughReliableHistoryData(enemyStatisticContext)) {
+            Optional<EnemyMovePattern> historicalPatternOptional = EnemyMovePatternIdentifyHelper.predictHistoricalPattern(enemyStatisticContext);
 //            System.out.println("Historical Prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", historicalPattern: " + historicalPatternOptional.get() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
             if (historicalPatternOptional.isPresent()) {
                 EnemyMovePattern pattern = historicalPatternOptional.get();
@@ -39,7 +40,7 @@ public class EnemyMovePatternIdentifyHelper {
                  * If cannot do historical prediction, then we cannot identify any pattern.
                  * So just use unidentified.
                  */
-                PatternIdentification patternIdentification= new PatternIdentification(predictionTime, EnemyMovePattern.UNIDENTIFIED, PatternIdentification.DEFAULT_CERTAINTY_WHEN_NO_PREDICTION_HISTORY);
+                PatternIdentification patternIdentification = new PatternIdentification(predictionTime, EnemyMovePattern.UNIDENTIFIED, PatternIdentification.DEFAULT_CERTAINTY_WHEN_NO_PREDICTION_HISTORY);
                 enemyStatisticContext.setPatternIdentification(patternIdentification);
             }
         }
@@ -62,14 +63,21 @@ public class EnemyMovePatternIdentifyHelper {
     }
 
     /**
-     * @param enemyHistory at this moment, the first item in this enemyHistory is the current enemy data which has just added in the same tick.
+     * @param enemyStatisticContext at this moment, the first item in this enemyHistory is the current enemy data which has just added in the same tick.
      * @return if not enough history data to predict, return {@link Optional#empty()}.
      */
-    public static Optional<EnemyMovePattern> predictHistoricalPattern(EnemyHistory enemyHistory) {
+    public static Optional<EnemyMovePattern> predictHistoricalPattern(EnemyStatisticContext enemyStatisticContext) {
+        EnemyHistory enemyHistory = enemyStatisticContext.getEnemyHistory();
+        EnemyPredictionHistory enemyPredictionHistory = enemyStatisticContext.getEnemyPredictionHistory();
+
         if (enemyHistory.countHistoryItems() < MIN_HISTORY_ITEMS_FOR_PREDICTION) {
             return Optional.empty();
         } else {
             HistoricalPredictionResult historicalPredictionResult = predictAtTheTimeOfAnExpectedHistoryItem(enemyHistory, 3, 0);
+            EnemyPrediction enemyPrediction = toEnemyPrediction(historicalPredictionResult);
+            if (enemyPredictionHistory.isNewerCurrentHistoryItems(enemyPrediction)) {
+                enemyPredictionHistory.addToHistory(enemyPrediction);
+            }
             if (predictMostlyCorrect(historicalPredictionResult.predictionDeltaTime, historicalPredictionResult.predictionPosition, historicalPredictionResult.actualPosition)) {
 //                debugPrintPredictedPositionAndActualPosition(enemyHistory.getName(), historicalPredictionResult.timeOfNewestItemForPrediction, historicalPredictionResult.itemOfExpectComparision, historicalPredictionResult.predictionDeltaTime, historicalPredictionResult.predictionPosition, historicalPredictionResult.actualPosition);
                 return Optional.of(historicalPredictionResult.enemyMovePattern);
@@ -77,6 +85,10 @@ public class EnemyMovePatternIdentifyHelper {
                 return Optional.of(EnemyMovePattern.UNIDENTIFIED);
             }
         }
+    }
+
+    private static boolean isNewer(EnemyPrediction a, EnemyPrediction b) {
+        return a.getPredictionTime() > b.getPredictionTime();
     }
 
     private static EnemyPrediction toEnemyPrediction(HistoricalPredictionResult historicalPredictionResult) {

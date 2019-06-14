@@ -45,7 +45,10 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     //TODO share aiming context. When aiming for one algorithm, other algorithm shouldn't change aiming direction.
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         EnemyStatisticContext enemyStatisticContext = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName());
-        LogHelper.logSimple(robot, "Pattern: "+enemyStatisticContext.getPatternIdentification());
+        LogHelper.logSimple(robot, "Enemy: " + scannedRobotEvent.getName()
+                + "\n\t\tPattern: " + enemyStatisticContext.getPatternIdentification()
+                + "\n\t\tpredictionHistory: \t" + enemyStatisticContext.getEnemyPredictionHistory().getAllHistoryItems()
+        );
         if (enemyStatisticContext == null || !enemyStatisticContext.hasCertainPattern()) {
             aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
         } else {

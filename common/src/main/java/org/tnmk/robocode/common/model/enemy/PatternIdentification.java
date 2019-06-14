@@ -11,10 +11,16 @@ import org.tnmk.robocode.common.gun.pattern.EnemyMovePattern;
 public class PatternIdentification {
     public static final double DEFAULT_CERTAINTY_WHEN_NO_PREDICTION_HISTORY = 0.6;
     public static final double SAFE_CERTAINTY = 0.8;
-    private long predictionTime;
+
+    private final long predictionTime;
 
     @NotNull
-    private EnemyMovePattern enemyMovePattern;
+    private final EnemyMovePattern enemyMovePattern;
+    /**
+     * The value is from 0.0 to 1.0
+     */
+    private final double certainty;
+    //TODO add dominantPattern and dominantPatternCertainty
 
     public PatternIdentification(long predictionTime, EnemyMovePattern enemyMovePattern, double certainty) {
         this.predictionTime = predictionTime;
@@ -22,21 +28,9 @@ public class PatternIdentification {
         this.certainty = certainty;
     }
 
-    /**
-     * The value is from 0.0 to 1.0
-     */
-    private double certainty = DEFAULT_CERTAINTY_WHEN_NO_PREDICTION_HISTORY;
-
-    public PatternIdentification(long predictionTime, EnemyMovePattern enemyMovePattern) {
-        this.predictionTime = predictionTime;
-        this.enemyMovePattern = enemyMovePattern;
-    }
-
-    //TODO add dominantPattern and dominantPatternCertainty
-
     @Override
     public String toString() {
-        return String.format("[%s]{%s: %.2f}", predictionTime, enemyMovePattern, certainty);
+        return String.format("{%s - %s %.2f}", predictionTime, enemyMovePattern, certainty);
     }
 
 

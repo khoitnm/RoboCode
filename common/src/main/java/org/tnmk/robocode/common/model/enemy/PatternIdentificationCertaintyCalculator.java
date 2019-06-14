@@ -17,7 +17,7 @@ public class PatternIdentificationCertaintyCalculator {
                 .filter(item -> item.getEnemyMovePattern() == enemyMovePattern)
                 .count();
 
-        double certaintyPredictionWithSameMovePattern = countPredictionWithSameMovePattern / enemyPredictionHistory.countHistoryItems();
+        double certaintyPredictionWithSameMovePattern = (double) countPredictionWithSameMovePattern / enemyPredictionHistory.countHistoryItems();
 
         PatternIdentification patternIdentification = new PatternIdentification(certaintyCalculationTime, enemyMovePattern, certaintyPredictionWithSameMovePattern);
         return patternIdentification;

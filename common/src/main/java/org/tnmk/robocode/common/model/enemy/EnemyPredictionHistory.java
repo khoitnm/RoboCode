@@ -10,4 +10,16 @@ public class EnemyPredictionHistory extends History<EnemyPrediction> {
         super(HISTORY_SIZE);
         this.enemyName = enemyName;
     }
+
+    /**
+     * @param enemyPrediction
+     * @return check the enemyPrediction has newer data compare to this current historyItems.
+     */
+    public boolean isNewerCurrentHistoryItems(EnemyPrediction enemyPrediction){
+        return this.historyItems == null || this.historyItems.isEmpty() || enemyPrediction.getPredictionTime() > getLatestHistoryItem().getPredictionTime();
+    }
+
+    public String getEnemyName() {
+        return enemyName;
+    }
 }

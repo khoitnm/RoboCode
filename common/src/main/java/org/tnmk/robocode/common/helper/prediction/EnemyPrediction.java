@@ -11,6 +11,9 @@ import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
  * While the class {@link EnemyStatisticContext} represents the history of enemy data as well as the history of prediction.
  */
 public class EnemyPrediction {
+    /**
+     * Note: this is not the time we do prediction. It's the corresponding time of the predictionPosition.
+     */
     private long predictionTime;
     private EnemyMovePattern enemyMovePattern;
     private Point2D predictionPosition;
