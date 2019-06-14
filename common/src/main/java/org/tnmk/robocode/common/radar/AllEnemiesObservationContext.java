@@ -4,10 +4,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.tnmk.robocode.common.gun.pattern.EnemyPatternTypeUtils;
+import org.tnmk.robocode.common.gun.pattern.EnemyMovePatternIdentifyHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
-import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
+import org.tnmk.robocode.common.model.enemy.EnemyPredictionHistory;
+import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 
@@ -19,7 +20,7 @@ public class AllEnemiesObservationContext {
     private final AdvancedRobot robot;
 
     private final Map<String, Enemy> enemiesMapByName = Collections.synchronizedMap(new HashMap<>());
-    private final Map<String, EnemyPatternPrediction> enemiesPatternPredictionsMapByName = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String, EnemyStatisticContext> enemiesPatternPredictionsMapByName = Collections.synchronizedMap(new HashMap<>());
 
 
     public AllEnemiesObservationContext(AdvancedRobot robot) {
@@ -36,15 +37,18 @@ public class AllEnemiesObservationContext {
 
     public void addEnemy(Enemy enemy) {
         this.enemiesMapByName.put(enemy.getName(), enemy);
-        EnemyPatternPrediction enemyPatternPrediction = this.enemiesPatternPredictionsMapByName.get(enemy.getName());
-        if (enemyPatternPrediction == null) {
+        EnemyStatisticContext enemyStatisticContext = this.enemiesPatternPredictionsMapByName.get(enemy.getName());
+        if (enemyStatisticContext == null) {
             EnemyHistory enemyHistory = new EnemyHistory(enemy.getName(), enemy);
-            enemyPatternPrediction = new EnemyPatternPrediction(enemy.getName(), enemyHistory);
-            enemiesPatternPredictionsMapByName.put(enemy.getName(), enemyPatternPrediction);
+            EnemyPredictionHistory enemyPredictionHistory = new EnemyPredictionHistory(enemy.getName());
+            enemyStatisticContext = new EnemyStatisticContext(enemy.getName(), enemyHistory, enemyPredictionHistory);
+            enemiesPatternPredictionsMapByName.put(enemy.getName(), enemyStatisticContext);
         } else {
-            enemyPatternPrediction.getEnemyHistory().addToHistory(enemy);
-            EnemyPatternTypeUtils.identifyPatternIfNecessary(enemyPatternPrediction);
+            enemyStatisticContext.getEnemyHistory().addToHistory(enemy);
         }
+        long currentTime = enemy.getTime();
+        EnemyMovePatternIdentifyHelper.identifyEnemyPatternIfNecessary(currentTime, enemyStatisticContext);
+
     }
 
     /**
@@ -67,7 +71,7 @@ public class AllEnemiesObservationContext {
         this.enemiesMapByName.remove(enemyName);
     }
 
-    public EnemyPatternPrediction getEnemyPatternPrediction(String enemyName) {
+    public EnemyStatisticContext getEnemyPatternPrediction(String enemyName) {
         return this.enemiesPatternPredictionsMapByName.get(enemyName);
     }
 }

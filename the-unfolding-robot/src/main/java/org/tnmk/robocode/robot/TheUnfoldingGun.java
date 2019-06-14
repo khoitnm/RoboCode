@@ -2,13 +2,12 @@ package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
-import org.tnmk.robocode.common.gun.pattern.CircularPatternGun;
-import org.tnmk.robocode.common.gun.pattern.EnemyPatternType;
-import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
+import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
+import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
-import org.tnmk.robocode.common.robot.OnCustomEventControl;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.LoopableRun;
+import org.tnmk.robocode.common.robot.OnCustomEventControl;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
 import robocode.CustomEvent;
@@ -29,7 +28,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
     private GFTAimGun gftAimGun;
-    private CircularPatternGun circularPatternGun;
+    private PatternPredictionGun patternPredictionGun;
     private GunStateContext gunStateContext;
 
 
@@ -39,21 +38,20 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
         this.gftAimGun = new GFTAimGun(robot, gunStateContext);
-        this.circularPatternGun = new CircularPatternGun(robot, allEnemiesObservationContext, gunStateContext);
+        this.patternPredictionGun = new PatternPredictionGun(robot, allEnemiesObservationContext, gunStateContext);
     }
 
     //TODO share aiming context. When aiming for one algorithm, other algorithm shouldn't change aiming direction.
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        EnemyPatternPrediction enemyPatternPrediction = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName());
-        if (enemyPatternPrediction == null || !enemyPatternPrediction.isIdentifiedPattern()) {
+        EnemyStatisticContext enemyStatisticContext = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName());
+//        LogHelper.logSimple(robot, "Enemy: " + scannedRobotEvent.getName()
+//                + "\n\t\t Pattern: " + enemyStatisticContext.getPatternIdentification()
+//                + "\n\t\t predictionHistory: \t" + enemyStatisticContext.getEnemyPredictionHistory().getAllHistoryItems()
+//        );
+        if (enemyStatisticContext == null || !enemyStatisticContext.hasCertainPattern()) {
             aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
         } else {
-            EnemyPatternType enemyPatternType = enemyPatternPrediction.getEnemyPatternType();
-            if (enemyPatternType == EnemyPatternType.CIRCULAR) {
-                circularPatternGun.onScannedRobot(scannedRobotEvent);
-            } else {//TODO handle EnemyPatternType.LINEAR
-                aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
-            }
+            patternPredictionGun.onScannedRobot(scannedRobotEvent);
         }
 
 
@@ -92,6 +90,6 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
 
     @Override
     public void runLoop() {
-        circularPatternGun.runLoop();
+        patternPredictionGun.runLoop();
     }
 }

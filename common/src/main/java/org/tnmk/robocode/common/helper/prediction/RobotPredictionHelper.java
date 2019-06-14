@@ -7,7 +7,10 @@ import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import robocode.Rules;
 
-public class MovePredictionHelper {
+/**
+ * This class helps to predict our own robot position. Not predict enemy position.
+ */
+public class RobotPredictionHelper {
     /**
      * @param expectPredictionTimePeriod
      * @param currentPosition

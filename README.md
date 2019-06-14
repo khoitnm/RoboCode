@@ -20,15 +20,16 @@ My two main robots are:
   - In general, it will behave differently when 1-on-1 and melee (battle with many bots). It combine different strategies for Radar, Gun and Movement differently depend on the situations.
   - Radar: 
     - Melee: Optimal Scan (just scan area with enemies, don't scan redundant areas)
-    - One-on-One: Lock bot radar.
-  - Gun: Use Waves & GuessFactoring Target + Circular Pattern Prediction.
+    - One-on-One: Lock radar to the enemy.
+  - Gun: Use Waves & GuessFactoring Target + Circular & Linear Pattern Prediction.
   - Movement:
-    - Anti-Gravity movement: 
-      - When near the walls: run directly to the destination point.
-      - In safe area (far away from the walls): run smoothly without changing direction (but it does turn angle heading) to reach the destination. The path may longer but it can avoid being stuck at some small area.
-    - Wall-smooth: reuse the code of Briareos.
-    - Hitting wall or Enemies: reverse direction and turn 90 degree.
-
+    - Melee:
+      - Anti-Gravity movement: 
+        - When near the walls: run directly to the destination point.
+        - In safe area (far away from the walls): run smoothly without changing direction (but it does turn angle heading) to reach the destination. The path may longer but it can avoid being stuck at some small area.
+    - One-on-One: Oscillator: run perpendicular with enemy.   
+    - Wall-smooth: In any case, if near the wall, use Wall-smooth: reuse the code of Briareos.
+    - Hitting wall or Enemies: In any case, if hit walls or enemies, reverse direction and turn 90 degree (to avoid back-and-forth stuck).
 # Terms
 ## Overview
 - Source: our robot
