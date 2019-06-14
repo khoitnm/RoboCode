@@ -43,7 +43,7 @@ public class AllEnemiesObservationContext {
             enemiesPatternPredictionsMapByName.put(enemy.getName(), enemyPatternPrediction);
         } else {
             enemyPatternPrediction.getEnemyHistory().addToHistory(enemy);
-            EnemyPatternTypeUtils.identifyPatternIfNecessary(enemyPatternPrediction);
+            EnemyPatternTypeUtils.identifyPatternIfNecessary(enemy.getTime(), enemyPatternPrediction);
         }
     }
 
