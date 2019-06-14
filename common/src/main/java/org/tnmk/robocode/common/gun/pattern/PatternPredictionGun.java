@@ -13,9 +13,7 @@ import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.helper.prediction.RobotPredictionHelper;
 import org.tnmk.robocode.common.helper.prediction.RobotPrediction;
 import org.tnmk.robocode.common.log.LogHelper;
-import org.tnmk.robocode.common.model.enemy.Enemy;
-import org.tnmk.robocode.common.model.enemy.EnemyHistory;
-import org.tnmk.robocode.common.model.enemy.EnemyPredictionHistory;
+import org.tnmk.robocode.common.model.enemy.*;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
@@ -41,11 +39,11 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         String enemyName = scannedRobotEvent.getName();
-        EnemyPredictionHistory enemyPredictionHistory = allEnemiesObservationContext.getEnemyPatternPrediction(enemyName);
-        Enemy enemy = enemyPredictionHistory.getEnemyHistory().getLatestHistoryItem();
+        EnemyStatisticContext enemyStatisticContext = allEnemiesObservationContext.getEnemyPatternPrediction(enemyName);
+        Enemy enemy = enemyStatisticContext.getEnemyHistory().getLatestHistoryItem();
         double bulletPower = GunHelper.findFirePowerByDistance(enemy.getDistance());
-        LogHelper.logAdvanceRobot(robot, "Aim Circular. bulletPower: "+bulletPower +", distance: "+enemy.getDistance());
-        aimGun(robot, enemyPredictionHistory.getEnemyHistory(), bulletPower);
+        LogHelper.logAdvanceRobot(robot, "Aim Circular. bulletPower: " + bulletPower + ", distance: " + enemy.getDistance());
+        aimGun(robot, enemyStatisticContext, bulletPower);
     }
 
     /**
@@ -53,21 +51,44 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
      * bullet and the target based on a simple iteration.  It then moves
      * the gun to the correct angle to fire on the target.
      **/
-    private void aimGun(AdvancedRobot robot, EnemyHistory enemyHistory, double bulletPower) {
-        EnemyPrediction enemyPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower);
-        Point2D enemyPosition = enemyPrediction.getPredictionPosition();
-        Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
-        /**Turn the gun to the correct angle**/
-
-        double gunBearing = reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
+    private void aimGun(AdvancedRobot robot, EnemyStatisticContext enemyStatisticContext, double bulletPower) {
         if (!gunStateContext.isAiming()) {
-            robot.setTurnGunLeftRadians(gunBearing);
-            gunStateContext.aimGun(GunStrategy.PATTERN_PREDICTION, bulletPower);
-//            LogHelper.logAdvanceRobot(robot, "AimGun " + gunStateContext.getGunStrategy());
-            //Gun will be fired by loopRun() when finishing aiming.
+            EnemyHistory enemyHistory = enemyStatisticContext.getEnemyHistory();
+            PatternIdentification patternIdentification = enemyStatisticContext.getPatternIdentification();
+
+            EnemyPrediction enemyPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower);
+            LogHelper.logAdvanceRobot(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
+
+            /** No matter what is the prediction, always add it into predictionHistory.*/
+            EnemyPredictionHistory enemyPredictionHistory = enemyStatisticContext.getEnemyPredictionHistory();
+            enemyPredictionHistory.addToHistory(enemyPrediction);
+
+            if (enemyPrediction.getEnemyMovePattern() == patternIdentification.getEnemyMovePattern()) {
+                Point2D enemyPosition = enemyPrediction.getPredictionPosition();
+                Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
+
+                /**Turn the gun to the correct angle**/
+                double gunBearing = reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
+                robot.setTurnGunLeftRadians(gunBearing);
+                gunStateContext.aimGun(GunStrategy.PATTERN_PREDICTION, bulletPower);
+                LogHelper.logAdvanceRobot(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
+                        "\n\tpredictionPattern: " + enemyPrediction.getEnemyMovePattern());
+
+                /** This code just aim the gun, don't fire it. The gun will be fired by loopRun() when finishing aiming.*/
+            } else {
+                /**
+                 * Future prediction is not reliable, so don't aim it.
+                 * Gun strategy should not rely on this pattern prediction.
+                 */
+                LogHelper.logAdvanceRobot(robot, "AimGun(NO): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
+                        "\n\tpredictionPattern: " + enemyPrediction.getEnemyMovePattern() +
+                        "\n\tidentifiedPattern: " + patternIdentification.getEnemyMovePattern());
+            }
         } else {
-            // Don't aim the new target until the old target was done!
-            // So don't need to do anything for now.
+            /**
+             * Don't aim the new target until the old target was done!
+             * So don't need to do anything for now.
+             */
         }
     }
 
@@ -105,7 +126,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
             enemyPrediction = PatternPredictionUtils.predictEnemy(latestHistoryItems, timeWhenBulletReachEnemy);
             enemyPosition = enemyPrediction.getPredictionPosition();
         }
-        if (enemyPrediction == null){
+        if (enemyPrediction == null) {
             throw new IllegalStateException("Enemy Prediction should never be null");
         }
 //        debugPredictEnemy(latestHistoryItems);
@@ -115,18 +136,18 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         return enemyPrediction;
     }
 
-    private void debugPredictSelfRobot(AdvancedRobot robot){
+    private void debugPredictSelfRobot(AdvancedRobot robot) {
         Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
         RobotPrediction testRobotPredictionAfter5 = RobotPredictionHelper.predictPosition(5, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
         String message = String.format("Predict self at time %s, position {%.2f, %.2f}", (robot.getTime() + 5), testRobotPredictionAfter5.getPosition().getX(), testRobotPredictionAfter5.getPosition().getY());
         LogHelper.logAdvanceRobot(robot, message);
     }
 
-    private void debugPredictEnemy(List<Enemy> latestHistoryItems){
+    private void debugPredictEnemy(List<Enemy> latestHistoryItems) {
         for (int i = 0; i < 5; i++) {
-            EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemy(latestHistoryItems, robot.getTime()+i);
+            EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemy(latestHistoryItems, robot.getTime() + i);
             Point2D testEnemyPosition = enemyPrediction.getPredictionPosition();
-            String message = String.format("predict enemy at time %s, position {%.2f, %.2f}", robot.getTime()+i, testEnemyPosition.getX(), testEnemyPosition.getY());
+            String message = String.format("predict enemy at time %s, position {%.2f, %.2f}", robot.getTime() + i, testEnemyPosition.getX(), testEnemyPosition.getY());
             LogHelper.logAdvanceRobot(robot, message);
         }
     }

@@ -2,11 +2,12 @@ package org.tnmk.robocode.common.helper.prediction;
 
 import java.awt.geom.Point2D;
 import org.tnmk.robocode.common.gun.pattern.EnemyMovePattern;
+import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 
 /**
  * This class represents the prediction of an enemy at a point of time.
  * <p/>
- * While the class {@link org.tnmk.robocode.common.model.enemy.EnemyPredictionHistory} represents the history of enemy data as well as the history of prediction.
+ * While the class {@link EnemyStatisticContext} represents the history of enemy data as well as the history of prediction.
  */
 public class EnemyPrediction {
     private long predictionTime;

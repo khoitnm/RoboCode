@@ -3,12 +3,11 @@ package org.tnmk.robocode.robot;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
-import org.tnmk.robocode.common.gun.pattern.EnemyMovePattern;
-import org.tnmk.robocode.common.model.enemy.EnemyPredictionHistory;
+import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
-import org.tnmk.robocode.common.robot.OnCustomEventControl;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.LoopableRun;
+import org.tnmk.robocode.common.robot.OnCustomEventControl;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
 import robocode.CustomEvent;
@@ -44,12 +43,12 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
 
     //TODO share aiming context. When aiming for one algorithm, other algorithm shouldn't change aiming direction.
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        EnemyPredictionHistory enemyPredictionHistory = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName());
-        if (enemyPredictionHistory == null || !enemyPredictionHistory.isIdentifiedPattern()) {
+        EnemyStatisticContext enemyStatisticContext = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName());
+        if (enemyStatisticContext == null || !enemyStatisticContext.hasCertainPattern()) {
             aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
         } else {
-            EnemyMovePattern enemyMovePattern = enemyPredictionHistory.getEnemyMovePattern();
-            if (enemyMovePattern != EnemyMovePattern.UNIDENTIFIED) {
+//            EnemyMovePattern enemyMovePattern = enemyStatisticContext.getFinalPredictionMovePattern();
+            if (enemyStatisticContext.hasCertainPattern()) {
                 //If enemy follow any specific pattern, use patternPredictionGun.
                 patternPredictionGun.onScannedRobot(scannedRobotEvent);
             } else {//TODO handle EnemyMovePattern.LINEAR_OR_STAY_STILL & EnemyMovePattern.STAY_STILL
