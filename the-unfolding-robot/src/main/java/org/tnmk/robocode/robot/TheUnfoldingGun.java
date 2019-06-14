@@ -3,6 +3,7 @@ package org.tnmk.robocode.robot;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
+import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
@@ -44,16 +45,11 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     //TODO share aiming context. When aiming for one algorithm, other algorithm shouldn't change aiming direction.
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         EnemyStatisticContext enemyStatisticContext = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName());
+        LogHelper.logSimple(robot, "Pattern: "+enemyStatisticContext.getPatternIdentification());
         if (enemyStatisticContext == null || !enemyStatisticContext.hasCertainPattern()) {
             aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
         } else {
-//            EnemyMovePattern enemyMovePattern = enemyStatisticContext.getFinalPredictionMovePattern();
-            if (enemyStatisticContext.hasCertainPattern()) {
-                //If enemy follow any specific pattern, use patternPredictionGun.
-                patternPredictionGun.onScannedRobot(scannedRobotEvent);
-            } else {//TODO handle EnemyMovePattern.LINEAR_OR_STAY_STILL & EnemyMovePattern.STAY_STILL
-                aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
-            }
+            patternPredictionGun.onScannedRobot(scannedRobotEvent);
         }
 
 

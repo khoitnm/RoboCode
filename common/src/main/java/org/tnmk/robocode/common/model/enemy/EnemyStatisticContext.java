@@ -45,15 +45,9 @@ public class EnemyStatisticContext {
 //    }
 
     public boolean hasCertainPattern() {
-        return patternIdentification != null && patternIdentification.getEnemyMovePattern() != EnemyMovePattern.UNIDENTIFIED && patternIdentification.getCertainty() > 0.8;
-    }
-
-    public EnemyMovePattern getFinalPredictionMovePattern() {
-        if (patternIdentification == null) {
-            return EnemyMovePattern.UNIDENTIFIED;
-        } else {
-            return patternIdentification.getEnemyMovePattern();
-        }
+        return patternIdentification != null
+                && patternIdentification.getEnemyMovePattern() != EnemyMovePattern.UNIDENTIFIED
+                && patternIdentification.getCertainty() > PatternIdentification.SAFE_CERTAINTY;
     }
 
     public String getEnemyName() {

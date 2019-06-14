@@ -42,7 +42,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         EnemyStatisticContext enemyStatisticContext = allEnemiesObservationContext.getEnemyPatternPrediction(enemyName);
         Enemy enemy = enemyStatisticContext.getEnemyHistory().getLatestHistoryItem();
         double bulletPower = GunHelper.findFirePowerByDistance(enemy.getDistance());
-        LogHelper.logAdvanceRobot(robot, "Aim Circular. bulletPower: " + bulletPower + ", distance: " + enemy.getDistance());
+        LogHelper.logSimple(robot, "Aim PatternPrediction. bulletPower: " + bulletPower + ", distance: " + enemy.getDistance());
         aimGun(robot, enemyStatisticContext, bulletPower);
     }
 
@@ -71,8 +71,11 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
                 double gunBearing = reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
                 robot.setTurnGunLeftRadians(gunBearing);
                 gunStateContext.aimGun(GunStrategy.PATTERN_PREDICTION, bulletPower);
-                LogHelper.logAdvanceRobot(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
-                        "\n\tpredictionPattern: " + enemyPrediction.getEnemyMovePattern());
+                LogHelper.logSimple(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
+                        "\n\tidentifiedPattern: " + patternIdentification +
+                        "\n\tnewPrediction: " + enemyPrediction +
+                        "\n\tpredictionHistory: " + enemyPredictionHistory.getAllHistoryItems()
+                );
 
                 /** This code just aim the gun, don't fire it. The gun will be fired by loopRun() when finishing aiming.*/
             } else {
@@ -80,9 +83,11 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
                  * Future prediction is not reliable, so don't aim it.
                  * Gun strategy should not rely on this pattern prediction.
                  */
-                LogHelper.logAdvanceRobot(robot, "AimGun(NO): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
-                        "\n\tpredictionPattern: " + enemyPrediction.getEnemyMovePattern() +
-                        "\n\tidentifiedPattern: " + patternIdentification.getEnemyMovePattern());
+                LogHelper.logSimple(robot, "AimGun(NO): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
+                        "\n\tidentifiedPattern: " + patternIdentification +
+                        "\n\tnewPrediction: " + enemyPrediction +
+                        "\n\tpredictionHistory: " + enemyPredictionHistory.getAllHistoryItems()
+                );
             }
         } else {
             /**

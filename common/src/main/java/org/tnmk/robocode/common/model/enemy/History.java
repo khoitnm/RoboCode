@@ -1,5 +1,6 @@
 package org.tnmk.robocode.common.model.enemy;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +40,10 @@ public class History<T> {
 
     public T getLatestHistoryItem() {
         return historyItems.get(0);
+    }
+
+    public List<T> getAllHistoryItems() {
+        return new ArrayList<>(historyItems);
     }
 
     public List<T> getLatestHistoryItems(int historyItemsCount) {

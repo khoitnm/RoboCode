@@ -29,7 +29,7 @@ public class EnemyMovePatternIdentifyHelper {
     public static void identifyEnemyPatternIfNecessary(long predictionTime, EnemyStatisticContext enemyStatisticContext) {
         if (!hasNewIdentifiedPattern(predictionTime, enemyStatisticContext) && hasEnoughReliableHistoryData(enemyStatisticContext)) {
             Optional<EnemyMovePattern> historicalPatternOptional = EnemyMovePatternIdentifyHelper.predictHistoricalPattern(enemyStatisticContext.getEnemyHistory());
-            System.out.println("Historical Prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", historicalPattern: " + historicalPatternOptional.get() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
+//            System.out.println("Historical Prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", historicalPattern: " + historicalPatternOptional.get() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
             if (historicalPatternOptional.isPresent()) {
                 EnemyMovePattern pattern = historicalPatternOptional.get();
                 PatternIdentification patternIdentification = PatternIdentificationCertaintyCalculator.calculateHistoryCertainty(predictionTime, pattern, enemyStatisticContext.getEnemyPredictionHistory());
@@ -71,7 +71,7 @@ public class EnemyMovePatternIdentifyHelper {
         } else {
             HistoricalPredictionResult historicalPredictionResult = predictAtTheTimeOfAnExpectedHistoryItem(enemyHistory, 3, 0);
             if (predictMostlyCorrect(historicalPredictionResult.predictionDeltaTime, historicalPredictionResult.predictionPosition, historicalPredictionResult.actualPosition)) {
-                debugPrintPredictedPositionAndActualPosition(enemyHistory.getName(), historicalPredictionResult.timeOfNewestItemForPrediction, historicalPredictionResult.itemOfExpectComparision, historicalPredictionResult.predictionDeltaTime, historicalPredictionResult.predictionPosition, historicalPredictionResult.actualPosition);
+//                debugPrintPredictedPositionAndActualPosition(enemyHistory.getName(), historicalPredictionResult.timeOfNewestItemForPrediction, historicalPredictionResult.itemOfExpectComparision, historicalPredictionResult.predictionDeltaTime, historicalPredictionResult.predictionPosition, historicalPredictionResult.actualPosition);
                 return Optional.of(historicalPredictionResult.enemyMovePattern);
             } else {
                 return Optional.of(EnemyMovePattern.UNIDENTIFIED);

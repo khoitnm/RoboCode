@@ -10,6 +10,7 @@ import org.tnmk.robocode.common.gun.pattern.EnemyMovePattern;
  */
 public class PatternIdentification {
     public static final double DEFAULT_CERTAINTY_WHEN_NO_PREDICTION_HISTORY = 0.6;
+    public static final double SAFE_CERTAINTY = 0.8;
     private long predictionTime;
 
     @NotNull
@@ -34,8 +35,8 @@ public class PatternIdentification {
     //TODO add dominantPattern and dominantPatternCertainty
 
     @Override
-    public String toString(){
-        return String.format("{%s: %.2f}", enemyMovePattern, certainty);
+    public String toString() {
+        return String.format("[%s]{%s: %.2f}", predictionTime, enemyMovePattern, certainty);
     }
 
 

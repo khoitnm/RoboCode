@@ -2,6 +2,7 @@ package org.tnmk.robocode.common.helper.prediction;
 
 import java.awt.geom.Point2D;
 import org.tnmk.robocode.common.gun.pattern.EnemyMovePattern;
+import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 
 /**
@@ -18,6 +19,11 @@ public class EnemyPrediction {
         this.predictionTime = predictionTime;
         this.enemyMovePattern = enemyMovePattern;
         this.predictionPosition = predictionPosition;
+    }
+
+    @Override
+    public String toString(){
+        return String.format("[%s] %s: %s", predictionTime, enemyMovePattern, LogHelper.toString(predictionPosition));
     }
 
     public long getPredictionTime() {
