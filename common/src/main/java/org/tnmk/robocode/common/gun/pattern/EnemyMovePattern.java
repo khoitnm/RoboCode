@@ -1,7 +1,8 @@
 package org.tnmk.robocode.common.gun.pattern;
 
 public enum EnemyMovePattern {
-    //TODO for now, should split the logic for circular and linear pattern.
-    CIRCULAR_AND_LINEAR,
+    CIRCULAR,
+    //TODO should split LINEAR and STAY_STILL
+    LINEAR_OR_STAY_STILL,
     UNIDENTIFIED
 }

@@ -10,7 +10,7 @@ import robocode.Rules;
 /**
  * This class helps to predict our own robot position. Not predict enemy position.
  */
-public class MyRobotMovePredictionHelper {
+public class RobotPredictionHelper {
     /**
      * @param expectPredictionTimePeriod
      * @param currentPosition
