@@ -10,7 +10,7 @@ import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.GunUtils;
 import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.robocode.common.helper.prediction.EnemyPositionPrediction;
-import org.tnmk.robocode.common.helper.prediction.MovePredictionHelper;
+import org.tnmk.robocode.common.helper.prediction.MyRobotMovePredictionHelper;
 import org.tnmk.robocode.common.helper.prediction.RobotPrediction;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
@@ -62,7 +62,7 @@ public class CircularAndLinearPatternGun implements LoopableRun, OnScannedRobotC
         double gunBearing = reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
         if (!gunStateContext.isAiming()) {
             robot.setTurnGunLeftRadians(gunBearing);
-            gunStateContext.aimGun(GunStrategy.CIRCULAR, bulletPower);
+            gunStateContext.aimGun(GunStrategy.CIRCULAR_AND_LINEAR, bulletPower);
 //            LogHelper.logAdvanceRobot(robot, "AimGun " + gunStateContext.getGunStrategy());
             //Gun will be fired by loopRun() when finishing aiming.
         } else {
@@ -88,7 +88,7 @@ public class CircularAndLinearPatternGun implements LoopableRun, OnScannedRobotC
 
         long periodForTurningGun = 0;
         for (int i = 0; i < ENEMY_PREDICTION_TIMES; i++) {//this loop is used to improve the correctness of prediction.
-            RobotPrediction robotPrediction = MovePredictionHelper.predictPosition(periodForTurningGun, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
+            RobotPrediction robotPrediction = MyRobotMovePredictionHelper.predictPosition(periodForTurningGun, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
             Point2D predictRobotPosition = robotPrediction.getPosition();
 //            String message = String.format("Predict at time %s, position {%.2f, %.2f}", (robot.getTime() + periodForTurningGun), predictRobotPosition.getX(), predictRobotPosition.getY());
 //            LogHelper.logAdvanceRobot(robot, message);
@@ -116,7 +116,7 @@ public class CircularAndLinearPatternGun implements LoopableRun, OnScannedRobotC
 
     private void debugPredictSelfRobot(AdvancedRobot robot){
         Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
-        RobotPrediction testRobotPredictionAfter5 = MovePredictionHelper.predictPosition(5, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
+        RobotPrediction testRobotPredictionAfter5 = MyRobotMovePredictionHelper.predictPosition(5, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
         String message = String.format("Predict self at time %s, position {%.2f, %.2f}", (robot.getTime() + 5), testRobotPredictionAfter5.getPosition().getX(), testRobotPredictionAfter5.getPosition().getY());
         LogHelper.logAdvanceRobot(robot, message);
     }
