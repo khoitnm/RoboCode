@@ -23,25 +23,50 @@ public class BulletPowerForPatternPredictionGunHelper {
     private static final double DELTA_BULLET_POWER = MIN_EXPECT_BULLET_POWER - Rules.MAX_BULLET_POWER;
     private static final double BULLET_POWER_DISTRIBUTION_OVER_DISTANCE = DELTA_BULLET_POWER / DELTA_DISTANCE;
 
+    private static final double INCREASE_POWER_FOR_EACH_REMAIN_ENEMIES = 0.15;
+
+    /**
+     * @param fireDistance
+     * @param movePatternCertainty
+     * @param enemiesCount the number of current enemies on the battle field.
+     * @return
+     * @see #reckonBulletPower(double, double)
+     */
+    public static double reckonBulletPower(double fireDistance, double movePatternCertainty, double enemiesCount) {
+        double bulletPower = reckonBulletPower(fireDistance, movePatternCertainty);
+        bulletPower += (enemiesCount * INCREASE_POWER_FOR_EACH_REMAIN_ENEMIES);
+        bulletPower = reckonBulletPowerWithinLimit(bulletPower);
+        return bulletPower;
+    }
+
     /**
      * @param fireDistance         the distance to target.
      * @param movePatternCertainty from 0.0 to 1.0. The lower number is, the lower certainty is. It means the bullet power will reduce to avoid too much risk.
      * @return bullet power.
      * If it's zero, shouldn't fire bullet.
      */
-    public static double findBulletPowerByDistanceAndMovePatternCertainty(double fireDistance, double movePatternCertainty) {
+    private static double reckonBulletPower(double fireDistance, double movePatternCertainty) {
         if (movePatternCertainty <= 0) {
             movePatternCertainty = 0.5;
         }
 
         double bulletPower = Rules.MAX_BULLET_POWER + (fireDistance - MIN_DISTANCE_TO_REACH_MAX_POWER) * BULLET_POWER_DISTRIBUTION_OVER_DISTANCE * movePatternCertainty;
-        bulletPower = Math.min(Rules.MAX_BULLET_POWER, bulletPower);
-        if (bulletPower > Rules.MAX_BULLET_POWER) {
-            bulletPower = Rules.MAX_BULLET_POWER;
-        } else if (bulletPower < MIN_EXPECT_BULLET_POWER) {
-            bulletPower = randomlyShouldFireBullet(bulletPower);
-        }
         return bulletPower;
+    }
+
+    /**
+     * @param bulletPower
+     * @return if bulletPower greater than limit or lower than the limit, adjust it to be within the limit.
+     * If the result is zero, it means you shouldn't fire bullet.
+     */
+    private static double reckonBulletPowerWithinLimit(double bulletPower) {
+        double bulletPowerWithinLimit = Math.min(Rules.MAX_BULLET_POWER, bulletPower);
+        if (bulletPower > Rules.MAX_BULLET_POWER) {
+            bulletPowerWithinLimit = Rules.MAX_BULLET_POWER;
+        } else if (bulletPower < MIN_EXPECT_BULLET_POWER) {
+            bulletPowerWithinLimit = randomlyShouldFireBullet(bulletPower);
+        }
+        return bulletPowerWithinLimit;
     }
 
     /**
