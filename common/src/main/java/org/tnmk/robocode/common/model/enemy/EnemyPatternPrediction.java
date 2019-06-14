@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.model.enemy;
 
-import org.tnmk.robocode.common.gun.pattern.EnemyPatternType;
+import org.tnmk.robocode.common.gun.pattern.EnemyMovePattern;
 
 public class  EnemyPatternPrediction {
     /**
@@ -16,7 +16,7 @@ public class  EnemyPatternPrediction {
     /**
      * This field is never null
      */
-    private EnemyPatternType enemyPatternType = EnemyPatternType.UNIDENTIFIED;
+    private EnemyMovePattern enemyMovePattern = EnemyMovePattern.UNIDENTIFIED;
 
     private long predictedTime;
 
@@ -25,13 +25,13 @@ public class  EnemyPatternPrediction {
         this.enemyHistory = enemyHistory;
     }
 
-    public void setEnemyPatternType(long predictionTime, EnemyPatternType enemyPatternType) {
-        this.enemyPatternType = enemyPatternType;
+    public void setEnemyPatternType(long predictionTime, EnemyMovePattern enemyMovePattern) {
+        this.enemyMovePattern = enemyMovePattern;
         this.predictedTime = predictionTime;
     }
 
     public boolean isIdentifiedPattern() {
-        return enemyPatternType != EnemyPatternType.UNIDENTIFIED;
+        return enemyMovePattern != EnemyMovePattern.UNIDENTIFIED;
     }
 
     public String getEnemyName() {
@@ -42,8 +42,8 @@ public class  EnemyPatternPrediction {
         return enemyHistory;
     }
 
-    public EnemyPatternType getEnemyPatternType() {
-        return enemyPatternType;
+    public EnemyMovePattern getEnemyMovePattern() {
+        return enemyMovePattern;
     }
 
 

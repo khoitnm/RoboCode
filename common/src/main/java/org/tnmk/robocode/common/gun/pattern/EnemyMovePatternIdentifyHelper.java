@@ -7,7 +7,7 @@ import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
 
-public class EnemyPatternTypeUtils {
+public class EnemyMovePatternIdentifyHelper {
     private static final int MIN_HISTORY_ITEMS_TO_PREDICT_PATTERN = 3;
     private static final double ACCEPTABLE_PREDICTION_DIFF_PER_TICK = 0.5;//RobotPhysics.ROBOT_SIZE / 2;
     /**
@@ -23,9 +23,9 @@ public class EnemyPatternTypeUtils {
      */
     public static void identifyPatternIfNecessary(long predictionTime, EnemyPatternPrediction enemyPatternPrediction) {
         if (!hasNewIdentifiedPattern(predictionTime, enemyPatternPrediction) && hasEnoughReliableHistoryData(enemyPatternPrediction)) {
-            EnemyPatternType enemyPatternType = EnemyPatternTypeUtils.identifyPattern(enemyPatternPrediction.getEnemyHistory());
-            System.out.println("Enemy name: " + enemyPatternPrediction.getEnemyName() + ", pattern: " + enemyPatternType + ", historySize: " + enemyPatternPrediction.getEnemyHistory().countHistoryItems());
-            enemyPatternPrediction.setEnemyPatternType(predictionTime, enemyPatternType);
+            EnemyMovePattern enemyMovePattern = EnemyMovePatternIdentifyHelper.identifyPattern(enemyPatternPrediction.getEnemyHistory());
+            System.out.println("Enemy name: " + enemyPatternPrediction.getEnemyName() + ", pattern: " + enemyMovePattern + ", historySize: " + enemyPatternPrediction.getEnemyHistory().countHistoryItems());
+            enemyPatternPrediction.setEnemyPatternType(predictionTime, enemyMovePattern);
         }
     }
 
@@ -49,9 +49,9 @@ public class EnemyPatternTypeUtils {
      * @param enemyHistory at this moment, the first item in this enemyHistory is the current enemy data which has just added in the same tick.
      * @return
      */
-    public static EnemyPatternType identifyPattern(EnemyHistory enemyHistory) {
+    public static EnemyMovePattern identifyPattern(EnemyHistory enemyHistory) {
         if (enemyHistory.countHistoryItems() < MIN_HISTORY_ITEMS_TO_PREDICT_PATTERN) {
-            return EnemyPatternType.UNIDENTIFIED;
+            return EnemyMovePattern.UNIDENTIFIED;
         } else {
             List<Enemy> enemyList = enemyHistory.getLatestHistoryItems(4);
             List<Enemy> historyExcludeCurrentEnemyData = enemyList.subList(1, enemyList.size());
@@ -63,10 +63,10 @@ public class EnemyPatternTypeUtils {
             Point2D actualEnemyPosition = currentEnemyData.getPosition();
             if (predictMostlyCorrect(deltaTimeBetweenPredictionAndActual, predictedEnemyBasedOnHistoryExcludeCurrentData, actualEnemyPosition)) {
                 debugPrintPredictedPositionAndActualPosition(currentEnemyData.getName(), timeOfLatestDataForPrediction, currentTime, deltaTimeBetweenPredictionAndActual, predictedEnemyBasedOnHistoryExcludeCurrentData, actualEnemyPosition);
-                return EnemyPatternType.CIRCULAR_AND_LINEAR;
+                return EnemyMovePattern.CIRCULAR_AND_LINEAR;
             } else {
                 //TODO predict Linear
-                return EnemyPatternType.UNIDENTIFIED;
+                return EnemyMovePattern.UNIDENTIFIED;
             }
         }
     }

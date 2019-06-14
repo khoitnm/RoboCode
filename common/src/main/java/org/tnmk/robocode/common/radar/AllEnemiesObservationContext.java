@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.tnmk.robocode.common.gun.pattern.EnemyPatternTypeUtils;
+import org.tnmk.robocode.common.gun.pattern.EnemyMovePatternIdentifyHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
@@ -43,7 +43,7 @@ public class AllEnemiesObservationContext {
             enemiesPatternPredictionsMapByName.put(enemy.getName(), enemyPatternPrediction);
         } else {
             enemyPatternPrediction.getEnemyHistory().addToHistory(enemy);
-            EnemyPatternTypeUtils.identifyPatternIfNecessary(enemy.getTime(), enemyPatternPrediction);
+            EnemyMovePatternIdentifyHelper.identifyPatternIfNecessary(enemy.getTime(), enemyPatternPrediction);
         }
     }
 

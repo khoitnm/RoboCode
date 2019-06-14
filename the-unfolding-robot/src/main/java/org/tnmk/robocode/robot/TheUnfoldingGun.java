@@ -3,7 +3,7 @@ package org.tnmk.robocode.robot;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.pattern.CircularAndLinearPatternGun;
-import org.tnmk.robocode.common.gun.pattern.EnemyPatternType;
+import org.tnmk.robocode.common.gun.pattern.EnemyMovePattern;
 import org.tnmk.robocode.common.model.enemy.EnemyPatternPrediction;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.OnCustomEventControl;
@@ -48,10 +48,10 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
         if (enemyPatternPrediction == null || !enemyPatternPrediction.isIdentifiedPattern()) {
             aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
         } else {
-            EnemyPatternType enemyPatternType = enemyPatternPrediction.getEnemyPatternType();
-            if (enemyPatternType == EnemyPatternType.CIRCULAR_AND_LINEAR) {
+            EnemyMovePattern enemyMovePattern = enemyPatternPrediction.getEnemyMovePattern();
+            if (enemyMovePattern == EnemyMovePattern.CIRCULAR_AND_LINEAR) {
                 circularAndLinearPatternGun.onScannedRobot(scannedRobotEvent);
-            } else {//TODO handle EnemyPatternType.LINEAR & EnemyPatternType.STAY_STILL
+            } else {//TODO handle EnemyMovePattern.LINEAR & EnemyMovePattern.STAY_STILL
                 aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
             }
         }
