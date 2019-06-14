@@ -6,6 +6,7 @@ import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.gun.GunStateContext;
+import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.GunUtils;
 import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.robocode.common.helper.prediction.EnemyPositionPrediction;
@@ -42,8 +43,9 @@ public class CircularPatternGun implements LoopableRun, OnScannedRobotControl {
         String enemyName = scannedRobotEvent.getName();
         EnemyPatternPrediction enemyPatternPrediction = allEnemiesObservationContext.getEnemyPatternPrediction(enemyName);
         Enemy enemy = enemyPatternPrediction.getEnemyHistory().getLatestHistoryItem();
-        double firePower = GunHelper.findFirePowerByDistance(enemy.getDistance());
-        aimGun(robot, enemyPatternPrediction.getEnemyHistory(), firePower);
+        double bulletPower = GunHelper.findFirePowerByDistance(enemy.getDistance());
+        LogHelper.logAdvanceRobot(robot, "Aim Circular. bulletPower: "+bulletPower +", distance: "+enemy.getDistance());
+        aimGun(robot, enemyPatternPrediction.getEnemyHistory(), bulletPower);
     }
 
     /**
@@ -51,8 +53,8 @@ public class CircularPatternGun implements LoopableRun, OnScannedRobotControl {
      * bullet and the target based on a simple iteration.  It then moves
      * the gun to the correct angle to fire on the target.
      **/
-    private void aimGun(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
-        EnemyPositionPrediction enemyPositionPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, firePower);
+    private void aimGun(AdvancedRobot robot, EnemyHistory enemyHistory, double bulletPower) {
+        EnemyPositionPrediction enemyPositionPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower);
         Point2D enemyPosition = enemyPositionPrediction.getPosition();
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
         /**Turn the gun to the correct angle**/
@@ -60,8 +62,8 @@ public class CircularPatternGun implements LoopableRun, OnScannedRobotControl {
         double gunBearing = reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
         if (!gunStateContext.isAiming()) {
             robot.setTurnGunLeftRadians(gunBearing);
-            gunStateContext.aimGun(firePower);
-//            LogHelper.logAdvanceRobot(robot, "AimGun " + gunStateContext.getGunState());
+            gunStateContext.aimGun(GunStrategy.CIRCULAR, bulletPower);
+//            LogHelper.logAdvanceRobot(robot, "AimGun " + gunStateContext.getGunStrategy());
             //Gun will be fired by loopRun() when finishing aiming.
         } else {
             // Don't aim the new target until the old target was done!
@@ -129,7 +131,7 @@ public class CircularPatternGun implements LoopableRun, OnScannedRobotControl {
 
     @Override
     public void runLoop() {
-//        LogHelper.logAdvanceRobot(robot, "GunState: " + gunStateContext.getGunState() + " gunTurnRemaining: " + robot.getGunTurnRemaining());
+//        LogHelper.logAdvanceRobot(robot, "GunStrategy: " + gunStateContext.getGunStrategy() + " gunTurnRemaining: " + robot.getGunTurnRemaining());
         if (gunStateContext.isAiming()) {
             if (DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
                 robot.setFire(gunStateContext.getBulletPower());

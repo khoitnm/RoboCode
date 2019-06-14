@@ -51,7 +51,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
             EnemyPatternType enemyPatternType = enemyPatternPrediction.getEnemyPatternType();
             if (enemyPatternType == EnemyPatternType.CIRCULAR) {
                 circularPatternGun.onScannedRobot(scannedRobotEvent);
-            } else {//TODO handle EnemyPatternType.LINEAR
+            } else {//TODO handle EnemyPatternType.LINEAR & EnemyPatternType.STAY_STILL
                 aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
             }
         }

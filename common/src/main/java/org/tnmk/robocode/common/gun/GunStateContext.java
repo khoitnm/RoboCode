@@ -8,20 +8,27 @@ package org.tnmk.robocode.common.gun;
  */
 public class GunStateContext {
 
-    private GunState gunState = GunState.REST;
+    /**
+     * If null, it means there's no aiming any target.
+     */
+    private GunStrategy gunStrategy = null;
     private double bulletPower;
 
-    public void aimGun(double bulletPower) {
-        this.gunState = GunState.AIMING;
+    /**
+     * @param gunStrategy
+     * @param bulletPower
+     */
+    public void aimGun(GunStrategy gunStrategy, double bulletPower) {
+        this.gunStrategy = gunStrategy;
         this.bulletPower = bulletPower;
     }
 
     public void rest() {
-        gunState = GunState.REST;
+        gunStrategy = null;
     }
 
-    public GunState getGunState() {
-        return gunState;
+    public GunStrategy getGunStrategy() {
+        return gunStrategy;
     }
 
     public double getBulletPower() {
@@ -29,6 +36,6 @@ public class GunStateContext {
     }
 
     public boolean isAiming() {
-        return gunState == GunState.AIMING;
+        return gunStrategy != null;
     }
 }

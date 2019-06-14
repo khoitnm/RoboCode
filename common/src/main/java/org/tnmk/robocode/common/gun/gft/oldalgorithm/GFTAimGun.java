@@ -1,13 +1,14 @@
 package org.tnmk.robocode.common.gun.gft.oldalgorithm;
 
+import java.awt.geom.Point2D;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.gun.GunStateContext;
+import org.tnmk.robocode.common.gun.GunStrategy;
+import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
-
-import java.awt.geom.Point2D;
 
 /**
  * Copied from http://old.robowiki.net/robowiki?GFTargetingBot
@@ -45,9 +46,10 @@ public class GFTAimGun implements OnScannedRobotControl {
         lastEnemyVelocity = enemyVelocity;
         wave.bearing = enemyAbsoluteBearing;
         if (!gunStateContext.isAiming()) {
-            gunStateContext.aimGun(wave.bulletPower);
+            gunStateContext.aimGun(GunStrategy.GFT, wave.bulletPower);
             robot.setTurnGunRightRadians(Utils.normalRelativeAngle(enemyAbsoluteBearing - robot.getGunHeadingRadians() + wave.mostVisitedBearingOffset()));
             robot.setFire(wave.bulletPower);
+            LogHelper.logAdvanceRobot(robot, "Aim Circular. bulletPower: " + wave.bulletPower + ", distance: " + enemyDistance);
             gunStateContext.rest();
             if (robot.getEnergy() >= BULLET_POWER) {
                 robot.addCustomEvent(wave);
