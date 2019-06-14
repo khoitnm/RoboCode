@@ -8,6 +8,10 @@ import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyPredictionHistory;
 
+/**
+ * While {@link PatternPredictionUtils} is just do simple prediction at one point of time (that time could be in the future or any time in the past).
+ * Then this class will use the above prediction result to compare with the history data so that it can make sure the above prediction is correct or not.
+ */
 public class EnemyMovePatternIdentifyHelper {
     private static final int MIN_HISTORY_ITEMS_TO_PREDICT_PATTERN = 5;
     private static final double ACCEPTABLE_PREDICTION_DIFF_PER_TICK = 0.5;//RobotPhysics.ROBOT_SIZE / 2;

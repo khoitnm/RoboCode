@@ -8,7 +8,9 @@ import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistoryUtils;
 
 /**
- * https://www.ibm.com/developerworks/library/j-circular/index.html
+ * https://www.ibm.com/developerworks/library/j-circular/index.html <br/>
+ * This class try to predict enemy pattern.<br/>
+ * View more at {@link EnemyMovePatternIdentifyHelper}
  */
 public class PatternPredictionUtils {
 
@@ -28,22 +30,20 @@ public class PatternPredictionUtils {
      * @param enemy                  latest data in history
      * @param avgChangeHeadingRadian average changing heading of the enemy based recent history items.
      * @param predictionTime         the time that we think the bullet will reach the target.
-     * @return guess new enemy's position and also identify pattern at the predictionTime.
+     * @return guess new enemy's position and moving pattern at the predictionTime based on the latest enemy data and average changing heading.
      *
      * <pre>
      *  TODO improve:
-     *      split linear prediction out of circular prediction.
-     *      use averageHeading instead of latest heading.
      *      use averageVelocity instead of latest velocity
      * </pre>
      */
     public static EnemyPrediction predictEnemy(Enemy enemy, double avgChangeHeadingRadian, long predictionTime) {
         double diff = predictionTime - enemy.getTime();
         double newX, newY;
-        /**if there is a significant change in heading, use circular
-         path prediction**/
-        double enemyHeadingRadian = AngleUtils.toRadian(enemy.getHeading());
+
         EnemyMovePattern enemyMovePattern;
+        /**if there is a significant change in heading, use circular path prediction**/
+        double enemyHeadingRadian = AngleUtils.toRadian(enemy.getHeading());
         if (Math.abs(avgChangeHeadingRadian) > 0.00001) {
             enemyMovePattern = EnemyMovePattern.CIRCULAR;
             double radius = enemy.getVelocity() / avgChangeHeadingRadian;
@@ -56,10 +56,17 @@ public class PatternPredictionUtils {
         }
         /**if the change in heading is insignificant, use linear path prediction**/
         else {
-            enemyMovePattern = EnemyMovePattern.LINEAR_OR_STAY_STILL;
-            newY = enemy.getPosition().getY() + Math.cos(enemyHeadingRadian) * enemy.getVelocity() * diff;
-            newX = enemy.getPosition().getX() + Math.sin(enemyHeadingRadian) * enemy.getVelocity() * diff;
-        }//TODO stay_still
+            if (enemy.getVelocity() == 0){
+                enemyMovePattern = EnemyMovePattern.STAY_STILL;
+                newY = enemy.getPosition().getY();
+                newX = enemy.getPosition().getX();
+            }else{
+                enemyMovePattern = EnemyMovePattern.LINEAR;
+                newY = enemy.getPosition().getY() + Math.cos(enemyHeadingRadian) * enemy.getVelocity() * diff;
+                newX = enemy.getPosition().getX() + Math.sin(enemyHeadingRadian) * enemy.getVelocity() * diff;
+                //TODO if newX & newY outside the battle field, move prediction point into battle field.
+            }
+        }
         Point2D predictionPosition = new Point2D.Double(newX, newY);
         EnemyPrediction patternPredictionResult = new EnemyPrediction(enemyMovePattern, predictionTime, predictionPosition);
         return patternPredictionResult;
