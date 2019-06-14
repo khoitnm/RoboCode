@@ -18,12 +18,12 @@ public class GunStateContext {
      * @param gunStrategy
      * @param bulletPower
      */
-    public void aimGun(GunStrategy gunStrategy, double bulletPower) {
+    public void saveSateAimGun(GunStrategy gunStrategy, double bulletPower) {
         this.gunStrategy = gunStrategy;
         this.bulletPower = bulletPower;
     }
 
-    public void rest() {
+    public void saveSateRest() {
         gunStrategy = null;
     }
 

@@ -8,10 +8,9 @@ import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.GunUtils;
-import org.tnmk.robocode.common.helper.GunHelper;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
-import org.tnmk.robocode.common.helper.prediction.RobotPredictionHelper;
 import org.tnmk.robocode.common.helper.prediction.RobotPrediction;
+import org.tnmk.robocode.common.helper.prediction.RobotPredictionHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.*;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
@@ -41,9 +40,12 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         String enemyName = scannedRobotEvent.getName();
         EnemyStatisticContext enemyStatisticContext = allEnemiesObservationContext.getEnemyPatternPrediction(enemyName);
         Enemy enemy = enemyStatisticContext.getEnemyHistory().getLatestHistoryItem();
-        double bulletPower = GunHelper.findFirePowerByDistance(enemy.getDistance());
-//        LogHelper.logSimple(robot, "Aim PatternPrediction. bulletPower: " + bulletPower + ", distance: " + enemy.getDistance());
-        aimGun(robot, enemyStatisticContext, bulletPower);
+        double patternCertainty = enemyStatisticContext.getPatternIdentification().getCertainty();
+        double bulletPower = BulletPowerForPatternPredictionGunHelper.findBulletPowerByDistanceAndMovePatternCertainty(enemy.getDistance(), patternCertainty);
+        LogHelper.logSimple(robot, "Aim Pattern: " + enemyStatisticContext.getPatternIdentification() + ", enemy: " + enemyName + ", bulletPower: " + bulletPower + ", distance: " + enemy.getDistance());
+        if (bulletPower > 0) {
+            aimGun(robot, enemyStatisticContext, bulletPower);
+        }
     }
 
     /**
@@ -70,7 +72,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
                 /**Turn the gun to the correct angle**/
                 double gunBearing = reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
                 robot.setTurnGunLeftRadians(gunBearing);
-                gunStateContext.aimGun(GunStrategy.PATTERN_PREDICTION, bulletPower);
+                gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PREDICTION, bulletPower);
 //                LogHelper.logSimple(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
 //                        "\n\tidentifiedPattern: " + patternIdentification +
 //                        "\n\tnewPrediction: " + enemyPrediction +
@@ -163,7 +165,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         if (gunStateContext.isAiming()) {
             if (DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
                 robot.setFire(gunStateContext.getBulletPower());
-                gunStateContext.rest();
+                gunStateContext.saveSateRest();
 //                LogHelper.logAdvanceRobot(robot, "Fire!!! " + gunStateContext.getBulletPower());
             }
         }
