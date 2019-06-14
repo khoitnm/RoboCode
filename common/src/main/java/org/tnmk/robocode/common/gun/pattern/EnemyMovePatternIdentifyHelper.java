@@ -13,7 +13,7 @@ import org.tnmk.robocode.common.model.enemy.*;
  */
 public class EnemyMovePatternIdentifyHelper {
     private static final int MIN_HISTORY_ITEMS_FOR_PREDICTION = 4;
-    private static final int IDEAL_HISTORY_ITEMS_FOR_PREDICTION = 5;
+    private static final int IDEAL_HISTORY_ITEMS_FOR_PREDICTION = 10;
     private static final double ACCEPTABLE_PREDICTION_DIFF_PER_TICK = 0.5;//RobotPhysics.ROBOT_SIZE / 2;
     /**
      * Measure unit: ticks.<br/>

@@ -14,14 +14,19 @@ public class EnemyPrediction {
     /**
      * Note: this is not the time we do prediction. It's the corresponding time of the predictionPosition.
      */
-    private long predictionTime;
-    private EnemyMovePattern enemyMovePattern;
-    private Point2D predictionPosition;
+    private final long predictionTime;
+    private final EnemyMovePattern enemyMovePattern;
+    private final Point2D predictionPosition;
 
-    public EnemyPrediction(EnemyMovePattern enemyMovePattern, long predictionTime, Point2D predictionPosition) {
+    private final double enemyAvgChangeHeadingRadian;
+    private final double enemyAvgVelocity;
+
+    public EnemyPrediction(EnemyMovePattern enemyMovePattern, long predictionTime, Point2D predictionPosition, double enemyAvgChangeHeadingRadian, double enemyAvgVelocity) {
         this.predictionTime = predictionTime;
         this.enemyMovePattern = enemyMovePattern;
         this.predictionPosition = predictionPosition;
+        this.enemyAvgChangeHeadingRadian = enemyAvgChangeHeadingRadian;
+        this.enemyAvgVelocity = enemyAvgVelocity;
     }
 
     @Override
@@ -33,23 +38,12 @@ public class EnemyPrediction {
         return predictionTime;
     }
 
-    public void setPredictionTime(long predictionTime) {
-        this.predictionTime = predictionTime;
-    }
-
     public Point2D getPredictionPosition() {
         return predictionPosition;
-    }
-
-    public void setPredictionPosition(Point2D predictionPosition) {
-        this.predictionPosition = predictionPosition;
     }
 
     public EnemyMovePattern getEnemyMovePattern() {
         return enemyMovePattern;
     }
 
-    public void setEnemyMovePattern(EnemyMovePattern enemyMovePattern) {
-        this.enemyMovePattern = enemyMovePattern;
-    }
 }
