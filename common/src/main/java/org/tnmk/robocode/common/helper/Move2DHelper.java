@@ -16,7 +16,7 @@ public class Move2DHelper implements Serializable {
     public static final double ROBOT_SIZE = 50;
 
     public static Rectangle2D constructBattleField(Robot robot){
-        return new Rectangle2D.Double(0,0, robot.getX(), robot.getY());
+        return new Rectangle2D.Double(0,0, robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
     }
 
     public static Point2D reckonEnemyPosition(Robot thisRobot, HitRobotEvent targetRobotEvent) {

@@ -4,8 +4,10 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import org.tnmk.common.math.AngleUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
+import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistoryUtils;
 
@@ -75,6 +77,10 @@ public class PatternPredictionUtils {
         }
         Point2D predictionPosition = new Point2D.Double(newX, newY);
         predictionPosition = Move2DHelper.reckonMaximumDestination(enemy.getPosition(), predictionPosition, enemyMovementArea);
+        if (!GeoMathUtils.checkInsideRectangle(predictionPosition, enemyMovementArea)){
+            String message = String.format("Outside: from:"+LogHelper.toString(enemy.getPosition()) +", to:"+LogHelper.toString(predictionPosition)+", area:"+LogHelper.toString(enemyMovementArea));
+            System.out.println(message);
+        }
         EnemyPrediction patternPredictionResult = new EnemyPrediction(enemyMovePattern, predictionTime, predictionPosition, avgChangeHeadingRadian, avgVelocity);
         return patternPredictionResult;
     }
