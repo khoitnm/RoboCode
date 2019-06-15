@@ -80,13 +80,13 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
 
     @Override
     public void runInit() {
-        briareosGun.runInit();
+//        briareosGun.runInit();
         //Nothing at this moment.
     }
 
     @Override
     public void runLoop() {
-        briareosGun.runLoop();
+//        briareosGun.runLoop();
         patternPredictionGun.runLoop();
     }
 }
