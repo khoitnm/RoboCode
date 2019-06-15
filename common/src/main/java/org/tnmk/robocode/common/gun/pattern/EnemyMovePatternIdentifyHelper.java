@@ -1,8 +1,10 @@
 package org.tnmk.robocode.common.gun.pattern;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Optional;
+import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.*;
@@ -73,7 +75,9 @@ public class EnemyMovePatternIdentifyHelper {
         if (enemyHistory.countHistoryItems() < MIN_HISTORY_ITEMS_FOR_PREDICTION) {
             return Optional.empty();
         } else {
-            HistoricalPredictionResult historicalPredictionResult = predictAtTheTimeOfAnExpectedHistoryItem(enemyHistory, 3, 0);
+            Rectangle2D battleField = Move2DHelper.constructBattleField(enemyStatisticContext.getRobot());
+            HistoricalPredictionResult historicalPredictionResult = predictAtTheTimeOfAnExpectedHistoryItem(enemyHistory, 3, 0, battleField);
+//            System.out.println("Enemy: "+enemyStatisticContext.getEnemyName()+", historicalPrediction: "+historicalPredictionResult.enemyPrediction);
             EnemyPrediction enemyPrediction = toEnemyPrediction(historicalPredictionResult);
             if (enemyPredictionHistory.isNewerCurrentHistoryItems(enemyPrediction)) {
                 enemyPredictionHistory.addToHistory(enemyPrediction);
@@ -82,6 +86,7 @@ public class EnemyMovePatternIdentifyHelper {
 //                debugPrintPredictedPositionAndActualPosition(enemyHistory.getName(), historicalPredictionResult.timeOfNewestItemForPrediction, historicalPredictionResult.itemOfExpectComparision, historicalPredictionResult.predictionDeltaTime, historicalPredictionResult.predictionPosition, historicalPredictionResult.actualPosition);
                 return Optional.of(enemyPrediction.getEnemyMovePattern());
             } else {
+//                System.out.println("Enemy: "+enemyStatisticContext.getEnemyName()+", historicalPrediction not match, return unidentified: "+historicalPredictionResult.enemyPrediction);
                 return Optional.of(EnemyMovePattern.UNIDENTIFIED);
             }
         }
@@ -117,7 +122,7 @@ public class EnemyMovePatternIdentifyHelper {
      * @param expectComparisionHistoryIndex   the index of history item will be used to get the predictionTiem. Then we hope that the prediction result at that time will match with the actual recored result at that time. Of courses, this index must be less (newer) than predictSinceHistoryItemIndex.
      * @return get history items with `predictSinceHistoryItemIndex` (and older history data), do prediction and then compare result with the history item with 'compareToActualHistoryItemIndex'
      */
-    private static HistoricalPredictionResult predictAtTheTimeOfAnExpectedHistoryItem(EnemyHistory enemyHistory, int newestHistoryIndexForPrediction, int expectComparisionHistoryIndex) {
+    private static HistoricalPredictionResult predictAtTheTimeOfAnExpectedHistoryItem(EnemyHistory enemyHistory, int newestHistoryIndexForPrediction, int expectComparisionHistoryIndex, Rectangle2D enemyMovementArea) {
         List<Enemy> enemyList = enemyHistory.getLatestHistoryItems(newestHistoryIndexForPrediction + IDEAL_HISTORY_ITEMS_FOR_PREDICTION);
         List<Enemy> itemsToDoPrediction = enemyList.subList(newestHistoryIndexForPrediction, enemyList.size());
 
@@ -128,13 +133,15 @@ public class EnemyMovePatternIdentifyHelper {
         long itemOfExpectComparision = expectedEnemyData.getTime();
         long deltaTimeBetweenPredictionAndActual = itemOfExpectComparision - timeOfNewestItemForPrediction;
 
-        EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemy(itemsToDoPrediction, itemOfExpectComparision);
+        EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemy(itemsToDoPrediction, itemOfExpectComparision, enemyMovementArea);
         Point2D actualEnemyPosition = expectedEnemyData.getPosition();
         return new HistoricalPredictionResult(enemyPrediction, actualEnemyPosition, deltaTimeBetweenPredictionAndActual, timeOfNewestItemForPrediction);
     }
 
     private static boolean predictMostlyCorrect(long deltaTimeBetweenPredictionAndActual, Point2D predictPosition, Point2D actualPosition) {
-        boolean isCloselyPrediction = actualPosition.distance(predictPosition) / deltaTimeBetweenPredictionAndActual <= ACCEPTABLE_PREDICTION_DIFF_PER_TICK;
+        double diffPositions = actualPosition.distance(predictPosition);
+        double diffPositionsPerTick = diffPositions / deltaTimeBetweenPredictionAndActual;
+        boolean isCloselyPrediction = diffPositionsPerTick <= ACCEPTABLE_PREDICTION_DIFF_PER_TICK;
         return isCloselyPrediction;
     }
 
