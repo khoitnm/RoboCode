@@ -6,6 +6,7 @@ import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
+import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
@@ -48,6 +49,7 @@ public class GFTAimGun implements OnScannedRobotControl {
         if (!gunStateContext.isAiming()) {
             gunStateContext.saveSateAimGun(GunStrategy.GFT, wave.bulletPower);
             robot.setTurnGunRightRadians(Utils.normalRelativeAngle(enemyAbsoluteBearing - robot.getGunHeadingRadians() + wave.mostVisitedBearingOffset()));
+            robot.setBulletColor(HiTechDecorator.BULLET_GFT_COLOR);
             robot.setFire(wave.bulletPower);
             LogHelper.logAdvanceRobot(robot, "Aim GFT. bulletPower: " + wave.bulletPower + ", distance: " + enemyDistance);
             gunStateContext.saveSateRest();

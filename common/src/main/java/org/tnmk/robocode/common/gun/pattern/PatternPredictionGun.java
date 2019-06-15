@@ -16,6 +16,7 @@ import org.tnmk.robocode.common.model.enemy.*;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
+import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
@@ -164,6 +165,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
 //        LogHelper.logAdvanceRobot(robot, "GunStrategy: " + gunStateContext.getGunStrategy() + " gunTurnRemaining: " + robot.getGunTurnRemaining());
         if (gunStateContext.isAiming()) {
             if (DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
+                robot.setBulletColor(HiTechDecorator.BULLET_COLOR);
                 robot.setFire(gunStateContext.getBulletPower());
                 gunStateContext.saveSateRest();
 //                LogHelper.logAdvanceRobot(robot, "Fire!!! " + gunStateContext.getBulletPower());
