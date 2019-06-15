@@ -51,7 +51,7 @@ public class GFTAimGun implements OnScannedRobotControl {
             robot.setTurnGunRightRadians(Utils.normalRelativeAngle(enemyAbsoluteBearing - robot.getGunHeadingRadians() + wave.mostVisitedBearingOffset()));
             robot.setBulletColor(HiTechDecorator.BULLET_GFT_COLOR);
             robot.setFire(wave.bulletPower);
-            LogHelper.logAdvanceRobot(robot, "Aim GFT. bulletPower: " + wave.bulletPower + ", distance: " + enemyDistance);
+//            LogHelper.logAdvanceRobot(robot, "Aim GFT. bulletPower: " + wave.bulletPower + ", distance: " + enemyDistance);
             gunStateContext.saveSateRest();
             if (robot.getEnergy() >= BULLET_POWER) {
                 robot.addCustomEvent(wave);

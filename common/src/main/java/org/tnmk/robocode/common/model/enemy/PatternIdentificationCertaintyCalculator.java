@@ -25,9 +25,9 @@ public class PatternIdentificationCertaintyCalculator {
         double certaintyPredictionWithSimilarVelocityAndHeadingChange = reckonCertaintySimilarAvgVelocityOrAvgHeadingChanges(enemyPredictionsWithSamePattern);
         double finalCertainty = certaintyPredictionWithSameMovePattern * certaintyPredictionWithSimilarVelocityAndHeadingChange;
 
-        String message = String.format("Enemy: %s, \n\tPattern: %s, certaintyPattern: %.2f, certaintyVelocityAndHeadingChange: %.2f, finalCertainty: %.2f", enemyPredictionHistory.getEnemyName(), enemyMovePattern, certaintyPredictionWithSameMovePattern, certaintyPredictionWithSimilarVelocityAndHeadingChange, finalCertainty);
-        System.out.println(message);
-        System.out.println("\tPrediction History: \n\t" + enemyPredictionHistory.historyItems);
+//        String message = String.format("Enemy: %s, \n\tPattern: %s, certaintyPattern: %.2f, certaintyVelocityAndHeadingChange: %.2f, finalCertainty: %.2f", enemyPredictionHistory.getEnemyName(), enemyMovePattern, certaintyPredictionWithSameMovePattern, certaintyPredictionWithSimilarVelocityAndHeadingChange, finalCertainty);
+//        System.out.println(message);
+//        System.out.println("\tPrediction History: \n\t" + enemyPredictionHistory.historyItems);
 
         PatternIdentification patternIdentification = new PatternIdentification(certaintyCalculationTime, enemyMovePattern, finalCertainty);
         return patternIdentification;

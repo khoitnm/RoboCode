@@ -50,7 +50,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         Enemy enemy = enemyStatisticContext.getEnemyHistory().getLatestHistoryItem();
         double patternCertainty = enemyStatisticContext.getPatternIdentification().getCertainty();
         double bulletPower = BulletPowerForPatternPredictionGunHelper.reckonBulletPower(enemy.getDistance(), patternCertainty, robot.getOthers());
-        LogHelper.logSimple(robot, "Aim Pattern: " + enemyStatisticContext.getPatternIdentification() + ", enemy: " + enemyName + ", bulletPower: " + bulletPower + ", distance: " + enemy.getDistance());
+//        LogHelper.logSimple(robot, "Aim Pattern: " + enemyStatisticContext.getPatternIdentification() + ", enemy: " + enemyName + ", bulletPower: " + bulletPower + ", distance: " + enemy.getDistance());
         if (bulletPower > 0) {
             aimGun(robot, enemyStatisticContext, bulletPower);
         }
