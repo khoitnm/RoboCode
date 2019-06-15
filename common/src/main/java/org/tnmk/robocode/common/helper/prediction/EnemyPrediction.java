@@ -46,4 +46,11 @@ public class EnemyPrediction {
         return enemyMovePattern;
     }
 
+    public double getEnemyAvgChangeHeadingRadian() {
+        return enemyAvgChangeHeadingRadian;
+    }
+
+    public double getEnemyAvgVelocity() {
+        return enemyAvgVelocity;
+    }
 }

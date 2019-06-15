@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
+import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
@@ -48,7 +49,7 @@ public class GFTAimGun implements OnScannedRobotControl {
             gunStateContext.saveSateAimGun(GunStrategy.GFT, wave.bulletPower);
             robot.setTurnGunRightRadians(Utils.normalRelativeAngle(enemyAbsoluteBearing - robot.getGunHeadingRadians() + wave.mostVisitedBearingOffset()));
             robot.setFire(wave.bulletPower);
-//            LogHelper.logAdvanceRobot(robot, "Aim GFT. bulletPower: " + wave.bulletPower + ", distance: " + enemyDistance);
+            LogHelper.logAdvanceRobot(robot, "Aim GFT. bulletPower: " + wave.bulletPower + ", distance: " + enemyDistance);
             gunStateContext.saveSateRest();
             if (robot.getEnergy() >= BULLET_POWER) {
                 robot.addCustomEvent(wave);
