@@ -71,11 +71,14 @@ public class PatternIdentificationCertaintyCalculator {
         double avgDeltaAvgVelocity = deltaAvgVelocity / predictionsCount;
         double avgDeltaAbsAvgHeadingChangeRadian = deltaAbsAvgHeadingChangeRadian / predictionsCount;
 
+        /** If velocity doesn't change more than 0.5, I think it's good enough consider most of the time velocity change from 1 to 8. */
         long countGoodAvgVelocity = enemyPredictionsWithTheSamePattern.stream()
-                .filter(enemyPrediction -> enemyPrediction.getEnemyAvgVelocity() - avgAvgVelocity <= Math.max(avgDeltaAvgVelocity, 0.5))
+                .filter(enemyPrediction ->
+                        enemyPrediction.getEnemyAvgVelocity() - avgAvgVelocity <= Math.max(avgDeltaAvgVelocity, 0.5))
                 .count();
         double certaintyGoodAvgVelocity = countGoodAvgVelocity / predictionsCount;
 
+        /** If headingChange doesn't change more than 0.015, the usual data is around 0.09 (?) */
         long countGoodAvgHeadingChangeRadian = enemyPredictionsWithTheSamePattern.stream()
                 .filter(enemyPrediction -> enemyPrediction.getEnemyAvgChangeHeadingRadian() - avgAbsAvgHeadingChangeRadian <= Math.max(avgDeltaAbsAvgHeadingChangeRadian, 0.015))
                 .count();
