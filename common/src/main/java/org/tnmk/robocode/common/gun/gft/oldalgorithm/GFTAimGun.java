@@ -32,8 +32,6 @@ public class GFTAimGun implements OnScannedRobotControl {
 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-
-
         double enemyAbsoluteBearing = robot.getHeadingRadians() + scannedRobotEvent.getBearingRadians();
         double enemyDistance = scannedRobotEvent.getDistance();
         double enemyVelocity = scannedRobotEvent.getVelocity();
@@ -55,13 +53,15 @@ public class GFTAimGun implements OnScannedRobotControl {
         wave.setSegmentations(enemyDistance, enemyVelocity, lastEnemyVelocity);
         lastEnemyVelocity = enemyVelocity;
         wave.bearing = enemyAbsoluteBearing;
-        if (!gunStateContext.isAiming()) {
+        if (!gunStateContext.isAiming() || gunStateContext.getGunStrategy() == GunStrategy.GFT) {
             gunStateContext.saveSateAimGun(GunStrategy.GFT, wave.bulletPower);
             robot.setTurnGunRightRadians(Utils.normalRelativeAngle(enemyAbsoluteBearing - robot.getGunHeadingRadians() + wave.mostVisitedBearingOffset()));
             robot.setBulletColor(HiTechDecorator.BULLET_GFT_COLOR);
-            robot.setFire(wave.bulletPower);
+            if (robot.getGunHeat() == 0) {
+                robot.setFire(wave.bulletPower);
+            }
             gunStateContext.saveSateRest();
-            if (robot.getEnergy() >= wave.bulletPower) {
+            if (robot.getEnergy() >= bulletPower) {
                 robot.addCustomEvent(wave);
             }
         }

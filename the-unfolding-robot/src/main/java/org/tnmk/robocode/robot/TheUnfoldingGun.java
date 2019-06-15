@@ -49,18 +49,9 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
 //                + "\n\t\t predictionHistory: \t" + enemyStatisticContext.getEnemyPredictionHistory().getAllHistoryItems()
 //        );
         if (enemyStatisticContext == null || !enemyStatisticContext.hasCertainPattern()) {
-            aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
+            gftAimGun.onScannedRobot(scannedRobotEvent);
         } else {
             patternPredictionGun.onScannedRobot(scannedRobotEvent);
-        }
-
-
-    }
-
-    private void aimGftGunIfCloseEnemyEnough(ScannedRobotEvent scannedRobotEvent) {
-        int totalExistingEnemies = robot.getOthers();
-        if (shouldFire(scannedRobotEvent.getDistance(), totalExistingEnemies)) {
-            gftAimGun.onScannedRobot(scannedRobotEvent);
         }
     }
 

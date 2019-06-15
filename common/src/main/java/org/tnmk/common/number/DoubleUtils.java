@@ -2,7 +2,7 @@ package org.tnmk.common.number;
 
 public class DoubleUtils {
 
-    private static final double COMPARE_DOUBLE_EPSILON = 0.001;
+    private static final double COMPARE_DOUBLE_EPSILON = 0.0001;
 
     /**
      * View {@link #isConsideredEqual(double, double)}
