@@ -3,6 +3,7 @@ package org.tnmk.robocode.robot;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.briareos.BriareosGun;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
+import org.tnmk.robocode.common.gun.mobius.MobiusGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
@@ -31,6 +32,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     private BriareosGun briareosGun;
     private GFTAimGun gftAimGun;
     private PatternPredictionGun patternPredictionGun;
+    private MobiusGun mobiusGun;
     private GunStateContext gunStateContext;
 
 
@@ -40,6 +42,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
         this.gunStateContext = new GunStateContext();
 
         this.briareosGun = new BriareosGun(robot);
+        this.mobiusGun = new MobiusGun(robot);
         this.gftAimGun = new GFTAimGun(robot, gunStateContext);
         this.patternPredictionGun = new PatternPredictionGun(robot, allEnemiesObservationContext, gunStateContext);
     }
@@ -54,6 +57,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
         if (enemyStatisticContext != null && enemyStatisticContext.hasCertainPattern()) {
             patternPredictionGun.onScannedRobot(scannedRobotEvent);
         } else {
+//            mobiusGun.onScannedRobot(scannedRobotEvent);
             gftAimGun.onScannedRobot(scannedRobotEvent);
 //            briareosGun.onScannedRobot(scannedRobotEvent);
         }
