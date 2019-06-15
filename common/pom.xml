@@ -8,9 +8,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-<!--    <groupId>tnmk.robocode</groupId>-->
+    <!--    <groupId>tnmk.robocode</groupId>-->
     <artifactId>common</artifactId>
-<!--    <version>1.0-SNAPSHOT</version>-->
+    <!--    <version>1.0-SNAPSHOT</version>-->
 
     <dependencies>
         <dependency>
@@ -18,6 +18,17 @@
             <artifactId>javaGeom</artifactId>
             <version>0.11.1</version>
         </dependency>
+        <!--
+        This library is used for K-Means Clustering algorithm, but it's too big, I don't want to use it here
+        https://stackoverflow.com/questions/14077110/efficiently-grouping-similar-numbers-together
+
+
+        -->
+        <!--<dependency>-->
+        <!--<groupId>nz.ac.waikato.cms.weka</groupId>-->
+        <!--<artifactId>weka-stable</artifactId>-->
+        <!--<version>3.8.3</version>-->
+        <!--</dependency>-->
 
     </dependencies>
 </project>

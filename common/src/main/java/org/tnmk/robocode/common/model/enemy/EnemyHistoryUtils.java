@@ -29,4 +29,9 @@ public class EnemyHistoryUtils {
         }
         return avgChangeHeading;
     }
+
+    public static double averageVelocity(List<Enemy> historyItems) {
+        double avgVelocity = historyItems.stream().mapToDouble(Enemy::getVelocity).average().getAsDouble();
+        return avgVelocity;
+    }
 }

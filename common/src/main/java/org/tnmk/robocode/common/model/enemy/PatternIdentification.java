@@ -9,7 +9,7 @@ import org.tnmk.robocode.common.gun.pattern.EnemyMovePattern;
  * While the class {@link EnemyStatisticContext} represents the history of enemy data as well as the history of prediction.
  */
 public class PatternIdentification {
-    public static final double DEFAULT_CERTAINTY_WHEN_NO_PREDICTION_HISTORY = 0.6;
+    public static final double DEFAULT_CERTAINTY_WHEN_NO_PREDICTION_HISTORY = 0.5;
     public static final double SAFE_CERTAINTY = 0.8;
 
     private final long predictionTime;

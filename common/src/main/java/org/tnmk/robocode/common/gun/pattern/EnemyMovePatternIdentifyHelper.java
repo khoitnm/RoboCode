@@ -13,7 +13,7 @@ import org.tnmk.robocode.common.model.enemy.*;
  */
 public class EnemyMovePatternIdentifyHelper {
     private static final int MIN_HISTORY_ITEMS_FOR_PREDICTION = 4;
-    private static final int IDEAL_HISTORY_ITEMS_FOR_PREDICTION = 5;
+    private static final int IDEAL_HISTORY_ITEMS_FOR_PREDICTION = 10;
     private static final double ACCEPTABLE_PREDICTION_DIFF_PER_TICK = 0.5;//RobotPhysics.ROBOT_SIZE / 2;
     /**
      * Measure unit: ticks.<br/>
@@ -78,9 +78,9 @@ public class EnemyMovePatternIdentifyHelper {
             if (enemyPredictionHistory.isNewerCurrentHistoryItems(enemyPrediction)) {
                 enemyPredictionHistory.addToHistory(enemyPrediction);
             }
-            if (predictMostlyCorrect(historicalPredictionResult.predictionDeltaTime, historicalPredictionResult.predictionPosition, historicalPredictionResult.actualPosition)) {
+            if (predictMostlyCorrect(historicalPredictionResult.predictionDeltaTime, enemyPrediction.getPredictionPosition(), historicalPredictionResult.actualPosition)) {
 //                debugPrintPredictedPositionAndActualPosition(enemyHistory.getName(), historicalPredictionResult.timeOfNewestItemForPrediction, historicalPredictionResult.itemOfExpectComparision, historicalPredictionResult.predictionDeltaTime, historicalPredictionResult.predictionPosition, historicalPredictionResult.actualPosition);
-                return Optional.of(historicalPredictionResult.enemyMovePattern);
+                return Optional.of(enemyPrediction.getEnemyMovePattern());
             } else {
                 return Optional.of(EnemyMovePattern.UNIDENTIFIED);
             }
@@ -92,8 +92,7 @@ public class EnemyMovePatternIdentifyHelper {
     }
 
     private static EnemyPrediction toEnemyPrediction(HistoricalPredictionResult historicalPredictionResult) {
-        EnemyPrediction enemyPrediction = new EnemyPrediction(historicalPredictionResult.enemyMovePattern, historicalPredictionResult.itemOfExpectComparision, historicalPredictionResult.predictionPosition);
-        return enemyPrediction;
+        return historicalPredictionResult.enemyPrediction;
     }
 
     /**
@@ -130,9 +129,8 @@ public class EnemyMovePatternIdentifyHelper {
         long deltaTimeBetweenPredictionAndActual = itemOfExpectComparision - timeOfNewestItemForPrediction;
 
         EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemy(itemsToDoPrediction, itemOfExpectComparision);
-        Point2D predictedEnemyPosition = enemyPrediction.getPredictionPosition();
         Point2D actualEnemyPosition = expectedEnemyData.getPosition();
-        return new HistoricalPredictionResult(enemyPrediction.getEnemyMovePattern(), predictedEnemyPosition, actualEnemyPosition, deltaTimeBetweenPredictionAndActual, timeOfNewestItemForPrediction, itemOfExpectComparision);
+        return new HistoricalPredictionResult(enemyPrediction, actualEnemyPosition, deltaTimeBetweenPredictionAndActual, timeOfNewestItemForPrediction);
     }
 
     private static boolean predictMostlyCorrect(long deltaTimeBetweenPredictionAndActual, Point2D predictPosition, Point2D actualPosition) {
@@ -155,24 +153,19 @@ public class EnemyMovePatternIdentifyHelper {
      * And then we'll use it to compare with another (newer) historical item and expect they are matching together.
      */
     public static class HistoricalPredictionResult {
-        private final EnemyMovePattern enemyMovePattern;
+        private final EnemyPrediction enemyPrediction;
         /**
          * The delta between the time of the newest data used for prediction and the time of actual data.
          */
         private final long predictionDeltaTime;
-        private final Point2D predictionPosition;
         private final Point2D actualPosition;
-
         private final long timeOfNewestItemForPrediction;
-        private final long itemOfExpectComparision;
 
-        public HistoricalPredictionResult(EnemyMovePattern enemyMovePattern, Point2D predictionPosition, Point2D actualPosition, long predictionDeltaTime, long timeOfNewestItemForPrediction, long itemOfExpectComparision) {
-            this.enemyMovePattern = enemyMovePattern;
+        public HistoricalPredictionResult(EnemyPrediction enemyPrediction, Point2D actualPosition, long predictionDeltaTime, long timeOfNewestItemForPrediction) {
+            this.enemyPrediction = enemyPrediction;
             this.predictionDeltaTime = predictionDeltaTime;
-            this.predictionPosition = predictionPosition;
             this.actualPosition = actualPosition;
             this.timeOfNewestItemForPrediction = timeOfNewestItemForPrediction;
-            this.itemOfExpectComparision = itemOfExpectComparision;
         }
     }
 }
