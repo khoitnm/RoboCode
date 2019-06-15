@@ -28,8 +28,10 @@ import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
 /**
- * The code is blindly copied from {@link Briareos}, so it will be a messed, but it works!
+ * The code is blindly copied from {@link Briareos}.
+ * @deprecated there is still a bug "too many call getXX() without execution()".
  */
+@Deprecated
 public class BriareosGun implements InitiableRun, LoopableRun, OnScannedRobotControl {
     private static final Color COLOR_PREDICTED_TARGET_AIMED = Color.MAGENTA;
     private static final Color COLOR_PREDICTED_TARGET_HIT = Color.PINK;
