@@ -77,6 +77,7 @@ public class EnemyMovePatternIdentifyHelper {
         } else {
             Rectangle2D battleField = Move2DHelper.constructBattleField(enemyStatisticContext.getRobot());
             HistoricalPredictionResult historicalPredictionResult = predictAtTheTimeOfAnExpectedHistoryItem(enemyHistory, 3, 0, battleField);
+//            System.out.println("Enemy: "+enemyStatisticContext.getEnemyName()+", historicalPrediction: "+historicalPredictionResult.enemyPrediction);
             EnemyPrediction enemyPrediction = toEnemyPrediction(historicalPredictionResult);
             if (enemyPredictionHistory.isNewerCurrentHistoryItems(enemyPrediction)) {
                 enemyPredictionHistory.addToHistory(enemyPrediction);
@@ -85,6 +86,7 @@ public class EnemyMovePatternIdentifyHelper {
 //                debugPrintPredictedPositionAndActualPosition(enemyHistory.getName(), historicalPredictionResult.timeOfNewestItemForPrediction, historicalPredictionResult.itemOfExpectComparision, historicalPredictionResult.predictionDeltaTime, historicalPredictionResult.predictionPosition, historicalPredictionResult.actualPosition);
                 return Optional.of(enemyPrediction.getEnemyMovePattern());
             } else {
+//                System.out.println("Enemy: "+enemyStatisticContext.getEnemyName()+", historicalPrediction not match, return unidentified: "+historicalPredictionResult.enemyPrediction);
                 return Optional.of(EnemyMovePattern.UNIDENTIFIED);
             }
         }
@@ -137,7 +139,9 @@ public class EnemyMovePatternIdentifyHelper {
     }
 
     private static boolean predictMostlyCorrect(long deltaTimeBetweenPredictionAndActual, Point2D predictPosition, Point2D actualPosition) {
-        boolean isCloselyPrediction = actualPosition.distance(predictPosition) / deltaTimeBetweenPredictionAndActual <= ACCEPTABLE_PREDICTION_DIFF_PER_TICK;
+        double diffPositions = actualPosition.distance(predictPosition);
+        double diffPositionsPerTick = diffPositions / deltaTimeBetweenPredictionAndActual;
+        boolean isCloselyPrediction = diffPositionsPerTick <= ACCEPTABLE_PREDICTION_DIFF_PER_TICK;
         return isCloselyPrediction;
     }
 

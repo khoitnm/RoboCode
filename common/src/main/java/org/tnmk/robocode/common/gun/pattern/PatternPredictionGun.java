@@ -24,6 +24,11 @@ import robocode.ScannedRobotEvent;
 
 /**
  * https://www.ibm.com/developerworks/library/j-circular/index.html
+ * <pre>
+ * One caveat: Cannot deal with multiple robots with the same name.
+ * For example, if you add robot "Walls" 5 times into the battle fields, the data will be confused between those 5 robots and not correct anymore.
+ * But anyway, that's not my priority at this moment.
+ * </pre>
  */
 public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl {
     private static final int ENEMY_PREDICTION_TIMES = 3;
