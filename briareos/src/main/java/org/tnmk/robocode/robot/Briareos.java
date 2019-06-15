@@ -32,6 +32,11 @@ import robocode.ScannedRobotEvent;
  * Terms:<br/>
  * + Bearing: the angle (degree) from pointA to pointB (or vectorA to vectorB). It can be an absolute bearing (compare to North axis) or relative bearing (compare to vectorA)<br/>
  *
+ * <p/>
+ * <pre>
+ * <strong>Updated 2019:</strong>
+ * Most of the code for gun is copied to {@link org.tnmk.robocode.common.gun.briareos.BriareosGun}.
+ * </pre>
  * @author Khoi
  */
 public class Briareos extends ModernRobot {

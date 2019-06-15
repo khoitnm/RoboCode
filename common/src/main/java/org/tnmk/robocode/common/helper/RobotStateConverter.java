@@ -52,6 +52,19 @@ public class RobotStateConverter {
 		return rs;
 	}
 
+	public static FullRobotState toRobotState(AdvancedRobot robot, int direction){
+		FullRobotState rs = new FullRobotState();
+		rs.setMoveDirection(direction);
+		rs.setName(robot.getName());
+		rs.setDistanceRemaining(robot.getDistanceRemaining());
+		rs.setHeading(robot.getHeading());
+		rs.setTurnRemaining(robot.getTurnRemaining());
+		rs.setVelocity(robot.getVelocity());
+		rs.setX(robot.getX());
+		rs.setY(robot.getY());
+		return rs;
+	}
+
 	public static BaseRobotState toRobotState(AdvancedRobot robot){
 		BaseRobotState rs = new BaseRobotState();
 		rs.setName(robot.getName());
