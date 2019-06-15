@@ -4,7 +4,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import org.tnmk.common.math.AngleUtils;
-import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistoryUtils;
@@ -19,8 +18,8 @@ public class PatternPredictionUtils {
 
 
     /**
-     * @param historyItems   must be not empty
-     * @param predictionTime when is the time that we think the bullet will reach the target.
+     * @param historyItems      must be not empty
+     * @param predictionTime    when is the time that we think the bullet will reach the target.
      * @param enemyMovementArea the area enemy always moving inside. It never move to outside this area (usually the battle field).
      * @return guess new enemy's position and also identify pattern at the predictionTime.
      */
@@ -74,9 +73,25 @@ public class PatternPredictionUtils {
             }
         }
         Point2D predictionPosition = new Point2D.Double(newX, newY);
-        predictionPosition = Move2DHelper.reckonMaximumDestination(enemy.getPosition(), predictionPosition, enemyMovementArea);
+        predictionPosition = predictDestinationWithinLimitAreaNotNecessaryOnTheSameMovementAngle(enemy.getPosition(), predictionPosition, enemyMovementArea);
         EnemyPrediction patternPredictionResult = new EnemyPrediction(enemyMovePattern, predictionTime, predictionPosition, avgChangeHeadingRadian, avgVelocity);
         return patternPredictionResult;
     }
 
+    private static Point2D predictDestinationWithinLimitAreaNotNecessaryOnTheSameMovementAngle(Point2D pointA, Point2D pointB, Rectangle2D limitArea) {
+        Point2D newPointB = pointB;
+        if (pointB.getX() > pointA.getX() && pointB.getX() > limitArea.getMaxX()) {
+            newPointB = new Point2D.Double(limitArea.getMaxX(), pointB.getY());
+        } else if (pointB.getX() < pointA.getX() && pointB.getX() < limitArea.getMaxX()) {
+            newPointB = new Point2D.Double(limitArea.getMinX(), pointB.getY());
+        }
+
+        if (newPointB.getY() > pointA.getY() && newPointB.getY() > limitArea.getMaxY()) {
+            newPointB = new Point2D.Double(newPointB.getX(), limitArea.getMaxY());
+        } else if (newPointB.getY() < pointA.getY() && newPointB.getY() < limitArea.getMaxY()) {
+            newPointB = new Point2D.Double(newPointB.getX(), limitArea.getMinY());
+        }
+
+        return newPointB;
+    }
 }

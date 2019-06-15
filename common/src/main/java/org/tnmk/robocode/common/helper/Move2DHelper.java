@@ -127,7 +127,7 @@ public class Move2DHelper implements Serializable {
     }
 
     /**
-     * If pointB is outside limitArea, calculate another point inside limitArea which also on the same line.
+     * If pointB is outside limitArea, calculate another position for pointB inside limitArea which also on the same line.
      * @param pointA    should be inside limitArea
      * @param pointB    could be outside limitArea
      * @param limitArea
