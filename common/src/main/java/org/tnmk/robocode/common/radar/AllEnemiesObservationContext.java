@@ -41,7 +41,7 @@ public class AllEnemiesObservationContext {
         if (enemyStatisticContext == null) {
             EnemyHistory enemyHistory = new EnemyHistory(enemy.getName(), enemy);
             EnemyPredictionHistory enemyPredictionHistory = new EnemyPredictionHistory(enemy.getName());
-            enemyStatisticContext = new EnemyStatisticContext(enemy.getName(), enemyHistory, enemyPredictionHistory);
+            enemyStatisticContext = new EnemyStatisticContext(robot, enemy.getName(), enemyHistory, enemyPredictionHistory);
             enemiesPatternPredictionsMapByName.put(enemy.getName(), enemyStatisticContext);
         } else {
             enemyStatisticContext.getEnemyHistory().addToHistory(enemy);

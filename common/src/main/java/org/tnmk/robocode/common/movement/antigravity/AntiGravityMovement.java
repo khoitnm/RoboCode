@@ -83,8 +83,8 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
         Point2D force = reckonForce(this.calculationContext, this.robot, this.allEnemiesObservationContext);
         Point2D destination = Point2DUtils.plus(robotPosition, force);
 
-        Optional<Point2D> avoidWallDestinationOptional = Move2DHelper.reckonMaximumDestination(robotPosition, destination, calculationContext.getSafeMovementArea());
-        Point2D finalDestination = avoidWallDestinationOptional.orElse(destination);
+        Point2D avoidWallDestination = Move2DHelper.reckonMaximumDestination(robotPosition, destination, calculationContext.getSafeMovementArea());
+        Point2D finalDestination = avoidWallDestination;
 
 //        Point2D finalDestination = WallSmoothUtils.wallSmoothing(
 //                robotPosition,

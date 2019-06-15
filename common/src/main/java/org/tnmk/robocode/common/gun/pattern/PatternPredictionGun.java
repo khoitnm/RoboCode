@@ -1,6 +1,7 @@
 package org.tnmk.robocode.common.gun.pattern;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.number.DoubleUtils;
@@ -8,6 +9,7 @@ import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.GunUtils;
+import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.helper.prediction.RobotPrediction;
 import org.tnmk.robocode.common.helper.prediction.RobotPredictionHelper;
@@ -112,6 +114,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         List<Enemy> latestHistoryItems = enemyHistory.getLatestHistoryItems(5);
         Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
 
+        Rectangle2D battleField = Move2DHelper.constructBattleField(robot);
 //        debugPredictSelfRobot(robot);
 
         Point2D enemyPosition = enemyHistory.getLatestHistoryItem().getPosition();
@@ -131,7 +134,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
             long totalPeriodGun = periodForTurningGun + periodForBulletToReachEnemy;
             long timeWhenBulletReachEnemy = robot.getTime() + Math.round(totalPeriodGun);
 
-            enemyPrediction = PatternPredictionUtils.predictEnemy(latestHistoryItems, timeWhenBulletReachEnemy);
+            enemyPrediction = PatternPredictionUtils.predictEnemy(latestHistoryItems, timeWhenBulletReachEnemy, battleField);
             enemyPosition = enemyPrediction.getPredictionPosition();
         }
         if (enemyPrediction == null) {
@@ -151,9 +154,9 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         LogHelper.logAdvanceRobot(robot, message);
     }
 
-    private void debugPredictEnemy(List<Enemy> latestHistoryItems) {
+    private void debugPredictEnemy(List<Enemy> latestHistoryItems, Rectangle2D enemyMovementArea) {
         for (int i = 0; i < 5; i++) {
-            EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemy(latestHistoryItems, robot.getTime() + i);
+            EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemy(latestHistoryItems, robot.getTime() + i, enemyMovementArea);
             Point2D testEnemyPosition = enemyPrediction.getPredictionPosition();
             String message = String.format("predict enemy at time %s, position {%.2f, %.2f}", robot.getTime() + i, testEnemyPosition.getX(), testEnemyPosition.getY());
             LogHelper.logAdvanceRobot(robot, message);

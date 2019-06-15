@@ -1,8 +1,10 @@
 package org.tnmk.robocode.common.gun.pattern;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 import org.tnmk.common.math.AngleUtils;
+import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistoryUtils;
@@ -19,13 +21,14 @@ public class PatternPredictionUtils {
     /**
      * @param historyItems   must be not empty
      * @param predictionTime when is the time that we think the bullet will reach the target.
+     * @param enemyMovementArea the area enemy always moving inside. It never move to outside this area (usually the battle field).
      * @return guess new enemy's position and also identify pattern at the predictionTime.
      */
-    public static EnemyPrediction predictEnemy(List<Enemy> historyItems, long predictionTime) {
+    public static EnemyPrediction predictEnemy(List<Enemy> historyItems, long predictionTime, Rectangle2D enemyMovementArea) {
         Enemy enemy = historyItems.get(0);
         double avgChangeHeadingRadian = EnemyHistoryUtils.averageChangeHeadingRadian(historyItems);
         double avgVelocity = EnemyHistoryUtils.averageVelocity(historyItems);
-        return PatternPredictionUtils.predictEnemy(enemy, avgVelocity, avgChangeHeadingRadian, predictionTime);
+        return PatternPredictionUtils.predictEnemy(enemy, avgVelocity, avgChangeHeadingRadian, predictionTime, enemyMovementArea);
     }
 
     /**
@@ -40,7 +43,7 @@ public class PatternPredictionUtils {
      *      use averageVelocity instead of latest velocity
      * </pre>
      */
-    public static EnemyPrediction predictEnemy(Enemy enemy, double avgVelocity, double avgChangeHeadingRadian, long predictionTime) {
+    public static EnemyPrediction predictEnemy(Enemy enemy, double avgVelocity, double avgChangeHeadingRadian, long predictionTime, Rectangle2D enemyMovementArea) {
         double diff = predictionTime - enemy.getTime();
         double newX, newY;
 
@@ -71,6 +74,7 @@ public class PatternPredictionUtils {
             }
         }
         Point2D predictionPosition = new Point2D.Double(newX, newY);
+        predictionPosition = Move2DHelper.reckonMaximumDestination(enemy.getPosition(), predictionPosition, enemyMovementArea);
         EnemyPrediction patternPredictionResult = new EnemyPrediction(enemyMovePattern, predictionTime, predictionPosition, avgChangeHeadingRadian, avgVelocity);
         return patternPredictionResult;
     }

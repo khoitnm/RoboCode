@@ -1,8 +1,11 @@
 package org.tnmk.robocode.common.model.enemy;
 
 import org.tnmk.robocode.common.gun.pattern.EnemyMovePattern;
+import robocode.AdvancedRobot;
 
 public class EnemyStatisticContext {
+
+    private final AdvancedRobot robot;
     /**
      * This field is never null
      */
@@ -21,7 +24,8 @@ public class EnemyStatisticContext {
      */
     private PatternIdentification patternIdentification = null;
 
-    public EnemyStatisticContext(String enemyName, EnemyHistory enemyHistory, EnemyPredictionHistory enemyPredictionHistory) {
+    public EnemyStatisticContext(AdvancedRobot robot, String enemyName, EnemyHistory enemyHistory, EnemyPredictionHistory enemyPredictionHistory) {
+        this.robot = robot;
         this.enemyName = enemyName;
         this.enemyHistory = enemyHistory;
         this.enemyPredictionHistory = enemyPredictionHistory;
@@ -65,6 +69,10 @@ public class EnemyStatisticContext {
 
     public EnemyPredictionHistory getEnemyPredictionHistory() {
         return enemyPredictionHistory;
+    }
+
+    public AdvancedRobot getRobot() {
+        return robot;
     }
 
 //
