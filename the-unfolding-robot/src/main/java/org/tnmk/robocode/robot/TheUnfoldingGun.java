@@ -1,6 +1,7 @@
 package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.gun.GunStateContext;
+import org.tnmk.robocode.common.gun.briareos.BriareosGun;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
@@ -27,31 +28,34 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
+    private BriareosGun briareosGun;
     private GFTAimGun gftAimGun;
     private PatternPredictionGun patternPredictionGun;
     private GunStateContext gunStateContext;
 
 
     public TheUnfoldingGun(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
-        this.gunStateContext = new GunStateContext();
-
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
+        this.gunStateContext = new GunStateContext();
+
+        this.briareosGun = new BriareosGun(robot);
         this.gftAimGun = new GFTAimGun(robot, gunStateContext);
         this.patternPredictionGun = new PatternPredictionGun(robot, allEnemiesObservationContext, gunStateContext);
     }
 
-    //TODO share aiming context. When aiming for one algorithm, other algorithm shouldn't change aiming direction.
+    @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         EnemyStatisticContext enemyStatisticContext = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName());
 //        LogHelper.logSimple(robot, "Enemy: " + scannedRobotEvent.getName()
 //                + "\n\t\t Pattern: " + enemyStatisticContext.getPatternIdentification()
 //                + "\n\t\t predictionHistory: \t" + enemyStatisticContext.getEnemyPredictionHistory().getAllHistoryItems()
 //        );
-        if (enemyStatisticContext == null || !enemyStatisticContext.hasCertainPattern()) {
-            gftAimGun.onScannedRobot(scannedRobotEvent);
-        } else {
+        if (enemyStatisticContext != null && enemyStatisticContext.hasCertainPattern()) {
             patternPredictionGun.onScannedRobot(scannedRobotEvent);
+        } else {
+            //            gftAimGun.onScannedRobot(scannedRobotEvent);
+            briareosGun.onScannedRobot(scannedRobotEvent);
         }
     }
 
@@ -76,11 +80,13 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
 
     @Override
     public void runInit() {
+        briareosGun.runInit();
         //Nothing at this moment.
     }
 
     @Override
     public void runLoop() {
+        briareosGun.runLoop();
         patternPredictionGun.runLoop();
     }
 }
