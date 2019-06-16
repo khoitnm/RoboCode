@@ -1,6 +1,5 @@
 package org.tnmk.robocode.common.model.enemy;
 
-import com.sun.istack.internal.NotNull;
 import org.tnmk.robocode.common.gun.pattern.EnemyMovePattern;
 
 /**
@@ -14,7 +13,7 @@ public class PatternIdentification {
 
     private final long predictionTime;
 
-    @NotNull
+
     private final EnemyMovePattern enemyMovePattern;
     /**
      * The value is from 0.0 to 1.0

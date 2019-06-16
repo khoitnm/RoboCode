@@ -1,6 +1,5 @@
 package org.tnmk.robocode.common.radar.scanall;
 
-import com.sun.istack.internal.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -79,7 +78,7 @@ public class AllEnemiesScanRadar implements LoopableRun, OnScannedRobotControl, 
     /**
      * @param newScannedEnemyName in case of robotDeathEvent, this newScannedEnemyName will be null.
      */
-    private void reverseRadarWhenFinishedScanningAllEnemiesInARound(@Nullable String newScannedEnemyName) {
+    private void reverseRadarWhenFinishedScanningAllEnemiesInARound( String newScannedEnemyName) {
         if (newScannedEnemyName != null) {
             scannedEnemiesEachRound.add(newScannedEnemyName);
         }
@@ -95,7 +94,7 @@ public class AllEnemiesScanRadar implements LoopableRun, OnScannedRobotControl, 
         }
     }
 
-    private <T> void removeAllExceptOneElement(Collection<T> collection, @Nullable T exceptElement) {
+    private <T> void removeAllExceptOneElement(Collection<T> collection,  T exceptElement) {
         collection.clear();
         if (exceptElement != null) {
             collection.add(exceptElement);
