@@ -156,6 +156,8 @@ Set up to run this test:
  - Or use the command line: mvn clean install -Drobocode.home="D:\SourceCode\RoboCode\robocode"
 
 # Future improvement
+Gun:
+ - Fix GFTGun to allow battlefield bigger than 1000x1000
 Radar: 
  - Lock scan to the closest target when the distance is less than 300 (for example). 
    This could potentially improve the gun.

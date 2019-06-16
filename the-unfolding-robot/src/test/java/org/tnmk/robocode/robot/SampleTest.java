@@ -3,16 +3,16 @@ package org.tnmk.robocode.robot;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import mld.Moebius;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import pez.micro.BlackWidow;
 import robocode.BattleResults;
 import robocode.control.events.BattleCompletedEvent;
+import robocode.control.events.TurnEndedEvent;
+import robocode.control.snapshot.IBulletSnapshot;
+import robocode.control.snapshot.IRobotSnapshot;
+import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.testing.RobotTestBed;
-import wiki.mako.MakoHT;
-import wiki.mini.GouldingiHT;
 
 /**
  * <pre>
@@ -26,7 +26,7 @@ import wiki.mini.GouldingiHT;
  * </pre>
  */
 @RunWith(JUnit4.class)
-public class TheUnfoldingRobotTest extends RobotTestBed {
+public class SampleTest extends RobotTestBed {
     /**
      * The order of my robot in the list {@link #getRobotNames()}.
      */
@@ -34,16 +34,10 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
     private static final String MY_ROBOT_NAME = TheUnfoldingRobot.class.getCanonicalName();
 
     private static final List<String> TEST_ROBOTS = Arrays.asList(
-            MY_ROBOT_NAME
-            , Moebius.class.getCanonicalName()
-            , BlackWidow.class.getCanonicalName()
-            , MakoHT.class.getCanonicalName()
-            , GouldingiHT.class.getCanonicalName()
+            MY_ROBOT_NAME,
+            "sample.Tracker"
     );
-    /**
-     *
-     */
-    private static final double EXPECT_WIN_RATIO = 0.5;
+
     /**
      * Specifies the robots that will fight.
      *
@@ -59,18 +53,7 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
      */
     @Override
     public int getNumRounds() {
-        return 50;
-    }
-
-    /**
-     * @inhertie
-     */
-    public boolean isDeterministic() {
-        return false;
-    }
-
-    @Override
-    protected void runSetup() {
+        return 20;
     }
 
     /**
@@ -83,7 +66,29 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
         BattleResults[] battleResultsArray = event.getIndexedResults();
 
         BattleResults battleResultsOfMyRobot = battleResultsArray[MY_ROBOT_INDEX];
+        Assert.assertEquals("My robot should be the winner in general", 1, battleResultsOfMyRobot.getRank());
+
         int numWinRounds = battleResultsOfMyRobot.getFirsts();
-        Assert.assertTrue("Check my robot winner at least "+(EXPECT_WIN_RATIO*100)+"% of rounds: numWinRounds: " + numWinRounds, numWinRounds > (double) getNumRounds() * EXPECT_WIN_RATIO);
+        Assert.assertTrue("Check my robot winner at least 75% of rounds", numWinRounds > getNumRounds() * 0.75);
+    }
+
+    /**
+     * @deprecated this is just an example test, it's not really useful and not work as expected yet.
+     * Tests that a bullet is fire every turn.
+     *
+     * @param event {@link TurnEndedEvent}
+     */
+    @Deprecated
+    @Override
+    public void onTurnEnded(TurnEndedEvent event) {
+        ITurnSnapshot turn = event.getTurnSnapshot();
+        IRobotSnapshot[] robots = turn.getRobots();
+        for (IBulletSnapshot bullet : turn.getBullets()) {
+            IRobotSnapshot robot = robots[bullet.getOwnerIndex()];
+            if (MY_ROBOT_NAME.equals(robot.getName())) {
+                System.out.println("Bullet power: " + bullet.getPower());
+                Assert.assertTrue("Don't fire when energy is too low", robot.getEnergy() <= bullet.getPower());
+            }
+        }
     }
 }

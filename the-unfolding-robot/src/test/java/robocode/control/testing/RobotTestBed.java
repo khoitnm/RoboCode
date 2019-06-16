@@ -8,24 +8,19 @@
 package robocode.control.testing;
 
 
-import robocode.control.BattleSpecification;
-import robocode.control.BattlefieldSpecification;
-import robocode.control.IRobocodeEngine;
-import robocode.control.RandomFactory;
-import robocode.control.RobocodeEngine;
-import robocode.control.RobotSpecification;
+import java.io.File;
+import net.sf.robocode.io.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import robocode.control.*;
 import robocode.control.events.BattleAdaptor;
 import robocode.control.events.BattleErrorEvent;
 import robocode.control.events.BattleMessageEvent;
 import robocode.control.events.TurnEndedEvent;
-import net.sf.robocode.io.Logger;
-import static org.hamcrest.CoreMatchers.is;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import robocode.control.snapshot.IRobotSnapshot;
 
-import java.io.File;
+import static org.hamcrest.CoreMatchers.is;
 
 
 /**
@@ -48,8 +43,10 @@ public abstract class RobotTestBed extends BattleAdaptor {
 
 	/**
 	 * The battlefield specification, which is the default.
+	 * FIXME: the original code of author is `battleFieldSpec = new BattlefieldSpecification();`
+	 * But I have to change it because there's no other way for me to change that BattlefieldSpecification.
 	 */
-	protected final BattlefieldSpecification battleFieldSpec = new BattlefieldSpecification();
+	protected final BattlefieldSpecification battleFieldSpec = new BattlefieldSpecification(1200, 1200);
 
 	/**
 	 * The number of errors generated during this battle so far.
