@@ -18,6 +18,7 @@ public class TheUnfoldingRobotVsGoodSingleEnemiesTest extends AbstractWinRateTes
                 , GouldingiHT.class.getCanonicalName()
         );
 
+        //At 2019-06-16, The win rate is 0.6
         TestConfig testConfig  = new TestConfig(TheUnfoldingRobot.class,enemyNames, 0.7, 20);
         return testConfig;
     }

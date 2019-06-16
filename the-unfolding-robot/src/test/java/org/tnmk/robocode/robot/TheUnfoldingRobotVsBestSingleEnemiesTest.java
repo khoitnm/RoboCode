@@ -17,6 +17,7 @@ public class TheUnfoldingRobotVsBestSingleEnemiesTest extends AbstractWinRateTes
                 ,MakoHT.class.getCanonicalName()
         );
 
+        //At 2019-06-16, The win rate is 0.4 (toughest opponents are BlackPearl and Moebius)
         TestConfig testConfig  = new TestConfig(TheUnfoldingRobot.class,enemyNames, 0.5, 20);
         return testConfig;
     }
