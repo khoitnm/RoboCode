@@ -1,7 +1,7 @@
 package org.tnmk.robocode.robot;
 
+import java.awt.Color;
 import org.tnmk.robocode.common.gun.GunStateContext;
-import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.blackpearl.BlackPearlGun;
 import org.tnmk.robocode.common.gun.briareos.BriareosGun;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
@@ -10,6 +10,7 @@ import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.*;
+import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.*;
 
 public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobotControl, OnCustomEventControl, OnHitBulletControl, OnWinControl {
@@ -67,7 +68,9 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     private void aimGFTGunWhenPropriate(ScannedRobotEvent scannedRobotEvent) {
         if (shouldApplyGFTGun(scannedRobotEvent.getDistance(), robot.getOthers())) {
             gftAimGun.onScannedRobot(scannedRobotEvent);
+            robot.setBodyColor(HiTechDecorator.ROBOT_BORDY_COLOR);
         } else {
+            robot.setBodyColor(Color.RED);
             /** Don't fire, both GFT and MoebiusGun work badly in this case*/
         }
     }
@@ -95,7 +98,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
 
     @Override
     public void runInit() {
-        blackPearlGun.runInit();
+//        blackPearlGun.runInit();
 //        briareosGun.runInit();
         //Nothing at this moment.
     }
@@ -109,13 +112,13 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     @Override
     public void onHitByBullet(HitByBulletEvent hitByBulletEvent) {
         //FIXME There's no way to make sure the current strategy is still the same at this moment.
-        if (gunStateContext.isStrategy(GunStrategy.BLACK_PEARL)) {
-            blackPearlGun.onHitByBullet(hitByBulletEvent);
-        }
+//        if (gunStateContext.isStrategy(GunStrategy.BLACK_PEARL)) {
+//            blackPearlGun.onHitByBullet(hitByBulletEvent);
+//        }
     }
 
     @Override
     public void onWin(WinEvent winEvent) {
-        blackPearlGun.onWin(winEvent);//Don't care what the gunState is.
+//        blackPearlGun.onWin(winEvent);
     }
 }

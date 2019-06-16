@@ -8,7 +8,6 @@ import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
 import pez.micro.BlackWidow;
 import wiki.mako.MakoHT;
-import wiki.mini.GouldingiHT;
 
 public class TheUnfoldingRobotVsMoebiusAndOthersTest extends AbstractWinRateTest {
 
@@ -18,7 +17,8 @@ public class TheUnfoldingRobotVsMoebiusAndOthersTest extends AbstractWinRateTest
                 Moebius.class.getCanonicalName()
                 , BlackWidow.class.getCanonicalName()
                 , MakoHT.class.getCanonicalName()
-                , GouldingiHT.class.getCanonicalName()
+                , "ahf.Acero_1.0"
+//                , GouldingiHT.class.getCanonicalName()
         );
 
         /**

@@ -1,5 +1,6 @@
 package org.tnmk.robocode.common.gun.gft.oldalgorithm;
 
+import java.awt.Color;
 import java.awt.geom.Point2D;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.gun.GunStateContext;
@@ -41,9 +42,13 @@ public class GFTAimGun implements OnScannedRobotControl {
         double enemyVelocity = scannedRobotEvent.getVelocity();
 
         if (enemyDistance > GFTWave.MAX_DISTANCE) {
+            robot.setGunColor(Color.BLACK);
             /** Don't aim or shot in this case. Otherwise, there will be a bug ArrayOutOfBoundIndexException.*/
             return;
+        }else{
+            robot.setGunColor(HiTechDecorator.ROBOT_GUN_COLOR);
         }
+
 
         double bulletPower = BulletPowerHelper.reckonBulletPower(enemyDistance, robot.getOthers(), robot.getEnergy());
         LogHelper.logAdvanceRobot(robot, "Aim GFT. bulletPower: " + bulletPower + ", distance: " + enemyDistance);
@@ -69,8 +74,11 @@ public class GFTAimGun implements OnScannedRobotControl {
             robot.setTurnGunRightRadians(Utils.normalRelativeAngle(enemyAbsoluteBearing - robot.getGunHeadingRadians() + wave.mostVisitedBearingOffset()));
             robot.setBulletColor(HiTechDecorator.BULLET_GFT_COLOR);
             if (robot.getGunHeat() == 0) {
+                robot.setGunColor(HiTechDecorator.ROBOT_GUN_COLOR);
                 gunStateContext.saveSateAimGun(GunStrategy.GFT, wave.bulletPower);
                 robot.setFire(wave.bulletPower);
+            }else{
+                robot.setGunColor(Color.LIGHT_GRAY);
             }
             gunStateContext.saveStateFinishedAiming();
             if (robot.getEnergy() >= bulletPower) {
