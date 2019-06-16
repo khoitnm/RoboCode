@@ -154,3 +154,12 @@ Some example code:
 Set up to run this test:
  - In IntelliJ menu > Run > Edit Configurations > In VM Options, add: " -Drobocode.home=D:\SourceCode\RoboCode\robocode"
  - Or use the command line: mvn clean install -Drobocode.home="D:\SourceCode\RoboCode\robocode"
+
+# Future improvement
+Radar: 
+ - Lock scan to the closest target when the distance is less than 300 (for example). 
+   This could potentially improve the gun.
+Movement:
+ - Random move when doing Anti-Gravity 
+ - One-on-One movement: choose a better strategy.
+ 
