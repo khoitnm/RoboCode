@@ -1,6 +1,8 @@
 package org.tnmk.robocode.robot;
 
-import java.util.StringJoiner;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -25,7 +27,13 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
      * The order of my robot in the list {@link #getRobotNames()}.
      */
     private static final int MY_ROBOT_INDEX = 0;
-    private static final String myRobotName = TheUnfoldingRobot.class.getCanonicalName();
+    private static final String MY_ROBOT_NAME = TheUnfoldingRobot.class.getCanonicalName();
+
+    private static final List<String> TEST_ROBOTS = Arrays.asList(
+            MY_ROBOT_NAME,
+            "sample.Tracker"
+    );
+
 
     /**
      * Specifies the robots that will fight.
@@ -34,7 +42,7 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
      */
     @Override
     public String getRobotNames() {
-        return new StringJoiner(",").add(myRobotName).add("sample.Tracker").toString();
+        return TEST_ROBOTS.stream().collect(Collectors.joining(","));
     }
 
     /**
@@ -59,9 +67,10 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
         // Sanity check that results[0] is PewPew.
         BattleResults battleResultsOfMyRobot = battleResultsArray[MY_ROBOT_INDEX];
         String robotName = battleResultsOfMyRobot.getTeamLeaderName();
-//        Assert.assertEquals("Check that the winner is my robot", myRobotName, robotName);
+//        Assert.assertEquals("Check that the winner is my robot", MY_ROBOT_NAME, robotName);
 
         // Check to make sure my robot won at least won over half the rounds.
-        Assert.assertTrue("Check my robot winner at least 50% of rounds", getNumRounds() / 5 < battleResultsOfMyRobot.getFirsts());
+        int numWinRounds = battleResultsOfMyRobot.getFirsts();
+        Assert.assertTrue("Check my robot winner at least 75% of rounds", numWinRounds > getNumRounds() * 0.75);
     }
 }
