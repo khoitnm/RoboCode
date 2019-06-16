@@ -60,7 +60,7 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
      */
     @Override
     public int getNumRounds() {
-        return 50;
+        return 20;
     }
 
     /**
@@ -85,6 +85,7 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
 
         BattleResults battleResultsOfMyRobot = battleResultsArray[MY_ROBOT_INDEX];
         int numWinRounds = battleResultsOfMyRobot.getFirsts();
-        Assert.assertTrue("Check my robot winner at least " + (EXPECT_WIN_RATIO * 100) + "% of rounds: numWinRounds: " + numWinRounds, numWinRounds > (double) getNumRounds() * EXPECT_WIN_RATIO);
+        double winPercentage = (double) getNumRounds() * EXPECT_WIN_RATIO;
+        Assert.assertTrue("Check my robot winner at least " + (EXPECT_WIN_RATIO * 100) + "% of rounds: numWinRounds: " + numWinRounds + ", winPercentage: " + winPercentage, numWinRounds > winPercentage);
     }
 }

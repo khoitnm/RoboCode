@@ -18,6 +18,10 @@ import robocode.util.Utils;
 public class GFTAimGun implements OnScannedRobotControl {
     //TODO make dynamic bullet power based on the distance.
     private static final double BULLET_POWER = 1.9;
+    /**
+     * For this algorithm, the bullet power should never be lower than this. Otherwise, the error will happens.
+     */
+    private static final double MIN_BULLET_POWER = 1.0d;
 
     private static double lateralDirection;
     private static double lastEnemyVelocity;
@@ -36,15 +40,19 @@ public class GFTAimGun implements OnScannedRobotControl {
         double enemyDistance = scannedRobotEvent.getDistance();
         double enemyVelocity = scannedRobotEvent.getVelocity();
 
-        if (enemyDistance > GFTWave.MAX_DISTANCE){
+        if (enemyDistance > GFTWave.MAX_DISTANCE) {
             //don't aim or shot in this case. Otherwise, there will be a bug ArrayOutOfBoundIndexException.
+            return;
         }
 
         double bulletPower = BulletPowerHelper.reckonBulletPower(enemyDistance, robot.getOthers(), robot.getEnergy());
         LogHelper.logAdvanceRobot(robot, "Aim GFT. bulletPower: " + bulletPower + ", distance: " + enemyDistance);
         if (bulletPower <= 0) {
             return;//if bulletPower is 0 (because low energy, or too risky), don't need to aim or fire bullet.
+        } else if (bulletPower < MIN_BULLET_POWER) {
+            bulletPower = MIN_BULLET_POWER;
         }
+
         if (enemyVelocity != 0) {
             lateralDirection = GeoMathUtils.sign(enemyVelocity * Math.sin(scannedRobotEvent.getHeadingRadians() - enemyAbsoluteBearing));
         }

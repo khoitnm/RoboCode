@@ -66,7 +66,7 @@ public class BulletPowerHelper {
         if (remainEnergy < LOW_ENERGY) {
             bulletPower = bulletPower * (remainEnergy * BULLET_POWER_COEFFICIENT_FOR_LOW_ENERGY);
         }
-        if (remainEnergy < bulletPower) {
+        if (remainEnergy < bulletPower || bulletPower < Rules.MIN_BULLET_POWER) {
             bulletPower = 0;
         }
         return bulletPower;
