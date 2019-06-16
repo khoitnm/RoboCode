@@ -1,6 +1,7 @@
 package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.gun.GunStateContext;
+import org.tnmk.robocode.common.gun.blackpearl.BlackPearlGun;
 import org.tnmk.robocode.common.gun.briareos.BriareosGun;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.mobius.MobiusGun;
@@ -29,11 +30,13 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
-    private BriareosGun briareosGun;
-    private GFTAimGun gftAimGun;
-    private PatternPredictionGun patternPredictionGun;
-    private MobiusGun mobiusGun;
-    private GunStateContext gunStateContext;
+    private final BriareosGun briareosGun;
+    private final GFTAimGun gftAimGun;
+    private final PatternPredictionGun patternPredictionGun;
+    private final MobiusGun mobiusGun;
+    private final BlackPearlGun blackPearlGun;
+
+    private final GunStateContext gunStateContext;
 
 
     public TheUnfoldingGun(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
@@ -44,6 +47,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
         this.briareosGun = new BriareosGun(robot);
         this.mobiusGun = new MobiusGun(robot);
         this.gftAimGun = new GFTAimGun(robot, gunStateContext);
+        this.blackPearlGun = new BlackPearlGun(robot);
         this.patternPredictionGun = new PatternPredictionGun(robot, allEnemiesObservationContext, gunStateContext);
     }
 
@@ -57,16 +61,20 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
         if (enemyStatisticContext != null && enemyStatisticContext.hasCertainPattern()) {
             patternPredictionGun.onScannedRobot(scannedRobotEvent);
         } else {
-            if (shouldApplyGFTGun(scannedRobotEvent.getDistance(), robot.getOthers())) {
-                gftAimGun.onScannedRobot(scannedRobotEvent);
-            } else{
-                /** Don't fire, both GFT and MoebiusGun work badly in this case*/
-            }
+            blackPearlGun.onScannedRobot(scannedRobotEvent);
+//            aimGFTGunWhenPropriate(scannedRobotEvent);
 //            mobiusGun.onScannedRobot(scannedRobotEvent);
 //            briareosGun.onScannedRobot(scannedRobotEvent);
         }
     }
 
+    private void aimGFTGunWhenPropriate(ScannedRobotEvent scannedRobotEvent){
+        if (shouldApplyGFTGun(scannedRobotEvent.getDistance(), robot.getOthers())) {
+            gftAimGun.onScannedRobot(scannedRobotEvent);
+        } else{
+            /** Don't fire, both GFT and MoebiusGun work badly in this case*/
+        }
+    }
     /**
      * When the distance is too far, don't fire.
      * However, if there's so many enemies, fire bullets even if the distance is far because there could be a change we hit other enemies accidentally.
@@ -90,6 +98,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
 
     @Override
     public void runInit() {
+        blackPearlGun.runInit();
 //        briareosGun.runInit();
         //Nothing at this moment.
     }
