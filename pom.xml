@@ -44,6 +44,7 @@
                 <artifactId>robocode.api</artifactId>
                 <version>1.9.3.6</version>
                 <scope>system</scope>
+                <!-- D:/SourceCode/RoboCode/robocode is the folder you setup your robocode -->
                 <systemPath>D:/SourceCode/RoboCode/robocode/libs/robocode.jar</systemPath>
             </dependency>
         </dependencies>
