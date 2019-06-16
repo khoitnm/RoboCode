@@ -1,6 +1,7 @@
 package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.gun.GunStateContext;
+import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.blackpearl.BlackPearlGun;
 import org.tnmk.robocode.common.gun.briareos.BriareosGun;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
@@ -8,15 +9,10 @@ import org.tnmk.robocode.common.gun.mobius.MobiusGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
-import org.tnmk.robocode.common.robot.InitiableRun;
-import org.tnmk.robocode.common.robot.LoopableRun;
-import org.tnmk.robocode.common.robot.OnCustomEventControl;
-import org.tnmk.robocode.common.robot.OnScannedRobotControl;
-import robocode.AdvancedRobot;
-import robocode.CustomEvent;
-import robocode.ScannedRobotEvent;
+import org.tnmk.robocode.common.robot.*;
+import robocode.*;
 
-public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobotControl, OnCustomEventControl {
+public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobotControl, OnCustomEventControl, OnHitBulletControl, OnWinControl {
     /**
      * The furthest distance which we should fire on target in one-on-one fights.
      * Note: this distance should never be lower than {@link TheUnfoldingMovement#IDEAL_ENEMY_OSCILLATOR_DISTANCE}
@@ -47,7 +43,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
         this.briareosGun = new BriareosGun(robot);
         this.mobiusGun = new MobiusGun(robot);
         this.gftAimGun = new GFTAimGun(robot, gunStateContext);
-        this.blackPearlGun = new BlackPearlGun(robot);
+        this.blackPearlGun = new BlackPearlGun(robot, gunStateContext);
         this.patternPredictionGun = new PatternPredictionGun(robot, allEnemiesObservationContext, gunStateContext);
     }
 
@@ -58,23 +54,25 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
 //                + "\n\t\t Pattern: " + enemyStatisticContext.getPatternIdentification()
 //                + "\n\t\t predictionHistory: \t" + enemyStatisticContext.getEnemyPredictionHistory().getAllHistoryItems()
 //        );
-        if (enemyStatisticContext != null && enemyStatisticContext.hasCertainPattern()) {
-            patternPredictionGun.onScannedRobot(scannedRobotEvent);
-        } else {
-            blackPearlGun.onScannedRobot(scannedRobotEvent);
-//            aimGFTGunWhenPropriate(scannedRobotEvent);
-//            mobiusGun.onScannedRobot(scannedRobotEvent);
-//            briareosGun.onScannedRobot(scannedRobotEvent);
-        }
+        blackPearlGun.onScannedRobot(scannedRobotEvent);
+//        if (enemyStatisticContext != null && enemyStatisticContext.hasCertainPattern()) {
+//            patternPredictionGun.onScannedRobot(scannedRobotEvent);
+//        } else {
+//            blackPearlGun.onScannedRobot(scannedRobotEvent);
+////            aimGFTGunWhenPropriate(scannedRobotEvent);
+////            mobiusGun.onScannedRobot(scannedRobotEvent);
+////            briareosGun.onScannedRobot(scannedRobotEvent);
+//        }
     }
 
-    private void aimGFTGunWhenPropriate(ScannedRobotEvent scannedRobotEvent){
+    private void aimGFTGunWhenPropriate(ScannedRobotEvent scannedRobotEvent) {
         if (shouldApplyGFTGun(scannedRobotEvent.getDistance(), robot.getOthers())) {
             gftAimGun.onScannedRobot(scannedRobotEvent);
-        } else{
+        } else {
             /** Don't fire, both GFT and MoebiusGun work badly in this case*/
         }
     }
+
     /**
      * When the distance is too far, don't fire.
      * However, if there's so many enemies, fire bullets even if the distance is far because there could be a change we hit other enemies accidentally.
@@ -107,5 +105,18 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     public void runLoop() {
 //        briareosGun.runLoop();
         patternPredictionGun.runLoop();
+    }
+
+    @Override
+    public void onHitByBullet(HitByBulletEvent hitByBulletEvent) {
+        //FIXME There's no way to make sure the current strategy is still the same at this moment.
+        if (gunStateContext.isStrategy(GunStrategy.BLACK_PEARL)) {
+            blackPearlGun.onHitByBullet(hitByBulletEvent);
+        }
+    }
+
+    @Override
+    public void onWin(WinEvent winEvent) {
+        blackPearlGun.onWin(winEvent);//Don't care what the gunState is.
     }
 }

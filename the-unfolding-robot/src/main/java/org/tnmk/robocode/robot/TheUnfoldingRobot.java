@@ -78,4 +78,14 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     public void onHitWall(HitWallEvent hitWallEvent){
         theUnfoldingMovement.onHitWall(hitWallEvent);
     }
+
+    @Override
+    public void onHitByBullet(HitByBulletEvent hitByBulletEvent) {
+        theUnfoldingGun.onHitByBullet(hitByBulletEvent);
+    }
+
+    @Override
+    public void onWin(WinEvent winEvent) {
+        theUnfoldingGun.onWin(winEvent);
+    }
 }

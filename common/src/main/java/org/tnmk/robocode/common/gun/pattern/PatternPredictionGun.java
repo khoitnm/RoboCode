@@ -175,7 +175,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
             if (DoubleUtils.isConsideredZero(robot.getGunHeat()) && DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
                 robot.setBulletColor(HiTechDecorator.BULLET_COLOR);
                 robot.setFire(gunStateContext.getBulletPower());
-                gunStateContext.saveSateRest();
+                gunStateContext.saveStateFinishedAiming();
 //                LogHelper.logAdvanceRobot(robot, "Fire!!! " + gunStateContext.getBulletPower());
             }
         }

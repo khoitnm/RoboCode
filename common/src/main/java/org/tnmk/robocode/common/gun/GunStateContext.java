@@ -13,6 +13,7 @@ public class GunStateContext {
      */
     private GunStrategy gunStrategy = null;
     private double bulletPower;
+    private boolean isAiming;
 
     /**
      * @param gunStrategy
@@ -21,14 +22,11 @@ public class GunStateContext {
     public void saveSateAimGun(GunStrategy gunStrategy, double bulletPower) {
         this.gunStrategy = gunStrategy;
         this.bulletPower = bulletPower;
+        this.isAiming = true;
     }
 
-    public void saveSateRest() {
-        gunStrategy = null;
-    }
-
-    public GunStrategy getGunStrategy() {
-        return gunStrategy;
+    public void saveStateFinishedAiming() {
+        this.isAiming = false;
     }
 
     public double getBulletPower() {
@@ -36,6 +34,10 @@ public class GunStateContext {
     }
 
     public boolean isAiming() {
-        return gunStrategy != null;
+        return isAiming;
+    }
+
+    public boolean isStrategy(GunStrategy gunStrategy) {
+        return this.gunStrategy == gunStrategy;
     }
 }

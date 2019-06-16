@@ -4,6 +4,7 @@
  */
 package org.tnmk.robocode.common.gun.blackpearl;
 
+import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.FileInputStream;
@@ -12,15 +13,21 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import org.tnmk.robocode.common.gun.GunStateContext;
+import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.robot.InitiableRun;
+import org.tnmk.robocode.common.robot.OnHitBulletControl;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
+import org.tnmk.robocode.common.robot.OnWinControl;
 import robocode.*;
 import robocode.util.Utils;
 
 /**
  * Copied from BlackPearl robot.
  */
-public class BlackPearlGun implements InitiableRun, OnScannedRobotControl {
+public class BlackPearlGun implements InitiableRun, OnScannedRobotControl, OnHitBulletControl, OnWinControl {
+	private static final Color BULLET_COLOR = Color.YELLOW;
+
 	private static final double 	MAX_STAND_OFF_DISTANCE 	= 600D;
 	private static final double 	MIN_STAND_OFF_DISTANCE 	= 500D;
 	private static final double 	GUESS_FACTORS 		= 23D;
@@ -34,6 +41,7 @@ public class BlackPearlGun implements InitiableRun, OnScannedRobotControl {
 	private static int hits;
 
 	private final AdvancedRobot robot;
+	private final GunStateContext gunStateContext;
 
 	private int direction = 1;
 	private int eDirection;
@@ -44,9 +52,10 @@ public class BlackPearlGun implements InitiableRun, OnScannedRobotControl {
 	private static int ticksSinceReverse = 0;
 	int lastLatVelIndex = 0;
 
-    public BlackPearlGun(AdvancedRobot robot) {
+    public BlackPearlGun(AdvancedRobot robot, GunStateContext gunStateContext1) {
         this.robot = robot;
-    }
+		gunStateContext = gunStateContext1;
+	}
 
     public void runInit() {
 		//setColors(java.awt.Color.MAGENTA, java.awt.Color.LIGHT_GRAY, java.awt.Color.RED);
@@ -121,10 +130,13 @@ public class BlackPearlGun implements InitiableRun, OnScannedRobotControl {
 
 		//Aim the gun
 		//Original
-        robot.setTurnGunRightRadians(Utils.normalRelativeAngle(eAbsBearing - robot.getGunHeadingRadians() + (getGuessAngle(bestIndex, firePower))));
+		gunStateContext.saveSateAimGun(GunStrategy.BLACK_PEARL, firePower);
+		robot.setTurnGunRightRadians(Utils.normalRelativeAngle(eAbsBearing - robot.getGunHeadingRadians() + (getGuessAngle(bestIndex, firePower))));
 
 		if (firePower > 0) {
+			robot.setBulletColor(BULLET_COLOR);
             robot.setFire(firePower);
+			gunStateContext.saveStateFinishedAiming();
 			Wave w = new Wave();
 			w.guessFactors = stats;
 			w.wDirection = eDirection;
@@ -140,7 +152,8 @@ public class BlackPearlGun implements InitiableRun, OnScannedRobotControl {
 
 	// Check if we are hit with full lead aim
 	// Adapted from Axe's Musashi: http://robowiki.net/?Musashi
-	public void onHitByBullet(HitByBulletEvent e) {
+	@Override
+	public void onHitByBullet(HitByBulletEvent hitByBulletEvent) {
 		//if (ticksSinceReverse > (eDistance / e.getVelocity()) && !flatten) {
 		if (!flatten) {
 			flatten = (++hits > 0);
@@ -148,7 +161,8 @@ public class BlackPearlGun implements InitiableRun, OnScannedRobotControl {
 	}
 
 	// Save the data if I win the round
-	public void onWin(WinEvent e) {
+	@Override
+	public void onWin(WinEvent winEvent) {
 		try {
 			ObjectOutputStream  oos = new ObjectOutputStream(new GZIPOutputStream(new RobocodeFileOutputStream(robot.getDataFile(targetName))));
 			oos.writeObject(statBuffer);
