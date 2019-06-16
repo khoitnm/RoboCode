@@ -15,7 +15,7 @@ class GFTWave extends Condition {
 	double lateralDirection;
 
 	//It means that if the battlefield's width or height > 1000, there will be an arrayIndexOutOfBoundException!!!
-	private static final double MAX_DISTANCE = 1000;
+	public static final double MAX_DISTANCE = 1000;
 	private static final int DISTANCE_INDEXES = 5;
 	private static final int VELOCITY_INDEXES = 5;
 	private static final int BINS = 25;
@@ -28,7 +28,7 @@ class GFTWave extends Condition {
 	private int[] buffer;
 	private AdvancedRobot robot;
 	private double distanceTraveled;
-	
+
 	GFTWave(AdvancedRobot _robot) {
 		this.robot = _robot;
 	}

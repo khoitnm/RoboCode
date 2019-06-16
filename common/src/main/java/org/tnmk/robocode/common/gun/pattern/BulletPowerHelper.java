@@ -27,7 +27,7 @@ public class BulletPowerHelper {
     private static final double INCREASE_POWER_FOR_EACH_REMAIN_ENEMIES = 0.15;
 
     private static final double LOW_ENERGY = 10;
-    private static final double BULLET_POWER_COEFFICIENT_FOR_LOW_ENERGY = 1/10;
+    private static final double BULLET_POWER_COEFFICIENT_FOR_LOW_ENERGY = 1 / 10;
 
     /**
      * This method is mostly applicable only for {@link PatternPredictionGun} because it requires movePatternCertainty argument.
@@ -40,7 +40,7 @@ public class BulletPowerHelper {
      */
     public static double reckonBulletPower(double fireDistance, double movePatternCertainty, double enemiesCount, double remainEnergy) {
         double bulletPower = reckonRawBulletPower(fireDistance, movePatternCertainty);
-        bulletPower  = increaseBulletPowerBasedOnEnemiesCount(bulletPower, enemiesCount);
+        bulletPower = increaseBulletPowerBasedOnEnemiesCount(bulletPower, enemiesCount);
         bulletPower = reckonBulletPowerWithinLimit(bulletPower);
         bulletPower = reduceBulletPowerBasedOnRemainEnergy(bulletPower, remainEnergy);
         return bulletPower;
@@ -48,7 +48,7 @@ public class BulletPowerHelper {
 
     public static double reckonBulletPower(double fireDistance, double enemiesCount, double remainEnergy) {
         double bulletPower = reckonRawBulletPower(fireDistance, 1);
-        bulletPower  = increaseBulletPowerBasedOnEnemiesCount(bulletPower, enemiesCount);
+        bulletPower = increaseBulletPowerBasedOnEnemiesCount(bulletPower, enemiesCount);
         bulletPower = reckonBulletPowerWithinLimit(bulletPower);
         bulletPower = reduceBulletPowerBasedOnRemainEnergy(bulletPower, remainEnergy);
         return bulletPower;
@@ -56,16 +56,17 @@ public class BulletPowerHelper {
 
     /**
      * If energy is too low, don't fire.
+     *
      * @param originalBulletPower
      * @param remainEnergy
      * @return
      */
-    private static double reduceBulletPowerBasedOnRemainEnergy(double originalBulletPower, double remainEnergy){
+    private static double reduceBulletPowerBasedOnRemainEnergy(double originalBulletPower, double remainEnergy) {
         double bulletPower = originalBulletPower;
-        if (remainEnergy < LOW_ENERGY){
+        if (remainEnergy < LOW_ENERGY) {
             bulletPower = bulletPower * (remainEnergy * BULLET_POWER_COEFFICIENT_FOR_LOW_ENERGY);
         }
-        if (remainEnergy < bulletPower){
+        if (remainEnergy < bulletPower) {
             bulletPower = 0;
         }
         return bulletPower;
@@ -116,10 +117,11 @@ public class BulletPowerHelper {
     private static double randomlyShouldFireBullet(double bulletPower) {
         //For example: if bulletPower is 0.8, 1 - bulletPower = 0.2 (20%). If we use that number for risk, it's maybe a little bit too high.
         //Don't need to be that conservative, I decide to divide that risk by 4,
-        double riskCertainty = (MIN_EXPECT_BULLET_POWER - bulletPower) / 4;
+        double riskCertainty = Math.max(0, MIN_EXPECT_BULLET_POWER - bulletPower) / 4d;
+        double riskPercentage = riskCertainty * 100d;
         Random random = new Random();
-        int randomInt = random.nextInt(100);
-        if ((double) randomInt < riskCertainty * 100) {
+        int randomInt = random.nextInt(100) + 1;
+        if (randomInt < riskPercentage) {
             return 0;
         } else {
             return MIN_EXPECT_BULLET_POWER;

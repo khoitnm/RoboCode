@@ -36,6 +36,10 @@ public class GFTAimGun implements OnScannedRobotControl {
         double enemyDistance = scannedRobotEvent.getDistance();
         double enemyVelocity = scannedRobotEvent.getVelocity();
 
+        if (enemyDistance > GFTWave.MAX_DISTANCE){
+            //don't aim or shot in this case. Otherwise, there will be a bug ArrayOutOfBoundIndexException.
+        }
+
         double bulletPower = BulletPowerHelper.reckonBulletPower(enemyDistance, robot.getOthers(), robot.getEnergy());
         LogHelper.logAdvanceRobot(robot, "Aim GFT. bulletPower: " + bulletPower + ", distance: " + enemyDistance);
         if (bulletPower <= 0) {
