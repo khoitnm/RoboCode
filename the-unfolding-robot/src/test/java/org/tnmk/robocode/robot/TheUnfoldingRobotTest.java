@@ -8,6 +8,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import robocode.BattleResults;
 import robocode.control.events.BattleCompletedEvent;
+import robocode.control.events.TurnEndedEvent;
+import robocode.control.snapshot.IBulletSnapshot;
+import robocode.control.snapshot.IRobotSnapshot;
+import robocode.control.snapshot.ITurnSnapshot;
 import robocode.control.testing.RobotTestBed;
 
 /**
@@ -34,7 +38,6 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
             "sample.Tracker"
     );
 
-
     /**
      * Specifies the robots that will fight.
      *
@@ -46,9 +49,7 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
     }
 
     /**
-     * This test runs for 20 rounds.
-     *
-     * @return The number of rounds.
+     * @inhertie
      */
     @Override
     public int getNumRounds() {
@@ -62,15 +63,32 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
      */
     @Override
     public void onBattleCompleted(BattleCompletedEvent event) {
-        // Return the results in order of getRobotNames.
         BattleResults[] battleResultsArray = event.getIndexedResults();
-        // Sanity check that results[0] is PewPew.
-        BattleResults battleResultsOfMyRobot = battleResultsArray[MY_ROBOT_INDEX];
-        String robotName = battleResultsOfMyRobot.getTeamLeaderName();
-//        Assert.assertEquals("Check that the winner is my robot", MY_ROBOT_NAME, robotName);
 
-        // Check to make sure my robot won at least won over half the rounds.
+        BattleResults battleResultsOfMyRobot = battleResultsArray[MY_ROBOT_INDEX];
+        Assert.assertEquals("My robot should be the winner in general", 1, battleResultsOfMyRobot.getRank());
+
         int numWinRounds = battleResultsOfMyRobot.getFirsts();
         Assert.assertTrue("Check my robot winner at least 75% of rounds", numWinRounds > getNumRounds() * 0.75);
+    }
+
+    /**
+     * @deprecated this is just an example test, it's not really useful and not work as expected yet.
+     * Tests that a bullet is fire every turn.
+     *
+     * @param event {@link TurnEndedEvent}
+     */
+    @Deprecated
+    @Override
+    public void onTurnEnded(TurnEndedEvent event) {
+        ITurnSnapshot turn = event.getTurnSnapshot();
+        IRobotSnapshot[] robots = turn.getRobots();
+        for (IBulletSnapshot bullet : turn.getBullets()) {
+            IRobotSnapshot robot = robots[bullet.getOwnerIndex()];
+            if (MY_ROBOT_NAME.equals(robot.getName())) {
+                System.out.println("Bullet power: " + bullet.getPower());
+                Assert.assertTrue("Don't fire when energy is too low", robot.getEnergy() <= bullet.getPower());
+            }
+        }
     }
 }

@@ -58,7 +58,8 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
             patternPredictionGun.onScannedRobot(scannedRobotEvent);
         } else {
 //            mobiusGun.onScannedRobot(scannedRobotEvent);
-            aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
+//            aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
+            gftAimGun.onScannedRobot(scannedRobotEvent);
 //            briareosGun.onScannedRobot(scannedRobotEvent);
         }
     }

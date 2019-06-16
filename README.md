@@ -144,3 +144,13 @@ Hence when calculating sin/cos..., the result will be wrong.
 That's why before applying sin/cos..., you should convert them to geometry angles.
 
 Use `toGeometryRadian(double inGameRadian)` and `toGeometryDegree(double inGameDegree)` before calculate geometry formulas such as `Math.sin(radian)`, `Math.cos(radian)`
+
+# UnitTest
+Some example code:
+ - https://hiraidekeone.wordpress.com/2013/02/26/robocode-quality-assurance-and-junit-testing/
+ - https://bretkikehara.wordpress.com/2013/02/26/robocode-unit-testing-goodness/
+ - https://github.com/robo-code/robocode/blob/master/plugins/testing/robocode.testing.samples/src/main/java/sample/TestWallBehavior.java
+
+Set up to run this test:
+ - In IntelliJ menu > Run > Edit Configurations > In VM Options, add: " -Drobocode.home=D:\SourceCode\RoboCode\robocode"
+ - Or use the command line: mvn clean install -Drobocode.home="D:\SourceCode\RoboCode\robocode"
