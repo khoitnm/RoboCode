@@ -1,18 +1,16 @@
 package org.tnmk.robocode.robot;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import mld.Moebius;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import pez.micro.BlackWidow;
 import robocode.BattleResults;
+import robocode.Robot;
 import robocode.control.events.BattleCompletedEvent;
 import robocode.control.testing.RobotTestBed;
-import wiki.mako.MakoHT;
-import wiki.mini.GouldingiHT;
 
 /**
  * <pre>
@@ -26,24 +24,20 @@ import wiki.mini.GouldingiHT;
  * </pre>
  */
 @RunWith(JUnit4.class)
-public class TheUnfoldingRobotTest extends RobotTestBed {
+@Ignore
+public abstract class AbstractWinRateTest extends RobotTestBed {
     /**
      * The order of my robot in the list {@link #getRobotNames()}.
      */
     private static final int MY_ROBOT_INDEX = 0;
-    private static final String MY_ROBOT_NAME = TheUnfoldingRobot.class.getCanonicalName();
+    private List<String> allRobotNames;
+    private final TestConfig testConfig;
 
-    private static final List<String> TEST_ROBOTS = Arrays.asList(
-            MY_ROBOT_NAME
-            , Moebius.class.getCanonicalName()
-            , BlackWidow.class.getCanonicalName()
-            , MakoHT.class.getCanonicalName()
-            , GouldingiHT.class.getCanonicalName()
-    );
-    /**
-     *
-     */
-    private static final double EXPECT_WIN_RATIO = 0.7;
+    public AbstractWinRateTest() {
+        this.testConfig = constructTestConfig();
+    }
+
+    abstract public TestConfig constructTestConfig();
 
     /**
      * Specifies the robots that will fight.
@@ -52,7 +46,10 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
      */
     @Override
     public String getRobotNames() {
-        return TEST_ROBOTS.stream().collect(Collectors.joining(","));
+        allRobotNames = new ArrayList<>();
+        allRobotNames.add(testConfig.myRobotClass.getCanonicalName());
+        allRobotNames.addAll(testConfig.enemiesNamesList);
+        return allRobotNames.stream().collect(Collectors.joining(","));
     }
 
     /**
@@ -60,7 +57,7 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
      */
     @Override
     public int getNumRounds() {
-        return 100;
+        return testConfig.numRounds;
     }
 
     /**
@@ -68,10 +65,6 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
      */
     public boolean isDeterministic() {
         return false;
-    }
-
-    @Override
-    protected void runSetup() {
     }
 
     /**
@@ -86,6 +79,29 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
         BattleResults battleResultsOfMyRobot = battleResultsArray[MY_ROBOT_INDEX];
         int numWinRounds = battleResultsOfMyRobot.getFirsts();
         double winRate = (double) numWinRounds / (double) getNumRounds();
-        Assert.assertTrue("Check my robot winner at least " + (EXPECT_WIN_RATIO * 100) + "% of rounds: numWinRounds: " + numWinRounds + ", winPercentage: " + (winRate * 100), winRate > EXPECT_WIN_RATIO);
+        Assert.assertTrue("Check my robot winner at least " + (testConfig.expectWinRatio * 100) + "% of rounds: numWinRounds: " + numWinRounds + ", winPercentage: " + (winRate * 100), winRate > testConfig.expectWinRatio);
+    }
+
+    public static class TestConfig {
+        private final Class<? extends Robot> myRobotClass;
+        private final int numRounds;
+        private final double expectWinRatio;
+        /**
+         * We don't use Robot class because we may want to test some robot which exist not in our source code.
+         */
+        private final List<String> enemiesNamesList;
+
+        /**
+         * @param myRobotClass
+         * @param enemiesNamesList
+         * @param expectWinRatio represent how many percent (value is from 0.0 to 1.0) our robot should be the champion through out numRounds.
+         * @param numRounds
+         */
+        public TestConfig(Class<? extends Robot> myRobotClass, List<String> enemiesNamesList, double expectWinRatio, int numRounds) {
+            this.myRobotClass = myRobotClass;
+            this.numRounds = numRounds;
+            this.expectWinRatio = expectWinRatio;
+            this.enemiesNamesList = enemiesNamesList;
+        }
     }
 }
