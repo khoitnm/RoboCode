@@ -60,7 +60,7 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
      */
     @Override
     public int getNumRounds() {
-        return 20;
+        return 100;
     }
 
     /**

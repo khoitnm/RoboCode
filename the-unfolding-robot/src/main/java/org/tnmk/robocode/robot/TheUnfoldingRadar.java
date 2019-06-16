@@ -39,6 +39,15 @@ public class TheUnfoldingRadar implements OnScannedRobotControl, OnRobotDeathCon
         allEnemiesScanRadar.runInit();
     }
 
+    /**
+     * General strategy:<br/>
+     * If there's an enemy close to our robot, lock radar on it. After awhile, scan other robots again.
+     * </p>
+     * This way also help the Anti-Gravity destination doesn't change so quickly.<br/>
+     * The reason is when our robot lock radar to single one target, our data about other enemies still the same (old), so the anti-gravity calculation doesn't change much.<br/>
+     * Hence the destination will mostly the same.
+     * @param scannedRobotEvent
+     */
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         if (isCloseEnemy(scannedRobotEvent)){
