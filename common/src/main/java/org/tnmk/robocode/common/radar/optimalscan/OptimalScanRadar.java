@@ -48,6 +48,18 @@ public class OptimalScanRadar implements InitiableRun, OnScannedRobotControl, On
     }
 
     @Override
+    public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+        Enemy enemy = EnemyMapper.toEnemy(this.robot, scannedRobotEvent);
+        allEnemiesObservationContext.addEnemy(enemy);
+        setIfEverScannedAllEnemiesAtLeastOnce();
+    }
+
+    @Override
+    public void onRobotDeath(RobotDeathEvent robotDeathEvent) {
+        allEnemiesObservationContext.removeEnemy(robotDeathEvent.getName());
+    }
+
+    @Override
     public void onCustomEvent(CustomEvent customEvent) {
         if (customEvent.getCondition() instanceof RadarTurnCompleteCondition) {
             sweep();
@@ -160,18 +172,6 @@ public class OptimalScanRadar implements InitiableRun, OnScannedRobotControl, On
     private void printSweep(AdvancedRobot robot, double radarTurn, Collection<Enemy> enemies) {
         List<Long> enemiesUpdatedTime = enemies.stream().map(enemy -> robot.getTime() - enemy.getTime()).collect(Collectors.toList());
         LogHelper.logAdvanceRobot(robot, "New sweep " + radarTurn + ", enemies updated: " + enemiesUpdatedTime);
-    }
-
-    @Override
-    public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        Enemy enemy = EnemyMapper.toEnemy(this.robot, scannedRobotEvent);
-        allEnemiesObservationContext.addEnemy(enemy);
-        setIfEverScannedAllEnemiesAtLeastOnce();
-    }
-
-    @Override
-    public void onRobotDeath(RobotDeathEvent robotDeathEvent) {
-        allEnemiesObservationContext.removeEnemy(robotDeathEvent.getName());
     }
 
     private void setIfEverScannedAllEnemiesAtLeastOnce() {

@@ -17,14 +17,27 @@ import robocode.Robot;
  * However, data inside this should be changed by Radar only. It shouldn't be changed by Movement or Gun.
  */
 public class AllEnemiesObservationContext {
+    /**
+     * If an enemy is not updated after this period of time, it's considered outdated.
+     */
+    private static final long CONSIDER_OUTDATED_PERIOD = 16 * 2;//2 times of full scan.
     private final AdvancedRobot robot;
 
     private final Map<String, Enemy> enemiesMapByName = Collections.synchronizedMap(new HashMap<>());
     private final Map<String, EnemyStatisticContext> enemiesPatternPredictionsMapByName = Collections.synchronizedMap(new HashMap<>());
 
-
     public AllEnemiesObservationContext(AdvancedRobot robot) {
         this.robot = robot;
+    }
+
+    /**
+     * @see RadarHelper#isAllEnemiesUpdate(Collection, long, long, long)
+     * @return
+     */
+    public boolean isAllEnemiesHasNewData() {
+        Collection<Enemy> enemies = enemiesMapByName.values();
+        long totalActualEnemies = robot.getOthers();
+        return RadarHelper.isAllEnemiesUpdate(enemies, totalActualEnemies, robot.getTime(), CONSIDER_OUTDATED_PERIOD);
     }
 
     public Collection<Enemy> getEnemies() {
