@@ -21,7 +21,7 @@ public class TheUnfoldingRobotVsBlackPearlAndOthersTest extends AbstractWinRateT
          * At 2019-06-16, The champion percentage is 34.69% (0.3469) which was tested with 1000 rounds (matches).
          * The toughest opponents are BlackPearl.
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.7, 1000);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.5, 20);
         return testConfig;
     }
 }
