@@ -168,6 +168,9 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         }
     }
 
+    /**
+     * Fire bullet when finish aiming.
+     */
     @Override
     public void runLoop() {
 //        LogHelper.logAdvanceRobot(robot, "GunStrategy: " + gunStateContext.getGunStrategy() + " gunTurnRemaining: " + robot.getGunTurnRemaining());
