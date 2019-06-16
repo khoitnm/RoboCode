@@ -1,5 +1,8 @@
 package org.tnmk.robocode.common.radar.botlock;
 
+import org.tnmk.robocode.common.model.enemy.Enemy;
+import org.tnmk.robocode.common.model.enemy.EnemyMapper;
+import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
@@ -11,6 +14,7 @@ import robocode.util.Utils;
  */
 public class BotLockRadar {
     private final AdvancedRobot robot;
+    private final AllEnemiesObservationContext allEnemiesObservationContext;
 
     /**
      * How many ticks since the last time the robot see its target.
@@ -19,14 +23,17 @@ public class BotLockRadar {
 
     private double enemyAbsoluteBearing;
 
-    public BotLockRadar(AdvancedRobot robot) {
+    public BotLockRadar(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
+        this.allEnemiesObservationContext = allEnemiesObservationContext;
     }
 
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
 //        Enemy enemy = EnemyMapper.toEnemy(robot, scannedRobotEvent);
 //        String message = String.format("Actual enemy at time %s, position {%.2f, %.2f}", robot.getTime(), enemy.getPosition().getX(), enemy.getPosition().getY());
 //        LogHelper.logAdvanceRobot(robot, message);
+        Enemy enemy = EnemyMapper.toEnemy(this.robot, scannedRobotEvent);
+        allEnemiesObservationContext.addEnemy(enemy);
 
         enemyAbsoluteBearing = (robot.getHeadingRadians() + scannedRobotEvent.getBearingRadians());
         timeSinceLastSeenEnemy = 0;

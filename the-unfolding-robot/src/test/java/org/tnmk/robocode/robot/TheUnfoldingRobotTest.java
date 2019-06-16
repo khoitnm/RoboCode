@@ -43,7 +43,7 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
     /**
      *
      */
-    private static final double EXPECT_WIN_RATIO = 0.5;
+    private static final double EXPECT_WIN_RATIO = 0.7;
 
     /**
      * Specifies the robots that will fight.

@@ -20,7 +20,7 @@ public class AllEnemiesObservationContext {
     /**
      * If an enemy is not updated after this period of time, it's considered outdated.
      */
-    private static final long CONSIDER_OUTDATED_PERIOD = 16 * 2;//2 times of full scan.
+    private static final long CONSIDER_OUTDATED_PERIOD = 16 * 5;//5 times of full scan.
     private final AdvancedRobot robot;
 
     private final Map<String, Enemy> enemiesMapByName = Collections.synchronizedMap(new HashMap<>());
@@ -31,13 +31,13 @@ public class AllEnemiesObservationContext {
     }
 
     /**
-     * @see RadarHelper#isAllEnemiesUpdate(Collection, long, long, long)
+     * @see RadarHelper#isAllEnemiesHasNewData(Collection, long, long, long)
      * @return
      */
     public boolean isAllEnemiesHasNewData() {
         Collection<Enemy> enemies = enemiesMapByName.values();
         long totalActualEnemies = robot.getOthers();
-        return RadarHelper.isAllEnemiesUpdate(enemies, totalActualEnemies, robot.getTime(), CONSIDER_OUTDATED_PERIOD);
+        return RadarHelper.isAllEnemiesHasNewData(enemies, totalActualEnemies, robot.getTime(), CONSIDER_OUTDATED_PERIOD);
     }
 
     public Collection<Enemy> getEnemies() {

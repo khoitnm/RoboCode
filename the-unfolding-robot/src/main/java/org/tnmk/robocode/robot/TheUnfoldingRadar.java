@@ -13,6 +13,8 @@ import robocode.RobotDeathEvent;
 import robocode.ScannedRobotEvent;
 
 public class TheUnfoldingRadar implements OnScannedRobotControl, OnRobotDeathControl, InitiableRun, OnCustomEventControl {
+    private static final double ENEMY_CLOSE_DISTANCE = 400;
+
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
 
@@ -23,7 +25,7 @@ public class TheUnfoldingRadar implements OnScannedRobotControl, OnRobotDeathCon
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
 
-        this.botLockRadar = new BotLockRadar(robot);
+        this.botLockRadar = new BotLockRadar(robot, allEnemiesObservationContext);
         this.allEnemiesScanRadar = new OptimalScanRadar(robot, allEnemiesObservationContext);
     }
 
@@ -39,13 +41,26 @@ public class TheUnfoldingRadar implements OnScannedRobotControl, OnRobotDeathCon
 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        allEnemiesScanRadar.onScannedRobot(scannedRobotEvent);
-        int totalExistingEnemies = robot.getOthers();
-        if (allEnemiesScanRadar.isScannedAllEnemiesAtLeastOnce() && totalExistingEnemies <= 1) {
-            botLockRadar.onScannedRobot(scannedRobotEvent);
-        } else {
-            //Do nothing, still continue scanAllEnemies.
+        if (isCloseEnemy(scannedRobotEvent)){
+            if (allEnemiesScanRadar.isScannedAllEnemiesAtLeastOnce() && allEnemiesObservationContext.isAllEnemiesHasNewData()) {
+                botLockRadar.onScannedRobot(scannedRobotEvent);
+            }else{
+                allEnemiesScanRadar.onScannedRobot(scannedRobotEvent);
+            }
+        }else{
+            int totalExistingEnemies = robot.getOthers();
+            if (allEnemiesScanRadar.isScannedAllEnemiesAtLeastOnce() && totalExistingEnemies <= 1) {
+                botLockRadar.onScannedRobot(scannedRobotEvent);
+            } else {
+                allEnemiesScanRadar.onScannedRobot(scannedRobotEvent);
+                //Do nothing, still continue scanAllEnemies.
+            }
         }
+    }
+
+    private boolean isCloseEnemy(ScannedRobotEvent scannedRobotEvent){
+        double distance = scannedRobotEvent.getDistance();
+        return distance < ENEMY_CLOSE_DISTANCE;
     }
 
     @Override
