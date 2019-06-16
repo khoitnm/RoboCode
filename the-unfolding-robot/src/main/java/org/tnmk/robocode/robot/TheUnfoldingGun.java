@@ -57,12 +57,23 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
         if (enemyStatisticContext != null && enemyStatisticContext.hasCertainPattern()) {
             patternPredictionGun.onScannedRobot(scannedRobotEvent);
         } else {
-            mobiusGun.onScannedRobot(scannedRobotEvent);
-//            gftAimGun.onScannedRobot(scannedRobotEvent);
+//            mobiusGun.onScannedRobot(scannedRobotEvent);
+            aimGftGunIfCloseEnemyEnough(scannedRobotEvent);
 //            briareosGun.onScannedRobot(scannedRobotEvent);
         }
     }
 
+
+    /**
+     * This distance limit help GFTGun avoid ArrayOutOfBoundException because the {@link org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTWave} only works with battlefield's max size 1000x1000
+     * @param scannedRobotEvent
+     */
+    private void aimGftGunIfCloseEnemyEnough(ScannedRobotEvent scannedRobotEvent) {
+        int totalExistingEnemies = robot.getOthers();
+        if (shouldFire(scannedRobotEvent.getDistance(), totalExistingEnemies)) {
+            gftAimGun.onScannedRobot(scannedRobotEvent);
+        }
+    }
     /**
      * When the distance is too far, don't fire.
      * However, if there's so many enemies, fire bullets even if the distance is far because there could be a change we hit other enemies accidentally.

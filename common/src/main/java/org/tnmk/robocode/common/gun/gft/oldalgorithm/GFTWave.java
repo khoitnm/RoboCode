@@ -14,6 +14,7 @@ class GFTWave extends Condition {
 	double bearing;
 	double lateralDirection;
 
+	//It means that if the battlefield's width or height > 1000, there will be an arrayIndexOutOfBoundException!!!
 	private static final double MAX_DISTANCE = 1000;
 	private static final int DISTANCE_INDEXES = 5;
 	private static final int VELOCITY_INDEXES = 5;
