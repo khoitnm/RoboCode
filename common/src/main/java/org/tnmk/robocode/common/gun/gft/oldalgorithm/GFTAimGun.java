@@ -41,7 +41,7 @@ public class GFTAimGun implements OnScannedRobotControl {
         double enemyVelocity = scannedRobotEvent.getVelocity();
 
         if (enemyDistance > GFTWave.MAX_DISTANCE) {
-            //don't aim or shot in this case. Otherwise, there will be a bug ArrayOutOfBoundIndexException.
+            /** Don't aim or shot in this case. Otherwise, there will be a bug ArrayOutOfBoundIndexException.*/
             return;
         }
 
@@ -77,6 +77,5 @@ public class GFTAimGun implements OnScannedRobotControl {
                 robot.addCustomEvent(wave);
             }
         }
-
     }
 }
