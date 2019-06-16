@@ -85,7 +85,7 @@ public class TheUnfoldingRobotTest extends RobotTestBed {
 
         BattleResults battleResultsOfMyRobot = battleResultsArray[MY_ROBOT_INDEX];
         int numWinRounds = battleResultsOfMyRobot.getFirsts();
-        double winPercentage = (double) getNumRounds() * EXPECT_WIN_RATIO;
-        Assert.assertTrue("Check my robot winner at least " + (EXPECT_WIN_RATIO * 100) + "% of rounds: numWinRounds: " + numWinRounds + ", winPercentage: " + winPercentage, numWinRounds > winPercentage);
+        double winRate = (double) numWinRounds / (double) getNumRounds();
+        Assert.assertTrue("Check my robot winner at least " + (EXPECT_WIN_RATIO * 100) + "% of rounds: numWinRounds: " + numWinRounds + ", winPercentage: " + (winRate * 100), winRate > EXPECT_WIN_RATIO);
     }
 }
