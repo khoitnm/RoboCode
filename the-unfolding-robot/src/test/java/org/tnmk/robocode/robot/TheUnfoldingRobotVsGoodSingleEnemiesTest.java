@@ -18,7 +18,10 @@ public class TheUnfoldingRobotVsGoodSingleEnemiesTest extends AbstractWinRateTes
                 , GouldingiHT.class.getCanonicalName()
         );
 
-        //At 2019-06-16, The win rate is 0.6
+        /**
+         * At 2019-06-16, The champion percentage is 66.1% over 1000 rounds (matches)
+         * Moebius' gun is good, but his gun alone cannot touch TheUnfoldingRobot!
+         */
         TestConfig testConfig  = new TestConfig(TheUnfoldingRobot.class,enemyNames, 0.7, 20);
         return testConfig;
     }
