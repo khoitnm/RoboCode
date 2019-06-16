@@ -27,7 +27,7 @@ public class BulletPowerHelper {
     private static final double INCREASE_POWER_FOR_EACH_REMAIN_ENEMIES = 0.15;
 
     private static final double LOW_ENERGY = 10;
-    private static final double BULLET_POWER_COEFFICIENT_FOR_LOW_ENERGY = 1 / 10;
+    public static final double BULLET_POWER_COEFFICIENT_FOR_LOW_ENERGY = 0.1d;
 
     /**
      * This method is mostly applicable only for {@link PatternPredictionGun} because it requires movePatternCertainty argument.
