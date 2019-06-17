@@ -120,6 +120,9 @@ Movement: http://old.robowiki.net/robowiki?Movement
 
 Utilities functions: https://www.programcreek.com/java-api-examples/index.php?api=robocode.util.Utils
 
+Save data between rounds (matches):
+ - http://old.robowiki.net/robowiki?IntelligenceManagement
+
 # Some interesting Robots
 http://robowiki.net/wiki/DrussGT
 http://robowiki.net/wiki/Diamond
