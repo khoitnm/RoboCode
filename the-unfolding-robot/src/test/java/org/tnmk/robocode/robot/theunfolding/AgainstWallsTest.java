@@ -23,7 +23,7 @@ import robocode.control.testing.RobotTestBed;
  * </pre>
  */
 @RunWith(JUnit4.class)
-public class AgainstSpinBotTest extends RobotTestBed {
+public class AgainstWallsTest extends RobotTestBed {
     /**
      * The order of my robot in the list {@link #getRobotNames()}.
      */
@@ -32,7 +32,7 @@ public class AgainstSpinBotTest extends RobotTestBed {
 
     private static final List<String> TEST_ROBOTS = Arrays.asList(
             MY_ROBOT_NAME,
-            "sample.SpinBot"
+            "sample.Walls"
     );
 
     /**
@@ -50,7 +50,7 @@ public class AgainstSpinBotTest extends RobotTestBed {
      */
     @Override
     public int getNumRounds() {
-        return 20;
+        return 10;
     }
 
     /**
