@@ -13,6 +13,7 @@
         <module>beginner-basic-robot</module>
         <module>beginner-advanced-robot</module>
         <module>the-unfolding-robot</module>
+        <module>robots-collection</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -35,10 +36,19 @@
         <dependencies>
             <dependency>
                 <groupId>tnmk.robocode</groupId>
+                <artifactId>the-unfolding-robot</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>tnmk.robocode</groupId>
                 <artifactId>common</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
-
+            <dependency>
+                <groupId>tnmk.robocode</groupId>
+                <artifactId>robots-collection</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>net.sf.robocode</groupId>
                 <artifactId>robocode.api</artifactId>
@@ -47,13 +57,27 @@
                 <!-- D:/SourceCode/RoboCode/robocode is the folder you setup your robocode -->
                 <systemPath>D:/SourceCode/RoboCode/robocode/libs/robocode.jar</systemPath>
             </dependency>
-
+            <!-- Used by robocode.control.test -->
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-all</artifactId>
+                <version>1.3</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency>
+
+            <!--<dependency>-->
+            <!--<groupId>org.junit.jupiter</groupId>-->
+            <!--<artifactId>junit-jupiter-engine</artifactId>-->
+            <!--<version>5.4.2</version>-->
+            <!--<scope>test</scope>-->
+            <!--</dependency>-->
+
         </dependencies>
     </dependencyManagement>
 </project>
