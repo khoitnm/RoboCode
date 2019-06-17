@@ -2,7 +2,7 @@
  * Created on Aug 4, 2003
  * http://old.robowiki.net/robowiki?BlackPearl/Code
  */
-package org.tnmk.robocode.robot;
+package jekl.mini;
 import java.awt.geom.*;
 import java.io.*;
 import java.util.zip.*;
