@@ -50,7 +50,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         Enemy enemy = enemyStatisticContext.getEnemyHistory().getLatestHistoryItem();
         double patternCertainty = enemyStatisticContext.getPatternIdentification().getCertainty();
         double bulletPower = BulletPowerHelper.reckonBulletPower(enemy.getDistance(), patternCertainty, robot.getOthers(), robot.getEnergy());
-        LogHelper.logSimple(robot, "Aim Pattern: " + enemyStatisticContext.getPatternIdentification() + ", enemy: " + enemyName + ", bulletPower: " + bulletPower + ", distance: " + enemy.getDistance());
+//        LogHelper.logSimple(robot, "Aim Pattern: " + enemyStatisticContext.getPatternIdentification() + ", enemy: " + enemyName + ", bulletPower: " + bulletPower + ", distance: " + enemy.getDistance());
         if (bulletPower > 0) {
             aimGun(robot, enemyStatisticContext, bulletPower);
         }
@@ -67,7 +67,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
             PatternIdentification patternIdentification = enemyStatisticContext.getPatternIdentification();
 
             EnemyPrediction enemyPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower);
-            LogHelper.logAdvanceRobot(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
+//            LogHelper.logAdvanceRobot(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
 
             /** No matter what is the prediction, always add it into predictionHistory.*/
             EnemyPredictionHistory enemyPredictionHistory = enemyStatisticContext.getEnemyPredictionHistory();

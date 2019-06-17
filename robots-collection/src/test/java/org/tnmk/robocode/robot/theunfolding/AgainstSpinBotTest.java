@@ -68,7 +68,7 @@ public class AgainstSpinBotTest extends RobotTestBed {
 
         int numWinRounds = battleResultsOfMyRobot.getFirsts();
         double winRate = (double) numWinRounds / (double) getNumRounds();
-        double expectWinRatio = 0.98;
-        Assert.assertTrue("Check my robot winner at least " + (expectWinRatio * 100) + "% of rounds: numWinRounds: " + numWinRounds + ", winPercentage: " + (winRate * 100), winRate > expectWinRatio);
+        double expectWinRatio = 1;
+        Assert.assertTrue("Check my robot winner at least " + (expectWinRatio * 100) + "% of rounds: numWinRounds: " + numWinRounds + ", winPercentage: " + (winRate * 100), winRate >= expectWinRatio);
     }
 }

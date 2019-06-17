@@ -30,10 +30,10 @@ public class RunAwayHelper {
         robot.setTurnRightRadians(turnRadian);
         robot.setAhead(newAhead);
         debugNewMovement(robot, newHeadingRadian, newAhead);
-        LogHelper.logAdvanceRobot(robot, "Hit: start run away. Heading: " + robot.getHeading()
-                + ", newHeading: " + AngleUtils.toDegree(newHeadingRadian)
-                + ", turn: " + AngleUtils.toDegree(turnRadian)
-                + ", direction: " + newMoveDirection + ", hitBearing: " + AngleUtils.toDegree(hitBearingRadian));
+//        LogHelper.logAdvanceRobot(robot, "Hit: start run away. Heading: " + robot.getHeading()
+//                + ", newHeading: " + AngleUtils.toDegree(newHeadingRadian)
+//                + ", turn: " + AngleUtils.toDegree(turnRadian)
+//                + ", direction: " + newMoveDirection + ", hitBearing: " + AngleUtils.toDegree(hitBearingRadian));
     }
 
     private static void debugCurrentMovement(AdvancedRobot robot, double currentHeadingRadian, double currentDirection) {

@@ -24,13 +24,17 @@ public class WallSmoothMovement implements OnCustomEventControl, InitiableRun {
     public void onCustomEvent(CustomEvent customEvent) {
         Condition condition = customEvent.getCondition();
         if (condition instanceof ShouldAvoidWallCondition) {
-            if (movementContext.isNotAmong(MoveStrategy.WALL_SMOOTH, MoveStrategy.RUN_AWAY_FROM_ENEMIES, MoveStrategy.RUN_AWAY_FROM_WALL)) {
+            if (shouldApplyWallSmooth(movementContext)) {
                 movementContext.setMoveStrategy(MoveStrategy.WALL_SMOOTH);//WallSmooth movement will be reset by ShouldAvoidWallCondition.restMoveStrategyToNoneIfFinishWallSmooth
                 ShouldAvoidWallCondition shouldAvoidWallCondition = (ShouldAvoidWallCondition) condition;
                 double turnRightRadianToAvoidWall = shouldAvoidWallCondition.getTurnRightRadianToAvoidWall().orElseThrow(() -> new IllegalStateException("Should have turnRightRadian to avoid wall"));
                 robot.setTurnRightRadians(turnRightRadianToAvoidWall);
             }
         }
+    }
+
+    private boolean shouldApplyWallSmooth(MovementContext movementContext){
+        return movementContext.hasLowerPriority(MoveStrategy.WALL_SMOOTH);
     }
 
     @Override

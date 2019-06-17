@@ -80,7 +80,7 @@ public abstract class AbstractWinRateTest extends RobotTestBed {
         Assert.assertEquals("My robot should be the champion, but the actual rank is " + battleResultsOfMyRobot.getRank(), battleResultsOfMyRobot.getRank(), 1);
         int numWinRounds = battleResultsOfMyRobot.getFirsts();
         double winRate = (double) numWinRounds / (double) getNumRounds();
-        Assert.assertTrue("Check my robot winner at least " + (testConfig.expectWinRatio * 100) + "% of rounds: numWinRounds: " + numWinRounds + ", winPercentage: " + (winRate * 100), winRate > testConfig.expectWinRatio);
+        Assert.assertTrue("Check my robot winner at least " + (testConfig.expectWinRatio * 100) + "% of rounds: numWinRounds: " + numWinRounds + ", winPercentage: " + (winRate * 100), winRate >= testConfig.expectWinRatio);
     }
 
     public static class TestConfig {

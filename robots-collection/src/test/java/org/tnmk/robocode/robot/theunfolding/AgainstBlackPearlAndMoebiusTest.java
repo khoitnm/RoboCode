@@ -24,7 +24,7 @@ public class AgainstBlackPearlAndMoebiusTest extends AbstractWinRateTest {
          * At 2019-06-16, The champion percentage is 34.1% (0.34) which was tested with 1000 rounds (matches).
          * The toughest opponents are BlackPearl and Moebius because of their gun!!! See more at {@link AgainstMoebiusAndOthersTest
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.7, 20);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.31, 50);
         return testConfig;
     }
 }

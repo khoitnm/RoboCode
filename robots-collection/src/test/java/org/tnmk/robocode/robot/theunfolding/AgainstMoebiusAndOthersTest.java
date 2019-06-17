@@ -32,7 +32,7 @@ public class AgainstMoebiusAndOthersTest extends AbstractWinRateTest {
          * View more at {@link AgainstBlackPearlAndOthersTest} to see interesting resuls.
          * Moebius' gun is good, but his gun alone cannot touch TheUnfoldingRobot!
          */
-        TestConfig testConfig  = new TestConfig(TheUnfoldingRobot.class,enemyNames, 0.7, 20);
+        TestConfig testConfig  = new TestConfig(TheUnfoldingRobot.class,enemyNames, 0.66, 50);
         return testConfig;
     }
 }

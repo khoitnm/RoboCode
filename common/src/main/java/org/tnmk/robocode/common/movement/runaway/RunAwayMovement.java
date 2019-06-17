@@ -31,7 +31,7 @@ public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWal
         //It doesn't care what is the current movement strategy, try its way to run away from enemy.
         LogHelper.logAdvanceRobot(robot, "Hit enemy: before run away " + robot.getHeading());
 
-        if (!movementContext.is(MoveStrategy.RUN_AWAY_FROM_ENEMIES)) {
+        if (movementContext.hasLowerOrEqualPriorityButDifferentStrategy(MoveStrategy.RUN_AWAY_FROM_ENEMIES)) {
             movementContext.setMoveStrategy(MoveStrategy.RUN_AWAY_FROM_ENEMIES);
             RunAwayHelper.changeMovementWhenHit(robot, movementContext.getDirection(), hitRobotEvent.getBearingRadians());
         }
@@ -41,16 +41,20 @@ public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWal
     @Override
     public void runLoop() {
         if (movementContext.is(MoveStrategy.RUN_AWAY_FROM_ENEMIES) || movementContext.is(MoveStrategy.RUN_AWAY_FROM_WALL)) {
+            /**
+             * There could be a chance that the robot is applying another movement strategy, but it need to rest (distanceRemaining is 0) in the middle.
+             * So, to avoid reset MovementContext incorrectly, we must check the current movementStrategy is either {@link MoveStrategy#RUN_AWAY_FROM_WALL} or {@link MoveStrategy#RUN_AWAY_FROM_ENEMIES},
+             */
             if (DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
                 movementContext.setNone();
-                LogHelper.logAdvanceRobot(robot, "Hit: stop run away ");
+//                LogHelper.logAdvanceRobot(robot, "Hit: stop run away ");
             }
         }
     }
 
     @Override
     public void onHitWall(HitWallEvent hitWallEvent) {
-        if (!movementContext.is(MoveStrategy.RUN_AWAY_FROM_WALL)) {
+        if (movementContext.hasLowerOrEqualPriorityButDifferentStrategy(MoveStrategy.RUN_AWAY_FROM_WALL)) {
             movementContext.setMoveStrategy(MoveStrategy.RUN_AWAY_FROM_WALL);
             RunAwayHelper.changeMovementWhenHit(robot, movementContext.getDirection(), hitWallEvent.getBearingRadians());
         }

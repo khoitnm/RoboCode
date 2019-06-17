@@ -1,6 +1,7 @@
 package org.tnmk.robocode.common.movement;
 
 import java.awt.geom.Point2D;
+import org.tnmk.robocode.common.log.LogHelper;
 import robocode.AdvancedRobot;
 import robocode.StatusEvent;
 
@@ -37,7 +38,8 @@ public class MovementContext {
      * Set moveStrategy is {@link MoveStrategy#NONE}
      */
     public void setNone() {
-        this.moveStrategy = MoveStrategy.NONE;
+        /** Don't directly set strategy to NONE because we may already has some debugging statements inside {@link #setMoveStrategy(MoveStrategy)} */
+        setMoveStrategy(MoveStrategy.NONE);
     }
 
     /**
@@ -80,6 +82,8 @@ public class MovementContext {
     }
 
     public void setMoveStrategy(MoveStrategy moveStrategy) {
+        LogHelper.logAdvanceRobot(robot, this.moveStrategy + ": end");
+        LogHelper.logAdvanceRobot(robot, moveStrategy + ": begin");
         this.moveStrategy = moveStrategy;
     }
 
@@ -89,13 +93,27 @@ public class MovementContext {
 
     public boolean isAmong(MoveStrategy... moveStrategies) {
         for (MoveStrategy strategy : moveStrategies) {
-            if (strategy == this.moveStrategy){
+            if (strategy == this.moveStrategy) {
                 return true;
             }
         }
         return false;
     }
+
     public boolean isNotAmong(MoveStrategy... moveStrategies) {
         return !isAmong(moveStrategies);
+    }
+
+    public boolean hasLowerPriority(MoveStrategy moveStrategy) {
+        return this.moveStrategy.getPriorty() < moveStrategy.getPriorty();
+    }
+
+    public boolean hasLowerOrEqualPriority(MoveStrategy moveStrategy) {
+        return this.moveStrategy.getPriorty() <= moveStrategy.getPriorty();
+    }
+
+    public boolean hasLowerOrEqualPriorityButDifferentStrategy(MoveStrategy moveStrategy) {
+        boolean result = hasLowerOrEqualPriority(moveStrategy) && moveStrategy != this.moveStrategy;
+        return result;
     }
 }
