@@ -134,4 +134,28 @@ public final class GeoMathUtils {
         boolean insideY = point2D.getY() >= rectangle2D.getMinY() && point2D.getY() <= rectangle2D.getMaxY();
         return insideX && insideY;
     }
+
+    /**
+     * "Looks like Axe trapped himself over again! Because of this peculiarity of ClockMath I recommend you to implement these two functions in all your bots."
+     * http://old.robowiki.net/robowiki?MinimumRiskMovement
+     * @param source
+     * @param target
+     * @return
+     */
+    static double absoluteBearing(Point2D source, Point2D target) {
+        return Math.atan2(target.getX() - source.getX(), target.getY() - source.getY());
+    }
+
+    /**
+     * "Looks like Axe trapped himself over again! Because of this peculiarity of ClockMath I recommend you to implement these two functions in all your bots."
+     * http://old.robowiki.net/robowiki?MinimumRiskMovement
+     * @param sourceLocation
+     * @param angle
+     * @param length
+     * @return
+     */
+    static Point2D vectorToLocation(Point2D sourceLocation, double angle, double length) {
+        return new Point2D(sourceLocation.getX() + Math.sin(angle) * length,
+                sourceLocation.getY() + Math.cos(angle) * length);
+    }
 }
