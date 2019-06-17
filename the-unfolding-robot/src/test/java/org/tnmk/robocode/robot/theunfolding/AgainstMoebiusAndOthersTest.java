@@ -1,4 +1,4 @@
-package org.tnmk.robocode.robot;
+package org.tnmk.robocode.robot.theunfolding;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,11 +6,13 @@ import mld.Moebius;
 import org.tnmk.robocode.common.gun.blackpearl.BlackPearlGun;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
+import org.tnmk.robocode.robot.AbstractWinRateTest;
+import org.tnmk.robocode.robot.TheUnfoldingRobot;
 import pez.micro.BlackWidow;
 import wiki.mako.MakoHT;
 import wiki.mini.GouldingiHT;
 
-public class TheUnfoldingRobotVsMoebiusAndOthersTest extends AbstractWinRateTest {
+public class AgainstMoebiusAndOthersTest extends AbstractWinRateTest {
 
     @Override
     public TestConfig constructTestConfig() {
@@ -27,7 +29,7 @@ public class TheUnfoldingRobotVsMoebiusAndOthersTest extends AbstractWinRateTest
          *    After fixing bug in PatternPredictionGun(v.2.3.4): 69.5%.
          * - {@link PatternPredictionGun} and {@link BlackPearlGun}: 50.3%
          *
-         * View more at {@link TheUnfoldingRobotVsBlackPearlAndOthersTest} to see interesting resuls.
+         * View more at {@link AgainstBlackPearlAndOthersTest} to see interesting resuls.
          * Moebius' gun is good, but his gun alone cannot touch TheUnfoldingRobot!
          */
         TestConfig testConfig  = new TestConfig(TheUnfoldingRobot.class,enemyNames, 0.7, 20);

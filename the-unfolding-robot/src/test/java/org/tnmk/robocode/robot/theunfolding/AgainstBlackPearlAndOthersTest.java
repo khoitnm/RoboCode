@@ -1,15 +1,18 @@
-package org.tnmk.robocode.robot;
+package org.tnmk.robocode.robot.theunfolding;
 
 import java.util.Arrays;
 import java.util.List;
 import org.tnmk.robocode.common.gun.blackpearl.BlackPearlGun;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
+import org.tnmk.robocode.robot.AbstractWinRateTest;
+import org.tnmk.robocode.robot.BlackPearl;
+import org.tnmk.robocode.robot.TheUnfoldingRobot;
 import pez.micro.BlackWidow;
 import wiki.mako.MakoHT;
 import wiki.mini.GouldingiHT;
 
-public class TheUnfoldingRobotVsBlackPearlAndOthersTest extends AbstractWinRateTest {
+public class AgainstBlackPearlAndOthersTest extends AbstractWinRateTest {
 
     @Override
     public TestConfig constructTestConfig() {
