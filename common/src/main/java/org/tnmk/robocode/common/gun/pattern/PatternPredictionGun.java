@@ -175,7 +175,12 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
     public void runLoop() {
 //        LogHelper.logAdvanceRobot(robot, "GunStrategy: " + gunStateContext.getGunStrategy() + " gunTurnRemaining: " + robot.getGunTurnRemaining());
         if (gunStateContext.isAiming()) {
-            if (DoubleUtils.isConsideredZero(robot.getGunHeat()) && DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
+            //TODO Something weird happens here!!! look at the below code.
+            // I just added a condition ```DoubleUtils.isConsideredZero(robot.getGunHeat()) && ```, which looks like totally makes sense, right?
+            // But then the gun totally predicts wrong: you can test with SpintBot, it failed. It even fail against Walls (cannot predict linear correctly)
+            // I still don't know why, but removing it fix problem!!!
+//          if (DoubleUtils.isConsideredZero(robot.getGunHeat()) && DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
+            if (DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
                 robot.setBulletColor(HiTechDecorator.BULLET_COLOR);
                 robot.setFire(gunStateContext.getBulletPower());
                 gunStateContext.saveStateFinishedAiming();
