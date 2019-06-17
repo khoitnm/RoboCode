@@ -97,19 +97,26 @@ Aim Target:
     - http://robowiki.net/wiki/GuessFactor_Targeting_(traditional)
   - Displacement Vector: http://robowiki.net/wiki/Displacement_Vector  
   - Play It Forward:
-    - http://robowiki.net/wiki/Play_It_Forward        
+    - http://robowiki.net/wiki/Play_It_Forward
+  - VirtualBullet:
+    - http://old.robowiki.net/robowiki?VirtualBullets
+    - http://old.robowiki.net/robowiki?VirtualBullets/VirtualBulletsSampleBot          
     
 http://mark.random-article.com/robocode/index.html
 
-Movement:
+Movement: http://old.robowiki.net/robowiki?Movement
   - Anti-Gravity: 
     - Basic implementation: http://robowiki.net/wiki/Anti-Gravity_Tutorial
     - Detail implementation: https://www.ibm.com/developerworks/java/library/j-antigrav/index.html?ca=drs-
-  - Enemy Dodging Movement: http://robowiki.net/wiki/Enemy_Dodging_Movement (it seems not to be as effective as anti-gravity, but much simplier to implement)
+  - Enemy Dodging Movement: http://robowiki.net/wiki/Enemy_Dodging_Movement (it seems not to be as effective as anti-gravity, but much simpler to implement)
   - Wall Smoothing: 
     - http://robowiki.net/wiki/Wall_Smoothing
     - http://robowiki.net/wiki/Wall_Smoothing/Implementations
     - http://old.robowiki.net/robowiki?EscapeArea
+  - Random Movement:
+    - http://old.robowiki.net/robowiki?RandomMovementBot
+  - Utilities: 
+    - http://old.robowiki.net/robowiki?Movement/CodeSnippetGoTo    
 
 Utilities functions: https://www.programcreek.com/java-api-examples/index.php?api=robocode.util.Utils
 
@@ -159,7 +166,12 @@ Set up to run this test:
  - Or use the command line: mvn clean install -Drobocode.home="D:\SourceCode\RoboCode\robocode"
 
 # Future improvement
-General: strategy for the end game: http://old.robowiki.net/robowiki?EndingGame
+General: strategy for the end game: http://old.robowiki.net/robowiki?EndingGame:
+ - Don't fire when we already missed target a lot.
+ - Or if we still have a lot of energy, while the enemy does not have much:
+   - Try to run directly to hit the enemy.
+   - Fire bullet surround enemies' escape area.
+ - Or when the risk we get hit is high, don't try to save energy, try to hit back.
 
 Gun:
  - Fix GFTGun to allow battlefield bigger than 1000x1000
