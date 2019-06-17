@@ -36,6 +36,11 @@
         <dependencies>
             <dependency>
                 <groupId>tnmk.robocode</groupId>
+                <artifactId>briareos</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>tnmk.robocode</groupId>
                 <artifactId>the-unfolding-robot</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>

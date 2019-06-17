@@ -89,7 +89,9 @@ Radar:
   - https://www.ibm.com/developerworks/library/j-radar/index.html
 
 Aim Target:
-  - Waves: http://robowiki.net/wiki/Waves    
+  - Waves: 
+    - http://robowiki.net/wiki/Waves    
+    - http://old.robowiki.net/robowiki?EnemyWave
   - GuessFactors: 
     - http://robowiki.net/wiki/GuessFactors
     - http://robowiki.net/wiki/GuessFactor_Targeting_(traditional)
@@ -107,6 +109,7 @@ Movement:
   - Wall Smoothing: 
     - http://robowiki.net/wiki/Wall_Smoothing
     - http://robowiki.net/wiki/Wall_Smoothing/Implementations
+    - http://old.robowiki.net/robowiki?EscapeArea
 
 Utilities functions: https://www.programcreek.com/java-api-examples/index.php?api=robocode.util.Utils
 
@@ -156,6 +159,8 @@ Set up to run this test:
  - Or use the command line: mvn clean install -Drobocode.home="D:\SourceCode\RoboCode\robocode"
 
 # Future improvement
+General: strategy for the end game: http://old.robowiki.net/robowiki?EndingGame
+
 Gun:
  - Fix GFTGun to allow battlefield bigger than 1000x1000
 Radar: 
