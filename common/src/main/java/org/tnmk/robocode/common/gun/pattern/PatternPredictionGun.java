@@ -179,12 +179,21 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
             // I just added a condition ```DoubleUtils.isConsideredZero(robot.getGunHeat()) && ```, which looks like totally makes sense, right?
             // But then the gun totally predicts wrong: you can test with SpintBot, it failed. It even fail against Walls (cannot predict linear correctly)
             // I still don't know why, but removing it fix problem!!!
+            // -----------------------------------------
+            // OK, now I understand. Because this is the correct time to fire.
+            // If you don't fire this time, next time the status is still aiming, the gunTurnRemain is 0, so it will fire bullet.
+            // But at that time, it was too lat.
+            // So, if we don't fire, we must reset aimng become false.
 //          if (DoubleUtils.isConsideredZero(robot.getGunHeat()) && DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
             if (DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
-                robot.setBulletColor(HiTechDecorator.BULLET_COLOR);
-                robot.setFire(gunStateContext.getBulletPower());
-                gunStateContext.saveStateFinishedAiming();
+                if (DoubleUtils.isConsideredZero(robot.getGunHeat())){
+                    robot.setBulletColor(HiTechDecorator.BULLET_COLOR);
+                    robot.setFire(gunStateContext.getBulletPower());
+                    gunStateContext.saveStateFinishedAiming();
 //                LogHelper.logAdvanceRobot(robot, "Fire!!! " + gunStateContext.getBulletPower());
+                }else{
+                    gunStateContext.saveStateFinishedAiming();
+                }
             }
         }
     }
