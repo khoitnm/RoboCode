@@ -63,10 +63,12 @@ public class AgainstSpinBotTest extends RobotTestBed {
         BattleResults[] battleResultsArray = event.getIndexedResults();
 
         BattleResults battleResultsOfMyRobot = battleResultsArray[MY_ROBOT_INDEX];
-        double expectedBulletDamage = 1000 * getNumRounds();
-        Assert.assertTrue("Bullet Damage (" + battleResultsOfMyRobot.getBulletDamage() + ") must > than " + expectedBulletDamage, battleResultsOfMyRobot.getBulletDamage() > 1000 * getNumRounds());
+        double expectedBulletDamage = 1750;
+        Assert.assertTrue("Bullet Damage (" + battleResultsOfMyRobot.getBulletDamage() + ") must > than " + expectedBulletDamage, battleResultsOfMyRobot.getBulletDamage() > expectedBulletDamage);
 
         int numWinRounds = battleResultsOfMyRobot.getFirsts();
-        Assert.assertTrue("Check my robot winner at least 98% of rounds", numWinRounds > getNumRounds() * 0.98);
+        double winRate = (double) numWinRounds / (double) getNumRounds();
+        double expectWinRatio = 0.98;
+        Assert.assertTrue("Check my robot winner at least " + (expectWinRatio * 100) + "% of rounds: numWinRounds: " + numWinRounds + ", winPercentage: " + (winRate * 100), winRate > expectWinRatio);
     }
 }
