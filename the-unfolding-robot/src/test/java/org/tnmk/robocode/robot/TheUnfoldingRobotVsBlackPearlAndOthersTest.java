@@ -22,7 +22,8 @@ public class TheUnfoldingRobotVsBlackPearlAndOthersTest extends AbstractWinRateT
 
         /**
          * At 2019-06-16, The champion percentage when running 1000 rounds (matches):
-         * - {@link PatternPredictionGun} and {@link GFTAimGun}: 34.69% (0.3469)
+         * - {@link PatternPredictionGun} and {@link GFTAimGun}: 34.69% (0.3469).
+         *   After fixing bug in PatternPredictionGun (v.2.3.4): 40.7%
          * - {@link PatternPredictionGun} and {@link BlackPearlGun}: 31.4%
          * The toughest opponents are BlackPearl.
          */

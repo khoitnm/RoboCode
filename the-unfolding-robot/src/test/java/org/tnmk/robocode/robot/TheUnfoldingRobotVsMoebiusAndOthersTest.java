@@ -24,7 +24,9 @@ public class TheUnfoldingRobotVsMoebiusAndOthersTest extends AbstractWinRateTest
         /**
          * At 2019-06-16, The champion percentage when running 1000 rounds (matches):
          * - {@link PatternPredictionGun} and {@link GFTAimGun}: 66.1%
+         *    After fixing bug in PatternPredictionGun(v.2.3.4): 69.5%.
          * - {@link PatternPredictionGun} and {@link BlackPearlGun}: 50.3%
+         *
          * View more at {@link TheUnfoldingRobotVsBlackPearlAndOthersTest} to see interesting resuls.
          * Moebius' gun is good, but his gun alone cannot touch TheUnfoldingRobot!
          */
