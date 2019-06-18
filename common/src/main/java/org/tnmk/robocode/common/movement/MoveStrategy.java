@@ -20,7 +20,7 @@ public enum MoveStrategy {
      */
     RUN_AWAY_FROM_WALL(1001),
     RUN_AWAY_FROM_ENEMIES(1001),
-    ANTI_GRAVITY(2), OSCILLATOR(1);
+    ANTI_GRAVITY(2), OSCILLATOR(1), RANDOM(5);
 
     /**
      * The higher the number is, the higher priority is.

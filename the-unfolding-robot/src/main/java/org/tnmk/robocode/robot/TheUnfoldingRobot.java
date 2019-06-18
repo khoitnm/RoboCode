@@ -39,6 +39,7 @@ public class TheUnfoldingRobot extends AdvancedRobot {
 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+        /** Radar must be executed before other things so that it can update the latest information. */
         theUnfoldingRadar.onScannedRobot(scannedRobotEvent);
         theUnfoldingMovement.onScannedRobot(scannedRobotEvent);
         theUnfoldingGun.onScannedRobot(scannedRobotEvent);

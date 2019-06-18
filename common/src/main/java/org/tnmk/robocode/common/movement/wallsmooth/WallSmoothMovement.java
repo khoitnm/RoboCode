@@ -13,7 +13,7 @@ import robocode.CustomEvent;
 public class WallSmoothMovement implements OnCustomEventControl, InitiableRun {
     private final AdvancedRobot robot;
     private final MovementContext movementContext;
-
+    private ShouldAvoidWallCondition shouldAvoidWallCondition = null;
 
     public WallSmoothMovement(AdvancedRobot robot, MovementContext movementContext) {
         this.robot = robot;
@@ -40,7 +40,9 @@ public class WallSmoothMovement implements OnCustomEventControl, InitiableRun {
     @Override
     public void runInit() {
         BattleField battleField = MoveHelper.createBattleField(robot);
-        ShouldAvoidWallCondition shouldAvoidWallCondition = new ShouldAvoidWallCondition(robot, movementContext, battleField);
-        this.robot.addCustomEvent(shouldAvoidWallCondition);
+        if (shouldAvoidWallCondition == null){
+            ShouldAvoidWallCondition shouldAvoidWallCondition = new ShouldAvoidWallCondition(robot, movementContext, battleField);
+            this.robot.addCustomEvent(shouldAvoidWallCondition);
+        }
     }
 }

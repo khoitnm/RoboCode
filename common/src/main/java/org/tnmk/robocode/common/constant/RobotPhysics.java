@@ -38,4 +38,8 @@ public class RobotPhysics {
      * velocity from 8 -> 6 -> 4 -> 2 -> 0: distance 20
      */
     public static final double ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED = 20;
+    /**
+     * The energy of each robot when starting a round (match)
+     */
+    public static final double ROBOT_INITIATE_ENERGY = 100;
 }

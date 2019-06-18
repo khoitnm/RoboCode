@@ -6,6 +6,7 @@ import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
 import org.tnmk.robocode.common.movement.oscillator.OscillatorMovement;
+import org.tnmk.robocode.common.movement.random.RandomMovement;
 import org.tnmk.robocode.common.movement.runaway.RunAwayMovement;
 import org.tnmk.robocode.common.movement.wallsmooth.WallSmoothMovement;
 import org.tnmk.robocode.common.paint.PaintHelper;
@@ -25,6 +26,7 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
     private final RunAwayMovement runAwayMovement;
     private final OscillatorMovement oscillatorMovement;
     private final AntiGravityMovement antiGravityMovement;
+    private final RandomMovement randomMovement;
 
     public TheUnfoldingMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
@@ -35,6 +37,7 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
         antiGravityMovement = new AntiGravityMovement(robot, allEnemiesObservationContext, movementContext);
         runAwayMovement = new RunAwayMovement(robot, movementContext);
         wallSmoothMovement = new WallSmoothMovement(robot, movementContext);
+        randomMovement = new RandomMovement(robot, allEnemiesObservationContext, movementContext);
     }
 
     @Override
@@ -52,7 +55,8 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         int totalExistingEnemies = robot.getOthers();
         if (totalExistingEnemies <= 1) {
-            moveOscillatorWithIdealDistance(scannedRobotEvent);
+            randomMovement.onScannedRobot(scannedRobotEvent);
+//            moveOscillatorWithIdealDistance(scannedRobotEvent);
         } else {
             antiGravityMovement.onScannedRobot(scannedRobotEvent);
         }
@@ -92,7 +96,7 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
         double positiveAhead = 300;
         PaintHelper.paintAngleRadian(robot.getGraphics(), robotPosition, status.getHeadingRadians(), positiveAhead, 1, HiTechDecorator.AHEAD_DIRECTION_COLOR);
         PaintHelper.paintAngleRadian(robot.getGraphics(), robotPosition, status.getHeadingRadians(), normAhead, 2, HiTechDecorator.ACTUAL_MOVE_DIRECTION_COLOR);
-
+        LogHelper.logAdvanceRobot(robot,"");
         // If robot is slowing down and then stop, keep the same direction.
         // This ensures that the direction is handled correctly when we want to reverse direction after it hand slowed down and stopped.
         // If we set the direction based on distanceRemaining when it's 0, then direction is always 1 which may not correct.
@@ -102,6 +106,8 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
                 LogHelper.logAdvanceRobot(robot, "Update move direction: moveStrategy: " + movementContext.getMoveStrategy() + ", newDirection: " + direction);
                 movementContext.setDirection(direction);
             }
+        } else {
+            //Just keep the old direction, don't change anything.
         }
     }
 
