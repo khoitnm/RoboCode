@@ -19,8 +19,19 @@ import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
+import robocode.Rules;
 import robocode.ScannedRobotEvent;
 
+/**
+ * FIXME when running test, I got this error:
+ * <pre>
+ * Waiting for robot org.tnmk.robocode.robot.TheUnfoldingRobot* to stop thread org.tnmk.robocode.robot.TheUnfoldingRobot*
+ * Robot org.tnmk.robocode.robot.TheUnfoldingRobot* is not stopping.  Forcing a stop.
+ * org.tnmk.robocode.robot.TheUnfoldingRobot* stopped successfully.
+ * org.tnmk.robocode.robot.TheUnfoldingRobot* has been stopped.
+ * org.tnmk.robocode.robot.TheUnfoldingRobot* cannot be stopped.
+ * </pre>
+ */
 public class RandomMovement implements OnScannedRobotControl {
     /**
      * Measure unit: pixel.
@@ -34,7 +45,7 @@ public class RandomMovement implements OnScannedRobotControl {
     private static final Color OTHER_SIDE_POINTS_COLORS = Color.RED;
     private static final Color DESTINATION_COLOR = Color.YELLOW;
     private static final int DEBUG_POINT_SIZE = 3;
-    private static final int DEBUG_FINAL_POINT_SIZE = 5;
+    private static final int DEBUG_FINAL_POINT_SIZE = 10;
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
@@ -47,25 +58,33 @@ public class RandomMovement implements OnScannedRobotControl {
     }
 
     private long startTime = 0;
+    private long estimateFinishTime = 0;
 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         Rectangle2D battleField = Move2DHelper.constructBattleField(robot);
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
-        if (movementContext.hasLowerPriority(MoveStrategy.RANDOM) || movementContext.is(MoveStrategy.RANDOM)) {
+        double oldEnemyEnergy = getOldEnemyEnergy(scannedRobotEvent.getName());
+        String energies = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName())
+                .getEnemyHistory()
+                .getLatestHistoryItems(5).stream()
+                .map(enemy -> "" + enemy.getEnergy())
+                .collect(Collectors.joining(","));
+//        System.out.println("Enemies " + energies);
+        boolean isEnemyFired = suspectEnemyHasJustFiredBullet(oldEnemyEnergy, scannedRobotEvent.getEnergy());
+        if (isEnemyFired){
+            System.out.println("Enemy " + scannedRobotEvent.getName() + " fired" + isEnemyFired);
+        }
+
+        if (movementContext.hasLowerPriority(MoveStrategy.RANDOM)) {
             movementContext.setMoveStrategy(MoveStrategy.RANDOM);
             startTime = robot.getTime();
-            double oldEnemyEnergy = getOldEnemyEnergy(scannedRobotEvent.getName());
             boolean isChangeMovement;
-            String energies = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName())
-                    .getEnemyHistory()
-                    .getLatestHistoryItems(5).stream()
-                    .map(enemy -> ""+enemy.getEnergy())
-                    .collect(Collectors.joining(","));
-            System.out.println("Enemies "+energies);
-            if (suspectEnemyHasJustFiredBullet(oldEnemyEnergy, scannedRobotEvent.getEnergy())) {
+
+            //FIXME, the second last doesn't have the latest data.
+            if (isEnemyFired) {
                 isChangeMovement = true;
-                LogHelper.logAdvanceRobot(robot, "enemy "+scannedRobotEvent.getName() +" has just fired");
+                LogHelper.logAdvanceRobot(robot, "enemy " + scannedRobotEvent.getName() + " has just fired");
             } else {
                 isChangeMovement = Math.random() < .2;
             }
@@ -81,15 +100,19 @@ public class RandomMovement implements OnScannedRobotControl {
                     DebugHelper.debugMoveRandomTowardEnemy(robot);
                 } else {
                     if (scannedRobotEvent.getDistance() < Math.min(robot.getBattleFieldWidth(), robot.getBattleFieldHeight()) * 0.75) {
-                        destination = randomDestinationFurtherFromEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS,battleField);
+                        destination = randomDestinationFurtherFromEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, battleField);
 //                        absoluteTurnAngleToEnemy = randomAngleMoveFarAwayFromEnemy(scannedRobotEvent);
                         DebugHelper.debugMoveRandomFarAwayEnemy(robot);
                     } else {
-                        destination = randomDestinationAroundEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS,battleField);
+                        destination = randomDestinationAroundEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, battleField);
 //                        absoluteTurnAngleToEnemy = randomAngleMoveNearlyPerpendicularToEnemy(scannedRobotEvent);
                         DebugHelper.debugMoveRandomPerpendicularEnemy(robot);
                     }
                 }
+                double destinationDistance = robotPosition.distance(destination);
+                long estimationRunningTime = Math.min(Math.round(destinationDistance / Rules.MAX_VELOCITY), 15);
+                estimateFinishTime = robot.getTime() + estimationRunningTime;
+                System.out.println(String.format("[%s] estimate running time: %s, estimate finish time: %s", robot.getTime(), estimationRunningTime, estimateFinishTime));
                 if (Math.random() < 0.75) {
                     Move2DHelper.setMoveToDestinationWithShortestPath(robot, destination);
 //                    movementContext.reverseDirection();
@@ -102,7 +125,7 @@ public class RandomMovement implements OnScannedRobotControl {
                 /** Keep the same movement, doesn't change anything. */
             }
 //            robot.setAhead(movementContext.getDirection() * 125);
-        } else if (movementContext.is(MoveStrategy.RANDOM) && (robot.getTime() - startTime) > 15) {
+        } else if (movementContext.is(MoveStrategy.RANDOM) && robot.getTime() >= estimateFinishTime) {
             movementContext.setNone();
         }
     }
@@ -173,12 +196,12 @@ public class RandomMovement implements OnScannedRobotControl {
 
     private Point2D randomDestination(List<Point2D> potentialDestinations) {
         for (Point2D potential : potentialDestinations) {
-            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, SAME_SIDE_POINTS_COLORS,  potential, null);
+            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, SAME_SIDE_POINTS_COLORS, potential, null);
         }
 
         int destinationIndex = (int) Math.round(Math.random() * (potentialDestinations.size() - 1));
         Point2D destination = potentialDestinations.get(destinationIndex);
-        PaintHelper.paintPoint(robot.getGraphics(), DEBUG_FINAL_POINT_SIZE, DESTINATION_COLOR,  destination, null);
+        PaintHelper.paintPoint(robot.getGraphics(), DEBUG_FINAL_POINT_SIZE, DESTINATION_COLOR, destination, null);
         return destination;
     }
 
@@ -209,10 +232,10 @@ public class RandomMovement implements OnScannedRobotControl {
             }
         }
         for (Point2D destination : sameSide) {
-            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, SAME_SIDE_POINTS_COLORS,  destination, null);
+            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, SAME_SIDE_POINTS_COLORS, destination, null);
         }
         for (Point2D destination : sameSide) {
-            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, OTHER_SIDE_POINTS_COLORS,  destination, null);
+            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, OTHER_SIDE_POINTS_COLORS, destination, null);
         }
         return new PointsOnSide(sameSide, otherSide);
     }
@@ -238,7 +261,7 @@ public class RandomMovement implements OnScannedRobotControl {
             result.add(destination);
         }
         for (Point2D destination : result) {
-            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, ALL_POTENTIAL_POINTS_COLORS,  destination, null);
+            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, ALL_POTENTIAL_POINTS_COLORS, destination, null);
         }
         return result;
     }

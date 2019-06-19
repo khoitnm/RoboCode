@@ -96,7 +96,6 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
         double positiveAhead = 300;
         PaintHelper.paintAngleRadian(robot.getGraphics(), robotPosition, status.getHeadingRadians(), positiveAhead, 1, HiTechDecorator.AHEAD_DIRECTION_COLOR);
         PaintHelper.paintAngleRadian(robot.getGraphics(), robotPosition, status.getHeadingRadians(), normAhead, 2, HiTechDecorator.ACTUAL_MOVE_DIRECTION_COLOR);
-        LogHelper.logAdvanceRobot(robot,"");
         // If robot is slowing down and then stop, keep the same direction.
         // This ensures that the direction is handled correctly when we want to reverse direction after it hand slowed down and stopped.
         // If we set the direction based on distanceRemaining when it's 0, then direction is always 1 which may not correct.
