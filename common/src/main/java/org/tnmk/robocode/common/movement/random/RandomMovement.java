@@ -36,7 +36,7 @@ import robocode.ScannedRobotEvent;
  * There's an error caused by :throw new IllegalStateException("Some thing really wrong with our code, the aroundEnemyOnTheSameSide should be always not empty when move closer to the enemy.");
  * And at that time, program hung when 2 robots are so close together (distance is 1 or 0???)
  * </pre>
- *
+ * <p>
  * Note: the above bug may be fixed!??? I just change that when the distance is too close, return destination is the enemy's position.
  * --------------------------------------------------------------
  * FIXME sometimes my robot stay still for so long.
@@ -308,13 +308,15 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
          * This case can happens when our robot cannot scan any enemy (but they are still there in the battlefield.
          * They are just outside the range of our radar.
          */
-        if (movementContext.isNone() && (robot.getTime() - estimateFinishTime) > 10){
+        if (movementContext.isNone() && (robot.getTime() - estimateFinishTime) > 10) {
             movementContext.setMoveStrategy(MoveStrategy.RANDOM);
+            startTime = robot.getTime();
+            estimateFinishTime = startTime + Math.round(90d / Rules.MAX_VELOCITY);
             int direction = 1;
-            if (Math.random() < 0.5){
+            if (Math.random() < 0.5) {
                 direction = -1;
             }
-            robot.setTurnRight(Math.random()* 360);
+            robot.setTurnRight(Math.random() * 360);
             robot.setAhead(direction * 90);
         }
     }
