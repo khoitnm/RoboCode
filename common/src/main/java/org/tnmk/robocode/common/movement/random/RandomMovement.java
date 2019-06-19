@@ -30,6 +30,10 @@ import robocode.ScannedRobotEvent;
  * org.tnmk.robocode.robot.TheUnfoldingRobot* stopped successfully.
  * org.tnmk.robocode.robot.TheUnfoldingRobot* has been stopped.
  * org.tnmk.robocode.robot.TheUnfoldingRobot* cannot be stopped.
+ *
+ * More debug:
+ * There's an error caused by :throw new IllegalStateException("Some thing really wrong with our code, the aroundEnemyOnTheSameSide should be always not empty when move closer to the enemy.");
+ * And at that time, program hung when 2 robots are so close together (distance is 1 or 0???)
  * </pre>
  */
 public class RandomMovement implements OnScannedRobotControl {
@@ -131,7 +135,7 @@ public class RandomMovement implements OnScannedRobotControl {
     }
 
     private Point2D randomDestinationCloserToEnemy(Point2D robotPosition, Point2D enemyPosition, double currentDistance, double distanceBetweenPoints, Rectangle2D movementArea) {
-        double newDistance = currentDistance - Math.random() * CHANGE_DISTANCE;
+        double newDistance = Math.abs(currentDistance - Math.random() * CHANGE_DISTANCE);
         List<Point2D> aroundEnemyPositions = constructSurroundPositions(enemyPosition, newDistance, distanceBetweenPoints);
         List<Point2D> aroundEnemyPositionsWithinMovementArea = choosePointsInsideArea(aroundEnemyPositions, movementArea);
         while (aroundEnemyPositionsWithinMovementArea.isEmpty()) {
