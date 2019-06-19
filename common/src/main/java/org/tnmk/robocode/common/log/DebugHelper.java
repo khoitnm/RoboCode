@@ -17,4 +17,16 @@ public class DebugHelper {
     public static void debugMoveRandomPerpendicularEnemy(AdvancedRobot robot) {
         robot.setBodyColor(HiTechDecorator.ROBOT_BORDY_COLOR);
     }
+
+    public static boolean isDebugMoveStrategy() {
+        return false;
+    }
+
+    public static boolean isDebugGunStrategy() {
+        return false;
+    }
+
+    public static boolean isDebugMoveDirection() {
+        return false;
+    }
 }

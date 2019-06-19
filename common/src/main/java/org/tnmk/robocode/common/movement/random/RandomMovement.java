@@ -73,7 +73,7 @@ public class RandomMovement implements OnScannedRobotControl {
 //        System.out.println("Enemies " + energies);
         boolean isEnemyFired = suspectEnemyHasJustFiredBullet(oldEnemyEnergy, scannedRobotEvent.getEnergy());
         if (isEnemyFired){
-            System.out.println("Enemy " + scannedRobotEvent.getName() + " fired" + isEnemyFired);
+            System.out.println("Enemy " + scannedRobotEvent.getName() + " fired " + isEnemyFired);
         }
 
         if (movementContext.hasLowerPriority(MoveStrategy.RANDOM)) {

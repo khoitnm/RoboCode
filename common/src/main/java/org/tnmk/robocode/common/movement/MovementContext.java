@@ -1,6 +1,7 @@
 package org.tnmk.robocode.common.movement;
 
 import java.awt.geom.Point2D;
+import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import robocode.AdvancedRobot;
 import robocode.StatusEvent;
@@ -81,8 +82,10 @@ public class MovementContext {
     }
 
     public void setMoveStrategy(MoveStrategy moveStrategy) {
-        LogHelper.logAdvanceRobot(robot, this.moveStrategy + ": end");//end the old strategy
-        LogHelper.logAdvanceRobot(robot, moveStrategy + ": begin");//begin the new strategy
+        if (DebugHelper.isDebugMoveStrategy()) {
+            LogHelper.logAdvanceRobot(robot, this.moveStrategy + ": end");//end the old strategy
+            LogHelper.logAdvanceRobot(robot, moveStrategy + ": begin");//begin the new strategy
+        }
         this.moveStrategy = moveStrategy;
     }
 

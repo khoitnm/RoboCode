@@ -6,6 +6,7 @@ import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.pattern.BulletPowerHelper;
+import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
@@ -45,13 +46,15 @@ public class GFTAimGun implements OnScannedRobotControl {
             robot.setGunColor(Color.BLACK);
             /** Don't aim or shot in this case. Otherwise, there will be a bug ArrayOutOfBoundIndexException.*/
             return;
-        }else{
+        } else {
             robot.setGunColor(HiTechDecorator.ROBOT_GUN_COLOR);
         }
 
 
         double bulletPower = BulletPowerHelper.reckonBulletPower(enemyDistance, robot.getOthers(), robot.getEnergy());
-        LogHelper.logAdvanceRobot(robot, "Aim GFT. bulletPower: " + bulletPower + ", distance: " + enemyDistance);
+        if (DebugHelper.isDebugGunStrategy()) {
+            LogHelper.logAdvanceRobot(robot, "Aim GFT. bulletPower: " + bulletPower + ", distance: " + enemyDistance);
+        }
         if (bulletPower <= 0) {
             return;//if bulletPower is 0 (because low energy, or too risky), don't need to aim or fire bullet.
         } else if (bulletPower < MIN_BULLET_POWER) {
@@ -77,7 +80,7 @@ public class GFTAimGun implements OnScannedRobotControl {
                 robot.setGunColor(HiTechDecorator.ROBOT_GUN_COLOR);
                 gunStateContext.saveSateAimGun(GunStrategy.GFT, wave.bulletPower);
                 robot.setFire(wave.bulletPower);
-            }else{
+            } else {
                 robot.setGunColor(Color.LIGHT_GRAY);
             }
             gunStateContext.saveStateFinishedAiming();

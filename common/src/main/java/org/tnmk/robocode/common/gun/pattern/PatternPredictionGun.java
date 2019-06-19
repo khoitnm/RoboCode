@@ -13,6 +13,7 @@ import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.helper.prediction.RobotPrediction;
 import org.tnmk.robocode.common.helper.prediction.RobotPredictionHelper;
+import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.*;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
@@ -50,7 +51,9 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         Enemy enemy = enemyStatisticContext.getEnemyHistory().getLatestHistoryItem();
         double patternCertainty = enemyStatisticContext.getPatternIdentification().getCertainty();
         double bulletPower = BulletPowerHelper.reckonBulletPower(enemy.getDistance(), patternCertainty, robot.getOthers(), robot.getEnergy());
-//        LogHelper.logSimple(robot, "Aim Pattern: " + enemyStatisticContext.getPatternIdentification() + ", enemy: " + enemyName + ", bulletPower: " + bulletPower + ", distance: " + enemy.getDistance());
+        if (DebugHelper.isDebugGunStrategy()) {
+            LogHelper.logSimple(robot, "Aim Pattern: " + enemyStatisticContext.getPatternIdentification() + ", enemy: " + enemyName + ", bulletPower: " + bulletPower + ", distance: " + enemy.getDistance());
+        }
         if (bulletPower > 0) {
             aimGun(robot, enemyStatisticContext, bulletPower);
         }

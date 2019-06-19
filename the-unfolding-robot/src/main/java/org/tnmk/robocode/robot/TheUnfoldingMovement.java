@@ -2,6 +2,7 @@ package org.tnmk.robocode.robot;
 
 import java.awt.geom.Point2D;
 import org.tnmk.common.math.GeoMathUtils;
+import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
@@ -102,7 +103,9 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
         if (statusEvent.getStatus().getDistanceRemaining() != 0) {
             int direction = GeoMathUtils.sign(statusEvent.getStatus().getDistanceRemaining());
             if (direction != movementContext.getDirection()) {
-                LogHelper.logAdvanceRobot(robot, "Update move direction: moveStrategy: " + movementContext.getMoveStrategy() + ", newDirection: " + direction);
+                if (DebugHelper.isDebugMoveDirection()) {
+                    LogHelper.logAdvanceRobot(robot, "Update move direction: moveStrategy: " + movementContext.getMoveStrategy() + ", newDirection: " + direction);
+                }
                 movementContext.setDirection(direction);
             }
         } else {
