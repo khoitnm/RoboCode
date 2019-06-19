@@ -83,8 +83,8 @@ public class MovementContext {
 
     public void setMoveStrategy(MoveStrategy moveStrategy) {
         if (DebugHelper.isDebugMoveStrategy()) {
-            LogHelper.logAdvanceRobot(robot, this.moveStrategy + ": end");//end the old strategy
-            LogHelper.logAdvanceRobot(robot, moveStrategy + ": begin");//begin the new strategy
+            LogHelper.logRobotMovement(robot, this.moveStrategy + ": end");//end the old strategy
+            LogHelper.logRobotMovement(robot, moveStrategy + ": begin");//begin the new strategy
         }
         this.moveStrategy = moveStrategy;
     }

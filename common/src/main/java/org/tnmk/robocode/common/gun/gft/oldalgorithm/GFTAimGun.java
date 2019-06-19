@@ -53,7 +53,7 @@ public class GFTAimGun implements OnScannedRobotControl {
 
         double bulletPower = BulletPowerHelper.reckonBulletPower(enemyDistance, robot.getOthers(), robot.getEnergy());
         if (DebugHelper.isDebugGunStrategy()) {
-            LogHelper.logAdvanceRobot(robot, "Aim GFT. bulletPower: " + bulletPower + ", distance: " + enemyDistance);
+            LogHelper.logRobotMovement(robot, "Aim GFT. bulletPower: " + bulletPower + ", distance: " + enemyDistance);
         }
         if (bulletPower <= 0) {
             return;//if bulletPower is 0 (because low energy, or too risky), don't need to aim or fire bullet.

@@ -41,7 +41,7 @@ public class AllEnemiesScanRadar implements LoopableRun, OnScannedRobotControl, 
     public void runLoop() {
         robot.setTurnRadarRight(radarDirection * Double.POSITIVE_INFINITY);
 //        robot.scan();
-        LogHelper.logAdvanceRobot(robot, "radarDirection " + radarDirection);
+        LogHelper.logRobotMovement(robot, "radarDirection " + radarDirection);
     }
 
     /**
@@ -54,7 +54,7 @@ public class AllEnemiesScanRadar implements LoopableRun, OnScannedRobotControl, 
         Enemy enemy = EnemyMapper.toEnemy(this.robot, scannedRobotEvent);
 
 //        String message = String.format("Actual enemy at time %s, position {%.2f, %.2f}", robot.getTime(), enemy.getPosition().getX(), enemy.getPosition().getY());
-//        LogHelper.logAdvanceRobot(robot, message);
+//        LogHelper.logRobotMovement(robot, message);
 
         allEnemiesObservationContext.addEnemy(enemy);
         setIfEverScannedAllEnemiesAtLeastOnce();
@@ -82,14 +82,14 @@ public class AllEnemiesScanRadar implements LoopableRun, OnScannedRobotControl, 
         if (newScannedEnemyName != null) {
             scannedEnemiesEachRound.add(newScannedEnemyName);
         }
-        LogHelper.logAdvanceRobot(this.robot, "scannedEnemiesEachRound: " + scannedEnemiesEachRound + ", countEnemies: " + robot.getOthers());
+        LogHelper.logRobotMovement(this.robot, "scannedEnemiesEachRound: " + scannedEnemiesEachRound + ", countEnemies: " + robot.getOthers());
         if (scannedEnemiesEachRound.size() >= robot.getOthers()) {
             //The current robot is already counted as 1, so we should NOT reset this value to 0.
             removeAllExceptOneElement(scannedEnemiesEachRound, newScannedEnemyName);
 
             radarDirection = -radarDirection;
             robot.setTurnRadarRight(radarDirection * Double.POSITIVE_INFINITY);
-            LogHelper.logAdvanceRobot(this.robot, "changed radar direction " + radarDirection);
+            LogHelper.logRobotMovement(this.robot, "changed radar direction " + radarDirection);
             // The turning will be handled in scanAllEnemies(), so we don't need to trigger turnRadar here anymore: turnRadarBasedOnDirection(robot, radarDirection);
         }
     }

@@ -19,6 +19,7 @@ import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
+import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.AdvancedRobot;
 import robocode.Rules;
 import robocode.ScannedRobotEvent;
@@ -93,7 +94,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
             //FIXME, the second last doesn't have the latest data.
             if (isEnemyFired) {
                 isChangeMovement = true;
-//                LogHelper.logAdvanceRobot(robot, "enemy " + scannedRobotEvent.getName() + " has just fired");
+//                LogHelper.logRobotMovement(robot, "enemy " + scannedRobotEvent.getName() + " has just fired");
             } else {
                 isChangeMovement = Math.random() < .2;
             }
@@ -154,7 +155,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
             aroundEnemyPositionsWithinMovementArea = choosePointsInsideArea(aroundEnemyPositions, movementArea);
             i++;
             if (i > 20) {
-                LogHelper.logAdvanceRobot(robot, "THERE ARE SOMETHING WRONG!!!: NO aroundEnemyPositionsWithinMovementArea" +
+                LogHelper.logRobotMovement(robot, "THERE ARE SOMETHING WRONG!!!: NO aroundEnemyPositionsWithinMovementArea" +
                         "\n\trandomDestinationCloserToEnemy()" +
                         "\n\trobotPosition: " + robotPosition +
                         "\n\tenemyPosition: " + enemyPosition +
@@ -169,7 +170,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
 
         PointsOnSide pointsOnSide = distinguishSideOfPositions(robotPosition, enemyPosition, newDistance, aroundEnemyPositionsWithinMovementArea);
         if (pointsOnSide.sameSide.isEmpty()) {
-            LogHelper.logAdvanceRobot(robot, "THERE ARE SOMETHING WRONG!!!: NO sameSide: " +
+            LogHelper.logRobotMovement(robot, "THERE ARE SOMETHING WRONG!!!: NO sameSide: " +
                     "\n\trandomDestinationCloserToEnemy()" +
                     "\n\trobotPosition: " + robotPosition +
                     "\n\tenemyPosition: " + enemyPosition +
@@ -194,6 +195,13 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
         return randomDestinationWithFixedDistance(robotPosition, enemyPosition, newDistance, distanceBetweenPoints, movementArea);
     }
 
+    /**
+     * @param robotPosition   the current position of our robot
+     * @param enemyPosition   the current position of the enemy
+     * @param currentDistance the distance between enemy and our robot. It's also the distance from the enemy to surround destination points
+     * @param movementArea    the destination positions will be generated inside the movementAre only
+     * @return if cannot found any good destination,
+     */
     private Point2D randomDestinationWithFixedDistance(Point2D robotPosition, Point2D enemyPosition, double currentDistance, double distanceBetweenPoints, Rectangle2D movementArea) {
         List<Point2D> aroundEnemyPositions = constructSurroundPositions(enemyPosition, currentDistance, distanceBetweenPoints);
         List<Point2D> aroundEnemyPositionsWithinMovementArea = choosePointsInsideArea(aroundEnemyPositions, movementArea);
@@ -309,7 +317,8 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
          * They are just outside the range of our radar.
          */
         if (movementContext.isNone() && (robot.getTime() - estimateFinishTime) > 10) {
-            movementContext.setMoveStrategy(MoveStrategy.RANDOM);
+            movementContext.setMoveStrategy(MoveStrategy.WANDERING);
+            DebugHelper.debugMoveWandering(robot);
             startTime = robot.getTime();
             estimateFinishTime = startTime + Math.round(90d / Rules.MAX_VELOCITY);
             int direction = 1;
@@ -318,6 +327,8 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
             }
             robot.setTurnRight(Math.random() * 360);
             robot.setAhead(direction * 90);
+        } else {
+            robot.setBodyColor(HiTechDecorator.ROBOT_BORDY_COLOR);
         }
     }
 

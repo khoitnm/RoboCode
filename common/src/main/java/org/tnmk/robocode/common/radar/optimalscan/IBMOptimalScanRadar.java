@@ -83,7 +83,7 @@ public class IBMOptimalScanRadar implements InitiableRun, OnScannedRobotControl,
 
     private void printSweep(AdvancedRobot robot, double radarTurn, Collection<Enemy> enemies) {
         List<Boolean> isEnemiesUpdated = enemies.stream().map(enemy -> EnemyUtils.isEnemyNew(enemy, robot.getTime())).collect(Collectors.toList());
-        LogHelper.logAdvanceRobot(robot, "New sweep " + radarTurn + ", enemies updated: " + isEnemiesUpdated);
+        LogHelper.logRobotMovement(robot, "New sweep " + radarTurn + ", enemies updated: " + isEnemiesUpdated);
     }
 
     @Override

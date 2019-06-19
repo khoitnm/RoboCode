@@ -90,8 +90,8 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
 
     @Override
     public void onStatus(StatusEvent statusEvent) {
-//        LogHelper.logAdvanceRobot(robot, "MoveStrategy: " + movementContext.getMoveStrategy());
-
+        DebugHelper.debugStateMoveStrategy(robot, movementContext);
+//        LogHelper.logRobotMovement(robot, "current movement state");
         RobotStatus status = statusEvent.getStatus();
         Point2D robotPosition = new Point2D.Double(status.getX(), status.getY());
         double normAhead = movementContext.getDirection() * 200;
@@ -105,7 +105,7 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
             int direction = GeoMathUtils.sign(statusEvent.getStatus().getDistanceRemaining());
             if (direction != movementContext.getDirection()) {
                 if (DebugHelper.isDebugMoveDirection()) {
-                    LogHelper.logAdvanceRobot(robot, "Update move direction: moveStrategy: " + movementContext.getMoveStrategy() + ", newDirection: " + direction);
+                    LogHelper.logRobotMovement(robot, "Update move direction: moveStrategy: " + movementContext.getMoveStrategy() + ", newDirection: " + direction);
                 }
                 movementContext.setDirection(direction);
             }

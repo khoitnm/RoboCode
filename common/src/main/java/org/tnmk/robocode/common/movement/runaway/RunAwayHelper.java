@@ -30,24 +30,24 @@ public class RunAwayHelper {
         robot.setTurnRightRadians(turnRadian);
         robot.setAhead(newAhead);
         debugNewMovement(robot, newHeadingRadian, newAhead);
-//        LogHelper.logAdvanceRobot(robot, "Hit: start run away. Heading: " + robot.getHeading()
+//        LogHelper.logRobotMovement(robot, "Hit: start run away. Heading: " + robot.getHeading()
 //                + ", newHeading: " + AngleUtils.toDegree(newHeadingRadian)
 //                + ", turn: " + AngleUtils.toDegree(turnRadian)
 //                + ", direction: " + newMoveDirection + ", hitBearing: " + AngleUtils.toDegree(hitBearingRadian));
     }
 
     private static void debugCurrentMovement(AdvancedRobot robot, double currentHeadingRadian, double currentDirection) {
-        LogHelper.logAdvanceRobot(robot, "Hit: headingRadian: " + currentHeadingRadian + ",\t heading: " + robot.getHeading() + ",\t direction: " + currentDirection);
+        LogHelper.logRobotMovement(robot, "Hit: headingRadian: " + currentHeadingRadian + ",\t heading: " + robot.getHeading() + ",\t direction: " + currentDirection);
         debugAngleRadian(robot, currentHeadingRadian, currentDirection * RUN_AWAY_DISTANCE, 2, Color.ORANGE);
     }
 
     private static void debugNewMovement(AdvancedRobot robot, double newHeadingRadian, double newAhead) {
-        LogHelper.logAdvanceRobot(robot, "Hit: newHeadingRadian: " + newHeadingRadian + ",\t newHeading: " + AngleUtils.toDegree(newHeadingRadian) + ",\t distance: " + newAhead);
+        LogHelper.logRobotMovement(robot, "Hit: newHeadingRadian: " + newHeadingRadian + ",\t newHeading: " + AngleUtils.toDegree(newHeadingRadian) + ",\t distance: " + newAhead);
         debugAngleRadian(robot, newHeadingRadian, newAhead, 4, Color.YELLOW);
     }
 
     private static void debugHitBearingAngle(AdvancedRobot robot, double bearingRadian) {
-        LogHelper.logAdvanceRobot(robot, "Hit: hitBearingRadian: " + bearingRadian + ",\t bearingDegree: " + AngleUtils.toDegree(bearingRadian));
+        LogHelper.logRobotMovement(robot, "Hit: hitBearingRadian: " + bearingRadian + ",\t bearingDegree: " + AngleUtils.toDegree(bearingRadian));
         debugAngleRadian(robot, bearingRadian, 200, 2, Color.RED);
     }
 

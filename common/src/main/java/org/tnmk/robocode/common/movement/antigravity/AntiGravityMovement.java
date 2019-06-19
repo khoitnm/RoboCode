@@ -91,7 +91,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
 //                destination,
 //                movementContext.getDirection()
 //                robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
-//        LogHelper.logAdvanceRobot(robot, "Destination: " + LogHelper.toString(destination) + "\t Final Destination:" + LogHelper.toString(finalDestination));
+//        LogHelper.logRobotMovement(robot, "Destination: " + LogHelper.toString(destination) + "\t Final Destination:" + LogHelper.toString(finalDestination));
 
         //debugWhenFinalDestinationOutsideSafeArea(robot, robotPosition, destination, finalDestination, calculationContext.getSafeMovementArea());
 
@@ -122,7 +122,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
                     LogHelper.toString(destination),
                     LogHelper.toString(finalDestination),
                     LogHelper.toString(safeMovementArea));
-            LogHelper.logAdvanceRobot(robot, message);
+            LogHelper.logRobotMovement(robot, message);
         }
     }
 

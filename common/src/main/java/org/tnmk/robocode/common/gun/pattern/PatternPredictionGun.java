@@ -70,7 +70,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
             PatternIdentification patternIdentification = enemyStatisticContext.getPatternIdentification();
 
             EnemyPrediction enemyPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower);
-//            LogHelper.logAdvanceRobot(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
+//            LogHelper.logRobotMovement(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
 
             /** No matter what is the prediction, always add it into predictionHistory.*/
             EnemyPredictionHistory enemyPredictionHistory = enemyStatisticContext.getEnemyPredictionHistory();
@@ -131,7 +131,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
             RobotPrediction robotPrediction = RobotPredictionHelper.predictPosition(periodForTurningGun, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
             Point2D predictRobotPosition = robotPrediction.getPosition();
 //            String message = String.format("Predict at time %s, position {%.2f, %.2f}", (robot.getTime() + periodForTurningGun), predictRobotPosition.getX(), predictRobotPosition.getY());
-//            LogHelper.logAdvanceRobot(robot, message);
+//            LogHelper.logRobotMovement(robot, message);
 
             double distanceRobotToEnemy = predictRobotPosition.distance(enemyPosition);
             double bulletVelocity = GunUtils.reckonBulletVelocity(firePower);
@@ -151,7 +151,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
 //        debugPredictEnemy(latestHistoryItems);
 
 //        String message = String.format("Final predict enemy at %s, position {%.2f, %.2f}", enemyPrediction.getTime(), enemyPrediction.getPosition().getX(), enemyPrediction.getPosition().getY());
-//        LogHelper.logAdvanceRobot(robot, message);
+//        LogHelper.logRobotMovement(robot, message);
         return enemyPrediction;
     }
 
@@ -159,7 +159,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
         RobotPrediction testRobotPredictionAfter5 = RobotPredictionHelper.predictPosition(5, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
         String message = String.format("Predict self at time %s, position {%.2f, %.2f}", (robot.getTime() + 5), testRobotPredictionAfter5.getPosition().getX(), testRobotPredictionAfter5.getPosition().getY());
-        LogHelper.logAdvanceRobot(robot, message);
+        LogHelper.logRobotMovement(robot, message);
     }
 
     private void debugPredictEnemy(List<Enemy> latestHistoryItems, Rectangle2D enemyMovementArea) {
@@ -167,7 +167,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
             EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemy(latestHistoryItems, robot.getTime() + i, enemyMovementArea);
             Point2D testEnemyPosition = enemyPrediction.getPredictionPosition();
             String message = String.format("predict enemy at time %s, position {%.2f, %.2f}", robot.getTime() + i, testEnemyPosition.getX(), testEnemyPosition.getY());
-            LogHelper.logAdvanceRobot(robot, message);
+            LogHelper.logRobotMovement(robot, message);
         }
     }
 
@@ -176,7 +176,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
      */
     @Override
     public void runLoop() {
-//        LogHelper.logAdvanceRobot(robot, "GunStrategy: " + gunStateContext.getGunStrategy() + " gunTurnRemaining: " + robot.getGunTurnRemaining());
+//        LogHelper.logRobotMovement(robot, "GunStrategy: " + gunStateContext.getGunStrategy() + " gunTurnRemaining: " + robot.getGunTurnRemaining());
         if (gunStateContext.isAiming()) {
             //TODO Something weird happens here!!! look at the below code.
             // I just added a condition ```DoubleUtils.isConsideredZero(robot.getGunHeat()) && ```, which looks like totally makes sense, right?
@@ -193,7 +193,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
                     robot.setBulletColor(HiTechDecorator.BULLET_COLOR);
                     robot.setFire(gunStateContext.getBulletPower());
                     gunStateContext.saveStateFinishedAiming();
-//                LogHelper.logAdvanceRobot(robot, "Fire!!! " + gunStateContext.getBulletPower());
+//                LogHelper.logRobotMovement(robot, "Fire!!! " + gunStateContext.getBulletPower());
                 }else{
                     gunStateContext.saveStateFinishedAiming();
                 }

@@ -171,7 +171,7 @@ public class OptimalScanRadar implements InitiableRun, OnScannedRobotControl, On
 
     private void printSweep(AdvancedRobot robot, double radarTurn, Collection<Enemy> enemies) {
         List<Long> enemiesUpdatedTime = enemies.stream().map(enemy -> robot.getTime() - enemy.getTime()).collect(Collectors.toList());
-        LogHelper.logAdvanceRobot(robot, "New sweep " + radarTurn + ", enemies updated: " + enemiesUpdatedTime);
+        LogHelper.logRobotMovement(robot, "New sweep " + radarTurn + ", enemies updated: " + enemiesUpdatedTime);
     }
 
     private void setIfEverScannedAllEnemiesAtLeastOnce() {

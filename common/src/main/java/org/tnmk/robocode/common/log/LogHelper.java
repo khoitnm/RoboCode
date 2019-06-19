@@ -36,30 +36,38 @@ public class LogHelper {
         robot.out.println(finalMessage);
     }
 
-    public static void logAdvanceRobot(AdvancedRobot robot, String message) {
+    public static void logRobotMovement(AdvancedRobot robot, String message) {
         String finalMessage = String.format("[%s] " +
                         "\t position {%.2f, %.2f}" +
                         "\t velocity %.2f " +
                         "\t distanceRemaining %.2f " +
                         "\t heading %.2f" +
-//                        "\t radarHeading %.2f" +
-//                        "\t radarTurnRemaining %.2f" +
-//                        "\t gunTurnRemaining %.2f" +
                         "\t %s",
                 robot.getTime(),
                 robot.getX(), robot.getY(),
                 robot.getVelocity(),
                 robot.getDistanceRemaining(),
                 robot.getHeading(),
-//                robot.getRadarHeading(),
-//                robot.getRadarTurnRemaining(),
+                message);
+        robot.out.println(finalMessage);
+    }
+    public static void logRobotRadar(AdvancedRobot robot, String message) {
+        String finalMessage = String.format("[%s] " +
+//                        "\t position {%.2f, %.2f}" +
+                        "\t radarHeading %.2f" +
+                        "\t radarTurnRemaining %.2f" +
+//                        "\t gunTurnRemaining %.2f" +
+                        "\t %s",
+                robot.getTime(),
+//                robot.getX(), robot.getY(),
+                robot.getRadarHeading(),
+                robot.getRadarTurnRemaining(),
 //                robot.getGunTurnRemaining(),
                 message);
         robot.out.println(finalMessage);
     }
 
-
-    public static void logAdvanceRobot(AdvancedRobot robot, int loopIndex, String message) {
+    public static void logRobotMovement(AdvancedRobot robot, int loopIndex, String message) {
         String finalMessage = String.format("[%s] " +
                         "\t loop[%s] " +
                         "\t velocity %s " +

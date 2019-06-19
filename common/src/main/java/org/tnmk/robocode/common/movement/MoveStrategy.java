@@ -20,7 +20,13 @@ public enum MoveStrategy {
      */
     RUN_AWAY_FROM_WALL(1001),
     RUN_AWAY_FROM_ENEMIES(1001),
-    ANTI_GRAVITY(2), OSCILLATOR(1), RANDOM(5);
+    ANTI_GRAVITY(2), OSCILLATOR(1), RANDOM(5),
+    /**
+     * We only use this to avoid robot stay still at the same place for a long time.
+     * One of the reason is our robot cannot see any enemy in its radar (because enemies are out of the radar range).
+     * In that case, our robot can stay still. To avoid that, we just randomly move it, and use this strategy.
+     */
+    WANDERING(0);
 
     /**
      * The higher the number is, the higher priority is.

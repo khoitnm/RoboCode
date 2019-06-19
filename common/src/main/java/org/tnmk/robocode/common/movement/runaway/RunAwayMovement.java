@@ -29,7 +29,7 @@ public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWal
     @Override
     public void onHitRobot(HitRobotEvent hitRobotEvent) {
         //It doesn't care what is the current movement strategy, try its way to run away from enemy.
-        LogHelper.logAdvanceRobot(robot, "Hit enemy: before run away " + robot.getHeading());
+        LogHelper.logRobotMovement(robot, "Hit enemy: before run away " + robot.getHeading());
 
         if (movementContext.hasLowerOrEqualPriorityButDifferentStrategy(MoveStrategy.RUN_AWAY_FROM_ENEMIES)) {
             movementContext.setMoveStrategy(MoveStrategy.RUN_AWAY_FROM_ENEMIES);
@@ -47,7 +47,7 @@ public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWal
              */
             if (DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
                 movementContext.setNone();
-//                LogHelper.logAdvanceRobot(robot, "Hit: stop run away ");
+//                LogHelper.logRobotMovement(robot, "Hit: stop run away ");
             }
         }
     }
