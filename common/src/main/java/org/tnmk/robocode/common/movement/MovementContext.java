@@ -1,6 +1,7 @@
 package org.tnmk.robocode.common.movement;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import org.tnmk.robocode.common.log.LogHelper;
 import robocode.AdvancedRobot;
 import robocode.StatusEvent;
@@ -13,6 +14,7 @@ import robocode.StatusEvent;
  */
 public class MovementContext {
     private final AdvancedRobot robot;
+    private final Rectangle2D battleField;
 
     private MoveStrategy moveStrategy = MoveStrategy.NONE;
 
@@ -32,6 +34,7 @@ public class MovementContext {
 
     public MovementContext(AdvancedRobot robot) {
         this.robot = robot;
+        this.battleField = new Rectangle2D.Double(0, 0, robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
     }
 
     /**
@@ -115,5 +118,9 @@ public class MovementContext {
     public boolean hasLowerOrEqualPriorityButDifferentStrategy(MoveStrategy moveStrategy) {
         boolean result = hasLowerOrEqualPriority(moveStrategy) && moveStrategy != this.moveStrategy;
         return result;
+    }
+
+    public Rectangle2D getBattleField() {
+        return battleField;
     }
 }

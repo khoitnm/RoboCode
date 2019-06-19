@@ -1,6 +1,5 @@
 package org.tnmk.robocode.robot;
 
-import java.awt.Color;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.blackpearl.BlackPearlGun;
 import org.tnmk.robocode.common.gun.briareos.BriareosGun;
@@ -10,7 +9,6 @@ import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.*;
-import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.*;
 
 public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobotControl, OnCustomEventControl, OnHitBulletControl, OnWinControl {
@@ -68,9 +66,9 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     private void aimGFTGunWhenPropriate(ScannedRobotEvent scannedRobotEvent) {
         if (shouldApplyGFTGun(scannedRobotEvent.getDistance(), robot.getOthers())) {
             gftAimGun.onScannedRobot(scannedRobotEvent);
-            robot.setBodyColor(HiTechDecorator.ROBOT_BORDY_COLOR);
+//            robot.setBodyColor(HiTechDecorator.ROBOT_BORDY_COLOR);
         } else {
-            robot.setBodyColor(Color.RED);
+//            robot.setBodyColor(Color.RED);
             /** Don't fire, both GFT and MoebiusGun work badly in this case*/
         }
     }

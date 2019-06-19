@@ -1,9 +1,12 @@
 package org.tnmk.robocode.common.movement.random;
 
-import java.util.List;
-import java.util.Optional;
-import org.tnmk.common.math.AngleUtils;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.*;
+import java.util.stream.Collectors;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
+import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
@@ -15,6 +18,13 @@ import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
 public class RandomMovement implements OnScannedRobotControl {
+    /**
+     * Measure unit: pixel.
+     */
+    private static final double DISTANCE_2_POTENTIAL_DESTINATIONS = 50;
+    private static final double CHANGE_DISTANCE = 100;
+    private static final int MIN_ACCEPTABLE_SAME_SIDE_POINTS = 4;
+
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final MovementContext movementContext;
@@ -29,6 +39,7 @@ public class RandomMovement implements OnScannedRobotControl {
 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+        Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
         if (movementContext.hasLowerPriority(MoveStrategy.RANDOM)) {
             movementContext.setMoveStrategy(MoveStrategy.RANDOM);
             startTime = robot.getTime();
@@ -40,26 +51,173 @@ public class RandomMovement implements OnScannedRobotControl {
                 isChangeMovement = Math.random() < .2;
             }
             if (isChangeMovement) {//80% will turn direction randomly.
+                Enemy enemy = allEnemiesObservationContext.getEnemy(scannedRobotEvent.getName());
+                Point2D enemyPosition = enemy.getPosition();
+                Point2D destination;
                 double absoluteTurnAngleToEnemy;
                 if (robot.getEnergy() / scannedRobotEvent.getEnergy() > 3 || robot.getEnergy() - scannedRobotEvent.getEnergy() > 30d) {
-                    absoluteTurnAngleToEnemy = randomAngleMoveTowardEnemy(scannedRobotEvent);
-                } else if (scannedRobotEvent.getDistance() < Math.min(robot.getBattleFieldWidth(), robot.getBattleFieldHeight()) * 0.75) {
-                    absoluteTurnAngleToEnemy = randomAngleMoveFarAwayFromEnemy(scannedRobotEvent);
-                }else{
-                    absoluteTurnAngleToEnemy = randomAngleMoveNearlyPerpendicularToEnemy(scannedRobotEvent);
+                    destination = randomDestinationCloserToEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, movementContext.getBattleField());
+//
+//                    absoluteTurnAngleToEnemy = randomAngleMoveTowardEnemy(scannedRobotEvent);
+//                    DebugHelper.debugMoveRandomTowardEnemy(robot);
+                } else {
+                    if (scannedRobotEvent.getDistance() < Math.min(robot.getBattleFieldWidth(), robot.getBattleFieldHeight()) * 0.75) {
+                        destination = randomDestinationFurtherFromEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, movementContext.getBattleField());
+//                        absoluteTurnAngleToEnemy = randomAngleMoveFarAwayFromEnemy(scannedRobotEvent);
+//                        DebugHelper.debugMoveRandomFarAwayEnemy(robot);
+                    } else {
+                        destination = randomDestinationAroundEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, movementContext.getBattleField());
+//                        absoluteTurnAngleToEnemy = randomAngleMoveNearlyPerpendicularToEnemy(scannedRobotEvent);
+//                        DebugHelper.debugMoveRandomPerpendicularEnemy(robot);
+                    }
                 }
-                if (Math.random() < 0.9) {
-                    movementContext.reverseDirection();
-                    absoluteTurnAngleToEnemy = AngleUtils.normalizeDegree(absoluteTurnAngleToEnemy + 180);
+                if (Math.random() < 0.75) {
+                    Move2DHelper.setMoveToDestinationWithShortestPath(robot, destination);
+//                    movementContext.reverseDirection();
+//                    absoluteTurnAngleToEnemy = AngleUtils.normalizeDegree(absoluteTurnAngleToEnemy + 180);
+                } else {
+                    Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, destination);
                 }
-                robot.setTurnRight(absoluteTurnAngleToEnemy);
+//                robot.setTurnRight(absoluteTurnAngleToEnemy);
             } else {
                 /** Keep the same movement, doesn't change anything. */
             }
-            robot.setAhead(movementContext.getDirection() * 125);
+//            robot.setAhead(movementContext.getDirection() * 125);
         } else if (movementContext.is(MoveStrategy.RANDOM) && (robot.getTime() - startTime) > 15) {
             movementContext.setNone();
         }
+    }
+
+    private Point2D randomDestinationCloserToEnemy(Point2D robotPosition, Point2D enemyPosition, double currentDistance, double distanceBetweenPoints, Rectangle2D movementArea) {
+        double newDistance = currentDistance - Math.random() * CHANGE_DISTANCE;
+        List<Point2D> aroundEnemyPositions = constructSurroundPositions(enemyPosition, newDistance, distanceBetweenPoints);
+        List<Point2D> aroundEnemyPositionsWithinMovementArea = choosePointsInsideArea(aroundEnemyPositions, movementArea);
+        while (aroundEnemyPositionsWithinMovementArea.isEmpty()) {
+            //It means that the currentDistance is too small compare to distanceBetweenPoints, we need to reduce distanceBetweenPoints
+            distanceBetweenPoints /= 2d;
+            aroundEnemyPositions = constructSurroundPositions(enemyPosition, newDistance, distanceBetweenPoints);
+            aroundEnemyPositionsWithinMovementArea = choosePointsInsideArea(aroundEnemyPositions, movementArea);
+        }
+
+        PointsOnSide pointsOnSide = distinguishSideOfPositions(robotPosition, enemyPosition, newDistance, aroundEnemyPositionsWithinMovementArea);
+        if (pointsOnSide.sameSide.isEmpty()) {
+            throw new IllegalStateException("Some thing really wrong with our code, the aroundEnemyOnTheSameSide should be always not empty when move closer to the enemy.");
+        }
+        return randomDestination(pointsOnSide.sameSide);
+    }
+
+    private Point2D randomDestinationFurtherFromEnemy(Point2D robotPosition, Point2D enemyPosition, double currentDistance, double distanceBetweenPoints, Rectangle2D movementArea) {
+        double newDistance = currentDistance + Math.random() * CHANGE_DISTANCE;
+        return randomDestinationWithFixedDistance(robotPosition, enemyPosition, newDistance, distanceBetweenPoints, movementArea);
+    }
+
+    private Point2D randomDestinationAroundEnemy(Point2D robotPosition, Point2D enemyPosition, double currentDistance, double distanceBetweenPoints, Rectangle2D movementArea) {
+        double distanceDelta = (Math.random() * CHANGE_DISTANCE) - (Math.random() * CHANGE_DISTANCE);
+        double newDistance = currentDistance + distanceDelta;
+        return randomDestinationWithFixedDistance(robotPosition, enemyPosition, newDistance, distanceBetweenPoints, movementArea);
+    }
+
+    private Point2D randomDestinationWithFixedDistance(Point2D robotPosition, Point2D enemyPosition, double currentDistance, double distanceBetweenPoints, Rectangle2D movementArea) {
+        List<Point2D> aroundEnemyPositions = constructSurroundPositions(enemyPosition, currentDistance, distanceBetweenPoints);
+        List<Point2D> aroundEnemyPositionsWithinMovementArea = choosePointsInsideArea(aroundEnemyPositions, movementArea);
+        while (aroundEnemyPositionsWithinMovementArea.size() < 5) {
+            currentDistance = Math.abs(currentDistance - CHANGE_DISTANCE);
+            aroundEnemyPositions = constructSurroundPositions(enemyPosition, currentDistance, distanceBetweenPoints);
+            aroundEnemyPositionsWithinMovementArea = choosePointsInsideArea(aroundEnemyPositions, movementArea);
+        }
+
+        PointsOnSide pointsOnSide = distinguishSideOfPositions(robotPosition, enemyPosition, currentDistance, aroundEnemyPositionsWithinMovementArea);
+        if (pointsOnSide.sameSide.size() >= MIN_ACCEPTABLE_SAME_SIDE_POINTS) {
+            return randomDestination(pointsOnSide.sameSide);
+        } else {
+            Set<Point2D> potentialPoints = new HashSet<>();
+            potentialPoints.addAll(pointsOnSide.sameSide);
+            int halfOfOtherSide = (pointsOnSide.otherSide.size() - 1) / 2;
+            for (int i = 0; i < halfOfOtherSide && potentialPoints.size() < (MIN_ACCEPTABLE_SAME_SIDE_POINTS + 2); i++) {
+                potentialPoints.add(pointsOnSide.otherSide.get(i));
+                potentialPoints.add(pointsOnSide.otherSide.get((pointsOnSide.otherSide.size() - 1) - i));
+            }
+            return randomDestination(new ArrayList<>(potentialPoints));
+        }
+    }
+//
+//    /**
+//     * @param enemyPosition
+//     * @param destinationDistanceFromEnemy the distance from the enemy to surround destination points
+//     * @param movementArea                 the destination positions will be generated inside the movementAre only
+//     * @return if cannot found any good destination,
+//     */
+//    private List<Point2D> constructSurroundPositions(Point2D myPosition, Point2D enemyPosition, double destinationDistanceFromEnemy, double distanceBetween2Points) {
+//        List<Point2D> aroundEnemyPositions = constructSurroundPositions(enemyPosition, destinationDistanceFromEnemy, distanceBetween2Points);
+//        return aroundEnemyPositions;
+//    }
+
+    private Point2D randomDestination(List<Point2D> potentialDestinations) {
+        int destinationIndex = (int) Math.round(Math.random() * (potentialDestinations.size() - 1));
+        Point2D destination = potentialDestinations.get(destinationIndex);
+        return destination;
+    }
+
+    private List<Point2D> choosePointsInsideArea(List<Point2D> originalPositions, Rectangle2D area) {
+        List<Point2D> result = originalPositions.stream()
+                .filter(position -> GeoMathUtils.checkInsideRectangle(position, area))
+                .collect(Collectors.toList());
+        return result;
+    }
+
+    /**
+     * @param pointA
+     * @param pointB                      the root point of surround position
+     * @param radiusFromBToSurroundPoints from PointB to surround positions
+     * @param surroundPositions           surround positions of pointB
+     * @return within the surround positions of pointB, find which point on the same side of pointA
+     */
+    private PointsOnSide distinguishSideOfPositions(Point2D pointA, Point2D pointB, double radiusFromBToSurroundPoints, List<Point2D> surroundPositions) {
+        List<Point2D> sameSide = new ArrayList<>();
+        List<Point2D> otherSide = new ArrayList<>();
+        double distanceAB = pointA.distance(pointB);
+        double furthestAcceptedDistance = Math.sqrt(Math.pow(distanceAB, 2) + Math.pow(radiusFromBToSurroundPoints, 2));
+        for (Point2D surroundPosition : surroundPositions) {
+            if (pointA.distance(surroundPosition) <= furthestAcceptedDistance) {
+                sameSide.add(surroundPosition);
+            } else {
+                otherSide.add(surroundPosition);
+            }
+        }
+        return new PointsOnSide(sameSide, otherSide);
+    }
+
+    private static class PointsOnSide {
+        private final List<Point2D> sameSide;
+        private final List<Point2D> otherSide;
+
+        private PointsOnSide(List<Point2D> sameSide, List<Point2D> otherSide) {
+            this.sameSide = sameSide;
+            this.otherSide = otherSide;
+        }
+    }
+
+    /**
+     * @param rootPosition                   act as the root of the surrounding circle.
+     * @param distanceFromRoot               act as the radius of the surrounding circle.
+     * @param distanceBetweenPotentialPoints the distance between result points. This distance don't need to be correct. It's just an estimation how you want to distributed result points (and how many result points you want to have).
+     *                                       the function will automatically re-balance the number of points for you.
+     * @return
+     */
+    private List<Point2D> constructSurroundPositions(Point2D rootPosition, double distanceFromRoot, double distanceBetweenPotentialPoints) {
+        List<Point2D> result = new ArrayList<>();
+        double totalRadianOfACircle = 2d * Math.PI;
+        double expectingRadianAngleBetweenTwoPositions = distanceBetweenPotentialPoints / distanceFromRoot;
+        int numResultPositions = (int) Math.round(totalRadianOfACircle / expectingRadianAngleBetweenTwoPositions);
+        if (numResultPositions == 0) {
+            numResultPositions = 1;
+        }
+        double actualRadianAngleBetweenTwoPositions = totalRadianOfACircle / numResultPositions;
+        for (int radian = 0; radian < totalRadianOfACircle; radian += actualRadianAngleBetweenTwoPositions) {
+            Point2D destination = GeoMathUtils.calculateDestinationPoint(rootPosition, radian, distanceFromRoot);
+            result.add(destination);
+        }
+        return result;
     }
 
     private double randomAngleMoveNearlyPerpendicularToEnemy(ScannedRobotEvent scannedRobotEvent) {

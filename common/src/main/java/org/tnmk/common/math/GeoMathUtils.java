@@ -1,11 +1,15 @@
 package org.tnmk.common.math;
 
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.List;
-import math.geom2d.Point2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
+
+//import math.geom2d.Point2D;
+
+//import math.geom2d.Point2D;
 
 public final class GeoMathUtils {
     private GeoMathUtils() {
@@ -49,7 +53,7 @@ public final class GeoMathUtils {
      * @param pB
      * @return the same as {@link #reckonAngle(Point, Point)}. But the value is from -180 to 180
      */
-    public static double reckonNormalizeAngle(Point2D pA, Point2D pB) {
+    public static double reckonNormalizeAngle(math.geom2d.Point2D pA, math.geom2d.Point2D pB) {
         double angle = Math.toDegrees(Math.atan2(pB.x() - pA.x(), pB.y() - pA.y()));
         double normalizeAngle = AngleUtils.normalizeDegree(angle);
         return normalizeAngle;
@@ -57,7 +61,7 @@ public final class GeoMathUtils {
 
     public static double distance(LineSegment lineSegment, Point point) {
         Line2D l2D = MathConverter.toLine2D(lineSegment);
-        Point2D p2D = MathConverter.toPoint2D(point);
+        math.geom2d.Point2D p2D = MathConverter.toPoint2D(point);
         return l2D.distance(p2D);
     }
 
@@ -69,7 +73,7 @@ public final class GeoMathUtils {
     public static List<Point> intersectCircles(Circle cirA, Circle cirB) {
         Circle2D cir2DA = MathConverter.toCircle2D(cirA);
         Circle2D cir2DB = MathConverter.toCircle2D(cirB);
-        Collection<Point2D> intersections = cir2DA.intersections(cir2DB);
+        Collection<math.geom2d.Point2D> intersections = cir2DA.intersections(cir2DB);
         return MathConverter.toPoints(intersections);
     }
 
@@ -104,7 +108,7 @@ public final class GeoMathUtils {
     public static double absoluteBearing(double x1, double y1, double x2, double y2) {
         double xo = x2 - x1;
         double yo = y2 - y1;
-        double hyp = Point2D.distance(x1, y1, x2, y2);
+        double hyp = math.geom2d.Point2D.distance(x1, y1, x2, y2);
         double arcSin = Math.toDegrees(Math.asin(xo / hyp));
         double bearing = 0;
 
@@ -142,20 +146,30 @@ public final class GeoMathUtils {
      * @param target
      * @return
      */
-    static double absoluteBearing(Point2D source, Point2D target) {
-        return Math.atan2(target.getX() - source.getX(), target.getY() - source.getY());
-    }
+//    static double absoluteBearing(Point2D source, Point2D target) {
+//        return Math.atan2(target.getX() - source.getX(), target.getY() - source.getY());
+//    }
+
+//    /**
+//     * "Looks like Axe trapped himself over again! Because of this peculiarity of ClockMath I recommend you to implement these two functions in all your bots."
+//     * http://old.robowiki.net/robowiki?MinimumRiskMovement
+//     * @param sourceLocation
+//     * @param angle
+//     * @param length
+//     * @return
+//     */
+//    public static Point2D vectorToLocation(Point2D sourceLocation, double angle, double length) {
+//        return new Point2D(sourceLocation.getX() + Math.sin(angle) * length,
+//                sourceLocation.getY() + Math.cos(angle) * length);
+//    }
 
     /**
-     * "Looks like Axe trapped himself over again! Because of this peculiarity of ClockMath I recommend you to implement these two functions in all your bots."
-     * http://old.robowiki.net/robowiki?MinimumRiskMovement
-     * @param sourceLocation
-     * @param angle
-     * @param length
-     * @return
+     * @param rootPosition
+     * @param radian       the real geometry radian, not in-game radian.
+     * @param distance
      */
-    static Point2D vectorToLocation(Point2D sourceLocation, double angle, double length) {
-        return new Point2D(sourceLocation.getX() + Math.sin(angle) * length,
-                sourceLocation.getY() + Math.cos(angle) * length);
+    public static Point2D calculateDestinationPoint(Point2D rootPosition, int radian, double distance) {
+        Point2D point2D = new Point2D.Double(rootPosition.getX() + Math.cos(radian) * distance, rootPosition.getY() + Math.sin(radian) * distance);
+        return point2D;
     }
 }
