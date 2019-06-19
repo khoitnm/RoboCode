@@ -1,5 +1,6 @@
 package org.tnmk.robocode.common.movement.random;
 
+import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
@@ -7,11 +8,14 @@ import java.util.stream.Collectors;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.helper.Move2DHelper;
+import org.tnmk.robocode.common.log.DebugHelper;
+import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
+import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
@@ -24,6 +28,13 @@ public class RandomMovement implements OnScannedRobotControl {
     private static final double DISTANCE_2_POTENTIAL_DESTINATIONS = 50;
     private static final double CHANGE_DISTANCE = 100;
     private static final int MIN_ACCEPTABLE_SAME_SIDE_POINTS = 4;
+
+    private static final Color ALL_POTENTIAL_POINTS_COLORS = Color.GRAY;
+    private static final Color SAME_SIDE_POINTS_COLORS = Color.ORANGE;
+    private static final Color OTHER_SIDE_POINTS_COLORS = Color.RED;
+    private static final Color DESTINATION_COLOR = Color.YELLOW;
+    private static final int DEBUG_POINT_SIZE = 3;
+    private static final int DEBUG_FINAL_POINT_SIZE = 5;
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
@@ -39,14 +50,22 @@ public class RandomMovement implements OnScannedRobotControl {
 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+        Rectangle2D battleField = Move2DHelper.constructBattleField(robot);
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
-        if (movementContext.hasLowerPriority(MoveStrategy.RANDOM)) {
+        if (movementContext.hasLowerPriority(MoveStrategy.RANDOM) || movementContext.is(MoveStrategy.RANDOM)) {
             movementContext.setMoveStrategy(MoveStrategy.RANDOM);
             startTime = robot.getTime();
             double oldEnemyEnergy = getOldEnemyEnergy(scannedRobotEvent.getName());
             boolean isChangeMovement;
+            String energies = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName())
+                    .getEnemyHistory()
+                    .getLatestHistoryItems(5).stream()
+                    .map(enemy -> ""+enemy.getEnergy())
+                    .collect(Collectors.joining(","));
+            System.out.println("Enemies "+energies);
             if (suspectEnemyHasJustFiredBullet(oldEnemyEnergy, scannedRobotEvent.getEnergy())) {
                 isChangeMovement = true;
+                LogHelper.logAdvanceRobot(robot, "enemy "+scannedRobotEvent.getName() +" has just fired");
             } else {
                 isChangeMovement = Math.random() < .2;
             }
@@ -56,19 +75,19 @@ public class RandomMovement implements OnScannedRobotControl {
                 Point2D destination;
                 double absoluteTurnAngleToEnemy;
                 if (robot.getEnergy() / scannedRobotEvent.getEnergy() > 3 || robot.getEnergy() - scannedRobotEvent.getEnergy() > 30d) {
-                    destination = randomDestinationCloserToEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, movementContext.getBattleField());
+                    destination = randomDestinationCloserToEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, battleField);
 //
 //                    absoluteTurnAngleToEnemy = randomAngleMoveTowardEnemy(scannedRobotEvent);
-//                    DebugHelper.debugMoveRandomTowardEnemy(robot);
+                    DebugHelper.debugMoveRandomTowardEnemy(robot);
                 } else {
                     if (scannedRobotEvent.getDistance() < Math.min(robot.getBattleFieldWidth(), robot.getBattleFieldHeight()) * 0.75) {
-                        destination = randomDestinationFurtherFromEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, movementContext.getBattleField());
+                        destination = randomDestinationFurtherFromEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS,battleField);
 //                        absoluteTurnAngleToEnemy = randomAngleMoveFarAwayFromEnemy(scannedRobotEvent);
-//                        DebugHelper.debugMoveRandomFarAwayEnemy(robot);
+                        DebugHelper.debugMoveRandomFarAwayEnemy(robot);
                     } else {
-                        destination = randomDestinationAroundEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, movementContext.getBattleField());
+                        destination = randomDestinationAroundEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS,battleField);
 //                        absoluteTurnAngleToEnemy = randomAngleMoveNearlyPerpendicularToEnemy(scannedRobotEvent);
-//                        DebugHelper.debugMoveRandomPerpendicularEnemy(robot);
+                        DebugHelper.debugMoveRandomPerpendicularEnemy(robot);
                     }
                 }
                 if (Math.random() < 0.75) {
@@ -153,8 +172,13 @@ public class RandomMovement implements OnScannedRobotControl {
 //    }
 
     private Point2D randomDestination(List<Point2D> potentialDestinations) {
+        for (Point2D potential : potentialDestinations) {
+            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, SAME_SIDE_POINTS_COLORS,  potential, null);
+        }
+
         int destinationIndex = (int) Math.round(Math.random() * (potentialDestinations.size() - 1));
         Point2D destination = potentialDestinations.get(destinationIndex);
+        PaintHelper.paintPoint(robot.getGraphics(), DEBUG_FINAL_POINT_SIZE, DESTINATION_COLOR,  destination, null);
         return destination;
     }
 
@@ -184,17 +208,13 @@ public class RandomMovement implements OnScannedRobotControl {
                 otherSide.add(surroundPosition);
             }
         }
-        return new PointsOnSide(sameSide, otherSide);
-    }
-
-    private static class PointsOnSide {
-        private final List<Point2D> sameSide;
-        private final List<Point2D> otherSide;
-
-        private PointsOnSide(List<Point2D> sameSide, List<Point2D> otherSide) {
-            this.sameSide = sameSide;
-            this.otherSide = otherSide;
+        for (Point2D destination : sameSide) {
+            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, SAME_SIDE_POINTS_COLORS,  destination, null);
         }
+        for (Point2D destination : sameSide) {
+            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, OTHER_SIDE_POINTS_COLORS,  destination, null);
+        }
+        return new PointsOnSide(sameSide, otherSide);
     }
 
     /**
@@ -213,11 +233,24 @@ public class RandomMovement implements OnScannedRobotControl {
             numResultPositions = 1;
         }
         double actualRadianAngleBetweenTwoPositions = totalRadianOfACircle / numResultPositions;
-        for (int radian = 0; radian < totalRadianOfACircle; radian += actualRadianAngleBetweenTwoPositions) {
+        for (double radian = 0; radian < totalRadianOfACircle; radian += actualRadianAngleBetweenTwoPositions) {
             Point2D destination = GeoMathUtils.calculateDestinationPoint(rootPosition, radian, distanceFromRoot);
             result.add(destination);
         }
+        for (Point2D destination : result) {
+            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, ALL_POTENTIAL_POINTS_COLORS,  destination, null);
+        }
         return result;
+    }
+
+    private static class PointsOnSide {
+        private final List<Point2D> sameSide;
+        private final List<Point2D> otherSide;
+
+        private PointsOnSide(List<Point2D> sameSide, List<Point2D> otherSide) {
+            this.sameSide = sameSide;
+            this.otherSide = otherSide;
+        }
     }
 
     private double randomAngleMoveNearlyPerpendicularToEnemy(ScannedRobotEvent scannedRobotEvent) {

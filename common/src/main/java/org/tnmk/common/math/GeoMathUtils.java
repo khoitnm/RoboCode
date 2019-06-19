@@ -168,7 +168,7 @@ public final class GeoMathUtils {
      * @param radian       the real geometry radian, not in-game radian.
      * @param distance
      */
-    public static Point2D calculateDestinationPoint(Point2D rootPosition, int radian, double distance) {
+    public static Point2D calculateDestinationPoint(Point2D rootPosition, double radian, double distance) {
         Point2D point2D = new Point2D.Double(rootPosition.getX() + Math.cos(radian) * distance, rootPosition.getY() + Math.sin(radian) * distance);
         return point2D;
     }
