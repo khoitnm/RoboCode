@@ -17,6 +17,7 @@ import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
 import robocode.Rules;
@@ -35,8 +36,12 @@ import robocode.ScannedRobotEvent;
  * There's an error caused by :throw new IllegalStateException("Some thing really wrong with our code, the aroundEnemyOnTheSameSide should be always not empty when move closer to the enemy.");
  * And at that time, program hung when 2 robots are so close together (distance is 1 or 0???)
  * </pre>
+ *
+ * Note: the above bug may be fixed!??? I just change that when the distance is too close, return destination is the enemy's position.
+ * --------------------------------------------------------------
+ * FIXME sometimes my robot stay still for so long.
  */
-public class RandomMovement implements OnScannedRobotControl {
+public class RandomMovement implements LoopableRun, OnScannedRobotControl {
     /**
      * Measure unit: pixel.
      */
@@ -76,9 +81,9 @@ public class RandomMovement implements OnScannedRobotControl {
                 .collect(Collectors.joining(","));
 //        System.out.println("Enemies " + energies);
         boolean isEnemyFired = suspectEnemyHasJustFiredBullet(oldEnemyEnergy, scannedRobotEvent.getEnergy());
-        if (isEnemyFired) {
-            System.out.println("Enemy " + scannedRobotEvent.getName() + " fired " + isEnemyFired);
-        }
+//        if (isEnemyFired) {
+//            System.out.println("Enemy " + scannedRobotEvent.getName() + " fired " + isEnemyFired);
+//        }
 
         if (movementContext.hasLowerPriority(MoveStrategy.RANDOM)) {
             movementContext.setMoveStrategy(MoveStrategy.RANDOM);
@@ -88,7 +93,7 @@ public class RandomMovement implements OnScannedRobotControl {
             //FIXME, the second last doesn't have the latest data.
             if (isEnemyFired) {
                 isChangeMovement = true;
-                LogHelper.logAdvanceRobot(robot, "enemy " + scannedRobotEvent.getName() + " has just fired");
+//                LogHelper.logAdvanceRobot(robot, "enemy " + scannedRobotEvent.getName() + " has just fired");
             } else {
                 isChangeMovement = Math.random() < .2;
             }
@@ -135,7 +140,7 @@ public class RandomMovement implements OnScannedRobotControl {
     }
 
     private Point2D randomDestinationCloserToEnemy(Point2D robotPosition, Point2D enemyPosition, double currentDistance, double distanceBetweenPoints, Rectangle2D movementArea) {
-        double newDistance = currentDistance - Math.random() * CHANGE_DISTANCE;
+        double newDistance = currentDistance - CHANGE_DISTANCE;
         if (newDistance <= 10) {
             return enemyPosition;
         }
@@ -179,7 +184,7 @@ public class RandomMovement implements OnScannedRobotControl {
     }
 
     private Point2D randomDestinationFurtherFromEnemy(Point2D robotPosition, Point2D enemyPosition, double currentDistance, double distanceBetweenPoints, Rectangle2D movementArea) {
-        double newDistance = currentDistance + Math.random() * CHANGE_DISTANCE;
+        double newDistance = currentDistance + CHANGE_DISTANCE;
         return randomDestinationWithFixedDistance(robotPosition, enemyPosition, newDistance, distanceBetweenPoints, movementArea);
     }
 
@@ -294,6 +299,24 @@ public class RandomMovement implements OnScannedRobotControl {
             PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, ALL_POTENTIAL_POINTS_COLORS, destination, null);
         }
         return result;
+    }
+
+    @Override
+    public void runLoop() {
+        /**
+         * If robot is just stay still for so long, just move it.
+         * This case can happens when our robot cannot scan any enemy (but they are still there in the battlefield.
+         * They are just outside the range of our radar.
+         */
+        if (movementContext.isNone() && (robot.getTime() - estimateFinishTime) > 10){
+            movementContext.setMoveStrategy(MoveStrategy.RANDOM);
+            int direction = 1;
+            if (Math.random() < 0.5){
+                direction = -1;
+            }
+            robot.setTurnRight(Math.random()* 360);
+            robot.setAhead(direction * 90);
+        }
     }
 
     private static class PointsOnSide {
