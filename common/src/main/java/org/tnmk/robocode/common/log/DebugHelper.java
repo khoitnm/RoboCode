@@ -1,13 +1,19 @@
 package org.tnmk.robocode.common.log;
 
 import java.awt.Color;
+import java.util.stream.Collectors;
 import org.tnmk.robocode.common.movement.MovementContext;
+import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import robocode.AdvancedRobot;
 
 public class DebugHelper {
 
-    public static boolean isDebugMoveStrategy() {
-        return false;
+    public static boolean isDebugMoveStrategyChange() {
+        return true;
+    }
+
+    private static boolean isDebugMoveStrategyState() {
+        return true;
     }
 
     public static boolean isDebugGunStrategy() {
@@ -16,10 +22,6 @@ public class DebugHelper {
 
     public static boolean isDebugMoveDirection() {
         return false;
-    }
-
-    private static boolean isDebugStateMoveStrategy() {
-        return true;
     }
 
     public static void debugMoveRandomTowardEnemy(AdvancedRobot robot) {
@@ -39,9 +41,17 @@ public class DebugHelper {
     }
 
     public static void debugStateMoveStrategy(AdvancedRobot robot, MovementContext movementContext) {
-        if (isDebugStateMoveStrategy()) {
+        if (isDebugMoveStrategyState()) {
             LogHelper.logRobotMovement(robot, "moveStrategy: " + movementContext.getMoveStrategy());
         }
     }
 
+    public static void debugEnemyEnergy(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, String enemyName, int historyCount) {
+        String energies = allEnemiesObservationContext.getEnemyPatternPrediction(enemyName)
+                .getEnemyHistory()
+                .getLatestHistoryItems(historyCount).stream()
+                .map(enemy -> "" + enemy.getEnergy())
+                .collect(Collectors.joining(","));
+//        System.out.println("Enemies " + energies);
+    }
 }

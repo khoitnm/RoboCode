@@ -71,24 +71,44 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
     private long estimateFinishTime = 0;
 
     @Override
+    public void runLoop() {
+        /**
+         * If robot is just stay still for so long, just move it.
+         * This case can happens when our robot cannot scan any enemy (but they are still there in the battlefield.
+         * They are just outside the range of our radar.
+         */
+        if (movementContext.isNone() && (robot.getTime() - estimateFinishTime) > 10) {
+            movementContext.setMoveStrategy(MoveStrategy.WANDERING);
+            DebugHelper.debugMoveWandering(robot);
+            startTime = robot.getTime();
+            estimateFinishTime = startTime + Math.round(90d / Rules.MAX_VELOCITY);
+            int direction = 1;
+            if (Math.random() < 0.5) {
+                direction = -1;
+            }
+            robot.setTurnRight(Math.random() * 360);
+            robot.setAhead(direction * 90);
+        } else {
+            robot.setBodyColor(HiTechDecorator.ROBOT_BORDY_COLOR);
+        }
+    }
+
+    @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         Rectangle2D battleField = Move2DHelper.constructBattleField(robot);
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
         double oldEnemyEnergy = getOldEnemyEnergy(scannedRobotEvent.getName());
-        String energies = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName())
-                .getEnemyHistory()
-                .getLatestHistoryItems(5).stream()
-                .map(enemy -> "" + enemy.getEnergy())
-                .collect(Collectors.joining(","));
-//        System.out.println("Enemies " + energies);
+        DebugHelper.debugEnemyEnergy(robot, allEnemiesObservationContext, scannedRobotEvent.getName(), 5);
+
         boolean isEnemyFired = suspectEnemyHasJustFiredBullet(oldEnemyEnergy, scannedRobotEvent.getEnergy());
 //        if (isEnemyFired) {
 //            System.out.println("Enemy " + scannedRobotEvent.getName() + " fired " + isEnemyFired);
 //        }
 
         if (movementContext.hasLowerPriority(MoveStrategy.RANDOM)) {
-            movementContext.setMoveStrategy(MoveStrategy.RANDOM);
-            startTime = robot.getTime();
+            if (!movementContext.is(MoveStrategy.RANDOM)) {
+                movementContext.setMoveStrategy(MoveStrategy.RANDOM);
+            }
             boolean isChangeMovement;
 
             //FIXME, the second last doesn't have the latest data.
@@ -99,42 +119,38 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
                 isChangeMovement = Math.random() < .2;
             }
             if (isChangeMovement) {//80% will turn direction randomly.
+                startTime = robot.getTime();
+
                 Enemy enemy = allEnemiesObservationContext.getEnemy(scannedRobotEvent.getName());
                 Point2D enemyPosition = enemy.getPosition();
                 Point2D destination;
-                double absoluteTurnAngleToEnemy;
                 if (robot.getEnergy() / scannedRobotEvent.getEnergy() > 3 || robot.getEnergy() - scannedRobotEvent.getEnergy() > 30d) {
                     destination = randomDestinationCloserToEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, battleField);
-//
-//                    absoluteTurnAngleToEnemy = randomAngleMoveTowardEnemy(scannedRobotEvent);
                     DebugHelper.debugMoveRandomTowardEnemy(robot);
                 } else {
                     if (scannedRobotEvent.getDistance() < Math.min(robot.getBattleFieldWidth(), robot.getBattleFieldHeight()) * 0.75) {
                         destination = randomDestinationFurtherFromEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, battleField);
-//                        absoluteTurnAngleToEnemy = randomAngleMoveFarAwayFromEnemy(scannedRobotEvent);
                         DebugHelper.debugMoveRandomFarAwayEnemy(robot);
                     } else {
                         destination = randomDestinationAroundEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, battleField);
-//                        absoluteTurnAngleToEnemy = randomAngleMoveNearlyPerpendicularToEnemy(scannedRobotEvent);
                         DebugHelper.debugMoveRandomPerpendicularEnemy(robot);
                     }
                 }
                 double destinationDistance = robotPosition.distance(destination);
-                long estimationRunningTime = Math.min(Math.round(destinationDistance / Rules.MAX_VELOCITY), 15);
+                long estimationRunningTime = Math.min(Math.round(destinationDistance * 0.8 / Rules.MAX_VELOCITY), 15);
                 estimateFinishTime = robot.getTime() + estimationRunningTime;
                 System.out.println(String.format("[%s] estimate running time: %s, estimate finish time: %s", robot.getTime(), estimationRunningTime, estimateFinishTime));
-                if (Math.random() < 0.75) {
+                if (Math.random() < 0.7) {
                     Move2DHelper.setMoveToDestinationWithShortestPath(robot, destination);
-//                    movementContext.reverseDirection();
-//                    absoluteTurnAngleToEnemy = AngleUtils.normalizeDegree(absoluteTurnAngleToEnemy + 180);
                 } else {
                     Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, destination);
                 }
-//                robot.setTurnRight(absoluteTurnAngleToEnemy);
             } else {
                 /** Keep the same movement, doesn't change anything. */
+                if (robot.getTime() >= estimateFinishTime) {
+                    movementContext.setNone();
+                }
             }
-//            robot.setAhead(movementContext.getDirection() * 125);
         } else if (movementContext.is(MoveStrategy.RANDOM) && robot.getTime() >= estimateFinishTime) {
             movementContext.setNone();
         }
@@ -225,19 +241,10 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
             return randomDestination(new ArrayList<>(potentialPoints));
         }
     }
-//
-//    /**
-//     * @param enemyPosition
-//     * @param destinationDistanceFromEnemy the distance from the enemy to surround destination points
-//     * @param movementArea                 the destination positions will be generated inside the movementAre only
-//     * @return if cannot found any good destination,
-//     */
-//    private List<Point2D> constructSurroundPositions(Point2D myPosition, Point2D enemyPosition, double destinationDistanceFromEnemy, double distanceBetween2Points) {
-//        List<Point2D> aroundEnemyPositions = constructSurroundPositions(enemyPosition, destinationDistanceFromEnemy, distanceBetween2Points);
-//        return aroundEnemyPositions;
-//    }
 
     private Point2D randomDestination(List<Point2D> potentialDestinations) {
+
+
         for (Point2D potential : potentialDestinations) {
             PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, SAME_SIDE_POINTS_COLORS, potential, null);
         }
@@ -263,22 +270,25 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
      * @return within the surround positions of pointB, find which point on the same side of pointA
      */
     private PointsOnSide distinguishSideOfPositions(Point2D pointA, Point2D pointB, double radiusFromBToSurroundPoints, List<Point2D> surroundPositions) {
-        List<Point2D> sameSide = new ArrayList<>();
-        List<Point2D> otherSide = new ArrayList<>();
+        List<Destination> sameSide = new ArrayList<>();
+        List<Destination> otherSide = new ArrayList<>();
         double distanceAB = pointA.distance(pointB);
         double furthestAcceptedDistance = Math.sqrt(Math.pow(distanceAB, 2) + Math.pow(radiusFromBToSurroundPoints, 2));
         for (Point2D surroundPosition : surroundPositions) {
-            if (pointA.distance(surroundPosition) <= furthestAcceptedDistance) {
-                sameSide.add(surroundPosition);
+            double distance = pointA.distance(surroundPosition);
+            Destination destination = new Destination(pointA, surroundPosition, distance);
+
+            if (distance <= furthestAcceptedDistance) {
+                sameSide.add(destination);
             } else {
-                otherSide.add(surroundPosition);
+                otherSide.add(destination);
             }
         }
-        for (Point2D destination : sameSide) {
-            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, SAME_SIDE_POINTS_COLORS, destination, null);
+        for (Destination destination : sameSide) {
+            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, SAME_SIDE_POINTS_COLORS, destination.to, null);
         }
-        for (Point2D destination : sameSide) {
-            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, OTHER_SIDE_POINTS_COLORS, destination, null);
+        for (Destination destination : sameSide) {
+            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, OTHER_SIDE_POINTS_COLORS, destination.to, null);
         }
         return new PointsOnSide(sameSide, otherSide);
     }
@@ -309,36 +319,26 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
         return result;
     }
 
-    @Override
-    public void runLoop() {
-        /**
-         * If robot is just stay still for so long, just move it.
-         * This case can happens when our robot cannot scan any enemy (but they are still there in the battlefield.
-         * They are just outside the range of our radar.
-         */
-        if (movementContext.isNone() && (robot.getTime() - estimateFinishTime) > 10) {
-            movementContext.setMoveStrategy(MoveStrategy.WANDERING);
-            DebugHelper.debugMoveWandering(robot);
-            startTime = robot.getTime();
-            estimateFinishTime = startTime + Math.round(90d / Rules.MAX_VELOCITY);
-            int direction = 1;
-            if (Math.random() < 0.5) {
-                direction = -1;
-            }
-            robot.setTurnRight(Math.random() * 360);
-            robot.setAhead(direction * 90);
-        } else {
-            robot.setBodyColor(HiTechDecorator.ROBOT_BORDY_COLOR);
+
+    private static class PointsOnSide {
+        private final List<Destination> sameSide;
+        private final List<Destination> otherSide;
+
+        private PointsOnSide(List<Destination> sameSide, List<Destination> otherSide) {
+            this.sameSide = sameSide;
+            this.otherSide = otherSide;
         }
     }
 
-    private static class PointsOnSide {
-        private final List<Point2D> sameSide;
-        private final List<Point2D> otherSide;
+    private static class Destination{
+        private final Point2D from;
+        private final Point2D to;
+        private final double distance;
 
-        private PointsOnSide(List<Point2D> sameSide, List<Point2D> otherSide) {
-            this.sameSide = sameSide;
-            this.otherSide = otherSide;
+        private Destination(Point2D from, Point2D to, double distance) {
+            this.from = from;
+            this.to = to;
+            this.distance = distance;
         }
     }
 
