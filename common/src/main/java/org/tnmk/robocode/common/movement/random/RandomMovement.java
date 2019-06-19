@@ -76,7 +76,7 @@ public class RandomMovement implements OnScannedRobotControl {
                 .collect(Collectors.joining(","));
 //        System.out.println("Enemies " + energies);
         boolean isEnemyFired = suspectEnemyHasJustFiredBullet(oldEnemyEnergy, scannedRobotEvent.getEnergy());
-        if (isEnemyFired){
+        if (isEnemyFired) {
             System.out.println("Enemy " + scannedRobotEvent.getName() + " fired " + isEnemyFired);
         }
 
@@ -135,18 +135,44 @@ public class RandomMovement implements OnScannedRobotControl {
     }
 
     private Point2D randomDestinationCloserToEnemy(Point2D robotPosition, Point2D enemyPosition, double currentDistance, double distanceBetweenPoints, Rectangle2D movementArea) {
-        double newDistance = Math.abs(currentDistance - Math.random() * CHANGE_DISTANCE);
+        double newDistance = currentDistance - Math.random() * CHANGE_DISTANCE;
+        if (newDistance <= 10) {
+            return enemyPosition;
+        }
         List<Point2D> aroundEnemyPositions = constructSurroundPositions(enemyPosition, newDistance, distanceBetweenPoints);
         List<Point2D> aroundEnemyPositionsWithinMovementArea = choosePointsInsideArea(aroundEnemyPositions, movementArea);
+        int i = 0;
         while (aroundEnemyPositionsWithinMovementArea.isEmpty()) {
             //It means that the currentDistance is too small compare to distanceBetweenPoints, we need to reduce distanceBetweenPoints
             distanceBetweenPoints /= 2d;
             aroundEnemyPositions = constructSurroundPositions(enemyPosition, newDistance, distanceBetweenPoints);
             aroundEnemyPositionsWithinMovementArea = choosePointsInsideArea(aroundEnemyPositions, movementArea);
+            i++;
+            if (i > 20) {
+                LogHelper.logAdvanceRobot(robot, "THERE ARE SOMETHING WRONG!!!: NO aroundEnemyPositionsWithinMovementArea" +
+                        "\n\trandomDestinationCloserToEnemy()" +
+                        "\n\trobotPosition: " + robotPosition +
+                        "\n\tenemyPosition: " + enemyPosition +
+                        "\n\tcurrentDistance: " + currentDistance +
+                        "\n\tnewDistance: " + newDistance +
+                        "\n\tdistanceBetweenPoints: " + distanceBetweenPoints +
+                        "\n\taroundEnemyPositionsWithinMovementArea: " + aroundEnemyPositionsWithinMovementArea.size()
+                );
+                return enemyPosition;
+            }
         }
 
         PointsOnSide pointsOnSide = distinguishSideOfPositions(robotPosition, enemyPosition, newDistance, aroundEnemyPositionsWithinMovementArea);
         if (pointsOnSide.sameSide.isEmpty()) {
+            LogHelper.logAdvanceRobot(robot, "THERE ARE SOMETHING WRONG!!!: NO sameSide: " +
+                    "\n\trandomDestinationCloserToEnemy()" +
+                    "\n\trobotPosition: " + robotPosition +
+                    "\n\tenemyPosition: " + enemyPosition +
+                    "\n\tcurrentDistance: " + currentDistance +
+                    "\n\tnewDistance: " + newDistance +
+                    "\n\tdistanceBetweenPoints: " + distanceBetweenPoints +
+                    "\n\taroundEnemyPositionsWithinMovementArea: " + aroundEnemyPositionsWithinMovementArea.size()
+            );
             throw new IllegalStateException("Some thing really wrong with our code, the aroundEnemyOnTheSameSide should be always not empty when move closer to the enemy.");
         }
         return randomDestination(pointsOnSide.sameSide);
