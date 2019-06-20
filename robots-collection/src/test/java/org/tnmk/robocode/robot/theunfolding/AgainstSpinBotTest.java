@@ -27,7 +27,7 @@ public class AgainstSpinBotTest extends AbstractBulletDamageTest {
                 "sample.SpinBot"
         );
 
-        AbstractBulletDamageTest.TestConfig testConfig = new AbstractBulletDamageTest.TestConfig(TheUnfoldingRobot.class, enemyNames, 0.8, 20, 90);
+        AbstractBulletDamageTest.TestConfig testConfig = new AbstractBulletDamageTest.TestConfig(TheUnfoldingRobot.class, enemyNames, 1, 20, 80);
         return testConfig;
     }
 }

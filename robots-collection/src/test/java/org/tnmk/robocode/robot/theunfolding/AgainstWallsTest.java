@@ -28,7 +28,7 @@ public class AgainstWallsTest extends AbstractBulletDamageTest {
         );
 
 
-        AbstractBulletDamageTest.TestConfig testConfig = new AbstractBulletDamageTest.TestConfig(TheUnfoldingRobot.class, enemyNames, 0.8, 20, 90);
+        AbstractBulletDamageTest.TestConfig testConfig = new AbstractBulletDamageTest.TestConfig(TheUnfoldingRobot.class, enemyNames, 1, 20, 90);
         return testConfig;
     }
 }
