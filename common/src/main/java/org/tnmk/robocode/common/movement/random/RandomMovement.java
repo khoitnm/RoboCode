@@ -1,11 +1,13 @@
 package org.tnmk.robocode.common.movement.random;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.tnmk.common.math.GeoMathUtils;
+import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.helper.Move2DHelper;
 import org.tnmk.robocode.common.log.DebugHelper;
@@ -53,8 +55,10 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
     private static final Color ALL_POTENTIAL_POINTS_COLORS = Color.GRAY;
     private static final Color SAME_SIDE_POINTS_COLORS = Color.ORANGE;
     private static final Color OTHER_SIDE_POINTS_COLORS = Color.RED;
+    private static final Color FINAL_POTENIAL_POINTS_COLORS = Color.YELLOW;
     private static final Color DESTINATION_COLOR = Color.YELLOW;
     private static final int DEBUG_POINT_SIZE = 3;
+    private static final int DEBUG_FINAL_POTENTIAL_POINT_SIZE = 6;
     private static final int DEBUG_FINAL_POINT_SIZE = 10;
 
     private final AdvancedRobot robot;
@@ -89,6 +93,9 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
             robot.setTurnRight(Math.random() * 360);
             robot.setAhead(direction * 90);
         } else {
+            if (movementContext.is(MoveStrategy.WANDERING) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
+                movementContext.setNone();
+            }
             robot.setBodyColor(HiTechDecorator.ROBOT_BORDY_COLOR);
         }
     }
@@ -124,7 +131,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
                 Enemy enemy = allEnemiesObservationContext.getEnemy(scannedRobotEvent.getName());
                 Point2D enemyPosition = enemy.getPosition();
                 Point2D destination;
-                if (robot.getEnergy() / scannedRobotEvent.getEnergy() > 3 || robot.getEnergy() - scannedRobotEvent.getEnergy() > 30d) {
+                if (robot.getEnergy() / scannedRobotEvent.getEnergy() > 4 || robot.getEnergy() - scannedRobotEvent.getEnergy() > 50d) {
                     destination = randomDestinationCloserToEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, battleField);
                     DebugHelper.debugMoveRandomTowardEnemy(robot);
                 } else {
@@ -231,7 +238,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
         if (pointsOnSide.sameSide.size() >= MIN_ACCEPTABLE_SAME_SIDE_POINTS) {
             return randomDestination(pointsOnSide.sameSide);
         } else {
-            Set<Point2D> potentialPoints = new HashSet<>();
+            Set<Destination> potentialPoints = new HashSet<>();
             potentialPoints.addAll(pointsOnSide.sameSide);
             int halfOfOtherSide = (pointsOnSide.otherSide.size() - 1) / 2;
             for (int i = 0; i < halfOfOtherSide && potentialPoints.size() < (MIN_ACCEPTABLE_SAME_SIDE_POINTS + 2); i++) {
@@ -242,17 +249,65 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
         }
     }
 
-    private Point2D randomDestination(List<Point2D> potentialDestinations) {
-
-
-        for (Point2D potential : potentialDestinations) {
-            PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, SAME_SIDE_POINTS_COLORS, potential, null);
-        }
+    private Point2D randomDestination(List<Destination> potentialDestinations) {
+        potentialDestinations = excludeClosestDestinations(potentialDestinations);
+        paintPoints(robot.getGraphics(), potentialDestinations, DEBUG_FINAL_POTENTIAL_POINT_SIZE, FINAL_POTENIAL_POINTS_COLORS);
 
         int destinationIndex = (int) Math.round(Math.random() * (potentialDestinations.size() - 1));
-        Point2D destination = potentialDestinations.get(destinationIndex);
-        PaintHelper.paintPoint(robot.getGraphics(), DEBUG_FINAL_POINT_SIZE, DESTINATION_COLOR, destination, null);
-        return destination;
+        Destination destination = potentialDestinations.get(destinationIndex);
+        PaintHelper.paintPoint(robot.getGraphics(), DEBUG_FINAL_POINT_SIZE, DESTINATION_COLOR, destination.to, null);
+        return destination.to;
+    }
+
+    private void paintPoints(Graphics2D graphics2D, List<Destination> destinations, int pointSize, Color pointColor) {
+        for (Destination destination : destinations) {
+            PaintHelper.paintPoint(graphics2D, pointSize, pointColor, destination.to, null);
+        }
+    }
+
+    /**
+     * @param destinations
+     * @return closest destinations are actually points which go directly (back or forth) to our robot. And we don't that.
+     * That's why we should exclude them if possible.
+     * <p/>
+     * The original order must be preserve!!!
+     */
+    private List<Destination> excludeClosestDestinations(List<Destination> destinations) {
+        if (destinations.size() <= 5) {
+            return destinations;
+        }
+        long numExcludedPoints = Math.round((double) destinations.size() * 0.2d);
+        if (numExcludedPoints == 0) {
+            return destinations;
+        } else {
+            destinations = sortByDistanceAsc(destinations);
+            Set<Destination> excludedDestinations = new HashSet<>();
+            for (int i = 0; i < numExcludedPoints; i++) {
+                excludedDestinations.add(destinations.get(i));
+            }
+            List<Destination> result = new ArrayList<>(destinations.size() - excludedDestinations.size());
+            for (Destination destination : destinations) {
+                if (!excludedDestinations.contains(destination)) {
+                    result.add(destination);
+                }
+            }
+            return result;
+        }
+    }
+
+    private List<Destination> sortByDistanceAsc(List<Destination> destinations) {
+        List<Destination> destinationsOrderByDistanceAsc = destinations.stream()
+                .sorted(new Comparator<Destination>() {
+                    @Override
+                    public int compare(Destination o1, Destination o2) {
+                        if (o1.distance == o2.distance) {
+                            return 0;
+                        } else {
+                            return (o1.distance > o2.distance ? 1 : -1);
+                        }
+                    }
+                }).collect(Collectors.toList());
+        return destinationsOrderByDistanceAsc;
     }
 
     private List<Point2D> choosePointsInsideArea(List<Point2D> originalPositions, Rectangle2D area) {
@@ -287,7 +342,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
         for (Destination destination : sameSide) {
             PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, SAME_SIDE_POINTS_COLORS, destination.to, null);
         }
-        for (Destination destination : sameSide) {
+        for (Destination destination : otherSide) {
             PaintHelper.paintPoint(robot.getGraphics(), DEBUG_POINT_SIZE, OTHER_SIDE_POINTS_COLORS, destination.to, null);
         }
         return new PointsOnSide(sameSide, otherSide);
@@ -330,9 +385,18 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
         }
     }
 
-    private static class Destination{
+    private static class Destination {
+        /**
+         * The original position
+         */
         private final Point2D from;
+        /**
+         * The destination position
+         */
         private final Point2D to;
+        /**
+         * The distance between {@link #from} and {@link #to}
+         */
         private final double distance;
 
         private Destination(Point2D from, Point2D to, double distance) {

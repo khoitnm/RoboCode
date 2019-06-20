@@ -19,7 +19,7 @@ public class AgainstSuperSpinBotTest extends AbstractWinRateTest {
          * - 31.5%
          * - 61.6%
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.58, 100);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.7, 100);
         return testConfig;
     }
 }
