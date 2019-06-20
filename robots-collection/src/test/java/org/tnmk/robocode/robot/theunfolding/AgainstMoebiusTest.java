@@ -16,7 +16,7 @@ public class AgainstMoebiusTest extends AbstractWinRateTest {
 
         /**
          * 1000 rounds:
-         * RandomMovement: 97.2% (What!!!!!) (Run 100 rounds, win 86.0%!!!)
+         * - (v2.4.0) RandomMovement: 97.2% (What!!!!!) (Run 100 rounds, win 86.0%!!!)
          */
         TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.8, 1000);
         return testConfig;
