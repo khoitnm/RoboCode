@@ -178,6 +178,7 @@ General: strategy for the end game: http://old.robowiki.net/robowiki?EndingGame:
 
 Movement:
  - Movement:
+    - Move to a destination: instead of using the same velocity, learn from the SuperSpinBot: reduce velocity and increase the turn rate.
     - Zic-Zac movement to a destination position.
     - Random move when doing Anti-Gravity: avoid anti-gravity moving around one area for too long.
  - Gun: 
