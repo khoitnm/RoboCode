@@ -21,7 +21,6 @@ import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
-import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.AdvancedRobot;
 import robocode.Rules;
 import robocode.ScannedRobotEvent;
@@ -107,7 +106,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
             if (movementContext.is(MoveStrategy.WANDERING) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
                 movementContext.setNone();
             }
-            robot.setBodyColor(HiTechDecorator.ROBOT_BORDY_COLOR);
+            DebugHelper.resetDebugMoveWandering(robot);
         }
     }
 

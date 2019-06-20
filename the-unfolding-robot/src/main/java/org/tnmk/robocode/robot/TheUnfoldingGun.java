@@ -6,6 +6,7 @@ import org.tnmk.robocode.common.gun.briareos.BriareosGun;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.mobius.MobiusGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
+import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.*;
@@ -66,9 +67,9 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     private void aimGFTGunWhenPropriate(ScannedRobotEvent scannedRobotEvent) {
         if (shouldApplyGFTGun(scannedRobotEvent.getDistance(), robot.getOthers())) {
             gftAimGun.onScannedRobot(scannedRobotEvent);
-//            robot.setBodyColor(HiTechDecorator.ROBOT_BORDY_COLOR);
+            DebugHelper.debugGFTGunInRange(robot);
         } else {
-//            robot.setBodyColor(Color.RED);
+            DebugHelper.debugGFTGunNotInRange(robot);
             /** Don't fire, both GFT and MoebiusGun work badly in this case*/
         }
     }
