@@ -50,6 +50,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
      */
     private static final double DISTANCE_2_POTENTIAL_DESTINATIONS = 50;
     private static final double CHANGE_DISTANCE = 100;
+    private static final double CHANGE_RUN_AWAY_DISTANCE = 200;
     private static final int MIN_ACCEPTABLE_SAME_SIDE_POINTS = 4;
 
     private static final Color ALL_POTENTIAL_POINTS_COLORS = Color.GRAY;
@@ -218,7 +219,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
     }
 
     private Point2D randomDestinationFurtherFromEnemy(Point2D robotPosition, Point2D enemyPosition, double currentDistance, double distanceBetweenPoints, Rectangle2D movementArea) {
-        double newDistance = currentDistance + CHANGE_DISTANCE;
+        double newDistance = currentDistance + CHANGE_RUN_AWAY_DISTANCE;
         return randomDestinationWithFixedDistance(robotPosition, enemyPosition, newDistance, distanceBetweenPoints, movementArea);
     }
 

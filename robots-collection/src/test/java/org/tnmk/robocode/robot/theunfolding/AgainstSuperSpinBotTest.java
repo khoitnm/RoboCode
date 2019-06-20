@@ -19,7 +19,7 @@ public class AgainstSuperSpinBotTest extends AbstractWinRateTest {
          * - OscillatorMovement  for 1-on-1: 31.5%
          * - RandomMovement for 1-on-1: 56.0%
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.8, 1000);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.8, 20);
         return testConfig;
     }
 }
