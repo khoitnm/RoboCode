@@ -176,12 +176,9 @@ General: strategy for the end game: http://old.robowiki.net/robowiki?EndingGame:
    - Fire bullet surround enemies' escape area.
  - Or when the risk we get hit is high, don't try to save energy, try to hit back.
 
-Gun:
- - Fix GFTGun to allow battlefield bigger than 1000x1000
-Radar: 
- - Lock scan to the closest target when the distance is less than 300 (for example). 
-   This could potentially improve the gun.
 Movement:
- - Random move when doing Anti-Gravity 
- - One-on-One movement: choose a better strategy.
+ - Random move when doing Anti-Gravity: avoid anti-gravity moving around one area for too long.
+ - Gun: 
+    - the enemies with low energy (especially lower than 1) will become the high priority targets.
+    - the damage of bullet should not be bigger than the enemy's energy.  
  
