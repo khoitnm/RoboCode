@@ -177,7 +177,9 @@ General: strategy for the end game: http://old.robowiki.net/robowiki?EndingGame:
  - Or when the risk we get hit is high, don't try to save energy, try to hit back.
 
 Movement:
- - Random move when doing Anti-Gravity: avoid anti-gravity moving around one area for too long.
+ - Movement:
+    - Zic-Zac movement to a destination position.
+    - Random move when doing Anti-Gravity: avoid anti-gravity moving around one area for too long.
  - Gun: 
     - the enemies with low energy (especially lower than 1) will become the high priority targets.
     - the damage of bullet should not be bigger than the enemy's energy.  
