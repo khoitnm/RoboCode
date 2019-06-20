@@ -60,6 +60,16 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
     private static final int DEBUG_POINT_SIZE = 3;
     private static final int DEBUG_FINAL_POTENTIAL_POINT_SIZE = 6;
     private static final int DEBUG_FINAL_POINT_SIZE = 10;
+    /**
+     * The percentage of potential destination will be excluded.
+     * Some numbers for 1-on-1 vs. SuperSpinBotTest (1000 rounds):
+     * 0.2 => win percentage: 61.5%
+     * 0.3 => win percentage: 51.5%
+     *
+     * vs. BlackPearl:
+     * 0.2 => win: 39.1%
+     */
+    private static final double EXCLUDE_CLOSET_POINT_PERCENTAGE = 0.2d;
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
@@ -276,7 +286,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
         if (destinations.size() <= 5) {
             return destinations;
         }
-        long numExcludedPoints = Math.round((double) destinations.size() * 0.2d);
+        long numExcludedPoints = Math.round((double) destinations.size() * EXCLUDE_CLOSET_POINT_PERCENTAGE);
         if (numExcludedPoints == 0) {
             return destinations;
         } else {
