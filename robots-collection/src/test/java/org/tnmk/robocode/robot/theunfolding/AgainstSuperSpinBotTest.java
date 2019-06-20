@@ -18,9 +18,9 @@ public class AgainstSuperSpinBotTest extends AbstractWinRateTest {
          * Run 1000 rounds with win percentage:
          * - OscillatorMovement  for 1-on-1: 31.5%
          * - (v2.4.0)RandomMovement for 1-on-1: 56.0%
-         *      Run 2000 rounds: win 75%
+         *      Run 2000 rounds: win 75%, 76.35%
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.7, 20);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.7, 2000);
         return testConfig;
     }
 }
