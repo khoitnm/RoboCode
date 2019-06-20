@@ -28,7 +28,7 @@ import robocode.control.testing.RobotTestBed;
 @RunWith(JUnit4.class)
 @Ignore
 public abstract class AbstractBulletDamageTest extends RobotTestBed {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractBulletDamageTest.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * The order of my robot in the list {@link #getRobotNames()}.

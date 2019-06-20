@@ -28,6 +28,7 @@ public class AgainstMoebiusAndOthersTest extends AbstractWinRateTest {
          * - {@link PatternPredictionGun} and {@link GFTAimGun}: 66.1%
          *    After fixing bug in PatternPredictionGun(v.2.3.4): 69.5%.
          *    RandomMovement: 57.8%
+         *      Run 2000 rounds: win 62.05%
          * - {@link PatternPredictionGun} and {@link BlackPearlGun}: 50.3%
          *
          * View more at {@link AgainstBlackPearlAndOthersTest} to see interesting resuls.

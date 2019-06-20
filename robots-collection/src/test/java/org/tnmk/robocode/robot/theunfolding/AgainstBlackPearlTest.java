@@ -18,6 +18,8 @@ public class AgainstBlackPearlTest extends AbstractWinRateTest {
          * Run 1000 rounds with win percentage:
          * - OscillatorMovement  for 1-on-1: 1.0% (OMG!!!)
          * - RandomMovement for 1-on-1: 39.1%, 33.6%
+         *      Run 2000 rounds: win 64.05%
+         *
          */
         TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.33, 2000);
         return testConfig;
