@@ -5,7 +5,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.GeoMathUtils;
-import org.tnmk.robocode.common.helper.Move2DHelper;
+import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
@@ -76,7 +76,7 @@ public class PatternPredictionUtils {
             }
         }
         Point2D predictionPosition = new Point2D.Double(newX, newY);
-        predictionPosition = Move2DHelper.reckonMaximumDestination(enemy.getPosition(), predictionPosition, enemyMovementArea);
+        predictionPosition = Move2DUtils.reckonMaximumDestination(enemy.getPosition(), predictionPosition, enemyMovementArea);
         if (!GeoMathUtils.checkInsideRectangle(predictionPosition, enemyMovementArea)){
             String message = String.format("Outside: from:"+LogHelper.toString(enemy.getPosition()) +", to:"+LogHelper.toString(predictionPosition)+", area:"+LogHelper.toString(enemyMovementArea));
             System.out.println(message);

@@ -9,7 +9,8 @@ import java.util.stream.Collectors;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
-import org.tnmk.robocode.common.helper.Move2DHelper;
+import org.tnmk.robocode.common.helper.BattleFieldUtils;
+import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
@@ -112,7 +113,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        Rectangle2D battleField = Move2DHelper.constructBattleField(robot);
+        Rectangle2D battleField = BattleFieldUtils.constructBattleField(robot);
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
         double oldEnemyEnergy = getOldEnemyEnergy(scannedRobotEvent.getName());
         DebugHelper.debugEnemyEnergy(robot, allEnemiesObservationContext, scannedRobotEvent.getName(), 5);
@@ -158,9 +159,9 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
                 estimateFinishTime = robot.getTime() + estimationRunningTime;
                 System.out.println(String.format("[%s] estimate running time: %s, estimate finish time: %s", robot.getTime(), estimationRunningTime, estimateFinishTime));
                 if (Math.random() < 0.7) {
-                    Move2DHelper.setMoveToDestinationWithShortestPath(robot, destination);
+                    Move2DUtils.setMoveToDestinationWithShortestPath(robot, destination);
                 } else {
-                    Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, destination);
+                    Move2DUtils.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, destination);
                 }
             } else {
                 /** Keep the same movement, doesn't change anything. */

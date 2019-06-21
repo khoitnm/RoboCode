@@ -9,7 +9,7 @@ import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.GunUtils;
-import org.tnmk.robocode.common.helper.Move2DHelper;
+import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.helper.prediction.RobotPrediction;
 import org.tnmk.robocode.common.helper.prediction.RobotPredictionHelper;
@@ -122,7 +122,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         List<Enemy> latestHistoryItems = enemyHistory.getLatestHistoryItems(5);
         Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
 
-        Rectangle2D battleField = Move2DHelper.constructBattleField(robot);
+        Rectangle2D battleField = BattleFieldUtils.constructBattleField(robot);
 //        debugPredictSelfRobot(robot);
 
         Point2D enemyPosition = enemyHistory.getLatestHistoryItem().getPosition();

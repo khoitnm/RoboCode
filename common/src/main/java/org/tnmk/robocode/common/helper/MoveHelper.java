@@ -14,7 +14,7 @@ import robocode.Rules;
 import robocode.ScannedRobotEvent;
 
 /**
- * @deprecated  Some methods already replaced by {@link Move2DHelper}
+ * @deprecated  Some methods already replaced by {@link Move2DUtils}
  */
 public class MoveHelper implements Serializable{
 	public static final double DEFAULT_DISTANCE = 10000;

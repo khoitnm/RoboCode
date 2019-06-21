@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.movement.edm;
 
-import org.tnmk.robocode.common.helper.Move2DHelper;
+import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
@@ -58,7 +58,7 @@ public class EnemyDodgeMovement implements InitiableRun, OnScannedRobotControl {
      * @param destinationPosition2D
      */
     private void moveToDestination(Point2D destinationPosition2D) {
-        Move2DHelper.setMoveToDestinationWithShortestPath(robot, destinationPosition2D);
+        Move2DUtils.setMoveToDestinationWithShortestPath(robot, destinationPosition2D);
 
 //        Point2D currentPosition2D = new Point2D.Double(robot.getX(), robot.getY());
 //

@@ -29,7 +29,7 @@ public final class GeoMathUtils {
      * @param linearSpeed  speed of linear movement, positive number.
      * @param angularSpeed speed of angular movement (direction turning speed), in degree, positive number
      * @return radius of movement follow circle sharp.
-     * @see http://www.efm.leeds.ac.uk/CIVE/CIVE1140/section01/linear_angular_motion.html
+     * See more at http://www.efm.leeds.ac.uk/CIVE/CIVE1140/section01/linear_angular_motion.html
      */
     public static double reckonMovementRadius(double linearSpeed, double angularSpeed) {
         return linearSpeed / Math.toRadians(angularSpeed);
@@ -171,5 +171,27 @@ public final class GeoMathUtils {
     public static Point2D calculateDestinationPoint(Point2D rootPosition, double radian, double distance) {
         Point2D point2D = new Point2D.Double(rootPosition.getX() + Math.cos(radian) * distance, rootPosition.getY() + Math.sin(radian) * distance);
         return point2D;
+    }
+
+    /**
+     * @param pointA
+     * @param pointB
+     * @param xC     x of PointC which is on the same line of PointA -> PointB
+     * @return yC (y of PointC)
+     */
+    public static double calculateYOfPointCOnTheSameLine(Point2D pointA, Point2D pointB, double xC) {
+        double yC = ((xC - pointA.getX()) / (pointB.getX() - pointA.getX()) * (pointB.getY() - pointA.getY())) + pointA.getY();
+        return yC;
+    }
+
+    /**
+     * @param pointA
+     * @param pointB
+     * @param yC     y of PointC which is on the same line of PointA -> PointB
+     * @return xC (x of PointC)
+     */
+    public static double calculateXOfPointCOnTheSameLine(Point2D pointA, Point2D pointB, double yC) {
+        double xC = ((yC - pointA.getY()) / (pointB.getY() - pointA.getY()) * (pointB.getX() - pointA.getX())) + pointA.getX();
+        return xC;
     }
 }

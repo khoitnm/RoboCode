@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Optional;
-import org.tnmk.robocode.common.helper.Move2DHelper;
+import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.*;
@@ -75,7 +75,7 @@ public class EnemyMovePatternIdentifyHelper {
         if (enemyHistory.countHistoryItems() < MIN_HISTORY_ITEMS_FOR_PREDICTION) {
             return Optional.empty();
         } else {
-            Rectangle2D battleField = Move2DHelper.constructBattleField(enemyStatisticContext.getRobot());
+            Rectangle2D battleField = BattleFieldUtils.constructBattleField(enemyStatisticContext.getRobot());
             HistoricalPredictionResult historicalPredictionResult = predictAtTheTimeOfAnExpectedHistoryItem(enemyHistory, 3, 0, battleField);
 //            System.out.println("Enemy: "+enemyStatisticContext.getEnemyName()+", historicalPrediction: "+historicalPredictionResult.enemyPrediction);
             EnemyPrediction enemyPrediction = toEnemyPrediction(historicalPredictionResult);

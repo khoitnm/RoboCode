@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import org.tnmk.robocode.common.helper.Move2DHelper;
+import org.tnmk.robocode.common.helper.Move2DUtils;
 import robocode.Robot;
 
 public class PaintHelper {
@@ -61,7 +61,7 @@ public class PaintHelper {
     }
 
     public static void paintAngleRadian(Graphics2D graphics, Point2D startingPosition, double normAngleRadian, double normDistance, int lineWeight, Color color) {
-        Point2D destination = Move2DHelper.reckonDestination(startingPosition, normAngleRadian, normDistance);
+        Point2D destination = Move2DUtils.reckonDestination(startingPosition, normAngleRadian, normDistance);
         PaintHelper.paintLine(graphics, startingPosition, destination, lineWeight, color);
 
     }

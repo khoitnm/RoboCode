@@ -6,7 +6,7 @@ import java.util.*;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.math.Point2DUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
-import org.tnmk.robocode.common.helper.Move2DHelper;
+import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.movement.MoveStrategy;
@@ -27,7 +27,7 @@ import robocode.util.Utils;
  * <p/>
  * My improvement:<br/>
  * Don't move follow the direction of the force. Instead, I change the {@link #reckonForceWeight(AntiGravityCalculationContext, double)} so that we can have an appropriate destination point inside the {@link AntiGravityCalculationContext#getSafeMovementArea()}.<br/>
- * Then when moving, I use {@link Move2DHelper#setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(AdvancedRobot, Point2D)} instead of {@link Move2DHelper#setMoveToDestinationWithShortestPath(AdvancedRobot, Point2D)}.<br/>
+ * Then when moving, I use {@link Move2DUtils#setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(AdvancedRobot, Point2D)} instead of {@link Move2DUtils#setMoveToDestinationWithShortestPath(AdvancedRobot, Point2D)}.<br/>
  */
 public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl {
     private final AdvancedRobot robot;
@@ -83,7 +83,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
         Point2D force = reckonForce(this.calculationContext, this.robot, this.allEnemiesObservationContext);
         Point2D destination = Point2DUtils.plus(robotPosition, force);
 
-        Point2D avoidWallDestination = Move2DHelper.reckonMaximumDestination(robotPosition, destination, calculationContext.getSafeMovementArea());
+        Point2D avoidWallDestination = Move2DUtils.reckonMaximumDestination(robotPosition, destination, calculationContext.getSafeMovementArea());
         Point2D finalDestination = avoidWallDestination;
 
 //        Point2D finalDestination = WallSmoothUtils.wallSmoothing(
@@ -100,13 +100,13 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
             movementContext.setMoveStrategy(MoveStrategy.ANTI_GRAVITY);
 
             if (GeoMathUtils.checkInsideRectangle(finalDestination, calculationContext.getSafeMovementArea())) {
-                Move2DHelper.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
+                Move2DUtils.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
             } else {
                 //This logic makes sure that the robot won't run into the wall when it's outside the safeMovementArea (close to walls).
                 //However, this kind of movement shouldn't be the long-term movement because the destination outside the safeArea mostly close to current position.
                 //Hence it will make robot move just a very short distance, and becomes an easy victim.
                 //Therefore, the safeMovement area should be small!
-                Move2DHelper.setMoveToDestinationWithShortestPath(robot, finalDestination);
+                Move2DUtils.setMoveToDestinationWithShortestPath(robot, finalDestination);
             }
         }
     }

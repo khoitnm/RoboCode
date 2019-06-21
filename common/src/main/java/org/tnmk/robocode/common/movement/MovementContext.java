@@ -1,6 +1,7 @@
 package org.tnmk.robocode.common.movement;
 
 import java.awt.geom.Point2D;
+import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import robocode.AdvancedRobot;
@@ -21,7 +22,7 @@ public class MovementContext {
      * This value should be constantly updated every tick by {@link robocode.Robot#onStatus(StatusEvent)}.
      * <p/>
      * Note: We may not need this,
-     * check {@link org.tnmk.robocode.common.helper.Move2DHelper#setMoveToDestinationWithShortestPath(AdvancedRobot, Point2D)} to see how can it change direction without knowing direction.
+     * check {@link Move2DUtils#setMoveToDestinationWithShortestPath(AdvancedRobot, Point2D)} to see how can it change direction without knowing direction.
      * (hint: by changing heading angle)???
      * <br/>
      * <p/>

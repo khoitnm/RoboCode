@@ -1,7 +1,7 @@
 package org.tnmk.robocode.common.model.enemy;
 
 import java.awt.geom.Point2D;
-import org.tnmk.robocode.common.helper.Move2DHelper;
+import org.tnmk.robocode.common.helper.Move2DUtils;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
@@ -15,7 +15,7 @@ public class EnemyMapper {
         enemy.setName(scannedRobotEvent.getName());
         enemy.setSentryRobot(scannedRobotEvent.isSentryRobot());
         enemy.setVelocity(scannedRobotEvent.getVelocity());
-        Point2D targetPosition = Move2DHelper.reckonEnemyPosition(robot, scannedRobotEvent);
+        Point2D targetPosition = Move2DUtils.reckonEnemyPosition(robot, scannedRobotEvent);
         enemy.setPosition(targetPosition);
         enemy.setTime(robot.getTime());
         return enemy;

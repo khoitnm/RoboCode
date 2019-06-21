@@ -2,7 +2,6 @@ package org.tnmk.robocode.common.helper;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.io.Serializable;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
@@ -12,37 +11,11 @@ import robocode.Robot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
 
-public class Move2DHelper implements Serializable {
+public class Move2DUtils {
     public static final double ROBOT_SIZE = 50;
-
-    public static Rectangle2D constructBattleField(Robot robot){
-        return new Rectangle2D.Double(0,0, robot.getBattleFieldWidth(), robot.getBattleFieldHeight());
-    }
 
     public static Point2D reckonEnemyPosition(Robot thisRobot, HitRobotEvent targetRobotEvent) {
         return reckonEnemyPosition(thisRobot, targetRobotEvent.getBearing(), ROBOT_SIZE);
-    }
-
-    /**
-     * @param pointA
-     * @param pointB
-     * @param xC     x of PointC which is on the same line of PointA -> PointB
-     * @return yC (y of PointC)
-     */
-    public static double reckonYOfPointCOnTheSameLine(Point2D pointA, Point2D pointB, double xC) {
-        double yC = ((xC - pointA.getX()) / (pointB.getX() - pointA.getX()) * (pointB.getY() - pointA.getY())) + pointA.getY();
-        return yC;
-    }
-
-    /**
-     * @param pointA
-     * @param pointB
-     * @param yC     y of PointC which is on the same line of PointA -> PointB
-     * @return xC (x of PointC)
-     */
-    public static double reckonXOfPointCOnTheSameLine(Point2D pointA, Point2D pointB, double yC) {
-        double xC = ((yC - pointA.getY()) / (pointB.getY() - pointA.getY()) * (pointB.getX() - pointA.getX())) + pointA.getX();
-        return xC;
     }
 
     /**
@@ -128,35 +101,36 @@ public class Move2DHelper implements Serializable {
 
     /**
      * If pointB is outside limitArea, calculate another position for pointB inside limitArea which also on the same line.
+     *
      * @param pointA    should be inside limitArea
      * @param pointB    could be outside limitArea
      * @param limitArea
      * @return if pointB is inside the limitArea, return pointB.
      */
     public static Point2D reckonMaximumDestination(Point2D pointA, Point2D pointB, Rectangle2D limitArea) {
-        if (!GeoMathUtils.checkInsideRectangle(pointA, limitArea)){
+        if (!GeoMathUtils.checkInsideRectangle(pointA, limitArea)) {
             return pointB;
         }
 
         Point2D newPointB = pointB;
         if (pointB.getY() > limitArea.getMaxY() && pointB.getY() > pointA.getY()) {
             double yC = limitArea.getMaxY();
-            double xC = reckonXOfPointCOnTheSameLine(pointA, newPointB, yC);
+            double xC = GeoMathUtils.calculateXOfPointCOnTheSameLine(pointA, newPointB, yC);
             newPointB = new Point2D.Double(xC, yC);
         } else if (pointB.getY() < limitArea.getMinY() && pointB.getY() < pointA.getY()) {
             double yC = limitArea.getMinY();
-            double xC = reckonXOfPointCOnTheSameLine(pointA, newPointB, yC);
+            double xC = GeoMathUtils.calculateXOfPointCOnTheSameLine(pointA, newPointB, yC);
             newPointB = new Point2D.Double(xC, yC);
         }
 
         //Don't use else here, we need to check both Y and X
         if (newPointB.getX() > limitArea.getMaxX() && newPointB.getX() > pointA.getX()) {
             double xC = limitArea.getMaxX();
-            double yC = reckonYOfPointCOnTheSameLine(pointA, newPointB, xC);
+            double yC = GeoMathUtils.calculateYOfPointCOnTheSameLine(pointA, newPointB, xC);
             newPointB = new Point2D.Double(xC, yC);
         } else if (newPointB.getX() < limitArea.getMinX() && newPointB.getX() < pointA.getX()) {
             double xC = limitArea.getMinX();
-            double yC = reckonYOfPointCOnTheSameLine(pointA, newPointB, xC);
+            double yC = GeoMathUtils.calculateYOfPointCOnTheSameLine(pointA, newPointB, xC);
             newPointB = new Point2D.Double(xC, yC);
         }
 
