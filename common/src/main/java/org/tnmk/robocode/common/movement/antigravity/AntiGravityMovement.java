@@ -11,8 +11,10 @@ import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
+import org.tnmk.robocode.common.movement.uturn.UTurnMovement;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
+import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
 import robocode.Robot;
@@ -29,17 +31,19 @@ import robocode.util.Utils;
  * Don't move follow the direction of the force. Instead, I change the {@link #reckonForceWeight(AntiGravityCalculationContext, double)} so that we can have an appropriate destination point inside the {@link AntiGravityCalculationContext#getSafeMovementArea()}.<br/>
  * Then when moving, I use {@link Move2DUtils#setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(AdvancedRobot, Point2D)} instead of {@link Move2DUtils#setMoveToDestinationWithShortestPath(AdvancedRobot, Point2D)}.<br/>
  */
-public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl {
+public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl, LoopableRun {
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final MovementContext movementContext;
-
     private AntiGravityCalculationContext calculationContext;
+
+    private final UTurnMovement uTurnMovement;
 
     public AntiGravityMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, MovementContext movementContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
         this.movementContext = movementContext;
+        this.uTurnMovement = new UTurnMovement(robot, movementContext);
     }
 
 
@@ -101,11 +105,13 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
 
             if (GeoMathUtils.checkInsideRectangle(finalDestination, calculationContext.getSafeMovementArea())) {
                 Move2DUtils.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
+                uTurnMovement.setMoveToDestination(robot, finalDestination);
             } else {
                 //This logic makes sure that the robot won't run into the wall when it's outside the safeMovementArea (close to walls).
                 //However, this kind of movement shouldn't be the long-term movement because the destination outside the safeArea mostly close to current position.
                 //Hence it will make robot move just a very short distance, and becomes an easy victim.
                 //Therefore, the safeMovement area should be small!
+                uTurnMovement.stopMovementTactic();
                 Move2DUtils.setMoveToDestinationWithShortestPath(robot, finalDestination);
             }
         }
@@ -228,4 +234,10 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl 
     }
 
 
+    @Override
+    public void runLoop() {
+        if (movementContext.is(MoveStrategy.ANTI_GRAVITY)){
+            uTurnMovement.runLoop();
+        }
+    }
 }

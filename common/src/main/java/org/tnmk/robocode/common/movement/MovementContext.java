@@ -16,8 +16,8 @@ import robocode.StatusEvent;
 public class MovementContext {
     private final AdvancedRobot robot;
     private MoveStrategy moveStrategy = MoveStrategy.NONE;
-
-
+    private MoveTactic moveTactic = MoveTactic.NONE;
+    private Movement movement = null;
     /**
      * This value should be constantly updated every tick by {@link robocode.Robot#onStatus(StatusEvent)}.
      * <p/>
@@ -118,5 +118,13 @@ public class MovementContext {
     public boolean hasLowerOrEqualPriorityButDifferentStrategy(MoveStrategy moveStrategy) {
         boolean result = hasLowerOrEqualPriority(moveStrategy) && moveStrategy != this.moveStrategy;
         return result;
+    }
+
+    public MoveTactic getMoveTactic() {
+        return moveTactic;
+    }
+
+    public void setMoveTactic(MoveTactic moveTactic) {
+        this.moveTactic = moveTactic;
     }
 }

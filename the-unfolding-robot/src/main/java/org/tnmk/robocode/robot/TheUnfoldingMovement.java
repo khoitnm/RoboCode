@@ -49,8 +49,9 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
 
     @Override
     public void runLoop() {
-        runAwayMovement.runLoop();
+        antiGravityMovement.runLoop();
         randomMovement.runLoop();
+        runAwayMovement.runLoop();
     }
 
     @Override
