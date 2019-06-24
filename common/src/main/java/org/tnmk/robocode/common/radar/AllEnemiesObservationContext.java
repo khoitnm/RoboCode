@@ -13,8 +13,8 @@ import robocode.AdvancedRobot;
 import robocode.Robot;
 
 /**
- * This context data will be shared by implementations of Radar, Movement and Gun.
- * However, data inside this should be changed by Radar only. It shouldn't be changed by Movement or Gun.
+ * This context data will be shared by implementations of Radar, MoveController and Gun.
+ * However, data inside this should be changed by Radar only. It shouldn't be changed by MoveController or Gun.
  */
 public class AllEnemiesObservationContext {
     /**

@@ -8,16 +8,16 @@ import robocode.AdvancedRobot;
 import robocode.StatusEvent;
 
 /**
- * The context to manage {@link MoveStrategyType}.<br/>
- * This class help us to know which movement strategy is using.
+ * The context to manage {@link MoveStrategy}.<br/>
+ * This class help us to know which moveController strategy is using.
  * <p/>
- * This object should be managed by some composition movement class such as TheUnfoldingMovement.
+ * This object should be managed by some composition moveController class such as TheUnfoldingMovement.
  */
 public class MovementContext {
     private final AdvancedRobot robot;
-    private MoveStrategyType moveStrategyType = MoveStrategyType.NONE;
+    private MoveStrategy moveStrategy = MoveStrategy.NONE;
     private MoveTactic moveTactic = MoveTactic.NONE;
-    private Movement movement = null;
+    private MoveController moveController = null;
     /**
      * This value should be constantly updated every tick by {@link robocode.Robot#onStatus(StatusEvent)}.
      * <p/>
@@ -36,26 +36,26 @@ public class MovementContext {
     }
 
     /**
-     * Set moveStrategyType is {@link MoveStrategyType#NONE}
+     * Set moveStrategy is {@link MoveStrategy#NONE}
      */
     public void setNone() {
-        /** Don't directly set strategy to NONE because we may already has some debugging statements inside {@link #setMoveStrategyType(MoveStrategyType)} */
-        setMoveStrategyType(MoveStrategyType.NONE);
+        /** Don't directly set strategy to NONE because we may already has some debugging statements inside {@link #setMoveStrategy(MoveStrategy)} */
+        changeMoveStrategy(MoveStrategy.NONE, null);
     }
 
     /**
-     * @return Check if no special movement type
+     * @return Check if no special moveController type
      */
     public boolean isNone() {
-        return moveStrategyType == null || moveStrategyType == MoveStrategyType.NONE;
+        return moveStrategy == null || moveStrategy == MoveStrategy.NONE;
     }
 
     /**
-     * @param moveStrategyType
-     * @return check if the current moveType is equals to moveStrategyType
+     * @param moveStrategy
+     * @return check if the current moveType is equals to moveStrategy
      */
-    public boolean is(MoveStrategyType moveStrategyType) {
-        return this.moveStrategyType == moveStrategyType;
+    public boolean is(MoveStrategy moveStrategy) {
+        return this.moveStrategy == moveStrategy;
     }
 
     public void reverseDirection() {
@@ -78,45 +78,50 @@ public class MovementContext {
         }
     }
 
-    public MoveStrategyType getMoveStrategyType() {
-        return moveStrategyType;
+    public MoveStrategy getMoveStrategy() {
+        return moveStrategy;
     }
 
-    public void setMoveStrategyType(MoveStrategyType moveStrategyType) {
+    public void changeMoveStrategy(MoveStrategy moveStrategy, MoveController moveController) {
         if (DebugHelper.isDebugMoveStrategyChange()) {
-            LogHelper.logRobotMovement(robot, this.moveStrategyType + ": end");//end the old strategy
-            LogHelper.logRobotMovement(robot, moveStrategyType + ": begin");//begin the new strategy
+            LogHelper.logRobotMovement(robot, this.moveStrategy + ": end");//end the old strategy
+            LogHelper.logRobotMovement(robot, moveStrategy + ": begin");//begin the new strategy
         }
-        this.moveStrategyType = moveStrategyType;
+        this.moveStrategy = moveStrategy;
+        if (this.moveController instanceof ResetableMoveController){
+            ResetableMoveController oldMoveController = (ResetableMoveController) this.moveController;
+            oldMoveController.reset();
+        }
+        this.moveController = moveController;
     }
 
     public AdvancedRobot getRobot() {
         return robot;
     }
 
-    public boolean isAmong(MoveStrategyType... moveStrategies) {
-        for (MoveStrategyType strategy : moveStrategies) {
-            if (strategy == this.moveStrategyType) {
+    public boolean isAmong(MoveStrategy... moveStrategies) {
+        for (MoveStrategy strategy : moveStrategies) {
+            if (strategy == this.moveStrategy) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean isNotAmong(MoveStrategyType... moveStrategies) {
+    public boolean isNotAmong(MoveStrategy... moveStrategies) {
         return !isAmong(moveStrategies);
     }
 
-    public boolean hasLowerPriority(MoveStrategyType moveStrategyType) {
-        return this.moveStrategyType.getPriorty() < moveStrategyType.getPriorty();
+    public boolean hasLowerPriority(MoveStrategy moveStrategy) {
+        return this.moveStrategy.getPriority() < moveStrategy.getPriority();
     }
 
-    public boolean hasLowerOrEqualPriority(MoveStrategyType moveStrategyType) {
-        return this.moveStrategyType.getPriorty() <= moveStrategyType.getPriorty();
+    public boolean hasLowerOrEqualPriority(MoveStrategy moveStrategy) {
+        return this.moveStrategy.getPriority() <= moveStrategy.getPriority();
     }
 
-    public boolean hasLowerOrEqualPriorityButDifferentStrategy(MoveStrategyType moveStrategyType) {
-        boolean result = hasLowerOrEqualPriority(moveStrategyType) && moveStrategyType != this.moveStrategyType;
+    public boolean hasLowerOrEqualPriorityButDifferentStrategy(MoveStrategy moveStrategy) {
+        boolean result = hasLowerOrEqualPriority(moveStrategy) && moveStrategy != this.moveStrategy;
         return result;
     }
 

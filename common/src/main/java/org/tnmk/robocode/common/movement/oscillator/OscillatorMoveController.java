@@ -1,6 +1,7 @@
 package org.tnmk.robocode.common.movement.oscillator;
 
-import org.tnmk.robocode.common.movement.MoveStrategyType;
+import org.tnmk.robocode.common.movement.MoveController;
+import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
@@ -8,11 +9,11 @@ import robocode.ScannedRobotEvent;
 /**
  * @see OscillatorHelper
  */
-public class OscillatorMovement {
+public class OscillatorMoveController implements MoveController {
     private final AdvancedRobot robot;
     private final MovementContext movementContext;
 
-    public OscillatorMovement(AdvancedRobot robot, MovementContext movementContext) {
+    public OscillatorMoveController(AdvancedRobot robot, MovementContext movementContext) {
         this.robot = robot;
         this.movementContext = movementContext;
     }
@@ -22,8 +23,8 @@ public class OscillatorMovement {
      * @param enemyDistance     the distance between this robot and the target
      */
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent, int enemyDistance) {
-        if (movementContext.isNone() || movementContext.is(MoveStrategyType.OSCILLATOR)) {
-            movementContext.setMoveStrategyType(MoveStrategyType.OSCILLATOR);
+        if (movementContext.isNone() || movementContext.is(MoveStrategy.OSCILLATOR)) {
+            movementContext.changeMoveStrategy(MoveStrategy.OSCILLATOR, this);
             OscillatorHelper.setMovement(movementContext, scannedRobotEvent, Double.POSITIVE_INFINITY, enemyDistance);
         }
     }

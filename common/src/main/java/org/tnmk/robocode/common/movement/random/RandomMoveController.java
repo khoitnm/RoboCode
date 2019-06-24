@@ -16,7 +16,8 @@ import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
-import org.tnmk.robocode.common.movement.MoveStrategyType;
+import org.tnmk.robocode.common.movement.MoveController;
+import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
@@ -44,7 +45,7 @@ import robocode.ScannedRobotEvent;
  * --------------------------------------------------------------
  * FIXME sometimes my robot stay still for so long.
  */
-public class RandomMovement implements LoopableRun, OnScannedRobotControl {
+public class RandomMoveController implements MoveController, LoopableRun, OnScannedRobotControl {
     /**
      * Measure unit: pixel.
      */
@@ -66,7 +67,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
      * Some numbers for 1-on-1 vs. SuperSpinBotTest (1000 rounds):
      * 0.2 => win percentage: 61.5%
      * 0.3 => win percentage: 51.5%
-     *
+     * <p>
      * vs. BlackPearl:
      * 0.2 => win: 39.1%
      */
@@ -76,7 +77,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final MovementContext movementContext;
 
-    public RandomMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, MovementContext movementContext) {
+    public RandomMoveController(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, MovementContext movementContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
         this.movementContext = movementContext;
@@ -93,7 +94,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
          * They are just outside the range of our radar.
          */
         if (movementContext.isNone() && (robot.getTime() - estimateFinishTime) > 10) {
-            movementContext.setMoveStrategyType(MoveStrategyType.WANDERING);
+            movementContext.changeMoveStrategy(MoveStrategy.WANDERING, this);
             DebugHelper.debugMoveWandering(robot);
             startTime = robot.getTime();
             estimateFinishTime = startTime + Math.round(90d / Rules.MAX_VELOCITY);
@@ -104,7 +105,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
             robot.setTurnRight(Math.random() * 360);
             robot.setAhead(direction * 90);
         } else {
-            if (movementContext.is(MoveStrategyType.WANDERING) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
+            if (movementContext.is(MoveStrategy.WANDERING) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
                 movementContext.setNone();
             }
             DebugHelper.resetDebugMoveWandering(robot);
@@ -123,9 +124,9 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
 //            System.out.println("Enemy " + scannedRobotEvent.getName() + " fired " + isEnemyFired);
 //        }
 
-        if (movementContext.hasLowerPriority(MoveStrategyType.RANDOM)) {
-            if (!movementContext.is(MoveStrategyType.RANDOM)) {
-                movementContext.setMoveStrategyType(MoveStrategyType.RANDOM);
+        if (movementContext.hasLowerPriority(MoveStrategy.RANDOM)) {
+            if (!movementContext.is(MoveStrategy.RANDOM)) {
+                movementContext.changeMoveStrategy(MoveStrategy.RANDOM, this);
             }
             boolean isChangeMovement;
 
@@ -169,7 +170,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
                     movementContext.setNone();
                 }
             }
-        } else if (movementContext.is(MoveStrategyType.RANDOM) && robot.getTime() >= estimateFinishTime) {
+        } else if (movementContext.is(MoveStrategy.RANDOM) && robot.getTime() >= estimateFinishTime) {
             movementContext.setNone();
         }
     }

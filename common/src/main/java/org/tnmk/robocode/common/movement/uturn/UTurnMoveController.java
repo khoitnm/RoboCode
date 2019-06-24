@@ -6,13 +6,14 @@ import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import org.tnmk.robocode.common.movement.MoveTactic;
 import org.tnmk.robocode.common.movement.MovementContext;
+import org.tnmk.robocode.common.movement.ResetableMoveController;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import robocode.AdvancedRobot;
 import robocode.Rules;
 
-public class UTurnMovement implements LoopableRun {
+public class UTurnMoveController implements ResetableMoveController, LoopableRun {
     /**
-     * the maximum of ticks for applying this UTurnMovement.
+     * the maximum of ticks for applying this UTurnMoveController.
      */
     private static final long MAX_RUN_TICKS = 20;
     private static final double MIN_MAX_VELOCITY = 2.0d;
@@ -24,7 +25,7 @@ public class UTurnMovement implements LoopableRun {
     private long startTime = Long.MIN_VALUE;
     private Point2D destination = null;
 
-    public UTurnMovement(AdvancedRobot robot, MovementContext movementContext) {
+    public UTurnMoveController(AdvancedRobot robot, MovementContext movementContext) {
         this.robot = robot;
         this.movementContext = movementContext;
     }
@@ -56,7 +57,12 @@ public class UTurnMovement implements LoopableRun {
         }
     }
 
-    public void stopMovementTactic(){
+    @Override
+    public void reset() {
+        stopMovementTactic();
+    }
+
+    private void stopMovementTactic(){
         this.destination = null;
         this.startTime = Long.MIN_VALUE;
         this.robot.setMaxVelocity(Rules.MAX_VELOCITY);

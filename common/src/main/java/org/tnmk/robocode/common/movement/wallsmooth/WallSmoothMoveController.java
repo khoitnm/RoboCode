@@ -2,7 +2,8 @@ package org.tnmk.robocode.common.movement.wallsmooth;
 
 import org.tnmk.robocode.common.helper.MoveHelper;
 import org.tnmk.robocode.common.model.BattleField;
-import org.tnmk.robocode.common.movement.MoveStrategyType;
+import org.tnmk.robocode.common.movement.MoveController;
+import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.OnCustomEventControl;
@@ -10,12 +11,12 @@ import robocode.AdvancedRobot;
 import robocode.Condition;
 import robocode.CustomEvent;
 
-public class WallSmoothMovement implements OnCustomEventControl, InitiableRun {
+public class WallSmoothMoveController implements MoveController, OnCustomEventControl, InitiableRun {
     private final AdvancedRobot robot;
     private final MovementContext movementContext;
     private ShouldAvoidWallCondition shouldAvoidWallCondition = null;
 
-    public WallSmoothMovement(AdvancedRobot robot, MovementContext movementContext) {
+    public WallSmoothMoveController(AdvancedRobot robot, MovementContext movementContext) {
         this.robot = robot;
         this.movementContext = movementContext;
     }
@@ -25,7 +26,7 @@ public class WallSmoothMovement implements OnCustomEventControl, InitiableRun {
         Condition condition = customEvent.getCondition();
         if (condition instanceof ShouldAvoidWallCondition) {
             if (shouldApplyWallSmooth(movementContext)) {
-                movementContext.setMoveStrategyType(MoveStrategyType.WALL_SMOOTH);//WallSmooth movement will be reset by ShouldAvoidWallCondition.restMoveStrategyToNoneIfFinishWallSmooth
+                movementContext.changeMoveStrategy(MoveStrategy.WALL_SMOOTH, this);//WallSmooth movement will be reset by ShouldAvoidWallCondition.restMoveStrategyToNoneIfFinishWallSmooth
                 ShouldAvoidWallCondition shouldAvoidWallCondition = (ShouldAvoidWallCondition) condition;
                 double turnRightRadianToAvoidWall = shouldAvoidWallCondition.getTurnRightRadianToAvoidWall().orElseThrow(() -> new IllegalStateException("Should have turnRightRadian to avoid wall"));
                 robot.setTurnRightRadians(turnRightRadianToAvoidWall);
@@ -34,7 +35,7 @@ public class WallSmoothMovement implements OnCustomEventControl, InitiableRun {
     }
 
     private boolean shouldApplyWallSmooth(MovementContext movementContext){
-        return movementContext.hasLowerPriority(MoveStrategyType.WALL_SMOOTH);
+        return movementContext.hasLowerPriority(MoveStrategy.WALL_SMOOTH);
     }
 
     @Override

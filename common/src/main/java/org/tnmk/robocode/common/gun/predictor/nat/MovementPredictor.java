@@ -8,7 +8,7 @@ import robocode.Rules;
 import robocode.util.Utils;
 
 /**
- * http://robowiki.net/wiki/User:Nat/Free_code#Movement_Predictor Movement
+ * http://robowiki.net/wiki/User:Nat/Free_code#Movement_Predictor MoveController
  * Predictor, also known as Precise Predictor
  */
 public class MovementPredictor {

@@ -27,7 +27,7 @@ public class AgainstMoebiusAndOthersTest extends AbstractWinRateTest {
          * At 2019-06-16, The champion percentage when running 1000 rounds (matches):
          * - {@link PatternPredictionGun} and {@link GFTAimGun}: 66.1%
          *    After fixing bug in PatternPredictionGun(v.2.3.4): 69.5%.
-         *    RandomMovement (v2.4.0): 57.8%
+         *    RandomMoveController (v2.4.0): 57.8%
          *      Run 2000 rounds: win 62.05%, 58.5%
          * - {@link PatternPredictionGun} and {@link BlackPearlGun}: 50.3%
          *

@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.GeoMathUtils;
-import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
+import org.tnmk.robocode.common.movement.antigravity.AntiGravityMoveController;
 import robocode.AdvancedRobot;
 import robocode.HitRobotEvent;
 import robocode.Robot;
@@ -47,7 +47,7 @@ public class Move2DUtils {
      * If the destination at the opposite direction, the robot still continue the current direction and try to turn direction regularly, eventually, but not immediately.<br/>
      * It means the robot won't stop and reverse its direction to reach the destination in the shortest way.<br/>
      * <p/>
-     * However, it maybe very useful when using with {@link AntiGravityMovement}.<br/>
+     * However, it maybe very useful when using with {@link AntiGravityMoveController}.<br/>
      * View the reason in description of {@link #setMoveToDestinationWithShortestPath(AdvancedRobot, Point2D)} which try to reach the destination in the shortest direction.
      *
      * @param robot
@@ -65,7 +65,7 @@ public class Move2DUtils {
      * The robot will try to reach the destination as quick as possible.<br/>
      * If the destination at the opposite direction, the robot may stop, and reverse the movement direction.<br/>
      * <p/>
-     * One caveat of this moment is that when using it in {@link AntiGravityMovement}, the destination may be at the opposite direction with just a short distance.<br/>
+     * One caveat of this moment is that when using it in {@link AntiGravityMoveController}, the destination may be at the opposite direction with just a short distance.<br/>
      * In that case, robot just go back and forth in a short distance and become an easy victim.<br/>
      * To avoid that, we should use {@link #setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(AdvancedRobot, Point2D)} instead.<br/>
      *

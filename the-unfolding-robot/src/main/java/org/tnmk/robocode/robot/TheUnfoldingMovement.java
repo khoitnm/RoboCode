@@ -5,11 +5,11 @@ import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.movement.MovementContext;
-import org.tnmk.robocode.common.movement.antigravity.AntiGravityMovement;
-import org.tnmk.robocode.common.movement.oscillator.OscillatorMovement;
-import org.tnmk.robocode.common.movement.random.RandomMovement;
-import org.tnmk.robocode.common.movement.runaway.RunAwayMovement;
-import org.tnmk.robocode.common.movement.wallsmooth.WallSmoothMovement;
+import org.tnmk.robocode.common.movement.antigravity.AntiGravityMoveController;
+import org.tnmk.robocode.common.movement.oscillator.OscillatorMoveController;
+import org.tnmk.robocode.common.movement.random.RandomMoveController;
+import org.tnmk.robocode.common.movement.runaway.RunAwayMoveController;
+import org.tnmk.robocode.common.movement.wallsmooth.WallSmoothMoveController;
 import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.*;
@@ -23,57 +23,57 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final MovementContext movementContext;
 
-    private final WallSmoothMovement wallSmoothMovement;
-    private final RunAwayMovement runAwayMovement;
-    private final OscillatorMovement oscillatorMovement;
-    private final AntiGravityMovement antiGravityMovement;
-    private final RandomMovement randomMovement;
+    private final WallSmoothMoveController wallSmoothMoveController;
+    private final RunAwayMoveController runAwayMoveController;
+    private final OscillatorMoveController oscillatorMoveController;
+    private final AntiGravityMoveController antiGravityMoveController;
+    private final RandomMoveController randomMoveController;
 
     public TheUnfoldingMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
 
         movementContext = new MovementContext(robot);
-        oscillatorMovement = new OscillatorMovement(robot, movementContext);
-        antiGravityMovement = new AntiGravityMovement(robot, allEnemiesObservationContext, movementContext);
-        runAwayMovement = new RunAwayMovement(robot, movementContext);
-        wallSmoothMovement = new WallSmoothMovement(robot, movementContext);
-        randomMovement = new RandomMovement(robot, allEnemiesObservationContext, movementContext);
+        oscillatorMoveController = new OscillatorMoveController(robot, movementContext);
+        antiGravityMoveController = new AntiGravityMoveController(robot, allEnemiesObservationContext, movementContext);
+        runAwayMoveController = new RunAwayMoveController(robot, movementContext);
+        wallSmoothMoveController = new WallSmoothMoveController(robot, movementContext);
+        randomMoveController = new RandomMoveController(robot, allEnemiesObservationContext, movementContext);
     }
 
     @Override
     public void runInit() {
-        antiGravityMovement.runInit();
-        wallSmoothMovement.runInit();
+        antiGravityMoveController.runInit();
+        wallSmoothMoveController.runInit();
     }
 
     @Override
     public void runLoop() {
-        antiGravityMovement.runLoop();
-        randomMovement.runLoop();
-        runAwayMovement.runLoop();
+        antiGravityMoveController.runLoop();
+        randomMoveController.runLoop();
+        runAwayMoveController.runLoop();
     }
 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
         int totalExistingEnemies = robot.getOthers();
         if (totalExistingEnemies <= 1) {
-            randomMovement.onScannedRobot(scannedRobotEvent);
+            randomMoveController.onScannedRobot(scannedRobotEvent);
 //            moveOscillatorWithIdealDistance(scannedRobotEvent);
         } else {
-            antiGravityMovement.onScannedRobot(scannedRobotEvent);
+            antiGravityMoveController.onScannedRobot(scannedRobotEvent);
         }
     }
 
 
     @Override
     public void onHitRobot(HitRobotEvent hitRobotEvent) {
-        runAwayMovement.onHitRobot(hitRobotEvent);
+        runAwayMoveController.onHitRobot(hitRobotEvent);
     }
 
     private void moveOscillatorWithIdealDistance(ScannedRobotEvent scannedRobotEvent) {
         int enemyDistance = (int) calculateSuitableEnemyDistance(IDEAL_ENEMY_OSCILLATOR_DISTANCE);
-        oscillatorMovement.onScannedRobot(scannedRobotEvent, enemyDistance);
+        oscillatorMoveController.onScannedRobot(scannedRobotEvent, enemyDistance);
     }
 
     private double calculateSuitableEnemyDistance(double idealDistance) {
@@ -106,7 +106,7 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
             int direction = GeoMathUtils.sign(statusEvent.getStatus().getDistanceRemaining());
             if (direction != movementContext.getDirection()) {
                 if (DebugHelper.isDebugMoveDirection()) {
-                    LogHelper.logRobotMovement(robot, "Update move direction: moveStrategy: " + movementContext.getMoveStrategyType() + ", newDirection: " + direction);
+                    LogHelper.logRobotMovement(robot, "Update move direction: moveStrategy: " + movementContext.getMoveStrategy() + ", newDirection: " + direction);
                 }
                 movementContext.setDirection(direction);
             }
@@ -116,11 +116,11 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
     }
 
     public void onHitWall(HitWallEvent hitWallEvent) {
-        runAwayMovement.onHitWall(hitWallEvent);
+        runAwayMoveController.onHitWall(hitWallEvent);
     }
 
     @Override
     public void onCustomEvent(CustomEvent customEvent) {
-        wallSmoothMovement.onCustomEvent(customEvent);
+        wallSmoothMoveController.onCustomEvent(customEvent);
     }
 }

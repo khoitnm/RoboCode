@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.movement;
 
-public enum MoveStrategyType {
+public enum MoveStrategy {
     /**
      * Not specific strategy.
      */
@@ -10,8 +10,8 @@ public enum MoveStrategyType {
      * This strategy is avoiding hitting wall. While {@link #RUN_AWAY_FROM_WALL} is already hit wall, but it try to run away from that wall.
      * <p/>
      * With {@link #WALL_SMOOTH}, most of the time we won't hit wall anymore.<br/>
-     * The only time we can hit a wall is executing {@link MoveStrategyType#RUN_AWAY_FROM_ENEMIES}.<br/>
-     * Anyway, we still need both {@link MoveStrategyType#RUN_AWAY_FROM_ENEMIES} and {@link MoveStrategyType#RUN_AWAY_FROM_WALL}<br/>
+     * The only time we can hit a wall is executing {@link MoveStrategy#RUN_AWAY_FROM_ENEMIES}.<br/>
+     * Anyway, we still need both {@link MoveStrategy#RUN_AWAY_FROM_ENEMIES} and {@link MoveStrategy#RUN_AWAY_FROM_WALL}<br/>
      */
     WALL_SMOOTH(1000),
 
@@ -31,13 +31,13 @@ public enum MoveStrategyType {
     /**
      * The higher the number is, the higher priority is.
      */
-    private final int priorty;
+    private final int priority;
 
-    MoveStrategyType(int priorty) {
-        this.priorty = priorty;
+    MoveStrategy(int priority) {
+        this.priority = priority;
     }
 
-    public int getPriorty() {
-        return priorty;
+    public int getPriority() {
+        return priority;
     }
 }
