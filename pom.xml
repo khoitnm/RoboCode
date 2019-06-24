@@ -60,7 +60,7 @@
                 <version>1.9.3.6</version>
                 <scope>system</scope>
                 <!-- D:/SourceCode/RoboCode/robocode is the folder you setup your robocode -->
-                <systemPath>D:/SourceCode/RoboCode/robocode/libs/robocode.jar</systemPath>
+                <systemPath>/home/kevintran/SourceCode/Personal/RoboCode/robocode/libs/robocode.jar</systemPath>
             </dependency>
             <!-- Used by robocode.control.test -->
             <dependency>
