@@ -33,6 +33,8 @@ My two main robots are:
 
 ## Robot Guideline
 ### Steps to run the current robots inside my project (`The Unfolding Robot` or `Briareos`):
+The RoboCode's library could not be found in remote Maven repository, hence we have to add that library into our local Maven repository by the following steps: 
+
 In the root `pom.xml` file, update the file path point to the RoboCode's libraries:
 You'll see a dependency like this:
 ```
