@@ -1,6 +1,6 @@
 package org.tnmk.robocode.common.movement.oscillator;
 
-import org.tnmk.robocode.common.movement.MoveStrategy;
+import org.tnmk.robocode.common.movement.MoveStrategyType;
 import org.tnmk.robocode.common.movement.MovementContext;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
@@ -22,8 +22,8 @@ public class OscillatorMovement {
      * @param enemyDistance     the distance between this robot and the target
      */
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent, int enemyDistance) {
-        if (movementContext.isNone() || movementContext.is(MoveStrategy.OSCILLATOR)) {
-            movementContext.setMoveStrategy(MoveStrategy.OSCILLATOR);
+        if (movementContext.isNone() || movementContext.is(MoveStrategyType.OSCILLATOR)) {
+            movementContext.setMoveStrategyType(MoveStrategyType.OSCILLATOR);
             OscillatorHelper.setMovement(movementContext, scannedRobotEvent, Double.POSITIVE_INFINITY, enemyDistance);
         }
     }

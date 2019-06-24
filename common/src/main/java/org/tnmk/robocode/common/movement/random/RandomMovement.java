@@ -16,7 +16,7 @@ import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
-import org.tnmk.robocode.common.movement.MoveStrategy;
+import org.tnmk.robocode.common.movement.MoveStrategyType;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
@@ -93,7 +93,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
          * They are just outside the range of our radar.
          */
         if (movementContext.isNone() && (robot.getTime() - estimateFinishTime) > 10) {
-            movementContext.setMoveStrategy(MoveStrategy.WANDERING);
+            movementContext.setMoveStrategyType(MoveStrategyType.WANDERING);
             DebugHelper.debugMoveWandering(robot);
             startTime = robot.getTime();
             estimateFinishTime = startTime + Math.round(90d / Rules.MAX_VELOCITY);
@@ -104,7 +104,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
             robot.setTurnRight(Math.random() * 360);
             robot.setAhead(direction * 90);
         } else {
-            if (movementContext.is(MoveStrategy.WANDERING) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
+            if (movementContext.is(MoveStrategyType.WANDERING) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
                 movementContext.setNone();
             }
             DebugHelper.resetDebugMoveWandering(robot);
@@ -123,9 +123,9 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
 //            System.out.println("Enemy " + scannedRobotEvent.getName() + " fired " + isEnemyFired);
 //        }
 
-        if (movementContext.hasLowerPriority(MoveStrategy.RANDOM)) {
-            if (!movementContext.is(MoveStrategy.RANDOM)) {
-                movementContext.setMoveStrategy(MoveStrategy.RANDOM);
+        if (movementContext.hasLowerPriority(MoveStrategyType.RANDOM)) {
+            if (!movementContext.is(MoveStrategyType.RANDOM)) {
+                movementContext.setMoveStrategyType(MoveStrategyType.RANDOM);
             }
             boolean isChangeMovement;
 
@@ -169,7 +169,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
                     movementContext.setNone();
                 }
             }
-        } else if (movementContext.is(MoveStrategy.RANDOM) && robot.getTime() >= estimateFinishTime) {
+        } else if (movementContext.is(MoveStrategyType.RANDOM) && robot.getTime() >= estimateFinishTime) {
             movementContext.setNone();
         }
     }

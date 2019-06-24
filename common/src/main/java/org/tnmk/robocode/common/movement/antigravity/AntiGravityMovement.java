@@ -9,7 +9,7 @@ import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
-import org.tnmk.robocode.common.movement.MoveStrategy;
+import org.tnmk.robocode.common.movement.MoveStrategyType;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.uturn.UTurnMovement;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
@@ -99,9 +99,9 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl,
 
         //debugWhenFinalDestinationOutsideSafeArea(robot, robotPosition, destination, finalDestination, calculationContext.getSafeMovementArea());
 
-        if (movementContext.isNone() || movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
+        if (movementContext.isNone() || movementContext.is(MoveStrategyType.ANTI_GRAVITY)) {
             AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
-            movementContext.setMoveStrategy(MoveStrategy.ANTI_GRAVITY);
+            movementContext.setMoveStrategyType(MoveStrategyType.ANTI_GRAVITY);
 
             if (GeoMathUtils.checkInsideRectangle(finalDestination, calculationContext.getSafeMovementArea())) {
                 Move2DUtils.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
@@ -236,7 +236,7 @@ public class AntiGravityMovement implements InitiableRun, OnScannedRobotControl,
 
     @Override
     public void runLoop() {
-        if (movementContext.is(MoveStrategy.ANTI_GRAVITY)){
+        if (movementContext.is(MoveStrategyType.ANTI_GRAVITY)){
             uTurnMovement.runLoop();
         }
     }

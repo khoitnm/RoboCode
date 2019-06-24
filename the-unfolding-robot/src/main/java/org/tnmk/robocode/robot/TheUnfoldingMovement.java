@@ -106,7 +106,7 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
             int direction = GeoMathUtils.sign(statusEvent.getStatus().getDistanceRemaining());
             if (direction != movementContext.getDirection()) {
                 if (DebugHelper.isDebugMoveDirection()) {
-                    LogHelper.logRobotMovement(robot, "Update move direction: moveStrategy: " + movementContext.getMoveStrategy() + ", newDirection: " + direction);
+                    LogHelper.logRobotMovement(robot, "Update move direction: moveStrategy: " + movementContext.getMoveStrategyType() + ", newDirection: " + direction);
                 }
                 movementContext.setDirection(direction);
             }

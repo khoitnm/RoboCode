@@ -8,14 +8,14 @@ import robocode.AdvancedRobot;
 import robocode.StatusEvent;
 
 /**
- * The context to manage {@link MoveStrategy}.<br/>
+ * The context to manage {@link MoveStrategyType}.<br/>
  * This class help us to know which movement strategy is using.
  * <p/>
  * This object should be managed by some composition movement class such as TheUnfoldingMovement.
  */
 public class MovementContext {
     private final AdvancedRobot robot;
-    private MoveStrategy moveStrategy = MoveStrategy.NONE;
+    private MoveStrategyType moveStrategyType = MoveStrategyType.NONE;
     private MoveTactic moveTactic = MoveTactic.NONE;
     private Movement movement = null;
     /**
@@ -36,26 +36,26 @@ public class MovementContext {
     }
 
     /**
-     * Set moveStrategy is {@link MoveStrategy#NONE}
+     * Set moveStrategyType is {@link MoveStrategyType#NONE}
      */
     public void setNone() {
-        /** Don't directly set strategy to NONE because we may already has some debugging statements inside {@link #setMoveStrategy(MoveStrategy)} */
-        setMoveStrategy(MoveStrategy.NONE);
+        /** Don't directly set strategy to NONE because we may already has some debugging statements inside {@link #setMoveStrategyType(MoveStrategyType)} */
+        setMoveStrategyType(MoveStrategyType.NONE);
     }
 
     /**
      * @return Check if no special movement type
      */
     public boolean isNone() {
-        return moveStrategy == null || moveStrategy == MoveStrategy.NONE;
+        return moveStrategyType == null || moveStrategyType == MoveStrategyType.NONE;
     }
 
     /**
-     * @param moveStrategy
-     * @return check if the current moveType is equals to moveStrategy
+     * @param moveStrategyType
+     * @return check if the current moveType is equals to moveStrategyType
      */
-    public boolean is(MoveStrategy moveStrategy) {
-        return this.moveStrategy == moveStrategy;
+    public boolean is(MoveStrategyType moveStrategyType) {
+        return this.moveStrategyType == moveStrategyType;
     }
 
     public void reverseDirection() {
@@ -78,45 +78,45 @@ public class MovementContext {
         }
     }
 
-    public MoveStrategy getMoveStrategy() {
-        return moveStrategy;
+    public MoveStrategyType getMoveStrategyType() {
+        return moveStrategyType;
     }
 
-    public void setMoveStrategy(MoveStrategy moveStrategy) {
+    public void setMoveStrategyType(MoveStrategyType moveStrategyType) {
         if (DebugHelper.isDebugMoveStrategyChange()) {
-            LogHelper.logRobotMovement(robot, this.moveStrategy + ": end");//end the old strategy
-            LogHelper.logRobotMovement(robot, moveStrategy + ": begin");//begin the new strategy
+            LogHelper.logRobotMovement(robot, this.moveStrategyType + ": end");//end the old strategy
+            LogHelper.logRobotMovement(robot, moveStrategyType + ": begin");//begin the new strategy
         }
-        this.moveStrategy = moveStrategy;
+        this.moveStrategyType = moveStrategyType;
     }
 
     public AdvancedRobot getRobot() {
         return robot;
     }
 
-    public boolean isAmong(MoveStrategy... moveStrategies) {
-        for (MoveStrategy strategy : moveStrategies) {
-            if (strategy == this.moveStrategy) {
+    public boolean isAmong(MoveStrategyType... moveStrategies) {
+        for (MoveStrategyType strategy : moveStrategies) {
+            if (strategy == this.moveStrategyType) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean isNotAmong(MoveStrategy... moveStrategies) {
+    public boolean isNotAmong(MoveStrategyType... moveStrategies) {
         return !isAmong(moveStrategies);
     }
 
-    public boolean hasLowerPriority(MoveStrategy moveStrategy) {
-        return this.moveStrategy.getPriorty() < moveStrategy.getPriorty();
+    public boolean hasLowerPriority(MoveStrategyType moveStrategyType) {
+        return this.moveStrategyType.getPriorty() < moveStrategyType.getPriorty();
     }
 
-    public boolean hasLowerOrEqualPriority(MoveStrategy moveStrategy) {
-        return this.moveStrategy.getPriorty() <= moveStrategy.getPriorty();
+    public boolean hasLowerOrEqualPriority(MoveStrategyType moveStrategyType) {
+        return this.moveStrategyType.getPriorty() <= moveStrategyType.getPriorty();
     }
 
-    public boolean hasLowerOrEqualPriorityButDifferentStrategy(MoveStrategy moveStrategy) {
-        boolean result = hasLowerOrEqualPriority(moveStrategy) && moveStrategy != this.moveStrategy;
+    public boolean hasLowerOrEqualPriorityButDifferentStrategy(MoveStrategyType moveStrategyType) {
+        boolean result = hasLowerOrEqualPriority(moveStrategyType) && moveStrategyType != this.moveStrategyType;
         return result;
     }
 

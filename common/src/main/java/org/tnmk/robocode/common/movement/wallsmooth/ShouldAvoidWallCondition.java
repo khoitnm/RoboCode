@@ -9,7 +9,7 @@ import org.tnmk.robocode.common.helper.WallSmoothHelper;
 import org.tnmk.robocode.common.model.Area;
 import org.tnmk.robocode.common.model.BaseRobotState;
 import org.tnmk.robocode.common.model.BattleField;
-import org.tnmk.robocode.common.movement.MoveStrategy;
+import org.tnmk.robocode.common.movement.MoveStrategyType;
 import org.tnmk.robocode.common.movement.MovementContext;
 import robocode.AdvancedRobot;
 import robocode.Condition;
@@ -57,7 +57,7 @@ public class ShouldAvoidWallCondition extends Condition {
      */
     private void restMoveStrategyToNoneIfFinishWallSmooth(boolean needAvoidWall) {
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
-        if (movementContext.is(MoveStrategy.WALL_SMOOTH)) {//If moving with other strategy, don't reset it.
+        if (movementContext.is(MoveStrategyType.WALL_SMOOTH)) {//If moving with other strategy, don't reset it.
             if (GeoMathUtils.checkInsideRectangle(robotPosition, safeAreaRect) && !needAvoidWall) {
                 movementContext.setNone();
             }

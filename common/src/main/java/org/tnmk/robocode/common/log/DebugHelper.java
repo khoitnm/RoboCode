@@ -59,7 +59,7 @@ public class DebugHelper {
 
     public static void debugStateMoveStrategy(AdvancedRobot robot, MovementContext movementContext) {
         if (isDebugMoveStrategyState()) {
-            LogHelper.logRobotMovement(robot, "moveStrategy: " + movementContext.getMoveStrategy());
+            LogHelper.logRobotMovement(robot, "moveStrategy: " + movementContext.getMoveStrategyType());
         }
     }
 
