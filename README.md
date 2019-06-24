@@ -30,22 +30,37 @@ My two main robots are:
     - One-on-One: Oscillator: run perpendicular with enemy.   
     - Wall-smooth: In any case, if near the wall, use Wall-smooth: reuse the code of Briareos.
     - Hitting wall or Enemies: In any case, if hit walls or enemies, reverse direction and turn 90 degree (to avoid back-and-forth stuck).
-# Terms
-## Overview
-- Source: our robot
-- Target: other robot which is scanned by radar.
-- Aimed position: the position when finishing aiming.
-- Fired position: the position when bullet hit target.
-- Velocity: negative & positive speed.
-- Speed: = Abs(velocity) (always positive)
-- Direction (Heading): negative & positive angle.
-- MoveAngle: = Abs(heading) (always positive)
-
-## Actions 
-StandStill -> Start Aim -> Aimed (Finsh aiming) -> Start Fire -> Fired (Finished firing == bullet hit target)
 
 ## Robot Guideline
-### Prerequisite steps to run your robot
+### Steps to run the current robots inside my project (`The Unfolding Robot` or `Briareos`):
+In the root `pom.xml` file, update the file path point to the RoboCode's libraries:
+You'll see a dependency like this:
+```
+<dependency>
+    <groupId>net.sf.robocode</groupId>
+    <artifactId>robocode.api</artifactId>
+    <version>1.9.3.6</version>
+    <scope>system</scope>
+    <!-- D:/SourceCode/RoboCode/robocode is the folder you setup your robocode -->
+    <systemPath>D:/SourceCode/RoboCode/robocode/libs/robocode.jar</systemPath>
+</dependency>
+```
+So change the `D:/SourceCode/RoboCode/robocode` to the folder path where you installed your RoboCode game.
+
+#### In Eclipse
+http://robowiki.net/wiki/Robocode/Running_from_Eclipse
+
+#### In Intellij
+In Intellij > on the menu bar > Run > Edit Configurations
+    ![Alt text](docs/images/SetUpYourRobotInIntelliJ.png?raw=true "Edit Configurations")
+
+Then run your application:
+At this time, when you starting a battle, you won't see your robot because you haven't imported it into the game yet. To do that, follow these steps:
+In RoboCode game:
+ - On the menu bar > Options > Preferences > Development Options: Add the path to the folder storing your robot's build classes: for example: `$YOUR_ROBOTS_PROJECT_FOLDER/the-unfolding-robot/target/classes`
+ - Now, starting a new battle (menu bar > Battle > New), you will see your robot.
+
+### Prerequisite steps to run your new robot
 - http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Project
 - http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Robot
 - http://robowiki.net/wiki/Robocode/Add_a_Robot_Project
