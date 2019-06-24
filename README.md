@@ -11,13 +11,13 @@ My two main robots are:
   - Gun: Use my own implementation. After that, I realized that the idea is similar to Waves algorithm.
   - Movement: 
     - Just random moving in the same direction. 
-    - Wall-smooth: implemented by myself. The code is huge, but it works nicely. May need huge refactor.
+    - Wall-smooth: implemented by myself. The code is huge, but it works nicely. May need huge refactor, so I won't, lol!!!
     - Hitting wall or Enemies: reverse direction
 
 2. <strong>TheUnfoldingRobot</strong> (implemented 2019):
   - My advanced robot compare to Briareos.
     I named it after reading the book "Reinventing Organizations": the robot is on the journey of unfolding itself.
-  - In general, it will behave differently when 1-on-1 and melee (battle with many bots). It combine different strategies for Radar, Gun and Movement differently depend on the situations.
+  - In general, it will behave differently when 1-on-1 and melee (battle with many bots). It combine strategies for Radar, Gun and Movement differently depend on the situations.
   - Radar: 
     - Melee: Optimal Scan (just scan area with enemies, don't scan redundant areas)
     - One-on-One: Lock radar to the enemy.
@@ -25,27 +25,43 @@ My two main robots are:
   - Movement:
     - Melee:
       - Anti-Gravity movement: 
-        - When near the walls: run directly to the destination point.
-        - In safe area (far away from the walls): run smoothly without changing direction (but it does turn angle heading) to reach the destination. The path may longer but it can avoid being stuck at some small area.
-    - One-on-One: Oscillator: run perpendicular with enemy.   
-    - Wall-smooth: In any case, if near the wall, use Wall-smooth: reuse the code of Briareos.
-    - Hitting wall or Enemies: In any case, if hit walls or enemies, reverse direction and turn 90 degree (to avoid back-and-forth stuck).
-# Terms
-## Overview
-- Source: our robot
-- Target: other robot which is scanned by radar.
-- Aimed position: the position when finishing aiming.
-- Fired position: the position when bullet hit target.
-- Velocity: negative & positive speed.
-- Speed: = Abs(velocity) (always positive)
-- Direction (Heading): negative & positive angle.
-- MoveAngle: = Abs(heading) (always positive)
-
-## Actions 
-StandStill -> Start Aim -> Aimed (Finsh aiming) -> Start Fire -> Fired (Finished firing == bullet hit target)
+        - When near the walls: it will run to the destination point in the shortest way (turn the body with the shortest angle, reverse the movement direction if necessary).
+        - In safe area (far away from the walls):  to reach a destination, it runs smoothly without reversing the movement direction, the turning angle can be large. The path may longer but it can avoid being stuck at moving in a small area.
+    - One-on-One: Apply Oscillator movement which is running perpendicular with enemy.   
+    - Wall-smooth: In any case, if it's near the wall, run smoothly to avoid the wall without reversing the movement direction, just change the movement angle: reuse the code of Briareos.
+    - Hitting wall or Enemies: In any case, if it hits walls or enemies, reverse direction and turn 90 degree (to avoid back-and-forth stuck).
 
 ## Robot Guideline
-### Prerequisite steps to run your robot
+### Steps to run the current robots inside my project (`The Unfolding Robot` or `Briareos`):
+The RoboCode's library could not be found in remote Maven repository, hence we have to add that library into our local Maven repository by the following steps: 
+
+In the root `pom.xml` file, you'll see a dependency like this:
+```
+<dependency>
+    <groupId>net.sf.robocode</groupId>
+    <artifactId>robocode.api</artifactId>
+    <version>1.9.3.6</version>
+    <scope>system</scope>
+    <!-- D:/SourceCode/RoboCode/robocode is the folder you setup your robocode -->
+    <systemPath>D:/SourceCode/RoboCode/robocode/libs/robocode.jar</systemPath>
+</dependency>
+```
+Then change the `D:/SourceCode/RoboCode/robocode` to the folder path where you installed your RoboCode game.
+
+#### In Eclipse
+http://robowiki.net/wiki/Robocode/Running_from_Eclipse
+
+#### In Intellij
+In Intellij > on the menu bar > Run > Edit Configurations
+    ![Alt text](docs/images/SetUpYourRobotInIntelliJ.png?raw=true "Edit Configurations")
+
+Then run your application:
+At this time, when you starting a battle, you won't see your robot because you haven't imported it into the game yet. To do that, follow these steps:
+In RoboCode game:
+ - On the menu bar > Options > Preferences > Development Options: Add the path to the folder storing your robot's build classes: for example: `$YOUR_ROBOTS_PROJECT_FOLDER/the-unfolding-robot/target/classes`
+ - Now, starting a new battle (menu bar > Battle > New), you will see your robot.
+
+### Prerequisite steps to run your new robot
 - http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Project
 - http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Robot
 - http://robowiki.net/wiki/Robocode/Add_a_Robot_Project
