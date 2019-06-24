@@ -28,7 +28,7 @@ My two main robots are:
         - When near the walls: it will run to the destination point in the shortest way (turn the body with the shortest angle, reverse the movement direction if necessary).
         - In safe area (far away from the walls):  to reach a destination, it runs smoothly without reversing the movement direction, the turning angle can be large. The path may longer but it can avoid being stuck at moving in a small area.
     - One-on-One: Apply Oscillator movement which is running perpendicular with enemy.   
-    - Wall-smooth: In any case, if it's near the wall, use Wall-smooth: reuse the code of Briareos.
+    - Wall-smooth: In any case, if it's near the wall, run smoothly to avoid the wall without reversing the movement direction, just change the movement angle: reuse the code of Briareos.
     - Hitting wall or Enemies: In any case, if it hits walls or enemies, reverse direction and turn 90 degree (to avoid back-and-forth stuck).
 
 ## Robot Guideline
