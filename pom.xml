@@ -18,6 +18,9 @@
     <packaging>pom</packaging>
 
     <properties>
+        <!-- This is the folder you setup your robocode -->
+        <robocode.home.folder>D:/SourceCode/RoboCode/robocode</robocode.home.folder>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
@@ -59,8 +62,7 @@
                 <artifactId>robocode.api</artifactId>
                 <version>1.9.3.6</version>
                 <scope>system</scope>
-                <!-- D:/SourceCode/RoboCode/robocode is the folder you setup your robocode -->
-                <systemPath>/home/kevintran/SourceCode/Personal/RoboCode/robocode/libs/robocode.jar</systemPath>
+                <systemPath>${robocode.home.folder}/libs/robocode.jar</systemPath>
             </dependency>
             <!-- Used by robocode.control.test -->
             <dependency>
