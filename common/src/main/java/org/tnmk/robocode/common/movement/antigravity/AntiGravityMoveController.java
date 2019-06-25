@@ -44,8 +44,7 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
     private final MovementContext movementContext;
     private AntiGravityCalculationContext calculationContext;
 
-    private static final long MAX_RUN_TICKS_BEFORE_CHANGE_DESTINATION = 30;
-    private static final long MIN_RUN_TICKS_BEFORE_CHANGE_DESTINATION = 15;
+    private static final long MIN_RUN_TICKS_BEFORE_CHANGE_DESTINATION = 30;
 
     private final UTurnMoveController uTurnMoveController;
 

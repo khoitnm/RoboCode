@@ -72,6 +72,7 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
      * 0.2 => win: 39.1%
      */
     private static final double EXCLUDE_CLOSET_POINT_PERCENTAGE = 0.2d;
+    private static final double WANDER_DISTANCE = 150;
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
@@ -103,7 +104,7 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
                 direction = -1;
             }
             robot.setTurnRight(Math.random() * 360);
-            robot.setAhead(direction * 90);
+            robot.setAhead(direction * WANDER_DISTANCE);
         } else {
             if (movementContext.is(MoveStrategy.WANDERING) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
                 movementContext.setNone();
