@@ -47,11 +47,11 @@ public class ShouldAvoidWallCondition extends Condition {
     }
 
     /**
-     * WallSmooth Strategy will be set in {@link WallSmoothMovement}.<br/>
+     * WallSmooth Strategy will be set in {@link WallSmoothMoveController}.<br/>
      * But this class will handle resetting movementStrategy to {@link MovementContext#setNone()}
      * <p/>
      * TODO I know the code design is not good. Will improve later.
-     *      One way to handle that is continously updating needAvoidWall value into MovementContext, and let {@link WallSmoothMovement} handle it.
+     *      One way to handle that is continously updating needAvoidWall value into MovementContext, and let {@link WallSmoothMoveController} handle it.
      * <p/>
      * @param needAvoidWall the result of calculating should avoid wall smooth.
      */

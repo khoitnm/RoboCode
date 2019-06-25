@@ -5,7 +5,7 @@ import robocode.*;
 
 // GouldingiHT - Small, hard to catch and with sharp teeth.
 // Targeting, from Gouldingi, by PEZ
-// Movement, from FloodMicro, by Kawigi
+// MoveController, from FloodMicro, by Kawigi
 //
 // GouldingiHT is open source under GPL-like conditions. Meaning you can use
 // the code. Meaning you should feel obliged to share any improvements you do

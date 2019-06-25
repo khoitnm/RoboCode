@@ -33,20 +33,13 @@ My two main robots are:
 
 ## Robot Guideline
 ### Steps to run the current robots inside my project (`The Unfolding Robot` or `Briareos`):
-The RoboCode's library could not be found in remote Maven repository, hence we have to add that library into our local Maven repository by the following steps: 
+The RoboCode's library could not be found in remote Maven repository, hence we have to add that library (which is stored in RoboCode game's `./libs` folder) into our local Maven repository by the following steps: 
 
-In the root `pom.xml` file, you'll see a dependency like this:
+In the root `pom.xml` file, change the home folder where you installed your RoboCode game:
 ```
-<dependency>
-    <groupId>net.sf.robocode</groupId>
-    <artifactId>robocode.api</artifactId>
-    <version>1.9.3.6</version>
-    <scope>system</scope>
-    <!-- D:/SourceCode/RoboCode/robocode is the folder you setup your robocode -->
-    <systemPath>D:/SourceCode/RoboCode/robocode/libs/robocode.jar</systemPath>
-</dependency>
+<!-- This is the folder you setup your robocode -->
+<robocode.home.folder>D:/SourceCode/RoboCode/robocode</robocode.home.folder>
 ```
-Then change the `D:/SourceCode/RoboCode/robocode` to the folder path where you installed your RoboCode game.
 
 #### In Eclipse
 http://robowiki.net/wiki/Robocode/Running_from_Eclipse

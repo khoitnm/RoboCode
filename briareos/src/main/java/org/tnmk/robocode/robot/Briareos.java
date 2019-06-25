@@ -23,7 +23,7 @@ import robocode.ScannedRobotEvent;
  * Briareos Hecatonchires: an character in Appleseed Anime movie. He's very similar to Outlander (from Outlands soundtrack in Tron Legacy movie)
  * <p/>
  * This robot use my own algorithm for movement, aim and fire bullets which pretty effective (2015)<br/>
- * - Movement: random movement, wall smooth, try to close-down enemy, but not too close, reverse direction when hit an enemy.<br/>
+ * - MoveController: random movement, wall smooth, try to close-down enemy, but not too close, reverse direction when hit an enemy.<br/>
  * - Aim and Fire: when implementing this, I didn't aware that my algorithm was actually very similar to Waving.<br/>
  * <p/>
  * The code is quite complicated and not easy to maintain. I just want to keep it as it is to look back and see how good it was back then.

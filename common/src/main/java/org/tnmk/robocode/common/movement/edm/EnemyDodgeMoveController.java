@@ -1,6 +1,7 @@
 package org.tnmk.robocode.common.movement.edm;
 
 import org.tnmk.robocode.common.helper.Move2DUtils;
+import org.tnmk.robocode.common.movement.MoveController;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
@@ -11,7 +12,7 @@ import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class EnemyDodgeMovement implements InitiableRun, OnScannedRobotControl {
+public class EnemyDodgeMoveController implements MoveController, InitiableRun, OnScannedRobotControl {
     private final AdvancedRobot robot;
     private final EDMHelper edmHelper;
     /**
@@ -23,14 +24,14 @@ public class EnemyDodgeMovement implements InitiableRun, OnScannedRobotControl {
      * @param robot
      * @param allEnemiesObservationContext data inside here should be gather by some radar logic.
      */
-    public EnemyDodgeMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
+    public EnemyDodgeMoveController(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
 
         this.edmHelper = new EDMHelper(robot);
     }
 
-    public void runInit(){
+    public void runInit() {
         this.edmHelper.runInit();
     }
 

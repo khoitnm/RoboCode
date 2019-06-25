@@ -68,7 +68,7 @@ public class BlackPearl extends AdvancedRobot {
 		double firePower = (distanceIndex <=1 ? 3.0 : 1.9);
 		//double firePower = (getEnergy() > 0 ? 3.0 : 0);
 
-		//Movement 		
+		//MoveController
 		//This is an adaptation from Raiko. If you can't beat 'em, join 'em		
 		double distDelta = 0.02 + Math.PI/2 + (e.getDistance() > 400 ? -.1 : .5);
 		double theta = 0.5952*bulletV(eLastShot)/eDistance;

@@ -34,7 +34,7 @@ public class RobotPhysics {
      */
     public static final double ROBOT_TICKS_TO_STOP_FROM_FULL_SPEED = 5;
     /**
-     * When a robot at full speed, the distance for it to stop is 20
+     * When a robot at full speed, the distance for it to reset is 20
      * velocity from 8 -> 6 -> 4 -> 2 -> 0: distance 20
      */
     public static final double ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED = 20;

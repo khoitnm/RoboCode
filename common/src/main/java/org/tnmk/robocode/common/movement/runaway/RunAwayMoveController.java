@@ -2,8 +2,10 @@ package org.tnmk.robocode.common.movement.runaway;
 
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.log.LogHelper;
+import org.tnmk.robocode.common.movement.MoveController;
 import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
+import org.tnmk.robocode.common.movement.wallsmooth.WallSmoothMoveController;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnHitRobotControl;
 import org.tnmk.robocode.common.robot.OnHitWallControl;
@@ -13,14 +15,14 @@ import robocode.HitWallEvent;
 
 /**
  * Run away from wall & enemies.
- * Note: with {@link org.tnmk.robocode.common.movement.wallsmooth.WallSmoothMovement}, only time we can hit a wall is executing {@link MoveStrategy#RUN_AWAY_FROM_ENEMIES}.
+ * Note: with {@link WallSmoothMoveController}, only time we can hit a wall is executing {@link MoveStrategy#RUN_AWAY_FROM_ENEMIES}.
  * Anyway, we still need both {@link MoveStrategy#RUN_AWAY_FROM_ENEMIES} and {@link MoveStrategy#RUN_AWAY_FROM_WALL}
  */
-public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWallControl {
+public class RunAwayMoveController implements MoveController, OnHitRobotControl, LoopableRun, OnHitWallControl {
     private final AdvancedRobot robot;
     private final MovementContext movementContext;
 
-    public RunAwayMovement(AdvancedRobot robot, MovementContext movementContext) {
+    public RunAwayMoveController(AdvancedRobot robot, MovementContext movementContext) {
         this.robot = robot;
         this.movementContext = movementContext;
     }
@@ -32,7 +34,7 @@ public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWal
         LogHelper.logRobotMovement(robot, "Hit enemy: before run away " + robot.getHeading());
 
         if (movementContext.hasLowerOrEqualPriorityButDifferentStrategy(MoveStrategy.RUN_AWAY_FROM_ENEMIES)) {
-            movementContext.setMoveStrategy(MoveStrategy.RUN_AWAY_FROM_ENEMIES);
+            movementContext.changeMoveStrategy(MoveStrategy.RUN_AWAY_FROM_ENEMIES, this);
             RunAwayHelper.changeMovementWhenHit(robot, movementContext.getDirection(), hitRobotEvent.getBearingRadians());
         }
     }
@@ -47,7 +49,7 @@ public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWal
              */
             if (DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
                 movementContext.setNone();
-//                LogHelper.logRobotMovement(robot, "Hit: stop run away ");
+//                LogHelper.logRobotMovement(robot, "Hit: reset run away ");
             }
         }
     }
@@ -55,7 +57,7 @@ public class RunAwayMovement implements OnHitRobotControl, LoopableRun, OnHitWal
     @Override
     public void onHitWall(HitWallEvent hitWallEvent) {
         if (movementContext.hasLowerOrEqualPriorityButDifferentStrategy(MoveStrategy.RUN_AWAY_FROM_WALL)) {
-            movementContext.setMoveStrategy(MoveStrategy.RUN_AWAY_FROM_WALL);
+            movementContext.changeMoveStrategy(MoveStrategy.RUN_AWAY_FROM_WALL, this);
             RunAwayHelper.changeMovementWhenHit(robot, movementContext.getDirection(), hitWallEvent.getBearingRadians());
         }
     }

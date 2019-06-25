@@ -17,7 +17,7 @@ import java.awt.geom.*;
  * Its movement is bound to certain rules, but within those rules it tries to be as random as possible.
  * It completely <strong>obliterates Walls</strong>.
  * <p/>
- * <strong>Movement:</strong><br/>
+ * <strong>MoveController:</strong><br/>
  * It uses a mostly orbital movement, limited by bouncing off walls before it hits them, thanks to wall smoothing detector.<br/>
  * Its actual orbital offset it moves at can vary from directly towards to directly away, but it rarely reaches these extremes as it is changed every round.
  * <p/>
@@ -95,7 +95,7 @@ public class SuperCrazy extends AdvancedRobot {
 		double extraTurn = Math.min(Math.atan(baseScanSpan / distance), Math.PI/4.0);
 			setTurnRadarRightRadians(radarTurn + (radarTurn < 0 ? -extraTurn : extraTurn));
  
-		/* Movement */
+		/* MoveController */
 		if(--moveTime <= 0) {
 			distance = Math.max(distance, 100 + Math.random()*50) * 1.25;
 			moveTime = 50 + (long)(distance / lastBulletSpeed);

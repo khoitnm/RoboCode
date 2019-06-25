@@ -31,13 +31,13 @@ public enum MoveStrategy {
     /**
      * The higher the number is, the higher priority is.
      */
-    private final int priorty;
+    private final int priority;
 
-    MoveStrategy(int priorty) {
-        this.priorty = priorty;
+    MoveStrategy(int priority) {
+        this.priority = priority;
     }
 
-    public int getPriorty() {
-        return priorty;
+    public int getPriority() {
+        return priority;
     }
 }

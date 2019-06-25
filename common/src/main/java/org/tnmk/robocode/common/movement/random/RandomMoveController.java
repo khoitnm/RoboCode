@@ -16,6 +16,7 @@ import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
+import org.tnmk.robocode.common.movement.MoveController;
 import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.paint.PaintHelper;
@@ -29,8 +30,8 @@ import robocode.ScannedRobotEvent;
 /**
  * FIXME when running test, I got this error:
  * <pre>
- * Waiting for robot org.tnmk.robocode.robot.TheUnfoldingRobot* to stop thread org.tnmk.robocode.robot.TheUnfoldingRobot*
- * Robot org.tnmk.robocode.robot.TheUnfoldingRobot* is not stopping.  Forcing a stop.
+ * Waiting for robot org.tnmk.robocode.robot.TheUnfoldingRobot* to reset thread org.tnmk.robocode.robot.TheUnfoldingRobot*
+ * Robot org.tnmk.robocode.robot.TheUnfoldingRobot* is not stopping.  Forcing a reset.
  * org.tnmk.robocode.robot.TheUnfoldingRobot* stopped successfully.
  * org.tnmk.robocode.robot.TheUnfoldingRobot* has been stopped.
  * org.tnmk.robocode.robot.TheUnfoldingRobot* cannot be stopped.
@@ -44,7 +45,7 @@ import robocode.ScannedRobotEvent;
  * --------------------------------------------------------------
  * FIXME sometimes my robot stay still for so long.
  */
-public class RandomMovement implements LoopableRun, OnScannedRobotControl {
+public class RandomMoveController implements MoveController, LoopableRun, OnScannedRobotControl {
     /**
      * Measure unit: pixel.
      */
@@ -66,17 +67,18 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
      * Some numbers for 1-on-1 vs. SuperSpinBotTest (1000 rounds):
      * 0.2 => win percentage: 61.5%
      * 0.3 => win percentage: 51.5%
-     *
+     * <p>
      * vs. BlackPearl:
      * 0.2 => win: 39.1%
      */
     private static final double EXCLUDE_CLOSET_POINT_PERCENTAGE = 0.2d;
+    private static final double WANDER_DISTANCE = 150;
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final MovementContext movementContext;
 
-    public RandomMovement(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, MovementContext movementContext) {
+    public RandomMoveController(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, MovementContext movementContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
         this.movementContext = movementContext;
@@ -93,7 +95,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
          * They are just outside the range of our radar.
          */
         if (movementContext.isNone() && (robot.getTime() - estimateFinishTime) > 10) {
-            movementContext.setMoveStrategy(MoveStrategy.WANDERING);
+            movementContext.changeMoveStrategy(MoveStrategy.WANDERING, this);
             DebugHelper.debugMoveWandering(robot);
             startTime = robot.getTime();
             estimateFinishTime = startTime + Math.round(90d / Rules.MAX_VELOCITY);
@@ -102,7 +104,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
                 direction = -1;
             }
             robot.setTurnRight(Math.random() * 360);
-            robot.setAhead(direction * 90);
+            robot.setAhead(direction * WANDER_DISTANCE);
         } else {
             if (movementContext.is(MoveStrategy.WANDERING) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
                 movementContext.setNone();
@@ -125,7 +127,7 @@ public class RandomMovement implements LoopableRun, OnScannedRobotControl {
 
         if (movementContext.hasLowerPriority(MoveStrategy.RANDOM)) {
             if (!movementContext.is(MoveStrategy.RANDOM)) {
-                movementContext.setMoveStrategy(MoveStrategy.RANDOM);
+                movementContext.changeMoveStrategy(MoveStrategy.RANDOM, this);
             }
             boolean isChangeMovement;
 

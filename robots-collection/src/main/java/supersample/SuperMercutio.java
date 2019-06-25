@@ -17,7 +17,7 @@ import robocode.util.*;
  * If you do not know what a wave is, there are some very informative articles on the robowiki.
  * That said, I will move onto a description of the robot.
  * 
- * --Movement--
+ * --MoveController--
  * Details:
  * When the enemy fires, SuperMercutio creates a wave and records two firing angles the enemy could have used:
  * a head-on targeting angle and a linear targeting angle. It then uses that information to create imaginary
@@ -92,7 +92,7 @@ public class SuperMercutio extends AdvancedRobot {
 		double absBearing=e.getBearingRadians()+getHeadingRadians();
  
 		/*
-		 * ==================Movement Section============================
+		 * ==================MoveController Section============================
 		 * This makes us put a log into our log when we notice the enemy firing. 
 		 * To see the actual logging of the wave, look at the logWave method.
 		 */

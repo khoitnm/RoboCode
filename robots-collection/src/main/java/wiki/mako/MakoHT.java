@@ -7,7 +7,7 @@ import robocode.*;
 
 // MakoHT - Prey sighted - prey eaten.
 // Targeting by PEZ.
-// Movement, HT (Hit This!) by Kawigi using SandboxFlattener movement.
+// MoveController, HT (Hit This!) by Kawigi using SandboxFlattener movement.
 //
 // http://robowiki.dyndns.org/MakoHT 
 //

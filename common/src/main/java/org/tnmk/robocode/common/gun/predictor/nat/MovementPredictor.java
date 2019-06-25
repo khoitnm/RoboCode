@@ -8,7 +8,7 @@ import robocode.Rules;
 import robocode.util.Utils;
 
 /**
- * http://robowiki.net/wiki/User:Nat/Free_code#Movement_Predictor Movement
+ * http://robowiki.net/wiki/User:Nat/Free_code#Movement_Predictor MoveController
  * Predictor, also known as Precise Predictor
  */
 public class MovementPredictor {
@@ -75,7 +75,7 @@ public class MovementPredictor {
 	 * @param maxVelocity
 	 *            max allowed velocity of robot
 	 * @param distanceRemaining
-	 *            remain distance before stop
+	 *            remain distance before reset
 	 * @return list of predicted status
 	 */
 	public static List<PredictionStatus> predict(PredictionStatus status, double goAngle, double maxVelocity, double distanceRemaining) {
@@ -131,7 +131,7 @@ public class MovementPredictor {
 	 * @param maxVelocity
 	 *            max allowed velocity of robot
 	 * @param distanceRemaining
-	 *            remain distance before stop
+	 *            remain distance before reset
 	 * @return list of predicted status
 	 */
 	public static List<PredictionStatus> predict(PredictionStatus status, int tick, double goAngle, double maxVelocity, double distanceRemaining) {
