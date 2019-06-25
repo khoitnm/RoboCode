@@ -34,8 +34,10 @@ public class UTurnRobot extends AdvancedRobot {
             if (uTurnMoveController.isStopped()) {
                 Point2D destination = calculateNewDestination(BattleFieldUtils.constructRobotPosition(this));
                 uTurnMoveController.setMoveToDestination(this, destination);
+                LogHelper.logRobotMovement(this, "New destination: " + LogHelper.toString(destination));
+            } else {
+                LogHelper.logRobotMovement(this, "Move");
             }
-            LogHelper.logRobotMovement(this, "Loop Movement");
             execute();
         }
     }

@@ -1,14 +1,17 @@
 package org.tnmk.robocode.common.movement.tactic.uturn;
 
-import java.awt.geom.Point2D;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.helper.BattleFieldUtils;
+import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.ResetableMoveController;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import robocode.AdvancedRobot;
 import robocode.Rules;
+import sun.rmi.runtime.Log;
+
+import java.awt.geom.Point2D;
 
 public class UTurnMoveController implements ResetableMoveController, LoopableRun {
     /**
@@ -31,6 +34,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
 
     /**
      * Trigger the UTurn Movement
+     *
      * @param robot
      * @param destination
      */
@@ -44,6 +48,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
         robot.setMaxVelocity(reckonMaxVelocity(moveAngle));
         robot.setTurnRight(moveAngle);
         robot.setAhead(distance);//if you want it to reset at the destination, use setAhead(distance to destination + some additional distance for turning direction)
+        LogHelper.logRobotMovement(robot, "move to destination: moveAhead: " + distance);
     }
 
     @Override
@@ -62,9 +67,10 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
         if (DoubleUtils.isConsideredZero(remainDistance)) {
             reset();
         } else {
-            double maxVelocity = reckonMaxVelocity(robot.getTurnRemaining());
-            robot.setMaxVelocity(maxVelocity);
-            robot.setAhead(remainDistance);
+            setMoveToDestination(robot, destination);
+//            double maxVelocity = reckonMaxVelocity(robot.getTurnRemaining());
+//            robot.setMaxVelocity(maxVelocity);
+//            robot.setAhead(remainDistance);
         }
     }
 
@@ -73,6 +79,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
         this.destination = null;
         this.startTime = Long.MIN_VALUE;
         this.robot.setMaxVelocity(Rules.MAX_VELOCITY);
+        LogHelper.logRobotMovement(robot, "Reset UTurnMovement");
 //        this.movementContext.setMoveTactic(MoveTactic.NONE);
     }
 
@@ -93,6 +100,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
     private double getRemainDistance() {
         Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
         double distanceToDestination = robotPosition.distance(destination);
+        LogHelper.logRobotMovement(robot, "Calculated remainDistance: "+distanceToDestination);
         return distanceToDestination;
     }
 }
