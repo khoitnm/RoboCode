@@ -7,7 +7,7 @@ import robocode.util.Utils;
 public class MoveSim {
 	private double systemMaxTurnRate = Math.toRadians(10.0);
 	private double systemMaxVelocity = Rules.MAX_VELOCITY;
-	private double maxDeceleration = Rules.DECELERATION;//stop acceleration (speed -= 2)
+	private double maxDeceleration = Rules.DECELERATION;//reset acceleration (speed -= 2)
 	private double maxAcceleration = Rules.ACCELERATION;//start acceleration (speed +=1)
 
 	public double defaultMaxTurnRate = Rules.MAX_TURN_RATE;

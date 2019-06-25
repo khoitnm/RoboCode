@@ -30,8 +30,8 @@ import robocode.ScannedRobotEvent;
 /**
  * FIXME when running test, I got this error:
  * <pre>
- * Waiting for robot org.tnmk.robocode.robot.TheUnfoldingRobot* to stop thread org.tnmk.robocode.robot.TheUnfoldingRobot*
- * Robot org.tnmk.robocode.robot.TheUnfoldingRobot* is not stopping.  Forcing a stop.
+ * Waiting for robot org.tnmk.robocode.robot.TheUnfoldingRobot* to reset thread org.tnmk.robocode.robot.TheUnfoldingRobot*
+ * Robot org.tnmk.robocode.robot.TheUnfoldingRobot* is not stopping.  Forcing a reset.
  * org.tnmk.robocode.robot.TheUnfoldingRobot* stopped successfully.
  * org.tnmk.robocode.robot.TheUnfoldingRobot* has been stopped.
  * org.tnmk.robocode.robot.TheUnfoldingRobot* cannot be stopped.

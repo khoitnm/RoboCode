@@ -84,7 +84,7 @@ public class AllEnemiesScanRadar implements LoopableRun, OnScannedRobotControl, 
         }
         LogHelper.logRobotMovement(this.robot, "scannedEnemiesEachRound: " + scannedEnemiesEachRound + ", countEnemies: " + robot.getOthers());
         if (scannedEnemiesEachRound.size() >= robot.getOthers()) {
-            //The current robot is already counted as 1, so we should NOT stop this value to 0.
+            //The current robot is already counted as 1, so we should NOT reset this value to 0.
             removeAllExceptOneElement(scannedEnemiesEachRound, newScannedEnemyName);
 
             radarDirection = -radarDirection;

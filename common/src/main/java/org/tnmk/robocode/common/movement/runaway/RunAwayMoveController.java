@@ -45,11 +45,11 @@ public class RunAwayMoveController implements MoveController, OnHitRobotControl,
         if (movementContext.is(MoveStrategy.RUN_AWAY_FROM_ENEMIES) || movementContext.is(MoveStrategy.RUN_AWAY_FROM_WALL)) {
             /**
              * There could be a chance that the robot is applying another movement strategy, but it need to rest (distanceRemaining is 0) in the middle.
-             * So, to avoid stop MovementContext incorrectly, we must check the current movementStrategy is either {@link MoveStrategy#RUN_AWAY_FROM_WALL} or {@link MoveStrategy#RUN_AWAY_FROM_ENEMIES},
+             * So, to avoid reset MovementContext incorrectly, we must check the current movementStrategy is either {@link MoveStrategy#RUN_AWAY_FROM_WALL} or {@link MoveStrategy#RUN_AWAY_FROM_ENEMIES},
              */
             if (DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
                 movementContext.setNone();
-//                LogHelper.logRobotMovement(robot, "Hit: stop run away ");
+//                LogHelper.logRobotMovement(robot, "Hit: reset run away ");
             }
         }
     }

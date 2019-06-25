@@ -16,7 +16,7 @@ import robocode.StatusEvent;
 public class MovementContext {
     private final AdvancedRobot robot;
     private MoveStrategy moveStrategy = MoveStrategy.NONE;
-    private MoveTactic moveTactic = MoveTactic.NONE;
+//    private MoveTactic moveTactic = MoveTactic.NONE;
     private MoveController moveController = null;
     /**
      * This value should be constantly updated every tick by {@link robocode.Robot#onStatus(StatusEvent)}.
@@ -99,7 +99,7 @@ public class MovementContext {
     private void stopOldMoveControllerIfPossible() {
         if (this.moveController instanceof ResetableMoveController) {
             ResetableMoveController oldMoveController = (ResetableMoveController) this.moveController;
-            oldMoveController.stop();
+            oldMoveController.reset();
         }
     }
 
@@ -132,12 +132,12 @@ public class MovementContext {
         boolean result = hasLowerOrEqualPriority(moveStrategy) && moveStrategy != this.moveStrategy;
         return result;
     }
-
-    public MoveTactic getMoveTactic() {
-        return moveTactic;
-    }
-
-    public void setMoveTactic(MoveTactic moveTactic) {
-        this.moveTactic = moveTactic;
-    }
+//
+//    public MoveTactic getMoveTactic() {
+//        return moveTactic;
+//    }
+//
+//    public void setMoveTactic(MoveTactic moveTactic) {
+//        this.moveTactic = moveTactic;
+//    }
 }

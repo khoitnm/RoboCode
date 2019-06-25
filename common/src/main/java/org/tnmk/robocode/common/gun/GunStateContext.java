@@ -34,7 +34,7 @@ public class GunStateContext {
      */
     public void saveStateFinishedAiming() {
         this.isAiming = false;
-        /* After finish aiming, we don't stop the gunStrategy because the robot may still use the same strategy */
+        /* After finish aiming, we don't reset the gunStrategy because the robot may still use the same strategy */
     }
 
     public boolean isStrategy(GunStrategy gunStrategy) {

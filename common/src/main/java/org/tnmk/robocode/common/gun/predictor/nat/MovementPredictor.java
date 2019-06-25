@@ -75,7 +75,7 @@ public class MovementPredictor {
 	 * @param maxVelocity
 	 *            max allowed velocity of robot
 	 * @param distanceRemaining
-	 *            remain distance before stop
+	 *            remain distance before reset
 	 * @return list of predicted status
 	 */
 	public static List<PredictionStatus> predict(PredictionStatus status, double goAngle, double maxVelocity, double distanceRemaining) {
@@ -131,7 +131,7 @@ public class MovementPredictor {
 	 * @param maxVelocity
 	 *            max allowed velocity of robot
 	 * @param distanceRemaining
-	 *            remain distance before stop
+	 *            remain distance before reset
 	 * @return list of predicted status
 	 */
 	public static List<PredictionStatus> predict(PredictionStatus status, int tick, double goAngle, double maxVelocity, double distanceRemaining) {

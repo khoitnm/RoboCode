@@ -186,7 +186,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
             // OK, now I understand. Because this is the correct time to fire.
             // If you don't fire this time, next time the status is still aiming, the gunTurnRemain is 0, so it will fire bullet.
             // But at that time, it was too lat.
-            // So, if we don't fire, we must stop aimng become false.
+            // So, if we don't fire, we must reset aimng become false.
 //          if (DoubleUtils.isConsideredZero(robot.getGunHeat()) && DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
             if (DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
                 if (DoubleUtils.isConsideredZero(robot.getGunHeat())){
