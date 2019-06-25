@@ -88,11 +88,19 @@ public class MovementContext {
             LogHelper.logRobotMovement(robot, moveStrategy + ": begin");//begin the new strategy
         }
         this.moveStrategy = moveStrategy;
-        if (this.moveController instanceof ResetableMoveController){
-            ResetableMoveController oldMoveController = (ResetableMoveController) this.moveController;
-            oldMoveController.reset();
+        if (this.moveController != moveController) {
+            stopOldMoveControllerIfPossible();
+        } else {
+            /** Just continue the oldMoveController */
         }
         this.moveController = moveController;
+    }
+
+    private void stopOldMoveControllerIfPossible() {
+        if (this.moveController instanceof ResetableMoveController) {
+            ResetableMoveController oldMoveController = (ResetableMoveController) this.moveController;
+            oldMoveController.stop();
+        }
     }
 
     public AdvancedRobot getRobot() {

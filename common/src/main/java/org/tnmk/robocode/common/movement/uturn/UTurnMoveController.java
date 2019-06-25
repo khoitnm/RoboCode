@@ -49,7 +49,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
         }
         double remainDistance = getRemainDistance();
         if (DoubleUtils.isConsideredZero(remainDistance) || robot.getTime() - startTime >= MAX_RUN_TICKS) {
-            stopMovementTactic();
+            stop();
         }else{
             double maxVelocity = reckonMaxVelocity(robot.getTurnRemaining());
             robot.setMaxVelocity(maxVelocity);
@@ -58,16 +58,13 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
     }
 
     @Override
-    public void reset() {
-        stopMovementTactic();
-    }
-
-    private void stopMovementTactic(){
+    public void stop() {
         this.destination = null;
         this.startTime = Long.MIN_VALUE;
         this.robot.setMaxVelocity(Rules.MAX_VELOCITY);
         this.movementContext.setMoveTactic(MoveTactic.NONE);
     }
+
 
     private double reckonMaxVelocity(double remainTurnAngleDegree) {
         double maxVelocity;

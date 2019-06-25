@@ -57,7 +57,7 @@ public class ShouldAvoidWallCondition extends Condition {
      */
     private void restMoveStrategyToNoneIfFinishWallSmooth(boolean needAvoidWall) {
         Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
-        if (movementContext.is(MoveStrategy.WALL_SMOOTH)) {//If moving with other strategy, don't reset it.
+        if (movementContext.is(MoveStrategy.WALL_SMOOTH)) {//If moving with other strategy, don't stop it.
             if (GeoMathUtils.checkInsideRectangle(robotPosition, safeAreaRect) && !needAvoidWall) {
                 movementContext.setNone();
             }
