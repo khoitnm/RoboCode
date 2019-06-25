@@ -106,7 +106,8 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
             robot.setTurnRight(Math.random() * 360);
             robot.setAhead(direction * WANDER_DISTANCE);
         } else {
-            if (movementContext.is(MoveStrategy.WANDERING) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
+            if ((movementContext.is(MoveStrategy.WANDERING) || movementContext.is(MoveStrategy.RANDOM)) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
+                //When setting to none, it could be triggered by other algorithm. Otherwise, the wandering will be triggered again.
                 movementContext.setNone();
             }
             DebugHelper.resetDebugMoveWandering(robot);
