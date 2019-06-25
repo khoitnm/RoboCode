@@ -131,7 +131,6 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
             }
             boolean isChangeMovement;
 
-            //FIXME, the second last doesn't have the latest data.
             if (isEnemyFired) {
                 isChangeMovement = true;
 //                LogHelper.logRobotMovement(robot, "enemy " + scannedRobotEvent.getName() + " has just fired");
