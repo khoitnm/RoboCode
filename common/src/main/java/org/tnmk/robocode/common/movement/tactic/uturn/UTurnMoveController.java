@@ -14,17 +14,12 @@ import sun.rmi.runtime.Log;
 import java.awt.geom.Point2D;
 
 public class UTurnMoveController implements ResetableMoveController, LoopableRun {
-    /**
-     * the maximum of ticks for applying this UTurnMoveController.
-     */
-    private static final long MAX_RUN_TICKS = 20;
     private static final double MIN_MAX_VELOCITY = 2.0d;
     private static final double MAX_MAX_VELOCITY = Rules.MAX_VELOCITY;
 
     private final AdvancedRobot robot;
     private final MovementContext movementContext;
 
-    private long startTime = Long.MIN_VALUE;
     private Point2D destination = null;
 
     public UTurnMoveController(AdvancedRobot robot, MovementContext movementContext) {
@@ -39,8 +34,6 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
      * @param destination
      */
     public void setMoveToDestination(AdvancedRobot robot, Point2D destination) {
-//        movementContext.setMoveTactic(MoveTactic.QUICK_UTURN);
-        startTime = robot.getTime();
         this.destination = destination;
         Point2D currentPosition = new Point2D.Double(robot.getX(), robot.getY());
         double distance = currentPosition.distance(destination);
@@ -59,28 +52,20 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
              */
             return;
         }
-//        if (movementContext.getMoveTactic() != MoveTactic.QUICK_UTURN) {
-//            return;
-//        }
 
         double remainDistance = getRemainDistance();
         if (DoubleUtils.isConsideredZero(remainDistance)) {
             reset();
         } else {
             setMoveToDestination(robot, destination);
-//            double maxVelocity = reckonMaxVelocity(robot.getTurnRemaining());
-//            robot.setMaxVelocity(maxVelocity);
-//            robot.setAhead(remainDistance);
         }
     }
 
     @Override
     public void reset() {
         this.destination = null;
-        this.startTime = Long.MIN_VALUE;
         this.robot.setMaxVelocity(Rules.MAX_VELOCITY);
         LogHelper.logRobotMovement(robot, "Reset UTurnMovement");
-//        this.movementContext.setMoveTactic(MoveTactic.NONE);
     }
 
     public boolean isStopped() {
