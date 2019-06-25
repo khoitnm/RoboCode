@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.uturn;
+package org.tnmk.robocode.common.movement.tactic.uturn;
 
 import java.awt.geom.Point2D;
 import org.tnmk.common.math.GeoMathUtils;

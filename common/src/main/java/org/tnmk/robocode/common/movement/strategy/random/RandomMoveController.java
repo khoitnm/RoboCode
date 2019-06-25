@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.random;
+package org.tnmk.robocode.common.movement.strategy.random;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

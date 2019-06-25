@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.antigravity;
+package org.tnmk.robocode.common.movement.strategy.antigravity;
 
 import org.tnmk.common.math.Point2DUtils;
 import org.tnmk.robocode.common.paint.PaintHelper;

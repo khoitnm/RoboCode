@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.antigravity;
+package org.tnmk.robocode.common.movement.strategy.antigravity;
 
 import java.awt.geom.Point2D;
 import java.util.List;

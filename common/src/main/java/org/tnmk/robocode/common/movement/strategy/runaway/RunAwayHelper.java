@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.runaway;
+package org.tnmk.robocode.common.movement.strategy.runaway;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;

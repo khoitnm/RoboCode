@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.antigravity;
+package org.tnmk.robocode.common.movement.strategy.antigravity;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -17,7 +17,7 @@ import org.tnmk.robocode.common.movement.MoveController;
 import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.ResetableMoveController;
-import org.tnmk.robocode.common.movement.uturn.UTurnMoveController;
+import org.tnmk.robocode.common.movement.tactic.uturn.UTurnMoveController;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.LoopableRun;

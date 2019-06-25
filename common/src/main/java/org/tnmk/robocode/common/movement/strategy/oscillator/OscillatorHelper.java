@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.oscillator;
+package org.tnmk.robocode.common.movement.strategy.oscillator;
 
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.model.enemy.Enemy;

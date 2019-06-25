@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.wallsmooth;
+package org.tnmk.robocode.common.movement.strategy.wallsmooth;
 
 
 import java.awt.geom.Point2D;

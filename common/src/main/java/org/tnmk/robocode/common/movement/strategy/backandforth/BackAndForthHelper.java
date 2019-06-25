@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.backandforth;
+package org.tnmk.robocode.common.movement.strategy.backandforth;
 
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.GeoMathUtils;

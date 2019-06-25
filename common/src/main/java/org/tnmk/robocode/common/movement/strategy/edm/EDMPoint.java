@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.edm;
+package org.tnmk.robocode.common.movement.strategy.edm;
 
 import java.awt.geom.Point2D;
 
