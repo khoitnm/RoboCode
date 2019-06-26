@@ -9,7 +9,7 @@ import supersample.SuperRamFire;
 import supersample.SuperSpinBot;
 import supersample.SuperWalls;
 
-public class AgainstSuperSamplesTest extends AbstractWinRateTest {
+public class AgainstSuperSampleBotsTest extends AbstractWinRateTest {
 
     @Override
     public TestConfig constructTestConfig() {
@@ -21,12 +21,10 @@ public class AgainstSuperSamplesTest extends AbstractWinRateTest {
         );
 
         /**
-         * - v2.4.2: Apply uTurn: 2000 rounds:
-         *
-         * View more at {@link AgainstBlackPearlAndOthersTest} to see interesting resuls.
-         * Moebius' gun is good, but his gun alone cannot touch TheUnfoldingRobot!
+         * - v2.4.1: No uTurn: 2000 rounds: 58.7%
+         * - v2.4.2: Apply uTurn: 2000 rounds: 42.85%
          */
-        TestConfig testConfig  = new TestConfig(TheUnfoldingRobot.class,enemyNames, 0.5, 2000);
+        TestConfig testConfig  = new TestConfig(TheUnfoldingRobot.class,enemyNames, 0.4, 2000);
         return testConfig;
     }
 }

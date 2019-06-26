@@ -113,6 +113,9 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
             movementContext.changeMoveStrategy(MoveStrategy.ANTI_GRAVITY, this);
 
             if (GeoMathUtils.checkInsideRectangle(finalDestination, calculationContext.getSafeMovementArea())) {
+                /** Note: using moveByLongPathTurning(finalDestination); {@link AgainstSuperSampleBotsTest} win 58.7% (2000 rounds)*/
+                /** Note: using moveByUTurnToDestination(finalDestination); {@link AgainstSuperSampleBotsTest} win 42.85% (2000 rounds)!!! Newer code makes it worse! */
+//                moveByLongPathTurning(finalDestination);
                 moveByUTurnToDestination(finalDestination);
             } else {
                 //This logic makes sure that the robot won't run into the wall when it's outside the safeMovementArea (close to walls).
@@ -158,6 +161,14 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
             uTurnMoveController.reset();
         }
         Move2DUtils.setMoveToDestinationWithShortestPath(robot, destination);
+    }
+
+    private void moveByLongPathTurning(Point2D destination) {
+        this.moveTactic = null;
+        if (moveTactic == uTurnMoveController) {
+            uTurnMoveController.reset();
+        }
+        Move2DUtils.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, destination);
     }
 
 
