@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.GeoMathUtils;
-import org.tnmk.robocode.common.movement.antigravity.AntiGravityMoveController;
+import org.tnmk.robocode.common.movement.strategy.antigravity.AntiGravityMoveController;
 import robocode.AdvancedRobot;
 import robocode.HitRobotEvent;
 import robocode.Robot;

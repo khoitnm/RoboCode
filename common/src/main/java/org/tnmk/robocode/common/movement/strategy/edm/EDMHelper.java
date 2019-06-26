@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.edm;
+package org.tnmk.robocode.common.movement.strategy.edm;
 
 import org.tnmk.robocode.common.paint.PaintHelper;
 import robocode.AdvancedRobot;

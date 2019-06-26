@@ -1,11 +1,11 @@
-package org.tnmk.robocode.common.movement.runaway;
+package org.tnmk.robocode.common.movement.strategy.runaway;
 
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.movement.MoveController;
 import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
-import org.tnmk.robocode.common.movement.wallsmooth.WallSmoothMoveController;
+import org.tnmk.robocode.common.movement.strategy.wallsmooth.WallSmoothMoveController;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnHitRobotControl;
 import org.tnmk.robocode.common.robot.OnHitWallControl;

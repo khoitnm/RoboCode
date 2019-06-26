@@ -16,8 +16,9 @@ public class AgainstSuperWallsTest extends AbstractWinRateTest {
 
         /**
          * Run 100 (v.2.4.0): 79%
+         * - v2.4.2: Apply uTurn: 500 rounds: 76.8%
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.7, 100);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.7, 500);
         return testConfig;
     }
 }

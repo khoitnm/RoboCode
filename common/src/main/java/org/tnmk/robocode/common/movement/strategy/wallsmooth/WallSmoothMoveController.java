@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.wallsmooth;
+package org.tnmk.robocode.common.movement.strategy.wallsmooth;
 
 import org.tnmk.robocode.common.helper.MoveHelper;
 import org.tnmk.robocode.common.model.BattleField;

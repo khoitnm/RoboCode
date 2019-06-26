@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import robocode.BattleResults;
 import robocode.Robot;
 import robocode.control.events.BattleCompletedEvent;
+import robocode.control.events.BattleErrorEvent;
 import robocode.control.testing.RobotTestBed;
 
 /**
@@ -55,6 +56,13 @@ public abstract class AbstractWinRateTest extends RobotTestBed {
         allRobotNames.addAll(testConfig.enemiesNamesList);
         return allRobotNames.stream().collect(Collectors.joining(","));
     }
+
+    @Override
+    public void onBattleError(BattleErrorEvent event) {
+        logger.info("BattleError: " + event.getError());
+        super.onBattleError(event);
+    }
+
 
     /**
      * @inhertie

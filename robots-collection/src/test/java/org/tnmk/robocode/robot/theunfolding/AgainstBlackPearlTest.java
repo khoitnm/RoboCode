@@ -19,9 +19,9 @@ public class AgainstBlackPearlTest extends AbstractWinRateTest {
          * - OscillatorMoveController  for 1-on-1: 1.0% (OMG, it's was so so bad!!!)
          * - RandomMoveController for 1-on-1 (v2.4.0): 39.1%, 33.6%
          *      Run 2000 rounds: win 64.05%, 65.7%
-         *
+         * - v2.4.2: Apply uTurn: 2000 rounds: 63.65%
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.6, 1000);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.6, 2000);
         return testConfig;
     }
 }

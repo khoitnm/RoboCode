@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.random;
+package org.tnmk.robocode.common.movement.strategy.random;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -73,6 +73,7 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
      */
     private static final double EXCLUDE_CLOSET_POINT_PERCENTAGE = 0.2d;
     private static final double WANDER_DISTANCE = 150;
+    private static final long EXPIRED_PERIOD = 10;
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
@@ -94,7 +95,7 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
          * This case can happens when our robot cannot scan any enemy (but they are still there in the battlefield.
          * They are just outside the range of our radar.
          */
-        if (movementContext.isNone() && (robot.getTime() - estimateFinishTime) > 10) {
+        if (movementContext.isNone() && isExpiredMovement()) {
             movementContext.changeMoveStrategy(MoveStrategy.WANDERING, this);
             DebugHelper.debugMoveWandering(robot);
             startTime = robot.getTime();
@@ -106,11 +107,24 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
             robot.setTurnRight(Math.random() * 360);
             robot.setAhead(direction * WANDER_DISTANCE);
         } else {
-            if (movementContext.is(MoveStrategy.WANDERING) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining())) {
+            if (isWanderMoveFinished() || isRandomMoveFinished()) {
+                //When setting to none, it could be triggered by other algorithm. Otherwise, the wandering will be triggered again.
                 movementContext.setNone();
             }
             DebugHelper.resetDebugMoveWandering(robot);
         }
+    }
+
+    private boolean isWanderMoveFinished(){
+        return movementContext.is(MoveStrategy.WANDERING) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining());
+    }
+
+    private boolean isRandomMoveFinished(){
+        return movementContext.is(MoveStrategy.RANDOM) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining()) && isExpiredMovement();
+    }
+
+    private boolean isExpiredMovement(){
+        return (robot.getTime() - estimateFinishTime) > EXPIRED_PERIOD;
     }
 
     @Override
@@ -131,7 +145,6 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
             }
             boolean isChangeMovement;
 
-            //FIXME, the second last doesn't have the latest data.
             if (isEnemyFired) {
                 isChangeMovement = true;
 //                LogHelper.logRobotMovement(robot, "enemy " + scannedRobotEvent.getName() + " has just fired");
@@ -159,7 +172,7 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
                 double destinationDistance = robotPosition.distance(destination);
                 long estimationRunningTime = Math.min(Math.round(destinationDistance * 0.8 / Rules.MAX_VELOCITY), 15);
                 estimateFinishTime = robot.getTime() + estimationRunningTime;
-                System.out.println(String.format("[%s] estimate running time: %s, estimate finish time: %s", robot.getTime(), estimationRunningTime, estimateFinishTime));
+//                System.out.println(String.format("[%s] estimate running time: %s, estimate finish time: %s", robot.getTime(), estimationRunningTime, estimateFinishTime));
                 if (Math.random() < 0.7) {
                     Move2DUtils.setMoveToDestinationWithShortestPath(robot, destination);
                 } else {

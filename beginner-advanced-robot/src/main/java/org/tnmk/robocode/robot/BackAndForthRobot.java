@@ -1,7 +1,7 @@
 package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.log.LogHelper;
-import org.tnmk.robocode.common.movement.backandforth.BackAndForthHelper;
+import org.tnmk.robocode.common.movement.strategy.backandforth.BackAndForthHelper;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 

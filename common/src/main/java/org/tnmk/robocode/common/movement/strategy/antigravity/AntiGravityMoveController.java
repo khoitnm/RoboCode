@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common.movement.antigravity;
+package org.tnmk.robocode.common.movement.strategy.antigravity;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -17,7 +17,7 @@ import org.tnmk.robocode.common.movement.MoveController;
 import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.ResetableMoveController;
-import org.tnmk.robocode.common.movement.uturn.UTurnMoveController;
+import org.tnmk.robocode.common.movement.tactic.uturn.UTurnMoveController;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.LoopableRun;
@@ -113,7 +113,6 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
             movementContext.changeMoveStrategy(MoveStrategy.ANTI_GRAVITY, this);
 
             if (GeoMathUtils.checkInsideRectangle(finalDestination, calculationContext.getSafeMovementArea())) {
-//                Move2DUtils.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, finalDestination);
                 moveByUTurnToDestination(finalDestination);
             } else {
                 //This logic makes sure that the robot won't run into the wall when it's outside the safeMovementArea (close to walls).
@@ -121,6 +120,8 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
                 //Hence it will make robot move just a very short distance, and becomes an easy victim.
                 //Therefore, the safeMovement area should be small!
                 moveByShortestPath(finalDestination);
+                //Note: use uTurn for both cases really reduce the result!!!
+//                moveByUTurnToDestination(finalDestination);
             }
             this.startTime = robot.getTime();
         }
@@ -280,8 +281,12 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
     @Override
     public void runLoop() {
         if (movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
-            if (moveTactic.equals(uTurnMoveController)) {
-                uTurnMoveController.runLoop();
+            if (moveTactic == uTurnMoveController) {
+                if (uTurnMoveController.isStopped()){
+                    movementContext.setNone();
+                }else{
+                    uTurnMoveController.runLoop();
+                }
             }
         }
     }
