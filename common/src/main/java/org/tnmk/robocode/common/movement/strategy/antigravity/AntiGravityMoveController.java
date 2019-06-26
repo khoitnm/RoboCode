@@ -281,7 +281,7 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
     @Override
     public void runLoop() {
         if (movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
-            if (moveTactic.equals(uTurnMoveController)) {
+            if (moveTactic == uTurnMoveController) {
                 if (uTurnMoveController.isStopped()){
                     movementContext.setNone();
                 }else{

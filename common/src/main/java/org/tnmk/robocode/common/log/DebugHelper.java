@@ -10,11 +10,11 @@ import robocode.AdvancedRobot;
 public class DebugHelper {
 
     public static boolean isDebugMoveStrategyChange() {
-        return true;
+        return false;
     }
 
     private static boolean isDebugMoveStrategyState() {
-        return true;
+        return false;
     }
 
     public static boolean isDebugGunStrategy() {
