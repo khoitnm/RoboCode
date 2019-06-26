@@ -119,8 +119,9 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
                 //However, this kind of movement shouldn't be the long-term movement because the destination outside the safeArea mostly close to current position.
                 //Hence it will make robot move just a very short distance, and becomes an easy victim.
                 //Therefore, the safeMovement area should be small!
-//                moveByShortestPath(finalDestination);
-                moveByUTurnToDestination(finalDestination);
+                moveByShortestPath(finalDestination);
+                //Note: use uTurn for both cases really reduce the result!!!
+//                moveByUTurnToDestination(finalDestination);
             }
             this.startTime = robot.getTime();
         }

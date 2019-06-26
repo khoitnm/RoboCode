@@ -33,7 +33,7 @@ public class AgainstBlackPearlAndOthersTest extends AbstractWinRateTest {
          * - {@link PatternPredictionGun} and {@link BlackPearlGun}: 31.4%
          * The toughest opponents are BlackPearl.
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.4, 1000);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.4, 2000);
         return testConfig;
     }
 }
