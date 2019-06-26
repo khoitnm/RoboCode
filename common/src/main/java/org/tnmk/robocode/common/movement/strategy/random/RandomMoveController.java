@@ -172,7 +172,7 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
                 double destinationDistance = robotPosition.distance(destination);
                 long estimationRunningTime = Math.min(Math.round(destinationDistance * 0.8 / Rules.MAX_VELOCITY), 15);
                 estimateFinishTime = robot.getTime() + estimationRunningTime;
-                System.out.println(String.format("[%s] estimate running time: %s, estimate finish time: %s", robot.getTime(), estimationRunningTime, estimateFinishTime));
+//                System.out.println(String.format("[%s] estimate running time: %s, estimate finish time: %s", robot.getTime(), estimationRunningTime, estimateFinishTime));
                 if (Math.random() < 0.7) {
                     Move2DUtils.setMoveToDestinationWithShortestPath(robot, destination);
                 } else {

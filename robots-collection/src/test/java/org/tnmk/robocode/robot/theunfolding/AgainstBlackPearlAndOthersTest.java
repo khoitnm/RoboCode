@@ -29,6 +29,7 @@ public class AgainstBlackPearlAndOthersTest extends AbstractWinRateTest {
          *   After fixing bug in PatternPredictionGun (v.2.3.4): 40.7%
          *   After using random movement for 1-on-1 (v2.4.0):  37.9%, 37.8%
          *      Run 2000 rounds: win 46.3%, 42.4%
+         * - v2.4.2: Apply uTurn: 2000 rounds: 41.0%
          *
          * - {@link PatternPredictionGun} and {@link BlackPearlGun}: 31.4%
          * The toughest opponents are BlackPearl.
