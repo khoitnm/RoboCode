@@ -4,7 +4,6 @@ import java.awt.geom.Point2D;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.helper.BattleFieldUtils;
-import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.ResetableMoveController;
 import org.tnmk.robocode.common.paint.PaintHelper;
@@ -43,7 +42,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
         robot.setTurnRight(moveAngle);
         robot.setAhead(distance);//if you want it to reset at the destination, use setAhead(distance to destination + some additional distance for turning direction)
         PaintHelper.paintPoint(robot.getGraphics(), 10, HiTechDecorator.FINAL_DESTINATION_COLOR, destination, null);
-        LogHelper.logRobotMovement(robot, "move to destination: moveAhead: " + distance + ", maxVelocity: " + maxVelocity);
+//        LogHelper.logRobotMovement(robot, "move to destination: moveAhead: " + distance + ", maxVelocity: " + maxVelocity);
     }
 
     @Override
@@ -67,7 +66,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
     public void reset() {
         this.destination = null;
         this.robot.setMaxVelocity(Rules.MAX_VELOCITY);
-        LogHelper.logRobotMovement(robot, "Reset UTurnMovement");
+//        LogHelper.logRobotMovement(robot, "Reset UTurnMovement");
     }
 
     public boolean isStopped() {
@@ -93,7 +92,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
     private double getRemainDistanceToDestination() {
         Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
         double distanceToDestination = robotPosition.distance(destination);
-        LogHelper.logRobotMovement(robot, "Calculated remainDistance: " + distanceToDestination);
+//        LogHelper.logRobotMovement(robot, "Calculated remainDistance: " + distanceToDestination);
         return distanceToDestination;
     }
 }
