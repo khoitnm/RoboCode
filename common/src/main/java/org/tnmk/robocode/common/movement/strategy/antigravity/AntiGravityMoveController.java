@@ -115,8 +115,8 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
             if (GeoMathUtils.checkInsideRectangle(finalDestination, calculationContext.getSafeMovementArea())) {
                 /** Note: using moveByLongPathTurning(finalDestination); {@link AgainstSuperSampleBotsTest} win 58.7% (2000 rounds)*/
                 /** Note: using moveByUTurnToDestination(finalDestination); {@link AgainstSuperSampleBotsTest} win 42.85% (2000 rounds)!!! Newer code makes it worse! */
-//                moveByLongPathTurning(finalDestination);
-                moveByUTurnToDestination(finalDestination);
+                moveByLongPathTurning(finalDestination);
+//                moveByUTurnToDestination(finalDestination);
             } else {
                 //This logic makes sure that the robot won't run into the wall when it's outside the safeMovementArea (close to walls).
                 //However, this kind of movement shouldn't be the long-term movement because the destination outside the safeArea mostly close to current position.
