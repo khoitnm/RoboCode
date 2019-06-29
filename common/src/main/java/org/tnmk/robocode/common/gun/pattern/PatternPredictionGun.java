@@ -18,6 +18,7 @@ import org.tnmk.robocode.common.model.enemy.*;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
+import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
@@ -168,6 +169,6 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
      */
     @Override
     public void runLoop() {
-        GunUtils.fireBulletWhenFinishAiming(robot, gunStateContext);
+        GunUtils.fireBulletWhenFinishAiming(robot, gunStateContext, HiTechDecorator.BULLET_COLOR);
     }
 }
