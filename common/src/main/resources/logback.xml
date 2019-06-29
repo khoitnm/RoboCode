@@ -20,15 +20,43 @@
         </encoder>
     </appender>
 
-    <!--<logger name="com.mkyong" level="debug" additivity="false">-->
-    <!--<appender-ref ref="FILE-ROLLING"/>-->
-    <!--</logger>-->
+    <property name="HOME_REPORT" value="logs/report.log.csv"/>
 
-    <!--<root level="error">-->
-        <!--<appender-ref ref="FILE-ROLLING"/>-->
-    <!--</root>-->
+    <appender name="REPORT-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_REPORT}</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/archived/report.%d{yyyy-MM-dd}.%i.log.csv.gz</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <!--
+            View more at: https://logback.qos.ch/manual/layouts.html#ClassicPatternLayout
+
+            %d{HH:mm:ss.SSS} – a timestamp with hours, minutes, seconds and milliseconds
+            [%thread] – the thread name generating the log message, surrounded by square brackets
+            %-5level – the level of the logging event, padded to 5 characters
+            %logger{36} – the name of the logger, truncated to 35 characters
+            %c Class & method name
+            %msg – the log messages
+            %nopex No exception
+            %n new line character
+            %logger{0}: Just show class name, not method name.
+            %replace(%msg){'\n', ''}: In the message, replace all new line by tab character (because we want report)
+            -->
+            <pattern>%d \t%logger{0} \t%replace(%msg){'\n', ''} %nopex %n</pattern>
+        </encoder>
+    </appender>
+
     <root level="info">
         <appender-ref ref="FILE-ROLLING"/>
+        <appender-ref ref="REPORT-ROLLING"/>
     </root>
 
 </configuration>
