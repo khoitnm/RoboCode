@@ -3,6 +3,7 @@ package org.tnmk.robocode.robot;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.blackpearl.BlackPearlGun;
 import org.tnmk.robocode.common.gun.briareos.BriareosGun;
+import org.tnmk.robocode.common.gun.finishoff.FinishOffGun;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.mobius.MobiusGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
@@ -10,6 +11,7 @@ import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.*;
+import org.tnmk.robocode.robot.helper.EnemyHealthHelper;
 import robocode.*;
 
 public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobotControl, OnCustomEventControl, OnHitBulletControl, OnWinControl {
@@ -29,6 +31,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     private final BriareosGun briareosGun;
     private final GFTAimGun gftAimGun;
     private final PatternPredictionGun patternPredictionGun;
+    private final FinishOffGun finishOffGun;
     private final MobiusGun mobiusGun;
     private final BlackPearlGun blackPearlGun;
 
@@ -45,22 +48,24 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
         this.gftAimGun = new GFTAimGun(robot, gunStateContext);
         this.blackPearlGun = new BlackPearlGun(robot, gunStateContext);
         this.patternPredictionGun = new PatternPredictionGun(robot, allEnemiesObservationContext, gunStateContext);
+        this.finishOffGun = new FinishOffGun(robot, allEnemiesObservationContext, gunStateContext);
     }
 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        EnemyStatisticContext enemyStatisticContext = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName());
-//        LogHelper.logSimple(robot, "Enemy: " + scannedRobotEvent.getName()
-//                + "\n\t\t Pattern: " + enemyStatisticContext.getPatternIdentification()
-//                + "\n\t\t predictionHistory: \t" + enemyStatisticContext.getEnemyPredictionHistory().getAllHistoryItems()
-//        );
-        if (enemyStatisticContext != null && enemyStatisticContext.hasCertainPattern()) {
-            patternPredictionGun.onScannedRobot(scannedRobotEvent);
+        if (EnemyHealthHelper.isEnemyHasNoEnergy(scannedRobotEvent)) {
+            finishOffGun.onScannedRobot(scannedRobotEvent);
         } else {
-            aimGFTGunWhenPropriate(scannedRobotEvent);
+            EnemyStatisticContext enemyStatisticContext = allEnemiesObservationContext.getEnemyPatternPrediction(scannedRobotEvent.getName());
+            DebugHelper.debugEnemyStatisticContext(robot, scannedRobotEvent.getName(), enemyStatisticContext);
+            if (enemyStatisticContext != null && enemyStatisticContext.hasCertainPattern()) {
+                patternPredictionGun.onScannedRobot(scannedRobotEvent);
+            } else {
+                aimGFTGunWhenPropriate(scannedRobotEvent);
 //            blackPearlGun.onScannedRobot(scannedRobotEvent);
 //            mobiusGun.onScannedRobot(scannedRobotEvent);
 //            briareosGun.onScannedRobot(scannedRobotEvent);
+            }
         }
     }
 
@@ -106,6 +111,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     public void runLoop() {
 //        briareosGun.runLoop();
         patternPredictionGun.runLoop();
+        finishOffGun.runLoop();
     }
 
     @Override

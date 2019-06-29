@@ -7,6 +7,7 @@ import org.tnmk.robocode.common.robot.OnCustomEventControl;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.OnRobotDeathControl;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
+import org.tnmk.robocode.robot.helper.EnemyHealthHelper;
 import robocode.AdvancedRobot;
 import robocode.CustomEvent;
 import robocode.RobotDeathEvent;
@@ -46,17 +47,20 @@ public class TheUnfoldingRadar implements OnScannedRobotControl, OnRobotDeathCon
      * This way also help the Anti-Gravity destination doesn't change so quickly.<br/>
      * The reason is when our robot lock radar to single one target, our data about other enemies still the same (old), so the anti-gravity calculation doesn't change much.<br/>
      * Hence the destination will mostly the same.
+     *
      * @param scannedRobotEvent
      */
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        if (isCloseEnemy(scannedRobotEvent)){
+        if (isCloseEnemy(scannedRobotEvent)) {
             if (allEnemiesScanRadar.isScannedAllEnemiesAtLeastOnce() && allEnemiesObservationContext.isAllEnemiesHasNewData()) {
                 botLockRadar.onScannedRobot(scannedRobotEvent);
-            }else{
+            } else {
                 allEnemiesScanRadar.onScannedRobot(scannedRobotEvent);
             }
-        }else{
+        } else if (EnemyHealthHelper.isEnemyVeryLowEnergy(scannedRobotEvent)) {
+            botLockRadar.onScannedRobot(scannedRobotEvent);
+        } else {
             int totalExistingEnemies = robot.getOthers();
             if (allEnemiesScanRadar.isScannedAllEnemiesAtLeastOnce() && totalExistingEnemies <= 1) {
                 botLockRadar.onScannedRobot(scannedRobotEvent);
@@ -67,7 +71,7 @@ public class TheUnfoldingRadar implements OnScannedRobotControl, OnRobotDeathCon
         }
     }
 
-    private boolean isCloseEnemy(ScannedRobotEvent scannedRobotEvent){
+    private boolean isCloseEnemy(ScannedRobotEvent scannedRobotEvent) {
         double distance = scannedRobotEvent.getDistance();
         return distance < ENEMY_CLOSE_DISTANCE;
     }

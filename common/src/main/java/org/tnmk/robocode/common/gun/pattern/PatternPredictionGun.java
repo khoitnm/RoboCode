@@ -4,7 +4,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import org.tnmk.common.math.AngleUtils;
-import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
@@ -19,7 +18,6 @@ import org.tnmk.robocode.common.model.enemy.*;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
-import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
@@ -81,7 +79,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
                 Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
 
                 /**Turn the gun to the correct angle**/
-                double gunBearing = reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
+                double gunBearing = GunUtils.reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
                 robot.setTurnGunLeftRadians(gunBearing);
                 gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PREDICTION, bulletPower);
 //                LogHelper.logSimple(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
@@ -110,12 +108,6 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         }
     }
 
-    private static double reckonTurnGunLeftNormRadian(Point2D robotPosition, Point2D enemyPosition, double gunHeadingRadians) {
-        double robotToEnemyRadian = Math.PI / 2 - Math.atan2(enemyPosition.getY() - robotPosition.getY(), enemyPosition.getX() - robotPosition.getX());
-        double gunOffset = gunHeadingRadians - robotToEnemyRadian;
-        gunOffset = AngleUtils.normalizeRadian(gunOffset);
-        return gunOffset;
-    }
 
     private EnemyPrediction predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
         EnemyPrediction enemyPrediction = null;
@@ -137,7 +129,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
             double bulletVelocity = GunUtils.reckonBulletVelocity(firePower);
             long periodForBulletToReachEnemy = (long) Math.ceil(Math.abs(distanceRobotToEnemy / bulletVelocity));
 
-            double gunBearing = reckonTurnGunLeftNormRadian(predictRobotPosition, enemyPosition, robot.getGunHeadingRadians());
+            double gunBearing = GunUtils.reckonTurnGunLeftNormRadian(predictRobotPosition, enemyPosition, robot.getGunHeadingRadians());
             periodForTurningGun = (long) Math.ceil(Math.abs(gunBearing / AngleUtils.toRadian(RobotPhysics.GUN_TURN_VELOCITY)));
             long totalPeriodGun = periodForTurningGun + periodForBulletToReachEnemy;
             long timeWhenBulletReachEnemy = robot.getTime() + Math.round(totalPeriodGun);
@@ -176,28 +168,6 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
      */
     @Override
     public void runLoop() {
-//        LogHelper.logRobotMovement(robot, "GunStrategy: " + gunStateContext.getGunStrategy() + " gunTurnRemaining: " + robot.getGunTurnRemaining());
-        if (gunStateContext.isAiming()) {
-            //TODO Something weird happens here!!! look at the below code.
-            // I just added a condition ```DoubleUtils.isConsideredZero(robot.getGunHeat()) && ```, which looks like totally makes sense, right?
-            // But then the gun totally predicts wrong: you can test with SpintBot, it failed. It even fail against Walls (cannot predict linear correctly)
-            // I still don't know why, but removing it fix problem!!!
-            // -----------------------------------------
-            // OK, now I understand. Because this is the correct time to fire.
-            // If you don't fire this time, next time the status is still aiming, the gunTurnRemain is 0, so it will fire bullet.
-            // But at that time, it was too lat.
-            // So, if we don't fire, we must reset aimng become false.
-//          if (DoubleUtils.isConsideredZero(robot.getGunHeat()) && DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
-            if (DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
-                if (DoubleUtils.isConsideredZero(robot.getGunHeat())){
-                    robot.setBulletColor(HiTechDecorator.BULLET_COLOR);
-                    robot.setFire(gunStateContext.getBulletPower());
-                    gunStateContext.saveStateFinishedAiming();
-//                LogHelper.logRobotMovement(robot, "Fire!!! " + gunStateContext.getBulletPower());
-                }else{
-                    gunStateContext.saveStateFinishedAiming();
-                }
-            }
-        }
+        GunUtils.fireBulletWhenFinishAiming(robot, gunStateContext);
     }
 }
