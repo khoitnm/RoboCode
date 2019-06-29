@@ -14,7 +14,7 @@ import org.tnmk.robocode.common.robot.*;
 import org.tnmk.robocode.robot.helper.EnemyHealthHelper;
 import robocode.*;
 
-public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobotControl, OnCustomEventControl, OnHitBulletControl, OnWinControl {
+public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobotControl, OnCustomEventControl, OnHitBulletControl, OnWinControl, OnBulletHitControl {
     /**
      * The furthest distance which we should fire on target in one-on-one fights.
      * Note: this distance should never be lower than {@link TheUnfoldingMovement#IDEAL_ENEMY_OSCILLATOR_DISTANCE}
@@ -125,5 +125,10 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     @Override
     public void onWin(WinEvent winEvent) {
 //        blackPearlGun.onWin(winEvent);
+    }
+
+    @Override
+    public void onBulletHit(BulletHitEvent event) {
+        finishOffGun.onBulletHit(event);
     }
 }

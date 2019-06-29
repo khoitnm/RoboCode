@@ -130,7 +130,7 @@ public class BlackPearlGun implements InitiableRun, OnScannedRobotControl, OnHit
 
 		//Aim the gun
 		//Original
-		gunStateContext.saveSateAimGun(GunStrategy.BLACK_PEARL, firePower);
+		gunStateContext.saveSateAimGun(GunStrategy.BLACK_PEARL, firePower, targetName);
 		robot.setTurnGunRightRadians(Utils.normalRelativeAngle(eAbsBearing - robot.getGunHeadingRadians() + (getGuessAngle(bestIndex, firePower))));
 
 		if (firePower > 0) {

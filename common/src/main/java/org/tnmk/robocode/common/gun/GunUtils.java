@@ -2,6 +2,7 @@ package org.tnmk.robocode.common.gun;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.util.Optional;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.number.DoubleUtils;
 import robocode.AdvancedRobot;
@@ -34,9 +35,9 @@ public class GunUtils {
     /**
      * @param robot
      * @param gunStateContext
-     * @return if fired bullet or not
+     * @return fired enemy's name. null if don't fire
      */
-    public static boolean fireBulletWhenFinishAiming(AdvancedRobot robot, GunStateContext gunStateContext, Color bulletColor){
+    public static Optional<String> fireBulletWhenFinishAiming(AdvancedRobot robot, GunStateContext gunStateContext, Color bulletColor){
         if (gunStateContext.isAiming()) {
             //TODO Something weird happens here!!! look at the below code.
             // I just added a condition ```DoubleUtils.isConsideredZero(robot.getGunHeat()) && ```, which looks like totally makes sense, right?
@@ -50,16 +51,17 @@ public class GunUtils {
 //          if (DoubleUtils.isConsideredZero(robot.getGunHeat()) && DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
             if (DoubleUtils.isConsideredZero(robot.getGunTurnRemaining())) {
                 if (DoubleUtils.isConsideredZero(robot.getGunHeat())) {
+                    String firingEnemyName = gunStateContext.getAimingEnemyName();
                     robot.setBulletColor(bulletColor);
                     robot.setFire(gunStateContext.getBulletPower());
                     gunStateContext.saveStateFinishedAiming();
-                    return true;
+                    return Optional.of(firingEnemyName);
 //                LogHelper.logRobotMovement(robot, "Fire!!! " + gunStateContext.getBulletPower());
                 } else {
                     gunStateContext.saveStateFinishedAiming();
                 }
             }
         }
-        return false;
+        return Optional.empty();
     }
 }

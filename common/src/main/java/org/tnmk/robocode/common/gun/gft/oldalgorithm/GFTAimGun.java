@@ -78,7 +78,7 @@ public class GFTAimGun implements OnScannedRobotControl {
             robot.setBulletColor(HiTechDecorator.BULLET_GFT_COLOR);
             if (robot.getGunHeat() == 0) {
                 robot.setGunColor(HiTechDecorator.ROBOT_GUN_COLOR);
-                gunStateContext.saveSateAimGun(GunStrategy.GFT, wave.bulletPower);
+                gunStateContext.saveSateAimGun(GunStrategy.GFT, wave.bulletPower, scannedRobotEvent.getName());
                 robot.setFire(wave.bulletPower);
             } else {
                 robot.setGunColor(Color.LIGHT_GRAY);

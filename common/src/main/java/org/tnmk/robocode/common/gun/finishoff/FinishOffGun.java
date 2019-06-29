@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.gun.GunStateContext;
@@ -14,26 +15,28 @@ import org.tnmk.robocode.common.helper.prediction.RobotPredictionHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
+import org.tnmk.robocode.common.robot.OnBulletHitControl;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import robocode.AdvancedRobot;
+import robocode.BulletHitEvent;
 import robocode.ScannedRobotEvent;
 
 /**
  * Use this gun when the enemy has no more energy
  */
-public class FinishOffGun implements LoopableRun, OnScannedRobotControl {
+public class FinishOffGun implements LoopableRun, OnScannedRobotControl, OnBulletHitControl {
     private static final Color BULLET_COLOR = new Color(254, 255, 46);
     private static final int ENEMY_PREDICTION_TIMES = 3;
-    private static final long AIMED_AGAIN_PERIOD = 30;
+    private static final long FIRE_BULLET_AGAIN_PERIOD = 30;
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final GunStateContext gunStateContext;
 
     /**
      * key: enemyName
-     * value: time which we start to aimed the enemy
+     * value: time which we start to fired bullet to the enemy (Note: this is not the time the bullet reach the enemy)
      */
-    private Map<String, Long> aimedEnemiesTime = new HashMap<>();
+    private Map<String, Long> firedEnemiesTime = new HashMap<>();
 
     public FinishOffGun(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, GunStateContext gunStateContext) {
         this.robot = robot;
@@ -55,12 +58,6 @@ public class FinishOffGun implements LoopableRun, OnScannedRobotControl {
      * the gun to the correct angle to fire on the target.
      **/
     private void aimGun(AdvancedRobot robot, ScannedRobotEvent scannedRobotEvent, double bulletPower) {
-        Long previousAimedTime = aimedEnemiesTime.get(scannedRobotEvent.getName());
-        if (previousAimedTime != null && robot.getTime() - previousAimedTime < AIMED_AGAIN_PERIOD) {
-            //Don't aim again before too soon.
-            return;
-        }
-
         Enemy enemy = allEnemiesObservationContext.getEnemy(scannedRobotEvent.getName());
         if (!gunStateContext.isAiming()) {
             Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
@@ -78,8 +75,7 @@ public class FinishOffGun implements LoopableRun, OnScannedRobotControl {
 
             /**Turn the gun to the correct angle**/
             robot.setTurnGunLeftRadians(gunBearing);
-            gunStateContext.saveSateAimGun(GunStrategy.FINISH_OFF, bulletPower);
-            aimedEnemiesTime.put(enemy.getName(), robot.getTime());
+            gunStateContext.saveSateAimGun(GunStrategy.FINISH_OFF, bulletPower, enemy.getName());
             /** This code just aim the gun, don't fire it. The gun will be fired by loopRun() when finishing aiming.*/
         } else {
             /**
@@ -95,6 +91,28 @@ public class FinishOffGun implements LoopableRun, OnScannedRobotControl {
      */
     @Override
     public void runLoop() {
-        GunUtils.fireBulletWhenFinishAiming(robot, gunStateContext, BULLET_COLOR);
+        String aimingEnemy = gunStateContext.getAimingEnemyName();
+        Long firedTime = firedEnemiesTime.get(aimingEnemy);
+        if (firedTime == null || robot.getTime() - firedTime > FIRE_BULLET_AGAIN_PERIOD) {
+            Optional<String> firedEnemy = GunUtils.fireBulletWhenFinishAiming(robot, gunStateContext, BULLET_COLOR);
+            if (firedEnemy.isPresent()) {
+                firedEnemiesTime.put(firedEnemy.get(), robot.getTime());
+            }
+        }else{
+            /** We've just fired this enemy recently, it certainty died now. We don't need to fire again.*/
+        }
+    }
+
+    @Override
+    public void onBulletHit(BulletHitEvent event) {
+        if (isEnemyKilled(event)){
+            if (gunStateContext.isAiming() && gunStateContext.getAimingEnemyName().equals(event.getName())){
+                gunStateContext.saveStateFinishedAiming();
+            }
+        }
+    }
+
+    private boolean isEnemyKilled(BulletHitEvent bulletHitEvent){
+        return bulletHitEvent.getEnergy() <= 0.0001;
     }
 }

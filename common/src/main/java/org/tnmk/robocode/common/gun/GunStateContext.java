@@ -17,16 +17,18 @@ public class GunStateContext {
      * Check whether a robot is aiming or not.
      */
     private boolean isAiming;
+    private String aimingEnemyName;
 
     /**
      * This method should be trigger when the robot starts to aim (but not fire the bullet yet)
      * @param gunStrategy
      * @param bulletPower
      */
-    public void saveSateAimGun(GunStrategy gunStrategy, double bulletPower) {
+    public void saveSateAimGun(GunStrategy gunStrategy, double bulletPower, String aimingEnemyName) {
         this.gunStrategy = gunStrategy;
         this.bulletPower = bulletPower;
         this.isAiming = true;
+        this.aimingEnemyName = aimingEnemyName;
     }
 
     /**
@@ -34,6 +36,7 @@ public class GunStateContext {
      */
     public void saveStateFinishedAiming() {
         this.isAiming = false;
+        this.aimingEnemyName = null;
         /* After finish aiming, we don't reset the gunStrategy because the robot may still use the same strategy */
     }
 
@@ -47,5 +50,10 @@ public class GunStateContext {
 
     public boolean isAiming() {
         return isAiming;
+    }
+
+
+    public String getAimingEnemyName() {
+        return aimingEnemyName;
     }
 }
