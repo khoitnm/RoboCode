@@ -16,6 +16,8 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     private TheUnfoldingRadar theUnfoldingRadar = new TheUnfoldingRadar(this, allEnemiesObservationContext);
     private TheUnfoldingGun theUnfoldingGun = new TheUnfoldingGun(this, allEnemiesObservationContext);
 
+
+
     @Override
     public void run() {
         HiTechDecorator.decorate(this);
@@ -88,5 +90,10 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     @Override
     public void onWin(WinEvent winEvent) {
         theUnfoldingGun.onWin(winEvent);
+    }
+
+    @Override
+    public void onBulletHit(BulletHitEvent event) {
+        theUnfoldingGun.onBulletHit(event);
     }
 }

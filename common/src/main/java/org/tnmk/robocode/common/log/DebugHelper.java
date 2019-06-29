@@ -2,6 +2,7 @@ package org.tnmk.robocode.common.log;
 
 import java.awt.Color;
 import java.util.stream.Collectors;
+import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
@@ -30,6 +31,10 @@ public class DebugHelper {
     }
 
     private static boolean isDebugGunGFT() {
+        return false;
+    }
+
+    private static boolean isDebugEnemyStatistic() {
         return false;
     }
 
@@ -89,6 +94,15 @@ public class DebugHelper {
     public static void debugGFTGunNotInRange(AdvancedRobot robot) {
         if (isDebugGunGFT()) {
             robot.setBodyColor(Color.RED);
+        }
+    }
+
+    public static void debugEnemyStatisticContext(AdvancedRobot robot, String enemyName, EnemyStatisticContext enemyStatisticContext) {
+        if (isDebugEnemyStatistic()){
+            LogHelper.logSimple(robot, "Enemy: " + enemyName
+                    + "\n\t\t Pattern: " + enemyStatisticContext.getPatternIdentification()
+                    + "\n\t\t predictionHistory: \t" + enemyStatisticContext.getEnemyPredictionHistory().getAllHistoryItems()
+            );
         }
     }
 }
