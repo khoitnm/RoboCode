@@ -15,7 +15,7 @@ public class MoveAreaHelper {
      * @param expectDiagonal
      * @return empty if there's no item in the history
      */
-    public static Optional<Boolean> isMoveAreaHistoryLarger(History<AdvanceRobotState> robotHistory, long currentTime, int timePeriod, double expectDiagonal) {
+    public static Optional<Boolean> isMoveAreaHistoryLarger(History<? extends AdvanceRobotState> robotHistory, long currentTime, int timePeriod, double expectDiagonal) {
         Optional<Rectangle2D> moveArea = RobotHistoryUtils.reckonMoveAreaInRecentPeriod(robotHistory, currentTime, timePeriod);
         if (moveArea.isPresent()) {
             double actualDiagonal = GeoMathUtils.calculateDiagonal(moveArea.get());
