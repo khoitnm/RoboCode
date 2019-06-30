@@ -1,5 +1,6 @@
 package org.tnmk.robocode.common.constant;
 
+import robocode.Robot;
 import robocode.Rules;
 
 /**
@@ -26,6 +27,7 @@ public class RobotPhysics {
     public static final double ROBOT_ACCELERATION = 1;
     /**
      * The full size of a robot.
+     * Note: if you look at {@link Robot#getWidth()}, the value is 36
      */
     public static final double ROBOT_SIZE = 50;
 
