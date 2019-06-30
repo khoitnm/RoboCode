@@ -47,21 +47,22 @@ http://robowiki.net/wiki/Robocode/Running_from_Eclipse
 #### In Intellij
 In Intellij > on the menu bar > Run > Edit Configurations
     ![Alt text](docs/images/SetUpYourRobotInIntelliJ.png?raw=true "Edit Configurations")
+Then run your application, it will start the RoboCode game.
 
-Then run your application:
+#### In RoboCode game:
 At this time, when you starting a battle, you won't see your robot because you haven't imported it into the game yet. To do that, follow these steps:
-In RoboCode game:
  - On the menu bar > Options > Preferences > Development Options: Add the path to the folder storing your robot's build classes: for example: `$YOUR_ROBOTS_PROJECT_FOLDER/the-unfolding-robot/target/classes`
  - Now, starting a new battle (menu bar > Battle > New), you will see your robot.
 
-### Prerequisite steps to run your new robot
+### Steps to create your new robot
 - http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Project
 - http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Robot
 - http://robowiki.net/wiki/Robocode/Add_a_Robot_Project
 - http://robowiki.net/wiki/Robocode/Running_from_Eclipse
 - http://robowiki.net/wiki/Robocode/Developers_Guide_for_building_Robocode
 
-**The correct setup of your Robot in your source code project:**
+**The summary setup to package your Robot to a jar file:**
+Instead of starting your RoboCode from IntelliJ, you make want to package your bot into a jar file and share with your friend. To do that, your bot must follow the below structure:
 - robot package name: 
     - You can use any name here
     - For example: `org.tnmk.robocode.robot`
@@ -71,7 +72,7 @@ In RoboCode game:
     - For example: `BeginnerBasicRobot` (in package `org.tnmk.robocode.robot`)
 - properties:
     - This file describes what should be the main class of Robot.  
-    - At the same package and have the same name of robot's class.
+    - Put it at the same package in `/resources` folder and have the same name of robot's class.
     - For example: `org.tnmk.robocode.robot.BeginnerBasicRobot.properties`
 - build jar:
     - The final jar file must have the same name of robot's name 
