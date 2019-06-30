@@ -39,6 +39,8 @@ import robocode.util.Utils;
  */
 public class AntiGravityMoveController implements ResetableMoveController, InitiableRun, OnScannedRobotControl, LoopableRun {
 
+
+
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final MovementContext movementContext;
@@ -48,6 +50,7 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
 
     private final UTurnMoveController uTurnMoveController;
 
+    private Rectangle2D battleField;
     private MoveController moveTactic = null;
     private long startTime = Long.MIN_VALUE;
 
@@ -63,6 +66,7 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
     public void runInit() {
         double battleWidth = robot.getBattleFieldWidth();
         double battleHeight = robot.getBattleFieldHeight();
+        this.battleField = new Rectangle2D.Double(0, 0, battleWidth, battleHeight);
         double safePaddingMovementDistance = RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE;
 
 
@@ -106,17 +110,19 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
             Point2D force = reckonForce(this.calculationContext, this.robot, this.allEnemiesObservationContext);
             Point2D destination = Point2DUtils.plus(robotPosition, force);
 
-            Point2D avoidWallDestination = Move2DUtils.reckonMaximumDestination(robotPosition, destination, calculationContext.getSafeMovementArea());
-            Point2D finalDestination = avoidWallDestination;
+            destination = Move2DUtils.reckonMaximumDestination(robotPosition, destination, calculationContext.getSafeMovementArea());
+            destination = AvoidOneAreaTooLongMoveHelper.avoidMovingInOneAreaForTooLong(robot, battleField, movementContext, allEnemiesObservationContext.getEnemies(), destination);
 
-            AntiGravityPainterUtils.paintFinalDestination(robot, finalDestination);
+            AntiGravityPainterUtils.paintFinalDestination(robot, destination);
             movementContext.changeMoveStrategy(MoveStrategy.ANTI_GRAVITY, this);
 
 //            decideMovementWayRandomly(finalDestination);
-            decideMovementWayBySafeArea(finalDestination);
+            decideMovementWayBySafeArea(destination);
             this.startTime = robot.getTime();
         }
     }
+
+
 
     private void decideMovementWayRandomly(Point2D finalDestination) {
         if (Math.random() < 0.4) {

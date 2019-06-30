@@ -23,6 +23,9 @@ public class AllEnemiesObservationContext {
     private static final long CONSIDER_OUTDATED_PERIOD = 16 * 5;//5 times of full scan.
     private final AdvancedRobot robot;
 
+    /**
+     * Store the latest information about enemy map by name
+     */
     private final Map<String, Enemy> enemiesMapByName = Collections.synchronizedMap(new HashMap<>());
     private final Map<String, EnemyStatisticContext> enemiesPatternPredictionsMapByName = Collections.synchronizedMap(new HashMap<>());
 

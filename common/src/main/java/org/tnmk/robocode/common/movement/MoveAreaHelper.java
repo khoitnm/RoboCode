@@ -15,13 +15,33 @@ public class MoveAreaHelper {
      * @param expectDiagonal
      * @return empty if there's no item in the history
      */
-    public static Optional<Boolean> isMoveAreaHistoryLarger(History<? extends AdvanceRobotState> robotHistory, long currentTime, int timePeriod, double expectDiagonal) {
+    public static Optional<MoveAreaTooLongResult> isMoveAreaHistoryLarger(History<? extends AdvanceRobotState> robotHistory, long currentTime, int timePeriod, double expectDiagonal) {
         Optional<Rectangle2D> moveArea = RobotHistoryUtils.reckonMoveAreaInRecentPeriod(robotHistory, currentTime, timePeriod);
         if (moveArea.isPresent()) {
             double actualDiagonal = GeoMathUtils.calculateDiagonal(moveArea.get());
-            return Optional.of(actualDiagonal > expectDiagonal);
+            boolean isTooLong =actualDiagonal > expectDiagonal;
+            MoveAreaTooLongResult result = new MoveAreaTooLongResult(moveArea.get(), isTooLong);
+            return Optional.of(result);
         } else {
             return Optional.empty();
+        }
+    }
+
+    public static class MoveAreaTooLongResult{
+        private final Rectangle2D moveArea;
+        private final boolean isTooLong;
+
+        public MoveAreaTooLongResult(Rectangle2D moveArea, boolean isTooLong) {
+            this.moveArea = moveArea;
+            this.isTooLong = isTooLong;
+        }
+
+        public Rectangle2D getMoveArea() {
+            return moveArea;
+        }
+
+        public boolean isTooLong() {
+            return isTooLong;
         }
     }
 }
