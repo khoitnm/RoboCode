@@ -47,10 +47,10 @@ http://robowiki.net/wiki/Robocode/Running_from_Eclipse
 #### In Intellij
 In Intellij > on the menu bar > Run > Edit Configurations
     ![Alt text](docs/images/SetUpYourRobotInIntelliJ.png?raw=true "Edit Configurations")
+Then run your application, it will start the RoboCode game.
 
-Then run your application:
+#### In RoboCode game:
 At this time, when you starting a battle, you won't see your robot because you haven't imported it into the game yet. To do that, follow these steps:
-In RoboCode game:
  - On the menu bar > Options > Preferences > Development Options: Add the path to the folder storing your robot's build classes: for example: `$YOUR_ROBOTS_PROJECT_FOLDER/the-unfolding-robot/target/classes`
  - Now, starting a new battle (menu bar > Battle > New), you will see your robot.
 
