@@ -8,6 +8,13 @@ import robocode.*;
 import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
 
 public class MockAdvanceRobotPeer implements IAdvancedRobotPeer {
+    private static final double GUN_COOLING_RATE = 0.1;
+    private static final int MOCK_SENTRY_BORDER_SIZE = 0;
+    private static final int MOCK_NUM_ROUNDS = 20;
+    /**
+     * This is the size for both width and height
+     */
+    private static final double MOCK_BATTLE_FIELD_SIZE = 1200;
     private String name;
     private long time;
 
@@ -32,14 +39,6 @@ public class MockAdvanceRobotPeer implements IAdvancedRobotPeer {
     private int others;
     private int numSentries;
     private int roundNum;
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
 
     public double getMaxVelocity() {
         return maxVelocity;
@@ -155,8 +154,18 @@ public class MockAdvanceRobotPeer implements IAdvancedRobotPeer {
     }
 
     @Override
+    public void setMaxTurnRate(double maxTurnRate) {
+        this.maxTurnRate = maxTurnRate;
+    }
+
+    @Override
     public boolean isAdjustGunForBodyTurn() {
         return true;
+    }
+
+    @Override
+    public void setAdjustGunForBodyTurn(boolean b) {
+
     }
 
     @Override
@@ -165,8 +174,18 @@ public class MockAdvanceRobotPeer implements IAdvancedRobotPeer {
     }
 
     @Override
+    public void setAdjustRadarForGunTurn(boolean b) {
+
+    }
+
+    @Override
     public boolean isAdjustRadarForBodyTurn() {
         return true;
+    }
+
+    @Override
+    public void setAdjustRadarForBodyTurn(boolean b) {
+
     }
 
     @Override
@@ -198,10 +217,6 @@ public class MockAdvanceRobotPeer implements IAdvancedRobotPeer {
     public void setTurnRadar(double v) {
 
     }
-    @Override
-    public void setMaxTurnRate(double maxTurnRate) {
-        this.maxTurnRate = maxTurnRate;
-    }
 
     @Override
     public String getName() {
@@ -225,60 +240,13 @@ public class MockAdvanceRobotPeer implements IAdvancedRobotPeer {
         return velocity;
     }
 
-    @Override
-    public double getBodyHeading() {
-        return this.bodyHeading;
-    }
-
     public void setVelocity(double velocity) {
         this.velocity = velocity;
     }
 
     @Override
-    public double getEnergy() {
-        return energy;
-    }
-
-    @Override
-    public double getX() {
-        return this.x;
-    }
-
-    @Override
-    public double getY() {
-        return this.y;
-    }
-
-    public void setEnergy(double energy) {
-        this.energy = energy;
-    }
-
-    @Override
-    public double getGunHeat() {
-        return gunHeat;
-    }
-
-    @Override
-    public double getBattleFieldWidth() {
-        return 1200;
-    }
-
-    @Override
-    public double getBattleFieldHeight() {
-        return 1200;
-    }
-
-    public void setGunHeat(double gunHeat) {
-        this.gunHeat = gunHeat;
-    }
-
-    public double getDistanceRemaining() {
-        return distanceRemaining;
-    }
-
-
-    public void setBodyTurnRemaining(double bodyTurnRemaining) {
-        this.bodyTurnRemaining = bodyTurnRemaining;
+    public double getBodyHeading() {
+        return this.bodyHeading;
     }
 
     public void setBodyHeading(double bodyHeading) {
@@ -286,12 +254,66 @@ public class MockAdvanceRobotPeer implements IAdvancedRobotPeer {
     }
 
     @Override
-    public double getBodyTurnRemaining() {
-        return this.bodyTurnRemaining;
+    public double getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(double energy) {
+        this.energy = energy;
+    }
+
+    @Override
+    public double getX() {
+        return this.x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    @Override
+    public double getY() {
+        return this.y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    @Override
+    public double getGunHeat() {
+        return gunHeat;
+    }
+
+    public void setGunHeat(double gunHeat) {
+        this.gunHeat = gunHeat;
+    }
+
+    @Override
+    public double getBattleFieldWidth() {
+        return MOCK_BATTLE_FIELD_SIZE;
+    }
+
+    @Override
+    public double getBattleFieldHeight() {
+        return MOCK_BATTLE_FIELD_SIZE;
+    }
+
+    public double getDistanceRemaining() {
+        return distanceRemaining;
     }
 
     public void setDistanceRemaining(double distanceRemaining) {
         this.distanceRemaining = distanceRemaining;
+    }
+
+    @Override
+    public double getBodyTurnRemaining() {
+        return this.bodyTurnRemaining;
+    }
+
+    public void setBodyTurnRemaining(double bodyTurnRemaining) {
+        this.bodyTurnRemaining = bodyTurnRemaining;
     }
 
     @Override
@@ -302,9 +324,14 @@ public class MockAdvanceRobotPeer implements IAdvancedRobotPeer {
     public void setGunTurnRemaining(double gunTurnRemaining) {
         this.gunTurnRemaining = gunTurnRemaining;
     }
+
     @Override
     public double getRadarTurnRemaining() {
         return radarTurnRemaining;
+    }
+
+    public void setRadarTurnRemaining(double radarTurnRemaining) {
+        this.radarTurnRemaining = radarTurnRemaining;
     }
 
     @Override
@@ -387,10 +414,6 @@ public class MockAdvanceRobotPeer implements IAdvancedRobotPeer {
 
     }
 
-    public void setRadarTurnRemaining(double radarTurnRemaining) {
-        this.radarTurnRemaining = radarTurnRemaining;
-    }
-
     @Override
     public double getGunHeading() {
         return gunHeading;
@@ -417,38 +440,39 @@ public class MockAdvanceRobotPeer implements IAdvancedRobotPeer {
     public void setOthers(int others) {
         this.others = others;
     }
+
     @Override
     public int getNumSentries() {
         return numSentries;
     }
 
-    @Override
-    public int getNumRounds() {
-        return 0;
-    }
-
     public void setNumSentries(int numSentries) {
         this.numSentries = numSentries;
     }
+
+    @Override
+    public int getNumRounds() {
+        return MOCK_NUM_ROUNDS;
+    }
+
     @Override
     public int getRoundNum() {
         return roundNum;
-    }
-
-    @Override
-    public int getSentryBorderSize() {
-        return 0;
-    }
-
-    @Override
-    public double getGunCoolingRate() {
-        return 0;
     }
 
     public void setRoundNum(int roundNum) {
         this.roundNum = roundNum;
     }
 
+    @Override
+    public int getSentryBorderSize() {
+        return MOCK_SENTRY_BORDER_SIZE;
+    }
+
+    @Override
+    public double getGunCoolingRate() {
+        return GUN_COOLING_RATE;
+    }
 
     @Override
     public void stop(boolean b) {
@@ -462,21 +486,6 @@ public class MockAdvanceRobotPeer implements IAdvancedRobotPeer {
 
     @Override
     public void turnRadar(double v) {
-
-    }
-
-    @Override
-    public void setAdjustGunForBodyTurn(boolean b) {
-
-    }
-
-    @Override
-    public void setAdjustRadarForGunTurn(boolean b) {
-
-    }
-
-    @Override
-    public void setAdjustRadarForBodyTurn(boolean b) {
 
     }
 }

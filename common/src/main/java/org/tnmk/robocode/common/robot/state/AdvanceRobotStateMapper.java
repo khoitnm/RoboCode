@@ -11,6 +11,7 @@ public class AdvanceRobotStateMapper {
         state.setPosition(new Point2D.Double(robot.getX(), robot.getY()));
         state.setEnergy(robot.getEnergy());
 
+        state.setVelocity(robot.getVelocity());
         state.setHeading(robot.getHeading());
         state.setRadarHeading(robot.getRadarHeading());
         state.setGunHeading(robot.getGunHeading());
