@@ -61,7 +61,8 @@ At this time, when you starting a battle, you won't see your robot because you h
 - http://robowiki.net/wiki/Robocode/Running_from_Eclipse
 - http://robowiki.net/wiki/Robocode/Developers_Guide_for_building_Robocode
 
-**The summary setup of your Robot in your source code project:**
+**The summary setup to package your Robot to a jar file:**
+Instead of starting your RoboCode from IntelliJ, you make want to package your bot into a jar file and share with your friend. To do that, your bot must follow the below structure:
 - robot package name: 
     - You can use any name here
     - For example: `org.tnmk.robocode.robot`
@@ -71,7 +72,7 @@ At this time, when you starting a battle, you won't see your robot because you h
     - For example: `BeginnerBasicRobot` (in package `org.tnmk.robocode.robot`)
 - properties:
     - This file describes what should be the main class of Robot.  
-    - At the same package and have the same name of robot's class.
+    - Put it at the same package in `/resources` folder and have the same name of robot's class.
     - For example: `org.tnmk.robocode.robot.BeginnerBasicRobot.properties`
 - build jar:
     - The final jar file must have the same name of robot's name 
