@@ -54,14 +54,14 @@ At this time, when you starting a battle, you won't see your robot because you h
  - On the menu bar > Options > Preferences > Development Options: Add the path to the folder storing your robot's build classes: for example: `$YOUR_ROBOTS_PROJECT_FOLDER/the-unfolding-robot/target/classes`
  - Now, starting a new battle (menu bar > Battle > New), you will see your robot.
 
-### Prerequisite steps to run your new robot
+### Steps to create your new robot
 - http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Project
 - http://robowiki.net/wiki/Robocode/Eclipse/Create_a_Robot
 - http://robowiki.net/wiki/Robocode/Add_a_Robot_Project
 - http://robowiki.net/wiki/Robocode/Running_from_Eclipse
 - http://robowiki.net/wiki/Robocode/Developers_Guide_for_building_Robocode
 
-**The correct setup of your Robot in your source code project:**
+**The summary setup of your Robot in your source code project:**
 - robot package name: 
     - You can use any name here
     - For example: `org.tnmk.robocode.robot`
