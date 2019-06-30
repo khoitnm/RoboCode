@@ -13,6 +13,21 @@ public class AdvanceRobotStateMapperTest {
 
         AdvanceRobotState state = AdvanceRobotStateMapper.toState(robot);
 
+        assertEqualsState(robot, state);
+    }
+
+    @Test
+    public void testFightStateMapper() {
+        AdvancedRobot robot = AdvanceRobotFactory.constructAdvanceRobot();
+
+        AdvanceRobotFightState state = AdvanceRobotStateMapper.toFightState(robot);
+
+        assertEqualsState(robot, state);
+        Assert.assertFalse(state.isHitByBullet());
+        Assert.assertFalse(state.isHitByEnemy());
+    }
+
+    private void assertEqualsState(AdvancedRobot robot, AdvanceRobotState state) {
         Assert.assertEquals(robot.getName(), state.getName());
         Assert.assertEquals(robot.getTime(), state.getTime(), DOUBLE_COMPARE_PRECISION);
         Assert.assertEquals(robot.getEnergy(), state.getEnergy(), DOUBLE_COMPARE_PRECISION);
@@ -33,7 +48,5 @@ public class AdvanceRobotStateMapperTest {
         Assert.assertEquals(robot.getOthers(), state.getOthers());
         Assert.assertEquals(robot.getRoundNum(), state.getRoundNum());
         Assert.assertEquals(robot.getNumSentries(), state.getNumSentries());
-
     }
-
 }

@@ -4,8 +4,7 @@ import java.awt.geom.Point2D;
 import robocode.AdvancedRobot;
 
 public class AdvanceRobotStateMapper {
-    public static AdvanceRobotState toState(AdvancedRobot robot) {
-        AdvanceRobotState state = new AdvanceRobotState();
+    public static void copyState(AdvancedRobot robot, AdvanceRobotState state) {
         state.setName(robot.getName());
         state.setTime(robot.getTime());
         state.setPosition(new Point2D.Double(robot.getX(), robot.getY()));
@@ -25,6 +24,16 @@ public class AdvanceRobotStateMapper {
         state.setOthers(robot.getOthers());
         state.setNumSentries(robot.getNumSentries());
         state.setRoundNum(robot.getRoundNum());
+    }
+
+    public static AdvanceRobotState toState(AdvancedRobot robot) {
+        AdvanceRobotState state = new AdvanceRobotState();
+        copyState(robot, state);
+        return state;
+    }
+    public static AdvanceRobotFightState toFightState(AdvancedRobot robot) {
+        AdvanceRobotFightState state = new AdvanceRobotFightState();
+        copyState(robot, state);
         return state;
     }
 }

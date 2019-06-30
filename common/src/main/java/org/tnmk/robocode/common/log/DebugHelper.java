@@ -101,7 +101,7 @@ public class DebugHelper {
         if (isDebugEnemyStatistic()){
             LogHelper.logSimple(robot, "Enemy: " + enemyName
                     + "\n\t\t Pattern: " + enemyStatisticContext.getPatternIdentification()
-                    + "\n\t\t predictionHistory: \t" + enemyStatisticContext.getEnemyPredictionHistory().getAllHistoryItems()
+                    + "\n\t\t predictionHistory: \t" + enemyStatisticContext.getEnemyPredictionHistory().getAllHistoryItemsIterable()
             );
         }
     }

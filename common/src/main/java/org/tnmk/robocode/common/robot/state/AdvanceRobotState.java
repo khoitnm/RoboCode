@@ -20,7 +20,6 @@ public class AdvanceRobotState {
     private double gunTurnRemaining;
     private double radarTurnRemaining;
 
-
     private int others;
     private int numSentries;
     private int roundNum;
