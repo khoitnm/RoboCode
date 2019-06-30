@@ -17,7 +17,6 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     private TheUnfoldingGun theUnfoldingGun = new TheUnfoldingGun(this, allEnemiesObservationContext);
 
 
-
     @Override
     public void run() {
         HiTechDecorator.decorate(this);
@@ -69,16 +68,17 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     }
 
     @Override
-    public void onHitRobot(HitRobotEvent hitRobotEvent){
+    public void onHitRobot(HitRobotEvent hitRobotEvent) {
         theUnfoldingMovement.onHitRobot(hitRobotEvent);
     }
 
     @Override
-    public void onStatus(StatusEvent statusEvent){
+    public void onStatus(StatusEvent statusEvent) {
         theUnfoldingMovement.onStatus(statusEvent);
     }
+
     @Override
-    public void onHitWall(HitWallEvent hitWallEvent){
+    public void onHitWall(HitWallEvent hitWallEvent) {
         theUnfoldingMovement.onHitWall(hitWallEvent);
     }
 
@@ -95,5 +95,6 @@ public class TheUnfoldingRobot extends AdvancedRobot {
     @Override
     public void onBulletHit(BulletHitEvent event) {
         theUnfoldingGun.onBulletHit(event);
+        theUnfoldingMovement.onBulletHit(event);
     }
 }

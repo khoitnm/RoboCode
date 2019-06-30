@@ -2,6 +2,10 @@ package org.tnmk.robocode.common.robot.state;
 
 import java.awt.geom.Point2D;
 
+/**
+ * @deprecated we should use {@link robocode.RobotStatus} instead.
+ */
+@Deprecated
 public class AdvanceRobotState {
     private String name;
     private long time;

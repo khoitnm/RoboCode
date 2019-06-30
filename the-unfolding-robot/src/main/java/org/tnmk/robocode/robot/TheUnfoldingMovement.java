@@ -13,10 +13,12 @@ import org.tnmk.robocode.common.movement.strategy.wallsmooth.WallSmoothMoveContr
 import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.*;
+import org.tnmk.robocode.common.robot.state.AdvanceRobotFightState;
+import org.tnmk.robocode.common.robot.state.AdvanceRobotStateMapper;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.*;
 
-public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScannedRobotControl, OnHitRobotControl, OnStatusControl, OnCustomEventControl {
+public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScannedRobotControl, OnHitRobotControl, OnStatusControl, OnCustomEventControl, OnBulletHitControl {
     public static final double IDEAL_ENEMY_OSCILLATOR_DISTANCE = 150;
 
     private final AdvancedRobot robot;
@@ -92,6 +94,7 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
     @Override
     public void onStatus(StatusEvent statusEvent) {
         DebugHelper.debugStateMoveStrategy(robot, movementContext);
+        saveRobotStatus(robot, movementContext);
 //        LogHelper.logRobotMovement(robot, "current movement state");
         RobotStatus status = statusEvent.getStatus();
         Point2D robotPosition = new Point2D.Double(status.getX(), status.getY());
@@ -115,6 +118,15 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
         }
     }
 
+
+    private void saveRobotStatus(AdvancedRobot robot, MovementContext movementContext) {
+        if (isLatestStateHistorySameAtThisTime(movementContext, robot.getTime())) {
+            return;//We already added it, don't need to add anymore.
+        }
+        AdvanceRobotFightState advanceRobotFightState = AdvanceRobotStateMapper.toFightState(robot);
+        movementContext.getRobotHistory().addToHistory(advanceRobotFightState);
+    }
+
     public void onHitWall(HitWallEvent hitWallEvent) {
         runAwayMoveController.onHitWall(hitWallEvent);
     }
@@ -122,5 +134,26 @@ public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScanne
     @Override
     public void onCustomEvent(CustomEvent customEvent) {
         wallSmoothMoveController.onCustomEvent(customEvent);
+    }
+
+    private static boolean isLatestStateHistorySameAtThisTime(MovementContext movementContext, long time) {
+        if (!movementContext.getRobotHistory().isEmpty()) {
+            AdvanceRobotFightState latestState = movementContext.getRobotHistory().getLatestHistoryItem();
+            return latestState.getTime() == time;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void onBulletHit(BulletHitEvent event) {
+        AdvanceRobotFightState latestState;
+        if (isLatestStateHistorySameAtThisTime(movementContext, robot.getTime())) {
+            latestState = movementContext.getRobotHistory().getLatestHistoryItem();
+        } else {
+            latestState = AdvanceRobotStateMapper.toFightState(robot);
+            movementContext.getRobotHistory().addToHistory(latestState);
+        }
+        latestState.setHitByBullet(true);
     }
 }

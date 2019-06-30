@@ -68,4 +68,8 @@ public class History<T> {
         int actualItemsCount = Math.min(historyItemsCount, historyItems.size());
         return historyItems.subList(0, actualItemsCount);
     }
+
+    public boolean isEmpty() {
+        return historyItems.isEmpty();
+    }
 }
