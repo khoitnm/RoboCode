@@ -7,6 +7,10 @@ import java.util.List;
 import robocode.*;
 import robocode.robotinterfaces.peer.IAdvancedRobotPeer;
 
+/**
+ * This class is used to set testing data into {@link AdvancedRobot}.
+ * The reason we need this class is {@link AdvancedRobot} doesn't provide any setters methods for setting test data.
+ */
 public class MockAdvanceRobotPeer implements IAdvancedRobotPeer {
     private static final double GUN_COOLING_RATE = 0.1;
     private static final int MOCK_SENTRY_BORDER_SIZE = 0;
