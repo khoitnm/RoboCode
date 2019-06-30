@@ -194,4 +194,9 @@ public final class GeoMathUtils {
         double xC = ((yC - pointA.getY()) / (pointB.getY() - pointA.getY()) * (pointB.getX() - pointA.getX())) + pointA.getX();
         return xC;
     }
+
+    public static double calculateDiagonal(Rectangle2D rectangle){
+        double diagonal = Math.sqrt(Math.pow(rectangle.getWidth(), 2)+Math.pow(rectangle.getHeight(), 2));
+        return diagonal;
+    }
 }

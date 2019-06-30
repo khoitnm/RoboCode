@@ -4,6 +4,8 @@ import java.awt.geom.Point2D;
 import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.log.LogHelper;
+import org.tnmk.robocode.common.model.enemy.History;
+import org.tnmk.robocode.common.robot.state.AdvanceRobotFightState;
 import robocode.AdvancedRobot;
 import robocode.StatusEvent;
 
@@ -14,9 +16,11 @@ import robocode.StatusEvent;
  * This object should be managed by some composition moveController class such as TheUnfoldingMovement.
  */
 public class MovementContext {
+    public static final int HISTORY_SIZE = 500;
+
     private final AdvancedRobot robot;
+    private final History<AdvanceRobotFightState> robotHistory = new History<>(HISTORY_SIZE);
     private MoveStrategy moveStrategy = MoveStrategy.NONE;
-//    private MoveTactic moveTactic = MoveTactic.NONE;
     private MoveController moveController = null;
     /**
      * This value should be constantly updated every tick by {@link robocode.Robot#onStatus(StatusEvent)}.
@@ -132,12 +136,8 @@ public class MovementContext {
         boolean result = hasLowerOrEqualPriority(moveStrategy) && moveStrategy != this.moveStrategy;
         return result;
     }
-//
-//    public MoveTactic getMoveTactic() {
-//        return moveTactic;
-//    }
-//
-//    public void setMoveTactic(MoveTactic moveTactic) {
-//        this.moveTactic = moveTactic;
-//    }
+
+    public History<AdvanceRobotFightState> getRobotHistory() {
+        return robotHistory;
+    }
 }
