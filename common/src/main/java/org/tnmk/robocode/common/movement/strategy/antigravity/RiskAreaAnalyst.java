@@ -14,9 +14,8 @@ public class RiskAreaAnalyst {
      */
     public static final int RISK_LEVEL_COEFFICIENT = 10;
 
-    public static List<RiskArea> findLeastRiskyArea(Rectangle2D battleField, Collection<Enemy> enemies) {
-        List<RiskArea> areas = analyzeAreaRisks(battleField, NUM_OF_ANALYST_LEVELS, enemies);
-        return findLeastRiskyArea(areas);
+    public static List<RiskArea> analyzeRiskAreas(Rectangle2D battleField, Collection<Enemy> enemies){
+        return analyzeAreaRisks(battleField, NUM_OF_ANALYST_LEVELS, enemies);
     }
 
     /**
@@ -24,7 +23,7 @@ public class RiskAreaAnalyst {
      * @param numAnalystLevels for each level, each side of the area will be split into 2. It must be less than 10.
      * @return
      */
-    public static List<RiskArea> analyzeAreaRisks(Rectangle2D battleField, int numAnalystLevels, Collection<Enemy> enemies) {
+    private static List<RiskArea> analyzeAreaRisks(Rectangle2D battleField, int numAnalystLevels, Collection<Enemy> enemies) {
         double initRisk = 0;
         int initAnalystLevel = 0;
         List<RiskArea> analyzedArea = analyzeAreaRisks(battleField, initRisk, initAnalystLevel, numAnalystLevels, enemies);
@@ -79,7 +78,7 @@ public class RiskAreaAnalyst {
     }
 
 
-    private static List<RiskArea> findLeastRiskyArea(List<RiskArea> areas) {
+    public static List<RiskArea> findLeastRiskyArea(List<RiskArea> areas) {
         List<RiskArea> leastRiskAreas = ListUtils.findLeastValueItems(areas, RiskArea::getRisk);
         return leastRiskAreas;
     }

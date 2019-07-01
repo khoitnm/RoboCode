@@ -4,9 +4,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.List;
-import org.tnmk.common.collection.ListUtils;
 import org.tnmk.common.math.GeoMathUtils;
-import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.movement.MoveAreaHelper;
@@ -47,14 +45,11 @@ public class AvoidOneAreaTooLongMoveHelper {
      * @return
      */
     private static Point2D findDestinationOutsideArea(Rectangle2D battleField, Rectangle2D tooLongMoveArea, Collection<Enemy> enemies) {
-        List<RiskArea> leastRiskyAreas = RiskAreaAnalyst.findLeastRiskyArea(battleField, enemies);
-        List<Rectangle2D> newParts = excludeTooLongMoveArea(leastRiskyAreas, tooLongMoveArea);
-        Point2D destination = findBestDestinationInParts(newParts);
+        List<RiskArea> analyzedRiskAreas = RiskAreaAnalyst.analyzeRiskAreas(battleField, enemies);
+        List<RiskArea> excludedOldAreas = RiskAreaHelper.excludeAreas(analyzedRiskAreas, tooLongMoveArea);
+        List<RiskArea> leastRiskAreas = RiskAreaAnalyst.findLeastRiskyArea(excludedOldAreas);
+        Point2D destination = findBestDestinationInParts(leastRiskAreas);
         return destination;
     }
 
-    private static List<Rectangle2D> splitToParts(Rectangle2D rectangle2D, int dividend) {
-        Rectangle2D[][] parts = BattleFieldUtils.splitToParts(rectangle2D, 2, 2);
-        return ListUtils.toList(parts);
-    }
 }
