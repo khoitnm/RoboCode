@@ -22,7 +22,7 @@ public class AgainstBlackPearlTest extends AbstractWinRateTest {
          *      Run 2000 rounds: win 64.05%, 65.7%
          * - v2.4.2: Apply uTurn: 2000 rounds: 63.65%
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.6, TestRounds.NUM_ROUNDS_QUICK);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.6, TestRounds.NUM_ROUNDS_CERTAINTY);
         return testConfig;
     }
 }

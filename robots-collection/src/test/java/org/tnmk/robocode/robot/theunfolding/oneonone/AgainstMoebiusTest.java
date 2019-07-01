@@ -21,7 +21,7 @@ public class AgainstMoebiusTest extends AbstractWinRateTest {
          *      2000 rounds: 98.55%
          * - v2.4.2: Apply uTurn: 1000 rounds: 97.3%
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.9, TestRounds.NUM_ROUNDS_QUICK);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.9, TestRounds.NUM_ROUNDS_CERTAINTY);
         return testConfig;
     }
 }
