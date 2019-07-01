@@ -99,23 +99,26 @@ public class LogHelper {
     }
 
     public static String appendGitInfo(String message) {
-        return String.format("BuildNumber: %s\t GitRevision: %s\t %s", getBuildNumber(), getGitRevision(), message);
+        return String.format("%s\t %s\t %s\t %s", message, getBuildNumber(), getGitRevision(), getGitTag());
+    }
+
+    private static Object getGitTag() {
+        return getProjectPropertyIfExist("git.tag");
     }
 
     private static String getBuildNumber() {
-        if (PropertiesReader.PROJECT_PROPERTIES.isPresent()) {
-            return PropertiesReader.PROJECT_PROPERTIES.get().getProperty("git.build.number");
-        } else {
-            return "";
-        }
+        return getProjectPropertyIfExist("git.build.number");
     }
 
     private static String getGitRevision() {
+        return getProjectPropertyIfExist("git.revision");
+    }
+
+    private static String getProjectPropertyIfExist(String property) {
         if (PropertiesReader.PROJECT_PROPERTIES.isPresent()) {
-            return PropertiesReader.PROJECT_PROPERTIES.get().getProperty("git.revision");
+            return PropertiesReader.PROJECT_PROPERTIES.get().getProperty(property);
         } else {
             return "";
         }
-
     }
 }

@@ -40,7 +40,6 @@ import robocode.util.Utils;
 public class AntiGravityMoveController implements ResetableMoveController, InitiableRun, OnScannedRobotControl, LoopableRun {
 
 
-
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final MovementContext movementContext;
@@ -102,10 +101,15 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
         if (movementContext.isNone() || movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
 
             double runPeriod = robot.getTime() - startTime;
-            if (isRunning() && runPeriod < MIN_RUN_TICKS_BEFORE_CHANGE_DESTINATION) {
-                /** Just keep running to the old destination, don't need to calculate new destination */
-                return;
-            }
+            /**
+             * //TODO investigate: This uTurnMovement condition combines runLoop() makes AgainstMoebiusAndOthersTest reduce from 70% to 50%!!! Why???
+             * //   NOTE: Disable uTurnMovement, however, will reduce AgainstSuperSampleBots01 from 68% to 53%!!!
+             * //   NOTE: The problem happens even though we didn't use uTurnMovement.
+             */
+//            if (isRunning() && runPeriod < MIN_RUN_TICKS_BEFORE_CHANGE_DESTINATION) {
+//                /** Just keep running to the old destination, don't need to calculate new destination */
+//                return;
+//            }
             Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
             Point2D force = reckonForce(this.calculationContext, this.robot, this.allEnemiesObservationContext);
             Point2D destination = Point2DUtils.plus(robotPosition, force);
@@ -121,7 +125,6 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
             this.startTime = robot.getTime();
         }
     }
-
 
 
     private void decideMovementWayRandomly(Point2D finalDestination) {
@@ -310,15 +313,20 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
 
     @Override
     public void runLoop() {
-        if (movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
-            if (moveTactic == uTurnMoveController) {
-                if (uTurnMoveController.isStopped()) {
-                    movementContext.setNone();
-                } else {
-                    uTurnMoveController.runLoop();
-                }
-            }
-        }
+        /**
+         * //TODO investigate: This uTurnMovement logic and onScannedRobot() makes AgainstMoebiusAndOthersTest reduce from 70% to 50%!!! Why???
+         * //   NOTE: Disable uTurnMovement, however, will reduce AgainstSuperSampleBots01 from 68% to 53%
+         * //   NOTE: The problem happens even though we didn't use uTurnMovement.
+         */
+//        if (movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
+//            if (moveTactic == uTurnMoveController) {
+//                if (uTurnMoveController.isStopped()) {
+//                    movementContext.setNone();
+//                } else {
+//                    uTurnMoveController.runLoop();
+//                }
+//            }
+//        }
     }
 
 

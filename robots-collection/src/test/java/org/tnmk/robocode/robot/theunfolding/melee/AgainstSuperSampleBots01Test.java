@@ -3,6 +3,7 @@ package org.tnmk.robocode.robot.theunfolding.melee;
 import java.util.Arrays;
 import java.util.List;
 import org.tnmk.robocode.robot.AbstractWinRateTest;
+import org.tnmk.robocode.robot.TestRounds;
 import org.tnmk.robocode.robot.TheUnfoldingRobot;
 import supersample.SuperCrazy;
 import supersample.SuperMercutio;
@@ -22,7 +23,7 @@ public class AgainstSuperSampleBots01Test extends AbstractWinRateTest {
          * - v2.4.1: 67.85%
          * - v2.4.2:
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.63, 2000);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.63, TestRounds.NUM_ROUNDS_ABSOLUTE_CERTAINTY);
         return testConfig;
     }
 }

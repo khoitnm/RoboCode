@@ -6,6 +6,7 @@ import mld.Moebius;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
 import org.tnmk.robocode.robot.AbstractWinRateTest;
+import org.tnmk.robocode.robot.TestRounds;
 import org.tnmk.robocode.robot.TheUnfoldingRobot;
 import pez.micro.BlackWidow;
 import wiki.mako.MakoHT;
@@ -34,7 +35,7 @@ public class AgainstMoebiusAndOthersTest extends AbstractWinRateTest {
          * View more at {@link AgainstBlackPearlAndOthersTest} to see interesting resuls.
          * Moebius' gun is good, but his gun alone cannot touch TheUnfoldingRobot!
          */
-        TestConfig testConfig  = new TestConfig(TheUnfoldingRobot.class,enemyNames, 0.57, 2000);
+        TestConfig testConfig  = new TestConfig(TheUnfoldingRobot.class,enemyNames, 0.57, TestRounds.NUM_ROUNDS_ABSOLUTE_CERTAINTY);
         return testConfig;
     }
 }

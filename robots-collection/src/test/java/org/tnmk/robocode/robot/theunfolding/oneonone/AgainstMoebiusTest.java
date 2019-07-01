@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import mld.Moebius;
 import org.tnmk.robocode.robot.AbstractWinRateTest;
+import org.tnmk.robocode.robot.TestRounds;
 import org.tnmk.robocode.robot.TheUnfoldingRobot;
 
 public class AgainstMoebiusTest extends AbstractWinRateTest {
@@ -20,7 +21,7 @@ public class AgainstMoebiusTest extends AbstractWinRateTest {
          *      2000 rounds: 98.55%
          * - v2.4.2: Apply uTurn: 1000 rounds: 97.3%
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.8, 1000);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.9, TestRounds.NUM_ROUNDS_CERTAINTY);
         return testConfig;
     }
 }

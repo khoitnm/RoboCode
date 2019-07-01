@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import jekl.mini.BlackPearl;
 import org.tnmk.robocode.robot.AbstractWinRateTest;
+import org.tnmk.robocode.robot.TestRounds;
 import org.tnmk.robocode.robot.TheUnfoldingRobot;
 
 public class AgainstBlackPearlTest extends AbstractWinRateTest {
@@ -21,7 +22,7 @@ public class AgainstBlackPearlTest extends AbstractWinRateTest {
          *      Run 2000 rounds: win 64.05%, 65.7%
          * - v2.4.2: Apply uTurn: 2000 rounds: 63.65%
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.6, 2000);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.6, TestRounds.NUM_ROUNDS_CERTAINTY);
         return testConfig;
     }
 }
