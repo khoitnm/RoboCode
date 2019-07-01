@@ -1,4 +1,4 @@
-package org.tnmk.robocode.robot.theunfolding;
+package org.tnmk.robocode.robot.theunfolding.melee;
 
 import java.util.Arrays;
 import java.util.List;
