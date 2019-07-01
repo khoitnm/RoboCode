@@ -176,7 +176,10 @@ Some example code:
 
 Set up to run this test:
  - In IntelliJ menu > Run > Edit Configurations > In VM Options, add: " -Drobocode.home=D:\SourceCode\RoboCode\robocode"
- - Or use the command line: `mvn clean install -Drobocode.home="D:\SourceCode\RoboCode\robocode"`
+ - Or use the command line: 
+    ```
+    mvn clean install -Drobocode.home="D:\SourceCode\RoboCode\robocode"
+    ```
 
 # Future improvement
 General: strategy for the end game: http://old.robowiki.net/robowiki?EndingGame:
