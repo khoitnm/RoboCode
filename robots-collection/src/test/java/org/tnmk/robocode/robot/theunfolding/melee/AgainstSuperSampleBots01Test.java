@@ -8,7 +8,7 @@ import supersample.SuperCrazy;
 import supersample.SuperMercutio;
 import supersample.SuperSpinBot;
 
-public class AgainstBestSuperSampleBotsTest extends AbstractWinRateTest {
+public class AgainstSuperSampleBots01Test extends AbstractWinRateTest {
 
     @Override
     public TestConfig constructTestConfig() {

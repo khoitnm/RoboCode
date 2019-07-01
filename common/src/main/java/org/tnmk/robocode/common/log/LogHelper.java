@@ -2,6 +2,7 @@ package org.tnmk.robocode.common.log;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import org.tnmk.common.properties.PropertiesReader;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 
@@ -95,5 +96,26 @@ public class LogHelper {
                 robot.getX(), robot.getY(),
                 message);
         robot.out.println(finalMessage);
+    }
+
+    public static String appendGitInfo(String message) {
+        return String.format("BuildNumber: %s\t GitRevision: %s\t %s", getBuildNumber(), getGitRevision(), message);
+    }
+
+    private static String getBuildNumber() {
+        if (PropertiesReader.PROJECT_PROPERTIES.isPresent()) {
+            return PropertiesReader.PROJECT_PROPERTIES.get().getProperty("git.build.number");
+        } else {
+            return "";
+        }
+    }
+
+    private static String getGitRevision() {
+        if (PropertiesReader.PROJECT_PROPERTIES.isPresent()) {
+            return PropertiesReader.PROJECT_PROPERTIES.get().getProperty("git.revision");
+        } else {
+            return "";
+        }
+
     }
 }

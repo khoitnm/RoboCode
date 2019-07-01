@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tnmk.robocode.common.log.LogHelper;
 import robocode.BattleResults;
 import robocode.Robot;
 import robocode.control.events.BattleCompletedEvent;
@@ -81,17 +82,17 @@ public abstract class AbstractBulletDamageTest extends RobotTestBed {
         BattleResults[] battleResultsArray = event.getIndexedResults();
         BattleResults battleResultsOfMyRobot = battleResultsArray[MY_ROBOT_INDEX];
 
-        double expectedBulletDamage = 90 * getNumRounds();
+        double expectedBulletDamage = testConfig.expectDamageBulletPerRound * getNumRounds();
 
         int numWinRounds = battleResultsOfMyRobot.getFirsts();
         double winRate = (double) numWinRounds / (double) getNumRounds();
 
-        String bulletDamageMessage = "Bullet Damage (" + battleResultsOfMyRobot.getBulletDamage() + ") must > than " + expectedBulletDamage;
-        logger.info(bulletDamageMessage);
+        String winRateMessage = "Actual Win: " + (winRate * 100) + "% (" + getNumRounds() + " rounds)." +
+                "\n\t Expect Win: " + (testConfig.expectWinRatio * 100) + "%";
+        logger.info(LogHelper.appendGitInfo(winRateMessage));
+        String bulletDamageMessage = "ActualBulletDamage: " + battleResultsOfMyRobot.getBulletDamage() + ". Expect: " + expectedBulletDamage;
+        logger.info(LogHelper.appendGitInfo(bulletDamageMessage));
 
-        String winRateMessage = "My robot should win at least " + (testConfig.expectWinRatio * 100) + "% of rounds. " +
-                "\n\tActual numWinRounds: " + numWinRounds + ", winPercentage: " + (winRate * 100);
-        logger.info(winRateMessage);
 
         Assert.assertTrue("Bullet Damage (" + battleResultsOfMyRobot.getBulletDamage() + ") must > than " + expectedBulletDamage, battleResultsOfMyRobot.getBulletDamage() > expectedBulletDamage);
         Assert.assertEquals("My robot should be the champion, but the actual rank is " + battleResultsOfMyRobot.getRank(), battleResultsOfMyRobot.getRank(), 1);
@@ -112,7 +113,7 @@ public abstract class AbstractBulletDamageTest extends RobotTestBed {
         /**
          * @param myRobotClass
          * @param enemiesNamesList
-         * @param expectWinRatio   represent how many percent (value is from 0.0 to 1.0) our robot should be the champion through out numRounds.
+         * @param expectWinRatio             represent how many percent (value is from 0.0 to 1.0) our robot should be the champion through out numRounds.
          * @param numRounds
          * @param expectDamageBulletPerRound
          */

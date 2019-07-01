@@ -9,7 +9,7 @@ import supersample.SuperRamFire;
 import supersample.SuperSpinBot;
 import supersample.SuperWalls;
 
-public class AgainstSuperSampleBotsTest extends AbstractWinRateTest {
+public class AgainstSuperSampleBots02Test extends AbstractWinRateTest {
 
     @Override
     public TestConfig constructTestConfig() {

@@ -1,4 +1,4 @@
-package org.tnmk.robocode.robot.theunfolding.oneonone;
+package org.tnmk.robocode.robot.theunfolding.oneonone.againstsupersample;
 
 import java.util.Arrays;
 import java.util.List;

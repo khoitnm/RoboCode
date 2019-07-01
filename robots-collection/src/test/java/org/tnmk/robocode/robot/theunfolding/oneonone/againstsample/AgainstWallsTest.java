@@ -1,4 +1,4 @@
-package org.tnmk.robocode.robot.theunfolding.oneonone;
+package org.tnmk.robocode.robot.theunfolding.oneonone.againstsample;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,15 +19,16 @@ import org.tnmk.robocode.robot.TheUnfoldingRobot;
  * </pre>
  */
 @RunWith(JUnit4.class)
-public class AgainstSpinBotTest extends AbstractBulletDamageTest {
+public class AgainstWallsTest extends AbstractBulletDamageTest {
 
     @Override
     public AbstractBulletDamageTest.TestConfig constructTestConfig() {
         List<String> enemyNames = Arrays.asList(
-                "sample.SpinBot"
+                "sample.Walls"
         );
 
-        AbstractBulletDamageTest.TestConfig testConfig = new AbstractBulletDamageTest.TestConfig(TheUnfoldingRobot.class, enemyNames, 1, 20, 80);
+
+        AbstractBulletDamageTest.TestConfig testConfig = new AbstractBulletDamageTest.TestConfig(TheUnfoldingRobot.class, enemyNames, 1, 20, 90);
         return testConfig;
     }
 }
