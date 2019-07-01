@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import org.tnmk.robocode.common.helper.Move2DUtils;
 import robocode.Robot;
 
@@ -22,7 +23,7 @@ public class PaintHelper {
      * @param point
      * @param printText the text next to the point. Could be null
      */
-    public static void paintPoint(Graphics2D graphic, int pointSize, Color color, Point2D point,  String printText) {
+    public static void paintPoint(Graphics2D graphic, int pointSize, Color color, Point2D point, String printText) {
         graphic.setColor(color);
         if (printText != null) {
             graphic.drawString(printText + point, (int) point.getX() + pointSize, (int) point.getY());
@@ -33,7 +34,7 @@ public class PaintHelper {
 //        graphic.drawLine((int) point.getX(), (int) point.getY() - pointSize, (int) point.getX(), (int) point.getY() + pointSize);
     }
 
-    public static void paintLine(Graphics2D graphics, Point2D pointA, Point2D pointB, int width,  Color color) {
+    public static void paintLine(Graphics2D graphics, Point2D pointA, Point2D pointB, int width, Color color) {
         if (color != null) {
             graphics.setColor(color);
         }
@@ -45,7 +46,7 @@ public class PaintHelper {
         graphics.drawLine((int) pointA.getX(), (int) pointA.getY(), (int) pointB.getX(), (int) pointB.getY());
     }
 
-    public static void paintLine(Graphics2D graphics, Point2D pointA, Point2D pointB,  Color color) {
+    public static void paintLine(Graphics2D graphics, Point2D pointA, Point2D pointB, Color color) {
         paintLine(graphics, pointA, pointB, 1, color);
     }
 
@@ -64,5 +65,10 @@ public class PaintHelper {
         Point2D destination = Move2DUtils.reckonDestination(startingPosition, normAngleRadian, normDistance);
         PaintHelper.paintLine(graphics, startingPosition, destination, lineWeight, color);
 
+    }
+
+    public static void paintRectangle(Graphics2D graphics, Rectangle2D rectangle2D, Color color) {
+        graphics.setColor(color);
+        graphics.fillRect((int) rectangle2D.getX(), (int) rectangle2D.getY(), (int) rectangle2D.getWidth(), (int) rectangle2D.getHeight());
     }
 }

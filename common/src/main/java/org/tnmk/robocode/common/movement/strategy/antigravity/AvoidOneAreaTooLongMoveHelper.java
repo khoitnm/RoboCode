@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.helper.Move2DUtils;
+import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.movement.MoveAreaHelper;
 import org.tnmk.robocode.common.movement.MovementContext;
@@ -28,6 +29,7 @@ public class AvoidOneAreaTooLongMoveHelper {
         }
         MoveAreaHelper.MoveAreaTooLongResult moveAreaTooLongResult = MoveAreaHelper.isMoveAreaHistoryLarger(movementContext.getRobotHistory(), robot.getTime(), ONE_CIRCLE_PERIOD_TICKS, ONE_SMALL_AREA_DIAGONAL).get();
         if (moveAreaTooLongResult.isTooLong()) {
+            DebugHelper.debugMovingTooLong(robot, moveAreaTooLongResult);
             Rectangle2D tooLongMoveArea = moveAreaTooLongResult.getMoveArea();
             if (GeoMathUtils.checkInsideRectangle(destination, tooLongMoveArea)) {
                 return findDestinationOutsideArea(battleField, tooLongMoveArea, enemies);

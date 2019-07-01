@@ -3,7 +3,9 @@ package org.tnmk.robocode.common.log;
 import java.awt.Color;
 import java.util.stream.Collectors;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
+import org.tnmk.robocode.common.movement.MoveAreaHelper;
 import org.tnmk.robocode.common.movement.MovementContext;
+import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.AdvancedRobot;
@@ -98,11 +100,22 @@ public class DebugHelper {
     }
 
     public static void debugEnemyStatisticContext(AdvancedRobot robot, String enemyName, EnemyStatisticContext enemyStatisticContext) {
-        if (isDebugEnemyStatistic()){
+        if (isDebugEnemyStatistic()) {
             LogHelper.logSimple(robot, "Enemy: " + enemyName
                     + "\n\t\t Pattern: " + enemyStatisticContext.getPatternIdentification()
                     + "\n\t\t predictionHistory: \t" + enemyStatisticContext.getEnemyPredictionHistory().getAllHistoryItemsIterable()
             );
         }
+    }
+
+    public static void debugMovingTooLong(AdvancedRobot robot, MoveAreaHelper.MoveAreaTooLongResult moveAreaTooLongResult) {
+        if (isDebugOneAreaTooLong()) {
+            LogHelper.logSimple(robot, "Moving too long in one area " + LogHelper.toString(moveAreaTooLongResult.getMoveArea()));
+            PaintHelper.paintRectangle(robot.getGraphics(), moveAreaTooLongResult.getMoveArea(), Color.RED);
+        }
+    }
+
+    private static boolean isDebugOneAreaTooLong() {
+        return true;
     }
 }

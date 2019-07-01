@@ -26,7 +26,7 @@
         <file>${HOME_REPORT}</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>logs/archived/report.%d{yyyy-MM-dd}.%i.log.csv.gz</fileNamePattern>
+            <fileNamePattern>logs/archived/report.%d{yyyy-MM-dd}.%i.log.csv</fileNamePattern>
             <!-- each archived file, size max 10MB -->
             <maxFileSize>10MB</maxFileSize>
             <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
@@ -50,7 +50,7 @@
             %logger{0}: Just show class name, not method name.
             %replace(%msg){'\n', ''}: In the message, replace all new line by tab character (because we want report)
             -->
-            <pattern>%d \t%logger{0} \t%replace(%msg){'\n', ''} %nopex %n</pattern>
+            <pattern>%d \t%logger{0} \t%replace(%msg%nopex){'\n', ''} %n</pattern>
         </encoder>
     </appender>
 
