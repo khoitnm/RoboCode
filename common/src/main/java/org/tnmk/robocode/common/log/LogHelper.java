@@ -10,7 +10,7 @@ public class LogHelper {
         return String.format("{%.2f, %.2f}", point2D.getX(), point2D.getY());
     }
 
-    public static String toString(Rectangle2D rectangle2D){
+    public static String toString(Rectangle2D rectangle2D) {
         return String.format("{%.2f, %.2f} -> {%.2f, %.2f}", rectangle2D.getMinX(), rectangle2D.getMinY(), rectangle2D.getMaxX(), rectangle2D.getMaxY());
     }
 
@@ -51,6 +51,7 @@ public class LogHelper {
                 message);
         robot.out.println(finalMessage);
     }
+
     public static void logRobotRadar(AdvancedRobot robot, String message) {
         String finalMessage = String.format("[%s] " +
 //                        "\t position {%.2f, %.2f}" +
@@ -83,6 +84,16 @@ public class LogHelper {
                         "\t velocity %s " +
                         "\t %s",
                 robot.getTime(), loopIndex, robot.getVelocity(), message);
+        robot.out.println(finalMessage);
+    }
+
+    public static void logPosition(AdvancedRobot robot, String message) {
+        String finalMessage = String.format("[%s] " +
+                        "\t position {%.2f, %.2f}" +
+                        "\t %s",
+                robot.getTime(),
+                robot.getX(), robot.getY(),
+                message);
         robot.out.println(finalMessage);
     }
 }
