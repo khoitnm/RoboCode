@@ -102,8 +102,9 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
 
             double runPeriod = robot.getTime() - startTime;
             /**
-             * //TODO investigate: This condition combines runLoop() makes AgainstMoebiusAndOthersTest reduce from 70% to 50%!!! Why???
-             * // NOTE: The problem happens even though we didn't use uTurnMovement.
+             * //TODO investigate: This uTurnMovement condition combines runLoop() makes AgainstMoebiusAndOthersTest reduce from 70% to 50%!!! Why???
+             * //   NOTE: Disable uTurnMovement, however, will reduce AgainstSuperSampleBots01 from 68% to 53%!!!
+             * //   NOTE: The problem happens even though we didn't use uTurnMovement.
              */
 //            if (isRunning() && runPeriod < MIN_RUN_TICKS_BEFORE_CHANGE_DESTINATION) {
 //                /** Just keep running to the old destination, don't need to calculate new destination */
@@ -313,8 +314,9 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
     @Override
     public void runLoop() {
         /**
-         * //TODO investigate: This logic and onScannedRobot() makes AgainstMoebiusAndOthersTest reduce from 70% to 50%!!! Why???
-         * // NOTE: The problem happens even though we didn't use uTurnMovement.
+         * //TODO investigate: This uTurnMovement logic and onScannedRobot() makes AgainstMoebiusAndOthersTest reduce from 70% to 50%!!! Why???
+         * //   NOTE: Disable uTurnMovement, however, will reduce AgainstSuperSampleBots01 from 68% to 53%
+         * //   NOTE: The problem happens even though we didn't use uTurnMovement.
          */
 //        if (movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
 //            if (moveTactic == uTurnMoveController) {
