@@ -32,7 +32,7 @@ public class AdvanceRobotStateMapper {
         return state;
     }
     public static AdvanceRobotFightState toFightState(AdvancedRobot robot) {
-        AdvanceRobotFightState state = new AdvanceRobotFightState(robotStatus);
+        AdvanceRobotFightState state = new AdvanceRobotFightState();
         copyState(robot, state);
         return state;
     }

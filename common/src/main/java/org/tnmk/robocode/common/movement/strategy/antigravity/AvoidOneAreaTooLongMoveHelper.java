@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.model.enemy.Enemy;
@@ -51,5 +52,11 @@ public class AvoidOneAreaTooLongMoveHelper {
         Point2D destination = findBestDestinationInParts(leastRiskAreas);
         return destination;
     }
+
+    private static Point2D findBestDestinationInParts(List<RiskArea> leastRiskAreas) {
+        List<Rectangle2D> areas = leastRiskAreas.stream().map(RiskArea::getArea).collect(Collectors.toList());
+        return DestinationRandomHelper.randomPointInAreas(areas);
+    }
+
 
 }
