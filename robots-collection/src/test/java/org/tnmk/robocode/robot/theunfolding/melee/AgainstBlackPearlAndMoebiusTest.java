@@ -2,9 +2,10 @@ package org.tnmk.robocode.robot.theunfolding.melee;
 
 import java.util.Arrays;
 import java.util.List;
+import jekl.mini.BlackPearl;
 import mld.Moebius;
 import org.tnmk.robocode.robot.AbstractWinRateTest;
-import jekl.mini.BlackPearl;
+import org.tnmk.robocode.robot.TestRounds;
 import org.tnmk.robocode.robot.TheUnfoldingRobot;
 import pez.micro.BlackWidow;
 import wiki.mako.MakoHT;
@@ -27,7 +28,7 @@ public class AgainstBlackPearlAndMoebiusTest extends AbstractWinRateTest {
          * - v2.4.2: Apply uTurn: 2000 rounds: 41.55%
          * The toughest opponents are BlackPearl and Moebius because of their gun!!! See more at {@link AgainstMoebiusAndOthersTest
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.4, 2000);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.4, TestRounds.NUM_ROUNDS_ABSOLUTE_CERTAINTY);
         return testConfig;
     }
 }

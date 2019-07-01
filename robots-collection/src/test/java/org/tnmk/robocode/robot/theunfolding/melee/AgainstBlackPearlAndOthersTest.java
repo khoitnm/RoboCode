@@ -2,11 +2,12 @@ package org.tnmk.robocode.robot.theunfolding.melee;
 
 import java.util.Arrays;
 import java.util.List;
+import jekl.mini.BlackPearl;
 import org.tnmk.robocode.common.gun.blackpearl.BlackPearlGun;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
 import org.tnmk.robocode.robot.AbstractWinRateTest;
-import jekl.mini.BlackPearl;
+import org.tnmk.robocode.robot.TestRounds;
 import org.tnmk.robocode.robot.TheUnfoldingRobot;
 import pez.micro.BlackWidow;
 import wiki.mako.MakoHT;
@@ -34,7 +35,7 @@ public class AgainstBlackPearlAndOthersTest extends AbstractWinRateTest {
          * - {@link PatternPredictionGun} and {@link BlackPearlGun}: 31.4%
          * The toughest opponents are BlackPearl.
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.4, 2000);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.4, TestRounds.NUM_ROUNDS_ABSOLUTE_CERTAINTY);
         return testConfig;
     }
 }

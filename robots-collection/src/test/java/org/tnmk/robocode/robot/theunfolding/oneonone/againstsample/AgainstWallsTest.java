@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.tnmk.robocode.robot.AbstractBulletDamageTest;
+import org.tnmk.robocode.robot.TestRounds;
 import org.tnmk.robocode.robot.TheUnfoldingRobot;
 
 /**
@@ -28,7 +29,7 @@ public class AgainstWallsTest extends AbstractBulletDamageTest {
         );
 
 
-        AbstractBulletDamageTest.TestConfig testConfig = new AbstractBulletDamageTest.TestConfig(TheUnfoldingRobot.class, enemyNames, 1, 20, 90);
+        AbstractBulletDamageTest.TestConfig testConfig = new AbstractBulletDamageTest.TestConfig(TheUnfoldingRobot.class, enemyNames, 1, TestRounds.NUM_ROUNDS_VERY_QUICK, 90);
         return testConfig;
     }
 }
