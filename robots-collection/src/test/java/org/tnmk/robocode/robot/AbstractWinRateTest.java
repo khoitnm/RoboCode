@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tnmk.robocode.common.log.LogHelper;
 import robocode.BattleResults;
 import robocode.Robot;
 import robocode.control.events.BattleCompletedEvent;
@@ -91,9 +92,10 @@ public abstract class AbstractWinRateTest extends RobotTestBed {
         int numWinRounds = battleResultsOfMyRobot.getFirsts();
         double winRate = (double) numWinRounds / (double) getNumRounds();
 
-        String message = "My robot should win at least " + (testConfig.expectWinRatio * 100) + "% of rounds. " +
-                "\n\tActual numWinRounds: " + numWinRounds + ", winPercentage: " + (winRate * 100);
-        logger.info(message);
+
+        String message = "Actual Win: " + (winRate * 100) + "% (" + getNumRounds() + " rounds)." +
+                "\n\t Expect Win: " + (testConfig.expectWinRatio * 100) + "%";
+        logger.info(LogHelper.appendGitInfo(message));
 
         Assert.assertEquals("My robot should be the champion, but the actual rank is " + battleResultsOfMyRobot.getRank(), battleResultsOfMyRobot.getRank(), 1);
         Assert.assertTrue(message, winRate >= testConfig.expectWinRatio);

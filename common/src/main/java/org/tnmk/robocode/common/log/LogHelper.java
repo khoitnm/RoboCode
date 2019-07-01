@@ -2,6 +2,7 @@ package org.tnmk.robocode.common.log;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import org.tnmk.common.properties.PropertiesReader;
 import robocode.AdvancedRobot;
 import robocode.Robot;
 
@@ -10,7 +11,7 @@ public class LogHelper {
         return String.format("{%.2f, %.2f}", point2D.getX(), point2D.getY());
     }
 
-    public static String toString(Rectangle2D rectangle2D){
+    public static String toString(Rectangle2D rectangle2D) {
         return String.format("{%.2f, %.2f} -> {%.2f, %.2f}", rectangle2D.getMinX(), rectangle2D.getMinY(), rectangle2D.getMaxX(), rectangle2D.getMaxY());
     }
 
@@ -51,6 +52,7 @@ public class LogHelper {
                 message);
         robot.out.println(finalMessage);
     }
+
     public static void logRobotRadar(AdvancedRobot robot, String message) {
         String finalMessage = String.format("[%s] " +
 //                        "\t position {%.2f, %.2f}" +
@@ -84,5 +86,36 @@ public class LogHelper {
                         "\t %s",
                 robot.getTime(), loopIndex, robot.getVelocity(), message);
         robot.out.println(finalMessage);
+    }
+
+    public static void logPosition(AdvancedRobot robot, String message) {
+        String finalMessage = String.format("[%s] " +
+                        "\t position {%.2f, %.2f}" +
+                        "\t %s",
+                robot.getTime(),
+                robot.getX(), robot.getY(),
+                message);
+        robot.out.println(finalMessage);
+    }
+
+    public static String appendGitInfo(String message) {
+        return String.format("BuildNumber: %s\t GitRevision: %s\t %s", getBuildNumber(), getGitRevision(), message);
+    }
+
+    private static String getBuildNumber() {
+        if (PropertiesReader.PROJECT_PROPERTIES.isPresent()) {
+            return PropertiesReader.PROJECT_PROPERTIES.get().getProperty("git.build.number");
+        } else {
+            return "";
+        }
+    }
+
+    private static String getGitRevision() {
+        if (PropertiesReader.PROJECT_PROPERTIES.isPresent()) {
+            return PropertiesReader.PROJECT_PROPERTIES.get().getProperty("git.revision");
+        } else {
+            return "";
+        }
+
     }
 }

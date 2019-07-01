@@ -8,9 +8,11 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <!--    <groupId>tnmk.robocode</groupId>-->
     <artifactId>common</artifactId>
-    <!--    <version>1.0-SNAPSHOT</version>-->
+
+    <properties>
+        <path.resources>src/main/resources</path.resources>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -25,19 +27,68 @@
             <scope>test</scope>
         </dependency>
 
-        <!--&lt;!&ndash; https://mvnrepository.com/artifact/org.slf4j/slf4j-api &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>slf4j-api</artifactId>-->
-            <!--<version>1.7.26</version>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
         </dependency>
-
-
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- EXPORT PROJECT INFORMATION TO PROPERTIES: BEGIN -->
+            <!-- Export information into properties file: build.properties -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${path.resources}"/>
+                                <tstamp>
+                                    <format pattern="yyyy-MM-dd hh:mm:ss a" property="build.time"/>
+                                </tstamp>
+                                <propertyfile comment="Version information" file="${path.resources}/build.properties">
+                                    <entry key="project.version" value="${project.version}"/>
+                                    <entry key="project.build.time" value="${build.time}"/>
+                                    <entry key="git.build.number" value="${git.buildnumber}"/>
+                                    <entry key="git.revision" value="${git.revision}"/>
+                                    <entry key="git.tag" value="${git.tag}"/>
+                                </propertyfile>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Plugin to get git information -->
+            <plugin>
+                <groupId>ru.concerteza.buildnumber</groupId>
+                <artifactId>maven-jgit-buildnumber-plugin</artifactId>
+                <version>1.2.7</version>
+                <executions>
+                    <execution>
+                        <id>git-buildnumber</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>extract-buildnumber</goal>
+                        </goals>
+                        <configuration>
+                            <repositoryDirectory>${project.basedir}</repositoryDirectory>
+                            <runOnlyAtExecutionRoot>false</runOnlyAtExecutionRoot>
+                            <!--Must set it's false in order to read .git folder from parent folder-->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- EXPORT PROJECT INFORMATION TO PROPERTIES: END -->
+
+        </plugins>
+    </build>
 </project>

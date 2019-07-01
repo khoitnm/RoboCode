@@ -3,12 +3,10 @@ package org.tnmk.robocode.common.helper;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import org.tnmk.common.math.AngleUtils;
+import org.tnmk.common.math.CircleMathUtils;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.movement.strategy.antigravity.AntiGravityMoveController;
-import robocode.AdvancedRobot;
-import robocode.HitRobotEvent;
-import robocode.Robot;
-import robocode.ScannedRobotEvent;
+import robocode.*;
 import robocode.util.Utils;
 
 public class Move2DUtils {
@@ -154,5 +152,14 @@ public class Move2DUtils {
 //        double x = robotPosition.getX() + Math.sin(newHeadingRadian) * normDistance;
 //        double y = robotPosition.getY() + Math.cos(newHeadingRadian) * normDistance;
         return new Point2D.Double(x, y);
+    }
+
+    /**
+     * @param velocity
+     * @return Assume a robot moves in a circle with unchanged velocity, unchanged turn rate, we'll calculate the time when it finish a circle.
+     */
+    public static double reckonFinishCircleTime(double velocity) {
+        double turnRateRadians = Rules.getTurnRateRadians(velocity);
+        return CircleMathUtils.calculateTimeToFinishCircle(turnRateRadians);
     }
 }

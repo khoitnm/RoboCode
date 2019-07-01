@@ -1,4 +1,4 @@
-package org.tnmk.robocode.robot.theunfolding;
+package org.tnmk.robocode.robot.theunfolding.melee;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,7 +9,7 @@ import supersample.SuperRamFire;
 import supersample.SuperSpinBot;
 import supersample.SuperWalls;
 
-public class AgainstSuperSampleBotsTest extends AbstractWinRateTest {
+public class AgainstSuperSampleBots02Test extends AbstractWinRateTest {
 
     @Override
     public TestConfig constructTestConfig() {

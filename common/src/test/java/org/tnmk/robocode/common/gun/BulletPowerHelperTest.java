@@ -1,4 +1,4 @@
-package org.tnmk.robocode.common;
+package org.tnmk.robocode.common.gun;
 
 
 import org.junit.Assert;
