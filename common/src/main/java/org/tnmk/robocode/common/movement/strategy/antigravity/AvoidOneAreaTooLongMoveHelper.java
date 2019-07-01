@@ -2,11 +2,8 @@ package org.tnmk.robocode.common.movement.strategy.antigravity;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.tnmk.common.collection.ListUtils;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.helper.BattleFieldUtils;
@@ -51,7 +48,7 @@ public class AvoidOneAreaTooLongMoveHelper {
      */
     private static Point2D findDestinationOutsideArea(Rectangle2D battleField, Rectangle2D tooLongMoveArea, Collection<Enemy> enemies) {
         List<Rectangle2D> battleFieldParts = splitToParts(battleField, 2);
-        List<Rectangle2D> leastRiskyParts = RiskAreaAnalysist.findLeastRiskyArea(battleFieldParts);
+        List<Rectangle2D> leastRiskyParts = RiskAreaAnalyst.findLeastRiskyArea(battleFieldParts);
         List<Rectangle2D> newParts = excludeTooLongMoveArea(battleFieldParts, tooLongMoveArea);
         Point2D destination = findBestDestinationInParts(newParts);
         return destination;
