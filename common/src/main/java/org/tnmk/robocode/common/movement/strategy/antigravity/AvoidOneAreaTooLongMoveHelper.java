@@ -42,19 +42,18 @@ public class AvoidOneAreaTooLongMoveHelper {
 
     /**
      * @param battleField
-     * @param tooLongMoveArea this area has diagonal less than {@link #ONE_SMALL_AREA_DIAGONAL}
+     * @param tooLongMoveArea the area which our robot has been moving inside for too long (and we want to move to another area). This area has diagonal less than {@link #ONE_SMALL_AREA_DIAGONAL}
      * @param enemies         latest information about our enemies
      * @return
      */
     private static Point2D findDestinationOutsideArea(Rectangle2D battleField, Rectangle2D tooLongMoveArea, Collection<Enemy> enemies) {
-        List<Rectangle2D> battleFieldParts = splitToParts(battleField, 2);
-        List<Rectangle2D> leastRiskyParts = RiskAreaAnalyst.findLeastRiskyArea(battleFieldParts);
-        List<Rectangle2D> newParts = excludeTooLongMoveArea(battleFieldParts, tooLongMoveArea);
+        List<RiskArea> leastRiskyAreas = RiskAreaAnalyst.findLeastRiskyArea(battleField, enemies);
+        List<Rectangle2D> newParts = excludeTooLongMoveArea(leastRiskyAreas, tooLongMoveArea);
         Point2D destination = findBestDestinationInParts(newParts);
         return destination;
     }
 
-    private static List<Rectangle2D> splitToParts(Rectangle2D rectangle2D, int dividend){
+    private static List<Rectangle2D> splitToParts(Rectangle2D rectangle2D, int dividend) {
         Rectangle2D[][] parts = BattleFieldUtils.splitToParts(rectangle2D, 2, 2);
         return ListUtils.toList(parts);
     }

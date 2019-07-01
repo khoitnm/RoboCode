@@ -1,13 +1,9 @@
 package org.tnmk.robocode.common.movement.strategy.antigravity;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 import org.tnmk.common.collection.ListUtils;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 
@@ -21,13 +17,13 @@ public class RiskAreaAnalyst {
 
     /**
      * @param battleField
-     * @param numAnalystLevels for each level, each side of the area will be split into 2.
+     * @param numAnalystLevels for each level, each side of the area will be split into 2. It must be less than 10.
      * @return
      */
-    private static List<RiskArea> analyzeAreaRisks(Rectangle2D battleField, int numAnalystLevels, Collection<Enemy> enemies) {
+    public static List<RiskArea> analyzeAreaRisks(Rectangle2D battleField, int numAnalystLevels, Collection<Enemy> enemies) {
         double initRisk = 0;
         int initAnalystLevel = 0;
-        List<RiskArea> analyzedArea = analyzeAreaRisks(new RiskArea(battleField, initRisk), initAnalystLevel, numAnalystLevels, enemies);
+        List<RiskArea> analyzedArea = analyzeAreaRisks(battleField, initRisk, initAnalystLevel, numAnalystLevels, enemies);
         return analyzedArea;
     }
 
@@ -37,33 +33,40 @@ public class RiskAreaAnalyst {
      * @param numAnalystLevels total levels we want to analyse
      * @return
      */
-    private static List<RiskArea> analyzeAreaRisks(RiskArea area, int analystLevel, int numAnalystLevels, Collection<Enemy> enemies) {
+    private static List<RiskArea> analyzeAreaRisks(Rectangle2D area, double parentAreaRisk, int analystLevel, int numAnalystLevels, Collection<Enemy> enemies) {
+        List<RiskArea> allAnalyzedRiskAreas = new ArrayList<>();
         if (analystLevel > numAnalystLevels - 1) {
-            //stop:
+            /** This case actually should never happens*/
             return Collections.emptyList();
         }
-        Rectangle2D[][] childAreas = BattleFieldUtils.splitToParts(area.getArea(), 2, 2);
-        List<Rectangle2D> childAreasList = ListUtils.toList(childAreas);
-        //FIXME not accumulate risk value between levels yet.
-        List<RiskArea> riskAreas = analystRisk(childAreasList, analystLevel, enemies);
 
-        List<RiskArea> allNextLevelRiskAreas = new ArrayList<>();
-        for (RiskArea riskArea : riskAreas) {
-            List<RiskArea> nextLevelRiskAreas = analyzeAreaRisks(riskArea, analystLevel + 1, numAnalystLevels, enemies);
-            allNextLevelRiskAreas.addAll(nextLevelRiskAreas);
+        double areaRiskIgnoreLevel = analyseRiskIgnoreLevel(area, enemies);
+        double areaRiskByLevel = areaRiskIgnoreLevel * Math.pow(10, numAnalystLevels - analystLevel);
+        double totalAreaRisk = parentAreaRisk + areaRiskByLevel;
+        RiskArea riskArea = new RiskArea(area, totalAreaRisk);
+
+        if (analystLevel == numAnalystLevels - 1) {
+            return Arrays.asList(riskArea);
+        } else {
+            int childAnalystLevel = analystLevel + 1;
+            Rectangle2D[][] childAreas = BattleFieldUtils.splitToParts(area, 2, 2);
+            List<Rectangle2D> childAreasList = ListUtils.toList(childAreas);
+            for (Rectangle2D childArea : childAreasList) {
+                List<RiskArea> analyzedChildRiskAreas = analyzeAreaRisks(childArea, riskArea.getRisk(), childAnalystLevel, numAnalystLevels, enemies);
+                allAnalyzedRiskAreas.addAll(analyzedChildRiskAreas);
+            }
+            return allAnalyzedRiskAreas;
         }
-        return allNextLevelRiskAreas;
     }
 
-    private static List<RiskArea> analystRisk(List<Rectangle2D> areasList, int analystLevel, Collection<Enemy> enemies) {
-        List<RiskArea> riskAreas = areasList.stream()
-                .map(area -> analyseRisk(area, analystLevel, enemies))
-                .collect(Collectors.toList());
-        return riskAreas;
-    }
-
-    private static RiskArea analyseRisk(Rectangle2D area, int analystLevel, Collection<Enemy> enemies) {
-        double risk =
+    private static double analyseRiskIgnoreLevel(Rectangle2D area, Collection<Enemy> enemies) {
+        double risk = 0;
+        for (Enemy enemy : enemies) {
+            if (GeoMathUtils.checkInsideRectangle(enemy.getPosition(), area)) {
+                risk++;
+            }
+        }
+        return risk;
     }
 
 
