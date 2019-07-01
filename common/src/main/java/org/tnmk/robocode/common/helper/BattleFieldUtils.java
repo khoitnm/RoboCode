@@ -24,7 +24,7 @@ public class BattleFieldUtils {
 
                 double minY = battleField.getMinY() + j * partHeight;
                 double maxY = minY + partHeight;
-                battleFieldParts[i][j] = new Rectangle2D.Double(minX, minY, maxX, maxY);
+                battleFieldParts[i][j] = new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY);
             }
         }
         return battleFieldParts;

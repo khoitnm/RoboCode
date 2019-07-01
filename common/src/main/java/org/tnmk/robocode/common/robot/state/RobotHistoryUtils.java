@@ -39,7 +39,7 @@ public class RobotHistoryUtils {
             }
         }
         if (robotHistory.countHistoryItems() > 0) {
-            return Optional.of(new Rectangle2D.Double(minX, minY, maxX, maxX));
+            return Optional.of(new Rectangle2D.Double(minX, minY, maxX - minX, maxY - minY));
         } else {
             return Optional.empty();
         }
