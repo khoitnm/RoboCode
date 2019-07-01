@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.math.Point2DUtils;
-import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.log.LogHelper;
@@ -17,7 +16,6 @@ import org.tnmk.robocode.common.movement.MoveController;
 import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.ResetableMoveController;
-import org.tnmk.robocode.common.movement.tactic.uturn.UTurnMoveController;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
 import org.tnmk.robocode.common.robot.LoopableRun;
@@ -48,7 +46,7 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
 
     private static final long MIN_RUN_TICKS_BEFORE_CHANGE_DESTINATION = 30;
 
-    private final UTurnMoveController uTurnMoveController;
+//    private final UTurnMoveController uTurnMoveController;
 
     private Rectangle2D battleField;
     private MoveController moveTactic = null;
@@ -58,7 +56,7 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
         this.movementContext = movementContext;
-        this.uTurnMoveController = new UTurnMoveController(robot, movementContext);
+//        this.uTurnMoveController = new UTurnMoveController(robot, movementContext);
     }
 
 
@@ -102,10 +100,10 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
         if (movementContext.isNone() || movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
 
             double runPeriod = robot.getTime() - startTime;
-            if (isRunning() && runPeriod < MIN_RUN_TICKS_BEFORE_CHANGE_DESTINATION) {
-                /** Just keep running to the old destination, don't need to calculate new destination */
-                return;
-            }
+//            if (isRunning() && runPeriod < MIN_RUN_TICKS_BEFORE_CHANGE_DESTINATION) {
+//                /** Just keep running to the old destination, don't need to calculate new destination */
+//                return;
+//            }
             Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
             Point2D force = reckonForce(this.calculationContext, this.robot, this.allEnemiesObservationContext);
             Point2D destination = Point2DUtils.plus(robotPosition, force);
@@ -152,41 +150,41 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
     @Override
     public void reset() {
         this.startTime = Long.MIN_VALUE;
-        if (moveTactic == uTurnMoveController) {
-            uTurnMoveController.reset();
-        }
+//        if (moveTactic == uTurnMoveController) {
+//            uTurnMoveController.reset();
+//        }
     }
 
-    public boolean isRunning() {
-        return !isStopped();
-    }
+//    public boolean isRunning() {
+//        return !isStopped();
+//    }
+//
+//    public boolean isStopped() {
+//        if (moveTactic == uTurnMoveController) {
+//            return uTurnMoveController.isStopped();
+//        } else {
+//            return DoubleUtils.isConsideredZero(robot.getDistanceRemaining());
+//        }
+//    }
 
-    public boolean isStopped() {
-        if (moveTactic == uTurnMoveController) {
-            return uTurnMoveController.isStopped();
-        } else {
-            return DoubleUtils.isConsideredZero(robot.getDistanceRemaining());
-        }
-    }
-
-    private void moveByUTurnToDestination(Point2D destination) {
-        this.moveTactic = uTurnMoveController;
-        uTurnMoveController.setMoveToDestination(robot, destination);
-    }
+//    private void moveByUTurnToDestination(Point2D destination) {
+//        this.moveTactic = uTurnMoveController;
+//        uTurnMoveController.setMoveToDestination(robot, destination);
+//    }
 
     private void moveByShortestPath(Point2D destination) {
         this.moveTactic = null;
-        if (moveTactic == uTurnMoveController) {
-            uTurnMoveController.reset();
-        }
+//        if (moveTactic == uTurnMoveController) {
+//            uTurnMoveController.reset();
+//        }
         Move2DUtils.setMoveToDestinationWithShortestPath(robot, destination);
     }
 
     private void moveByLongPathTurning(Point2D destination) {
         this.moveTactic = null;
-        if (moveTactic == uTurnMoveController) {
-            uTurnMoveController.reset();
-        }
+//        if (moveTactic == uTurnMoveController) {
+//            uTurnMoveController.reset();
+//        }
         Move2DUtils.setMoveToDestinationWithCurrentDirectionButDontStopAtDestination(robot, destination);
     }
 
@@ -310,15 +308,15 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
 
     @Override
     public void runLoop() {
-        if (movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
-            if (moveTactic == uTurnMoveController) {
-                if (uTurnMoveController.isStopped()) {
-                    movementContext.setNone();
-                } else {
-                    uTurnMoveController.runLoop();
-                }
-            }
-        }
+//        if (movementContext.is(MoveStrategy.ANTI_GRAVITY)) {
+//            if (moveTactic == uTurnMoveController) {
+//                if (uTurnMoveController.isStopped()) {
+//                    movementContext.setNone();
+//                } else {
+//                    uTurnMoveController.runLoop();
+//                }
+//            }
+//        }
     }
 
 
