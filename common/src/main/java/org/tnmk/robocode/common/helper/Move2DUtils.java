@@ -158,8 +158,8 @@ public class Move2DUtils {
      * @param velocity
      * @return Assume a robot moves in a circle with unchanged velocity, unchanged turn rate, we'll calculate the time when it finish a circle.
      */
-    public static double reckFinishCircleTime(double velocity) {
-        double turnRate = Rules.getTurnRate(velocity);
-        return CircleMathUtils.calculateTimeToFinishCircle(turnRate);
+    public static double reckonFinishCircleTime(double velocity) {
+        double turnRateRadians = Rules.getTurnRateRadians(velocity);
+        return CircleMathUtils.calculateTimeToFinishCircle(turnRateRadians);
     }
 }

@@ -115,7 +115,7 @@ public class DebugHelper {
         }
     }
 
-    private static boolean isDebugOneAreaTooLong() {
+    public static boolean isDebugOneAreaTooLong() {
         return true;
     }
 }

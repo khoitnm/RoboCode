@@ -15,7 +15,7 @@ import robocode.AdvancedRobot;
 import robocode.Rules;
 
 public class AvoidOneAreaTooLongMoveHelper {
-    private static final double ONE_CIRCLE_PERIOD = Move2DUtils.reckFinishCircleTime(Rules.MAX_VELOCITY);
+    private static final double ONE_CIRCLE_PERIOD = Move2DUtils.reckonFinishCircleTime(Rules.MAX_VELOCITY);
     private static final int ONE_CIRCLE_PERIOD_TICKS = (int) Math.round(ONE_CIRCLE_PERIOD);
 
     /**
@@ -27,7 +27,7 @@ public class AvoidOneAreaTooLongMoveHelper {
         if (movementContext.getRobotHistory().isEmpty()) {
             return destination;
         }
-        MoveAreaHelper.MoveAreaTooLongResult moveAreaTooLongResult = MoveAreaHelper.isMoveAreaHistoryLarger(movementContext.getRobotHistory(), robot.getTime(), ONE_CIRCLE_PERIOD_TICKS, ONE_SMALL_AREA_DIAGONAL).get();
+        MoveAreaHelper.MoveAreaTooLongResult moveAreaTooLongResult = MoveAreaHelper.isMoveAreaHistoryLarger(robot, movementContext.getRobotHistory(), robot.getTime(), ONE_CIRCLE_PERIOD_TICKS, ONE_SMALL_AREA_DIAGONAL).get();
         if (moveAreaTooLongResult.isTooLong()) {
             DebugHelper.debugMovingTooLong(robot, moveAreaTooLongResult);
             Rectangle2D tooLongMoveArea = moveAreaTooLongResult.getMoveArea();
