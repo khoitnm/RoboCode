@@ -8,7 +8,7 @@ import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 
 public class RiskAreaAnalyst {
-    public static final int NUM_OF_ANALYST_LEVELS = 2;
+    public static final int NUM_OF_ANALYST_LEVELS = 3;
     /**
      * For each analyst level, the coefficient is 10.
      */

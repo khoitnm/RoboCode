@@ -32,7 +32,7 @@ public class AvoidOneAreaTooLongMoveHelper {
             DebugHelper.debugMovingTooLong(robot, moveAreaTooLongResult);
             Rectangle2D tooLongMoveArea = moveAreaTooLongResult.getMoveArea();
             if (GeoMathUtils.checkInsideRectangle(destination, tooLongMoveArea)) {
-                return findDestinationOutsideArea(battleField, tooLongMoveArea, enemies);
+                return findDestinationOutsideArea(robot, battleField, tooLongMoveArea, enemies);
             } else {
                 return destination;
             }
@@ -47,10 +47,11 @@ public class AvoidOneAreaTooLongMoveHelper {
      * @param enemies         latest information about our enemies
      * @return
      */
-    private static Point2D findDestinationOutsideArea(Rectangle2D battleField, Rectangle2D tooLongMoveArea, Collection<Enemy> enemies) {
+    private static Point2D findDestinationOutsideArea(AdvancedRobot robot, Rectangle2D battleField, Rectangle2D tooLongMoveArea, Collection<Enemy> enemies) {
         List<RiskArea> analyzedRiskAreas = RiskAreaAnalyst.analyzeRiskAreas(battleField, enemies);
         List<RiskArea> excludedOldAreas = RiskAreaHelper.excludeAreas(analyzedRiskAreas, tooLongMoveArea);
         List<RiskArea> leastRiskAreas = RiskAreaAnalyst.findLeastRiskyArea(excludedOldAreas);
+        DebugHelper.debugLeastRiskAreas(robot, leastRiskAreas);
         Point2D destination = findBestDestinationInParts(leastRiskAreas);
         return destination;
     }

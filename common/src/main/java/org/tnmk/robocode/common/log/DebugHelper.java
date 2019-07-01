@@ -1,10 +1,12 @@
 package org.tnmk.robocode.common.log;
 
 import java.awt.Color;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.movement.MoveAreaHelper;
 import org.tnmk.robocode.common.movement.MovementContext;
+import org.tnmk.robocode.common.movement.strategy.antigravity.RiskArea;
 import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
@@ -117,5 +119,14 @@ public class DebugHelper {
 
     public static boolean isDebugOneAreaTooLong() {
         return true;
+    }
+
+    public static void debugLeastRiskAreas(AdvancedRobot robot, List<RiskArea> leastRiskAreas) {
+        if (!isDebugOneAreaTooLong()){
+            return;
+        }
+        for (RiskArea leastRiskArea : leastRiskAreas) {
+            PaintHelper.paintRectangle(robot.getGraphics(), leastRiskArea.getArea(), Color.GREEN);
+        }
     }
 }

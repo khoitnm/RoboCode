@@ -53,6 +53,7 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
     private static final double CHANGE_DISTANCE = 100;
     private static final double CHANGE_RUN_AWAY_DISTANCE = 200;
     private static final int MIN_ACCEPTABLE_SAME_SIDE_POINTS = 4;
+    private static final double SAFE_ENERGY_TO_ATTACK = 40;
 
     private static final Color ALL_POTENTIAL_POINTS_COLORS = Color.GRAY;
     private static final Color SAME_SIDE_POINTS_COLORS = Color.ORANGE;
@@ -115,15 +116,15 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
         }
     }
 
-    private boolean isWanderMoveFinished(){
+    private boolean isWanderMoveFinished() {
         return movementContext.is(MoveStrategy.WANDERING) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining());
     }
 
-    private boolean isRandomMoveFinished(){
+    private boolean isRandomMoveFinished() {
         return movementContext.is(MoveStrategy.RANDOM) && DoubleUtils.isConsideredZero(robot.getDistanceRemaining()) && isExpiredMovement();
     }
 
-    private boolean isExpiredMovement(){
+    private boolean isExpiredMovement() {
         return (robot.getTime() - estimateFinishTime) > EXPIRED_PERIOD;
     }
 
@@ -157,7 +158,7 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
                 Enemy enemy = allEnemiesObservationContext.getEnemy(scannedRobotEvent.getName());
                 Point2D enemyPosition = enemy.getPosition();
                 Point2D destination;
-                if (robot.getEnergy() / scannedRobotEvent.getEnergy() > 4 || robot.getEnergy() - scannedRobotEvent.getEnergy() > 50d) {
+                if (shouldAttack(robot.getEnergy(), scannedRobotEvent.getEnergy())) {
                     destination = randomDestinationCloserToEnemy(robotPosition, enemyPosition, enemy.getDistance(), DISTANCE_2_POTENTIAL_DESTINATIONS, battleField);
                     DebugHelper.debugMoveRandomTowardEnemy(robot);
                 } else {
@@ -187,6 +188,11 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
         } else if (movementContext.is(MoveStrategy.RANDOM) && robot.getTime() >= estimateFinishTime) {
             movementContext.setNone();
         }
+    }
+
+    private boolean shouldAttack(double robotEnergy, double enemyEnergy) {
+        double energyDifference = robotEnergy - enemyEnergy;
+        return (robotEnergy / enemyEnergy > 4 && robotEnergy > SAFE_ENERGY_TO_ATTACK) || energyDifference > 50d || (energyDifference > 35 && enemyEnergy < 3);
     }
 
     private Point2D randomDestinationCloserToEnemy(Point2D robotPosition, Point2D enemyPosition, double currentDistance, double distanceBetweenPoints, Rectangle2D movementArea) {
