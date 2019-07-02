@@ -15,7 +15,7 @@ public class AgainstSuperMecuritoBotTest extends AbstractWinRateTest {
                 SuperMercutio.class.getCanonicalName()
         );
 
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.7, TestRounds.NUM_ROUNDS_CERTAINTY);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.85, TestRounds.NUM_ROUNDS_QUICK);
         return testConfig;
     }
 }
