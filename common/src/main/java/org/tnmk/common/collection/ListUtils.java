@@ -1,11 +1,10 @@
 package org.tnmk.common.collection;
 
+import org.tnmk.robocode.common.movement.strategy.antigravity.RiskArea;
+
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import org.tnmk.robocode.common.movement.strategy.antigravity.RiskArea;
 
 public final class ListUtils {
     public static <E> List<E> firstElements(List<E> list, int count) {
@@ -36,8 +35,6 @@ public final class ListUtils {
 
 
     /**
-     * //TODO improve performance: don't need sorting.
-     *
      * @param list
      * @param keyExtractor The function to get value from item in the list. For example, <code>{@link RiskArea}::getRisk()</code>
      * @param <E>          the type of item
@@ -45,18 +42,16 @@ public final class ListUtils {
      * @return
      */
     public static <E, U extends Comparable<? super U>> List<E> findLeastValueItems(List<E> list, Function<? super E, ? extends U> keyExtractor) {
-        List<E> sortedByValueItems = list.stream()
-                .sorted(Comparator.comparing(keyExtractor))
-                .collect(Collectors.toList());
         List<E> leastValueItems = new ArrayList<>();
         U leastValue = null;
-        for (E sortedItem : sortedByValueItems) {
-            U sortedValue = keyExtractor.apply(sortedItem);
-            if (leastValue == null || leastValue.compareTo(sortedValue) > 0) {
-                leastValue = sortedValue;
-                leastValueItems.add(sortedItem);
-            } else {
-                break;
+        for (E item : list) {
+            U itemValue = keyExtractor.apply(item);
+            if (leastValue == null || leastValue.compareTo(itemValue) > 0) {
+                leastValue = itemValue;
+                leastValueItems = new ArrayList<>();
+                leastValueItems.add(item);
+            } else if (leastValue.compareTo(itemValue) == 0) {
+                leastValueItems.add(item);
             }
         }
         return leastValueItems;

@@ -162,4 +162,22 @@ public class Move2DUtils {
         double turnRateRadians = Rules.getTurnRateRadians(velocity);
         return CircleMathUtils.calculateTimeToFinishCircle(turnRateRadians);
     }
+
+    /**
+     * This is not the remain distance compare to predefined {@link AdvancedRobot#setAhead(double)}.
+     * This is the remain distance compare to the predefined param destination.
+     *
+     * @return
+     */
+    public static double reckonRemainDistanceToDestination(AdvancedRobot robot, Point2D destination) {
+        Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
+        double distanceToDestination = robotPosition.distance(destination);
+        return distanceToDestination;
+    }
+
+    public static double reckonMoveAngleDegree(AdvancedRobot robot, Point2D destination){
+        Point2D currentPosition = new Point2D.Double(robot.getX(), robot.getY());
+        double moveAngle = GeoMathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), currentPosition.getX(), currentPosition.getY(), destination.getX(), destination.getY());
+        return moveAngle;
+    }
 }
