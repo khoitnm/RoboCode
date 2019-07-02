@@ -13,6 +13,11 @@ import pez.micro.BlackWidow;
 import wiki.mako.MakoHT;
 import wiki.mini.GouldingiHT;
 
+/**
+ * To win this, your robot should run smoothly. It shouldn't use stop-and-run strategy because it will make your robot slow, which cannot escape from enemies's bullets.
+ * <p/>
+ * The movement against these enemies are quite opposite with strategy {@link AgainstSuperSampleBots01Test}.
+ */
 public class AgainstBlackPearlAndOthersTest extends AbstractWinRateTest {
 
     @Override
