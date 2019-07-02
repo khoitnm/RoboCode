@@ -19,7 +19,7 @@
 
     <properties>
         <!-- This is the folder you setup your robocode -->
-        <robocode.home.folder>/home/kevintran/SourceCode/Personal/RoboCode/robocode</robocode.home.folder>
+        <robocode.home.folder>${project.basedir}/libs/</robocode.home.folder>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -62,7 +62,7 @@
                 <artifactId>robocode.api</artifactId>
                 <version>1.9.3.6</version>
                 <scope>system</scope>
-                <systemPath>${robocode.home.folder}/libs/robocode.jar</systemPath>
+                <systemPath>${robocode.home.folder}/robocode.jar</systemPath>
             </dependency>
             <!-- Used by robocode.control.test -->
             <dependency>

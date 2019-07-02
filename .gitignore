@@ -13,5 +13,7 @@ build.properties
 
 # Package Files #
 *.jar
+# Allow this jar libs!
+!libs/robocode.jar
 *.war
 *.ear
