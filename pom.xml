@@ -19,7 +19,8 @@
 
     <properties>
         <!-- This is the folder you setup your robocode -->
-        <robocode.home.folder>${project.basedir}/libs/</robocode.home.folder>
+        <!-- Cannot use {project.basedir} because submodule will not able to see it -->
+        <robocode.home.folder>/home/kevintran/SourceCode/Personal/RoboCode/robocode/libs/</robocode.home.folder>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -87,4 +88,11 @@
 
         </dependencies>
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>local-maven-repository</id>
+            <url>file:///${project.basedir}/local-maven-repository</url>
+        </repository>
+    </repositories>
 </project>

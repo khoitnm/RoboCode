@@ -17,3 +17,5 @@ build.properties
 !libs/robocode.jar
 *.war
 *.ear
+
+/local-maven-repository

@@ -27,5 +27,20 @@
             <artifactId>hamcrest-all</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>voidious</groupId>
+            <artifactId>diamond</artifactId>
+            <version>1.8.28</version>
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${project.basedir}/otherbots/voidious.Diamond_1.8.28.jar</systemPath>-->
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>local-maven-repository</id>
+            <url>file:///${project.basedir}/../local-maven-repository</url>
+        </repository>
+    </repositories>
 </project>

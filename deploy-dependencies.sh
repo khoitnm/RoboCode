@@ -1,0 +1,1 @@
+mvn deploy:deploy-file -Dfile=robots-collection/otherbots/voidious.Diamond_1.8.28.jar -DgroupId=voidious -DartifactId=diamond -Dversion=1.8.28 -Dpackaging=jar -Durl=file:./local-maven-repository/ -DrepositoryId=local-maven-repository -DupdateReleaseInfo=true
