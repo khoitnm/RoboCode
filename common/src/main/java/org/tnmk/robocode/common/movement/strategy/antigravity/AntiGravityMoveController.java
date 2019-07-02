@@ -1,11 +1,5 @@
 package org.tnmk.robocode.common.movement.strategy.antigravity;
 
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.math.Point2DUtils;
 import org.tnmk.common.number.DoubleUtils;
@@ -17,6 +11,7 @@ import org.tnmk.robocode.common.movement.MoveController;
 import org.tnmk.robocode.common.movement.MoveStrategy;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.ResetableMoveController;
+import org.tnmk.robocode.common.movement.tactic.uturn.NonStopUTurnMoveController;
 import org.tnmk.robocode.common.movement.tactic.uturn.UTurnMoveController;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.InitiableRun;
@@ -26,6 +21,13 @@ import robocode.AdvancedRobot;
 import robocode.Robot;
 import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
+
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * View more at http://robowiki.net/wiki/Anti-Gravity_Tutorial
@@ -48,6 +50,7 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
     private static final long MIN_RUN_TICKS_BEFORE_CHANGE_DESTINATION = 30;
 
     private final UTurnMoveController uTurnMoveController;
+    private final NonStopUTurnMoveController nonStopUTurnMoveController;
 
     private Rectangle2D battleField;
     private MoveController moveTactic = null;
@@ -58,6 +61,7 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
         this.allEnemiesObservationContext = allEnemiesObservationContext;
         this.movementContext = movementContext;
         this.uTurnMoveController = new UTurnMoveController(robot, movementContext);
+        this.nonStopUTurnMoveController = new NonStopUTurnMoveController(robot);
     }
 
 
@@ -139,8 +143,9 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
         if (GeoMathUtils.checkInsideRectangle(finalDestination, calculationContext.getSafeMovementArea())) {
             /** Note: using moveByLongPathTurning(finalDestination); {@link AgainstSuperSampleBotsTest} win 58.7% (2000 rounds)*/
             /** Note: using moveByUTurnToDestination(finalDestination); {@link AgainstSuperSampleBotsTest} win 42.85% (2000 rounds)!!! Newer code makes it worse! */
-            moveByLongPathTurning(finalDestination);
-//                moveByUTurnToDestination(finalDestination);
+//            moveByLongPathTurning(finalDestination);
+//            moveByUTurnToDestination(finalDestination);
+            moveByNonStopUTurnToDestination(finalDestination);
         } else {
             //This logic makes sure that the robot won't run into the wall when it's outside the safeMovementArea (close to walls).
             //However, this kind of movement shouldn't be the long-term movement because the destination outside the safeArea mostly close to current position.
@@ -157,6 +162,8 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
         this.startTime = Long.MIN_VALUE;
         if (moveTactic == uTurnMoveController) {
             uTurnMoveController.reset();
+        } else if (moveTactic == nonStopUTurnMoveController) {
+            nonStopUTurnMoveController.reset();
         }
     }
 
@@ -175,6 +182,11 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
     private void moveByUTurnToDestination(Point2D destination) {
         this.moveTactic = uTurnMoveController;
         uTurnMoveController.setMoveToDestination(robot, destination);
+    }
+
+    private void moveByNonStopUTurnToDestination(Point2D destination) {
+        this.moveTactic = nonStopUTurnMoveController;
+        nonStopUTurnMoveController.setMoveToDestination(robot, destination);
     }
 
     private void moveByShortestPath(Point2D destination) {
