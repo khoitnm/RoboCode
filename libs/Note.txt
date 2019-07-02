@@ -1,7 +1,0 @@
-robocode.jar can be got in the home folder where you install RoboCode game:
-${ROBOCODE_HOME}/libs/robocode.jar
-
-Note:
-- I have to use this approach to include it into my project because that dependencies doesn't exist in Maven repository.
-  It's just 182 kB, so it's safe to be committed into Git repository.
-- Current version of this jar is defined in parent pom.xml
