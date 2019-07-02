@@ -52,7 +52,7 @@ public final class ListUtils {
         U leastValue = null;
         for (E sortedItem : sortedByValueItems) {
             U sortedValue = keyExtractor.apply(sortedItem);
-            if (leastValue == null || leastValue.compareTo(sortedValue) > 0) {
+            if (leastValue == null || leastValue.compareTo(sortedValue) >= 0) {
                 leastValue = sortedValue;
                 leastValueItems.add(sortedItem);
             } else {
