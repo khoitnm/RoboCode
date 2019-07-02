@@ -54,7 +54,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
             return;
         }
 
-        double remainDistance = getRemainDistanceToDestination();
+        double remainDistance = UTurnHelper.reckonRemainDistanceToDestination(this.robot, this.destination);
         if (DoubleUtils.isConsideredZero(remainDistance)) {
             reset();
         } else {
@@ -70,19 +70,9 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
     }
 
     public boolean isStopped() {
-        return this.destination == null || DoubleUtils.isConsideredZero(getRemainDistanceToDestination());
+        double remainDistance = UTurnHelper.reckonRemainDistanceToDestination(this.robot, this.destination);
+        return this.destination == null || DoubleUtils.isConsideredZero(remainDistance);
     }
 
-    /**
-     * This is not the remain distance compare to predefined {@link AdvancedRobot#setAhead(double)}.
-     * This is the remain distance compare to the predefined {@link #destination}.
-     *
-     * @return
-     */
-    private double getRemainDistanceToDestination() {
-        Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
-        double distanceToDestination = robotPosition.distance(destination);
-//        LogHelper.logRobotMovement(robot, "Calculated remainDistance: " + distanceToDestination);
-        return distanceToDestination;
-    }
+
 }

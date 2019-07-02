@@ -1,6 +1,7 @@
 package org.tnmk.robocode.common.movement.tactic.uturn;
 
 import org.tnmk.common.math.GeoMathUtils;
+import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import robocode.AdvancedRobot;
 import robocode.Rules;
 
@@ -24,5 +25,17 @@ public class UTurnHelper {
             maxVelocity = MAX_MAX_VELOCITY - (remainTurnAngleDegree / 10) * 2;
         }
         return maxVelocity;
+    }
+
+    /**
+     * This is not the remain distance compare to predefined {@link AdvancedRobot#setAhead(double)}.
+     * This is the remain distance compare to the predefined param destination.
+     *
+     * @return
+     */
+    public static double reckonRemainDistanceToDestination(AdvancedRobot robot, Point2D destination) {
+        Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
+        double distanceToDestination = robotPosition.distance(destination);
+        return distanceToDestination;
     }
 }
