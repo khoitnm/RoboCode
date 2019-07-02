@@ -36,8 +36,8 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
         this.destination = destination;
         Point2D currentPosition = new Point2D.Double(robot.getX(), robot.getY());
         double distance = currentPosition.distance(destination);
-        double moveAngle = GeoMathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), currentPosition.getX(), currentPosition.getY(), destination.getX(), destination.getY());
-        double maxVelocity = reckonMaxVelocity(moveAngle);
+        double moveAngle = UTurnHelper.reckonMoveAngle(robot, destination);
+        double maxVelocity = UTurnHelper.reckonMaxVelocity(moveAngle);
         robot.setMaxVelocity(maxVelocity);
         robot.setTurnRight(moveAngle);
         robot.setAhead(distance);//if you want it to reset at the destination, use setAhead(distance to destination + some additional distance for turning direction)
@@ -54,7 +54,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
             return;
         }
 
-        double remainDistance = getRemainDistanceToDestination();
+        double remainDistance = UTurnHelper.reckonRemainDistanceToDestination(this.robot, this.destination);
         if (DoubleUtils.isConsideredZero(remainDistance)) {
             reset();
         } else {
@@ -70,29 +70,9 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
     }
 
     public boolean isStopped() {
-        return this.destination == null || DoubleUtils.isConsideredZero(getRemainDistanceToDestination());
+        double remainDistance = UTurnHelper.reckonRemainDistanceToDestination(this.robot, this.destination);
+        return this.destination == null || DoubleUtils.isConsideredZero(remainDistance);
     }
 
-    private double reckonMaxVelocity(double remainTurnAngleDegree) {
-        double maxVelocity;
-        if (remainTurnAngleDegree > 30) {
-            maxVelocity = MIN_MAX_VELOCITY;
-        } else {
-            maxVelocity = MAX_MAX_VELOCITY - (remainTurnAngleDegree / 10) * 2;
-        }
-        return maxVelocity;
-    }
 
-    /**
-     * This is not the remain distance compare to predefined {@link AdvancedRobot#setAhead(double)}.
-     * This is the remain distance compare to the predefined {@link #destination}.
-     *
-     * @return
-     */
-    private double getRemainDistanceToDestination() {
-        Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
-        double distanceToDestination = robotPosition.distance(destination);
-//        LogHelper.logRobotMovement(robot, "Calculated remainDistance: " + distanceToDestination);
-        return distanceToDestination;
-    }
 }
