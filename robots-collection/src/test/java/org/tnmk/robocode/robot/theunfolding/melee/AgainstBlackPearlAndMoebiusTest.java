@@ -28,7 +28,7 @@ public class AgainstBlackPearlAndMoebiusTest extends AbstractWinRateTest {
          * - v2.4.2: Apply uTurn: 2000 rounds: 41.55%
          * The toughest opponents are BlackPearl and Moebius because of their gun!!! See more at {@link AgainstMoebiusAndOthersTest
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.4, TestRounds.NUM_ROUNDS_ABSOLUTE_CERTAINTY);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.45, TestRounds.NUM_ROUNDS_ABSOLUTE_CERTAINTY);
         return testConfig;
     }
 }

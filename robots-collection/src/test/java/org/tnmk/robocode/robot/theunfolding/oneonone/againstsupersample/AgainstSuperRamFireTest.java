@@ -19,7 +19,7 @@ public class AgainstSuperRamFireTest extends AbstractWinRateTest {
          * Run 100 (v.2.4.0): 78%, 84.0%
          * - v2.4.2: Apply uTurn: 500 rounds: 68.4%
          */
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.7, TestRounds.NUM_ROUNDS_QUICK);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.75, TestRounds.NUM_ROUNDS_QUICK);
         return testConfig;
     }
 }

@@ -25,7 +25,7 @@ public class AgainstSuperSampleBots02Test extends AbstractWinRateTest {
          * - v2.4.1: No uTurn: 2000 rounds: 58.7%
          * - v2.4.2: Apply uTurn: 2000 rounds: 42.85%
          */
-        TestConfig testConfig  = new TestConfig(TheUnfoldingRobot.class,enemyNames, 0.5, TestRounds.NUM_ROUNDS_ABSOLUTE_CERTAINTY);
+        TestConfig testConfig  = new TestConfig(TheUnfoldingRobot.class,enemyNames, 0.55, TestRounds.NUM_ROUNDS_ABSOLUTE_CERTAINTY);
         return testConfig;
     }
 }
