@@ -61,9 +61,15 @@
                 <groupId>net.sf.robocode</groupId>
                 <artifactId>robocode.api</artifactId>
                 <version>1.9.3.6</version>
-                <scope>system</scope>
-                <systemPath>${robocode.home.folder}/robocode.jar</systemPath>
+<!--                <scope>system</scope>-->
+<!--                <systemPath>${robocode.home.folder}/robocode.jar</systemPath>-->
             </dependency>
+            <dependency>
+                <groupId>net.sf.robocode</groupId>
+                <artifactId>robocode.core</artifactId>
+                <version>1.9.3.6</version>
+            </dependency>
+
             <!-- Used by robocode.control.test -->
             <dependency>
                 <groupId>org.hamcrest</groupId>
@@ -87,4 +93,11 @@
 
         </dependencies>
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>local-maven-repository</id>
+            <url>file:///${project.basedir}/local-maven-repository</url>
+        </repository>
+    </repositories>
 </project>

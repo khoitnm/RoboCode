@@ -15,5 +15,8 @@ build.properties
 *.jar
 # Allow this jar libs!
 !libs/robocode.jar
+!libs/robocode.core-1.9.3.6.jar
 *.war
 *.ear
+
+/local-maven-repository

@@ -12,6 +12,12 @@
     <artifactId>robots-collection</artifactId>
     <dependencies>
         <dependency>
+            <groupId>net.sf.robocode</groupId>
+            <artifactId>robocode.core</artifactId>
+<!--            <version>1.9.3.6</version>-->
+        </dependency>
+
+        <dependency>
             <groupId>tnmk.robocode</groupId>
             <artifactId>the-unfolding-robot</artifactId>
         </dependency>
@@ -28,4 +34,11 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>local-maven-repository</id>
+            <url>file:///${project.basedir}/../local-maven-repository</url>
+        </repository>
+    </repositories>
 </project>
