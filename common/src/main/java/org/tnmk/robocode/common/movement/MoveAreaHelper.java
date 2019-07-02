@@ -22,8 +22,8 @@ public class MoveAreaHelper {
         if (moveArea.isPresent()) {
             double actualDiagonal = GeoMathUtils.calculateDiagonal(moveArea.get());
             DebugHelper.debugMoveArea(robot.getGraphics(), moveArea.get(), actualDiagonal);
-            boolean isTooLong = actualDiagonal <= expectDiagonal;
-            MoveAreaTooLongResult result = new MoveAreaTooLongResult(moveArea.get(), isTooLong);
+            boolean isMoveInSmallArea = actualDiagonal <= expectDiagonal;
+            MoveAreaTooLongResult result = new MoveAreaTooLongResult(moveArea.get(), isMoveInSmallArea);
             return Optional.of(result);
         } else {
             return Optional.empty();
