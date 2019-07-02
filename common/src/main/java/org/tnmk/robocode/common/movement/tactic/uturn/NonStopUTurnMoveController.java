@@ -1,6 +1,7 @@
 package org.tnmk.robocode.common.movement.tactic.uturn;
 
 import org.tnmk.common.number.DoubleUtils;
+import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.movement.ResetableMoveController;
 import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.robot.LoopableRun;
@@ -27,7 +28,7 @@ public class NonStopUTurnMoveController implements ResetableMoveController, Loop
      */
     public void setMoveToDestination(AdvancedRobot robot, Point2D destination) {
         this.destination = destination;
-        double moveAngle = UTurnHelper.reckonMoveAngle(robot, destination);
+        double moveAngle = Move2DUtils.reckonMoveAngleDegree(robot, destination);
         double maxVelocity = UTurnHelper.reckonMaxVelocity(moveAngle);
         robot.setMaxVelocity(maxVelocity);
         robot.setTurnRight(moveAngle);
@@ -37,7 +38,7 @@ public class NonStopUTurnMoveController implements ResetableMoveController, Loop
 
     @Override
     public void runLoop() {
-        double remainDistance = UTurnHelper.reckonRemainDistanceToDestination(this.robot, this.destination);
+        double remainDistance = Move2DUtils.reckonRemainDistanceToDestination(this.robot, this.destination);
         if (DoubleUtils.isConsideredZero(remainDistance)) {
             reset();
         } else {

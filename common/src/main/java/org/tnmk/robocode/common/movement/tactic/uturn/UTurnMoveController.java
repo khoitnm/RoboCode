@@ -1,9 +1,9 @@
 package org.tnmk.robocode.common.movement.tactic.uturn;
 
 import java.awt.geom.Point2D;
-import org.tnmk.common.math.GeoMathUtils;
+
 import org.tnmk.common.number.DoubleUtils;
-import org.tnmk.robocode.common.helper.BattleFieldUtils;
+import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.ResetableMoveController;
 import org.tnmk.robocode.common.paint.PaintHelper;
@@ -36,7 +36,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
         this.destination = destination;
         Point2D currentPosition = new Point2D.Double(robot.getX(), robot.getY());
         double distance = currentPosition.distance(destination);
-        double moveAngle = UTurnHelper.reckonMoveAngle(robot, destination);
+        double moveAngle = Move2DUtils.reckonMoveAngleDegree(robot, destination);
         double maxVelocity = UTurnHelper.reckonMaxVelocity(moveAngle);
         robot.setMaxVelocity(maxVelocity);
         robot.setTurnRight(moveAngle);
@@ -54,7 +54,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
             return;
         }
 
-        double remainDistance = UTurnHelper.reckonRemainDistanceToDestination(this.robot, this.destination);
+        double remainDistance = Move2DUtils.reckonRemainDistanceToDestination(this.robot, this.destination);
         if (DoubleUtils.isConsideredZero(remainDistance)) {
             reset();
         } else {
@@ -70,7 +70,7 @@ public class UTurnMoveController implements ResetableMoveController, LoopableRun
     }
 
     public boolean isStopped() {
-        double remainDistance = UTurnHelper.reckonRemainDistanceToDestination(this.robot, this.destination);
+        double remainDistance = Move2DUtils.reckonRemainDistanceToDestination(this.robot, this.destination);
         return this.destination == null || DoubleUtils.isConsideredZero(remainDistance);
     }
 
