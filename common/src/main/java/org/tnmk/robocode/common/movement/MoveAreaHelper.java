@@ -1,12 +1,10 @@
 package org.tnmk.robocode.common.movement;
 
-import java.awt.Color;
 import java.awt.geom.Rectangle2D;
 import java.util.Optional;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.model.enemy.History;
-import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.robot.state.AdvanceRobotState;
 import org.tnmk.robocode.common.robot.state.RobotHistoryUtils;
 import robocode.AdvancedRobot;
@@ -22,11 +20,9 @@ public class MoveAreaHelper {
     public static Optional<MoveAreaTooLongResult> isMoveAreaHistoryLarger(AdvancedRobot robot, History<? extends AdvanceRobotState> robotHistory, long currentTime, int timePeriod, double expectDiagonal) {
         Optional<Rectangle2D> moveArea = RobotHistoryUtils.reckonMoveAreaInRecentPeriod(robotHistory, currentTime, timePeriod);
         if (moveArea.isPresent()) {
-            if (DebugHelper.isDebugOneAreaTooLong()){
-                PaintHelper.paintRectangle(robot.getGraphics(), moveArea.get(), Color.ORANGE);
-            }
             double actualDiagonal = GeoMathUtils.calculateDiagonal(moveArea.get());
-            boolean isTooLong =actualDiagonal > expectDiagonal;
+            DebugHelper.debugMoveArea(robot.getGraphics(), moveArea.get(), actualDiagonal);
+            boolean isTooLong = actualDiagonal <= expectDiagonal;
             MoveAreaTooLongResult result = new MoveAreaTooLongResult(moveArea.get(), isTooLong);
             return Optional.of(result);
         } else {
@@ -34,7 +30,7 @@ public class MoveAreaHelper {
         }
     }
 
-    public static class MoveAreaTooLongResult{
+    public static class MoveAreaTooLongResult {
         private final Rectangle2D moveArea;
         private final boolean isTooLong;
 

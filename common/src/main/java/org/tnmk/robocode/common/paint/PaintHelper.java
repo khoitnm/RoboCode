@@ -61,6 +61,11 @@ public class PaintHelper {
         graphic.drawString(string, x, (line + 1) * TEXT_LINE_HEIGHT);
     }
 
+    public static void paintTextAtPoint(Graphics graphic, String string, int x, int y) {
+        graphic.setColor(Color.WHITE);
+        graphic.drawString(string, x, y);
+    }
+
     public static void paintAngleRadian(Graphics2D graphics, Point2D startingPosition, double normAngleRadian, double normDistance, int lineWeight, Color color) {
         Point2D destination = Move2DUtils.reckonDestination(startingPosition, normAngleRadian, normDistance);
         PaintHelper.paintLine(graphics, startingPosition, destination, lineWeight, color);
@@ -70,5 +75,10 @@ public class PaintHelper {
     public static void paintRectangle(Graphics2D graphics, Rectangle2D rectangle2D, Color color) {
         graphics.setColor(color);
         graphics.fillRect((int) rectangle2D.getX(), (int) rectangle2D.getY(), (int) rectangle2D.getWidth(), (int) rectangle2D.getHeight());
+    }
+
+    public static void paintRectangle(Graphics2D graphics, Rectangle2D rectangle2D, Color color, String text) {
+        paintRectangle(graphics, rectangle2D, color);
+        paintTextAtPoint(graphics, text, (int) rectangle2D.getX() + 20, (int) rectangle2D.getY() - TEXT_LINE_HEIGHT);
     }
 }

@@ -1,6 +1,8 @@
 package org.tnmk.robocode.common.log;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
@@ -112,21 +114,27 @@ public class DebugHelper {
 
     public static void debugMovingTooLong(AdvancedRobot robot, MoveAreaHelper.MoveAreaTooLongResult moveAreaTooLongResult) {
         if (isDebugOneAreaTooLong()) {
-            LogHelper.logPosition(robot, "Moving too long in one area " + LogHelper.toString(moveAreaTooLongResult.getMoveArea()));
+//            LogHelper.logPosition(robot, "Moving too long in one area " + LogHelper.toString(moveAreaTooLongResult.getMoveArea()));
             PaintHelper.paintRectangle(robot.getGraphics(), moveAreaTooLongResult.getMoveArea(), Color.RED);
         }
     }
 
     public static boolean isDebugOneAreaTooLong() {
-        return true;
+        return false;
     }
 
     public static void debugLeastRiskAreas(AdvancedRobot robot, List<RiskArea> leastRiskAreas) {
-        if (!isDebugOneAreaTooLong()){
+        if (!isDebugOneAreaTooLong()) {
             return;
         }
         for (RiskArea leastRiskArea : leastRiskAreas) {
             PaintHelper.paintRectangle(robot.getGraphics(), leastRiskArea.getArea(), Color.GREEN);
+        }
+    }
+
+    public static void debugMoveArea(Graphics2D graphics, Rectangle2D moveArea, double actualDiagonal) {
+        if (DebugHelper.isDebugOneAreaTooLong()) {
+            PaintHelper.paintRectangle(graphics, moveArea, Color.ORANGE, "" + actualDiagonal);
         }
     }
 }
