@@ -7,22 +7,22 @@ import org.tnmk.robocode.robot.AbstractWinRateTest;
 import org.tnmk.robocode.robot.TestRounds;
 import org.tnmk.robocode.robot.TheUnfoldingRobot;
 import rz.HawkOnFireOS;
+import supersample.SuperCrazy;
 import supersample.SuperSpinBot;
-import voidiousdiamond.voidious.Diamond;
 
-public class Vs_Diamond_HawkOnFire_BlackPearl_SuperSpinTest extends AbstractWinRateTest {
+public class Vs_HawkOnFire_BlackPearl_OthersTest extends AbstractWinRateTest {
 
     @Override
     public TestConfig constructTestConfig() {
         List<String> enemyNames = Arrays.asList(
                 HawkOnFireOS.class.getCanonicalName()
-                , Diamond.class.getCanonicalName()
                 , BlackPearl.class.getCanonicalName()
+                , SuperCrazy.class.getCanonicalName()
                 , SuperSpinBot.class.getCanonicalName()
         );
 
 
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.1, TestRounds.NUM_ROUNDS_QUICK);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.5, TestRounds.NUM_ROUNDS_QUICK);
         return testConfig;
     }
 }
