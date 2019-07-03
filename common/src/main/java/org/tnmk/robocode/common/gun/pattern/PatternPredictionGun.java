@@ -82,7 +82,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
 
                 /**Turn the gun to the correct angle**/
                 //double gunBearing = GunUtils.reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
-                robot.setTurnGunLeftRadians(aimPrediction.getGunBearingRadian());
+                robot.setTurnGunLeftRadians(aimPrediction.getGunTurnLeftRadian());
                 gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PREDICTION, bulletPower, enemyHistory.getName());
 //                LogHelper.logSimple(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
 //                        "\n\tidentifiedPattern: " + patternIdentification +

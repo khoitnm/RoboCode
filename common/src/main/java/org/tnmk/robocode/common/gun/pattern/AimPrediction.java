@@ -7,12 +7,12 @@ import java.awt.geom.Point2D;
 public class AimPrediction {
     private final EnemyPrediction enemyPrediction;
     private final Point2D predictRobotPosition;
-    private final double gunBearingRadian;
+    private final double gunTurnLeftRadian;
 
-    public AimPrediction(EnemyPrediction enemyPrediction, Point2D predictRobotPosition, double gunBearingRadian) {
+    public AimPrediction(EnemyPrediction enemyPrediction, Point2D predictRobotPosition, double gunTurnLeftRadian) {
         this.enemyPrediction = enemyPrediction;
         this.predictRobotPosition = predictRobotPosition;
-        this.gunBearingRadian = gunBearingRadian;
+        this.gunTurnLeftRadian = gunTurnLeftRadian;
     }
 
     public EnemyPrediction getEnemyPrediction() {
@@ -23,7 +23,7 @@ public class AimPrediction {
         return predictRobotPosition;
     }
 
-    public double getGunBearingRadian() {
-        return gunBearingRadian;
+    public double getGunTurnLeftRadian() {
+        return gunTurnLeftRadian;
     }
 }
