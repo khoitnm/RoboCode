@@ -19,7 +19,7 @@
 
     <properties>
         <!-- This is the folder you setup your robocode -->
-        <robocode.home.folder>D:\SourceCode\RoboCode\robocode/libs</robocode.home.folder>
+        <robocode.home.folder>/home/kevintran/SourceCode/Personal/RoboCode/robocode/libs</robocode.home.folder>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
