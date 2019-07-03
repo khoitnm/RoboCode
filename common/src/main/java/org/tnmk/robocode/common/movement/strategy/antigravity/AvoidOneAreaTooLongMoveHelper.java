@@ -2,10 +2,12 @@ package org.tnmk.robocode.common.movement.strategy.antigravity;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.tnmk.common.math.GeoMathUtils;
+import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
@@ -48,17 +50,34 @@ public class AvoidOneAreaTooLongMoveHelper {
      * @return
      */
     private static Point2D findDestinationOutsideArea(AdvancedRobot robot, Rectangle2D battleField, Rectangle2D tooLongMoveArea, Collection<Enemy> enemies) {
+        Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
         List<RiskArea> analyzedRiskAreas = RiskAreaAnalyst.analyzeRiskAreas(battleField, enemies);
         List<RiskArea> excludedOldAreas = RiskAreaHelper.excludeAreas(analyzedRiskAreas, tooLongMoveArea);
         List<RiskArea> leastRiskAreas = RiskAreaAnalyst.findLeastRiskyArea(excludedOldAreas);
         DebugHelper.debugLeastRiskAreas(robot, leastRiskAreas);
-        Point2D destination = findBestDestinationInParts(leastRiskAreas);
+        RiskArea closestRiskArea = findClosestArea(robotPosition, leastRiskAreas);
+        DebugHelper.debugClosestRiskArea(robot, closestRiskArea);
+        Point2D destination = findBestDestinationInParts(Arrays.asList(closestRiskArea));
         return destination;
+    }
+
+    private static RiskArea findClosestArea(Point2D robotPosition, List<RiskArea> riskAreas) {
+        double closestDistance = Double.MAX_VALUE;
+        RiskArea closestRiskArea = null;
+        for (RiskArea riskArea : riskAreas) {
+            Point2D centerPoint = GeoMathUtils.reckonCenter(riskArea.getArea());
+            double distance = robotPosition.distance(centerPoint);
+            if (closestDistance > distance) {
+                closestDistance = distance;
+                closestRiskArea = riskArea;
+            }
+        }
+        return closestRiskArea;
     }
 
     private static Point2D findBestDestinationInParts(List<RiskArea> leastRiskAreas) {
         List<Rectangle2D> areas = leastRiskAreas.stream().map(RiskArea::getArea).collect(Collectors.toList());
-        return DestinationRandomHelper.randomPointInAreas(areas);
+        return DestinationRandomHelper.randomPointsAroundCentralInAreas(areas);
     }
 
 

@@ -1,0 +1,19 @@
+2019-07-03 16:41:36,296 	Vs_SuperSampleBots02Test 	Actual Win: 62.050000000000004% (2000 rounds).	 Expect Win: 55.00000000000001%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:41:46,242 	Vs_HawkOnFire_BlackPearl_OthersTest 	Actual Win: 48.0% (100 rounds).	 Expect Win: 50.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:45:53,160 	Vs_BlackPearl_AndMoebiusTest 	Actual Win: 50.14999999999999% (2000 rounds).	 Expect Win: 45.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:47:15,213 	Vs_Diamond_HawkOnFire_BlackPearl_SuperSpinTest 	Actual Win: 18.0% (100 rounds).	 Expect Win: 10.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:49:22,664 	Vs_BlackPearl_AndOthersTest 	Actual Win: 51.15% (2000 rounds).	 Expect Win: 45.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:52:11,432 	Vs_SuperSampleBots01Test 	Actual Win: 65.85% (2000 rounds).	 Expect Win: 63.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:55:57,323 	Vs_Moebius_And_OthersTest 	Actual Win: 62.8% (2000 rounds).	 Expect Win: 56.99999999999999%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:56:01,886 	Vs_SuperMecuritoBotTest 	Actual Win: 97.0% (100 rounds).	 Expect Win: 85.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:56:03,558 	Vs_SuperRamFireTest 	Actual Win: 88.0% (100 rounds).	 Expect Win: 75.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:56:06,469 	Vs_SuperWallsTest 	Actual Win: 77.0% (100 rounds).	 Expect Win: 70.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:56:25,700 	Vs_SuperSpinBotTest 	Actual Win: 78.8% (500 rounds).	 Expect Win: 70.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:57:39,847 	Vs_MoebiusTest 	Actual Win: 94.8% (500 rounds).	 Expect Win: 90.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:57:59,711 	Vs_BlackPearlTest 	Actual Win: 74.4% (500 rounds).	 Expect Win: 65.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:58:55,736 	Vs_DiamondTest 	Actual Win: 2.0% (100 rounds).	 Expect Win: 1.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:58:56,576 	Vs_SpinBotTest 	Actual Win: 95.0% (20 rounds).	 Expect Win: 100.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:58:56,576 	Vs_SpinBotTest 	ActualBulletDamage: 1705. Expect: 1600.0	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:58:57,511 	Vs_WallsTest 	Actual Win: 100.0% (20 rounds).	 Expect Win: 100.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:58:57,511 	Vs_WallsTest 	ActualBulletDamage: 1833. Expect: 1800.0	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  
+2019-07-03 16:59:03,423 	Vs_HawkOnFireTest 	Actual Win: 97.0% (100 rounds).	 Expect Win: 50.0%	 pattern-gun.402.434f905	 434f90576889333e76e87c7c2e152f0702813c4d	  

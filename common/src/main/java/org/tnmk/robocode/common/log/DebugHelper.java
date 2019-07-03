@@ -120,7 +120,7 @@ public class DebugHelper {
     }
 
     public static boolean isDebugOneAreaTooLong() {
-        return false;
+        return true;
     }
 
     public static void debugLeastRiskAreas(AdvancedRobot robot, List<RiskArea> leastRiskAreas) {
@@ -135,6 +135,12 @@ public class DebugHelper {
     public static void debugMoveArea(Graphics2D graphics, Rectangle2D moveArea, double actualDiagonal) {
         if (DebugHelper.isDebugOneAreaTooLong()) {
             PaintHelper.paintRectangle(graphics, moveArea, Color.ORANGE, "" + actualDiagonal);
+        }
+    }
+
+    public static void debugClosestRiskArea(AdvancedRobot robot, RiskArea closestRiskArea) {
+        if (DebugHelper.isDebugOneAreaTooLong()) {
+            PaintHelper.paintRectangle(robot.getGraphics(), closestRiskArea.getArea(), Color.magenta, "");
         }
     }
 }

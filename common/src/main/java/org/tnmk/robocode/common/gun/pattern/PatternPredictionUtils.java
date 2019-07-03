@@ -1,8 +1,5 @@
 package org.tnmk.robocode.common.gun.pattern;
 
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.List;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.helper.Move2DUtils;
@@ -10,6 +7,10 @@ import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.Enemy;
 import org.tnmk.robocode.common.model.enemy.EnemyHistoryUtils;
+
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.List;
 
 /**
  * https://www.ibm.com/developerworks/library/j-circular/index.html
@@ -39,11 +40,6 @@ public class PatternPredictionUtils {
      * @param predictionTime         the time that we think the bullet will reach the target.
      * @param avgVelocity            the average velocity of enemy
      * @return guess new enemy's position and moving pattern at the predictionTime based on the latest enemy data and average changing heading.
-     *
-     * <pre>
-     *  TODO improve:
-     *      use averageVelocity instead of latest velocity
-     * </pre>
      */
     public static EnemyPrediction predictEnemy(Enemy enemy, double avgVelocity, double avgChangeHeadingRadian, long predictionTime, Rectangle2D enemyMovementArea) {
         double diff = predictionTime - enemy.getTime();
@@ -72,16 +68,19 @@ public class PatternPredictionUtils {
                 enemyMovePattern = EnemyMovePattern.LINEAR;
                 newY = enemy.getPosition().getY() + Math.cos(enemyHeadingRadian) * enemy.getVelocity() * diff;
                 newX = enemy.getPosition().getX() + Math.sin(enemyHeadingRadian) * enemy.getVelocity() * diff;
-                //TODO if newX & newY outside the battle field, move prediction point into battle field.
             }
         }
         Point2D predictionPosition = new Point2D.Double(newX, newY);
         predictionPosition = Move2DUtils.reckonMaximumDestination(enemy.getPosition(), predictionPosition, enemyMovementArea);
-        if (!GeoMathUtils.checkInsideRectangle(predictionPosition, enemyMovementArea)){
-            String message = String.format("Outside: from:"+LogHelper.toString(enemy.getPosition()) +", to:"+LogHelper.toString(predictionPosition)+", area:"+LogHelper.toString(enemyMovementArea));
-            System.out.println(message);
-        }
+        debugPredictionPositionOutsideBattleField(enemy, predictionPosition, enemyMovementArea);
         EnemyPrediction patternPredictionResult = new EnemyPrediction(enemyMovePattern, predictionTime, predictionPosition, avgChangeHeadingRadian, avgVelocity);
         return patternPredictionResult;
+    }
+
+    private static void debugPredictionPositionOutsideBattleField(Enemy enemy, Point2D predictionPosition, Rectangle2D enemyMovementArea) {
+        if (!GeoMathUtils.checkInsideRectangle(predictionPosition, enemyMovementArea)) {
+            String message = String.format("This case should never happens. Predict position's outside battle field: from:" + LogHelper.toString(enemy.getPosition()) + ", to:" + LogHelper.toString(predictionPosition) + ", area:" + LogHelper.toString(enemyMovementArea));
+            System.out.println(message);
+        }
     }
 }
