@@ -52,14 +52,12 @@ public class TheUnfoldingRadar implements OnScannedRobotControl, OnRobotDeathCon
      */
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        if (isCloseEnemy(scannedRobotEvent)) {
+        if (isCloseEnemy(scannedRobotEvent) || EnemyHealthHelper.isEnemyVeryLowEnergy(scannedRobotEvent)) {
             if (allEnemiesScanRadar.isScannedAllEnemiesAtLeastOnce() && allEnemiesObservationContext.isAllEnemiesHasNewData()) {
                 botLockRadar.onScannedRobot(scannedRobotEvent);
             } else {
                 allEnemiesScanRadar.onScannedRobot(scannedRobotEvent);
             }
-        } else if (EnemyHealthHelper.isEnemyVeryLowEnergy(scannedRobotEvent)) {
-            botLockRadar.onScannedRobot(scannedRobotEvent);
         } else {
             int totalExistingEnemies = robot.getOthers();
             if (allEnemiesScanRadar.isScannedAllEnemiesAtLeastOnce() && totalExistingEnemies <= 1) {
