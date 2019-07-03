@@ -199,4 +199,10 @@ public final class GeoMathUtils {
         double diagonal = Math.sqrt(Math.pow(rectangle.getWidth(), 2)+Math.pow(rectangle.getHeight(), 2));
         return diagonal;
     }
+
+    public static Point2D reckonCenter(Rectangle2D rectangle2D) {
+        double x = rectangle2D.getMinX() + rectangle2D.getWidth() / 2;
+        double y = rectangle2D.getMinY() + rectangle2D.getHeight() / 2;
+        return new Point2D.Double(x, y);
+    }
 }

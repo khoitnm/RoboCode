@@ -192,7 +192,7 @@ public class RandomMoveController implements MoveController, LoopableRun, OnScan
 
     private boolean shouldAttack(double robotEnergy, double enemyEnergy) {
         double energyDifference = robotEnergy - enemyEnergy;
-        return (robotEnergy / enemyEnergy > 4 && robotEnergy > SAFE_ENERGY_TO_ATTACK) || energyDifference > 50d || (energyDifference > 35 && enemyEnergy < 3);
+        return (robotEnergy / enemyEnergy > 4 && robotEnergy > SAFE_ENERGY_TO_ATTACK) || energyDifference > 50d || (energyDifference > 35 && enemyEnergy < 3) || (energyDifference > 10 && enemyEnergy < 1);
     }
 
     private Point2D randomDestinationCloserToEnemy(Point2D robotPosition, Point2D enemyPosition, double currentDistance, double distanceBetweenPoints, Rectangle2D movementArea) {

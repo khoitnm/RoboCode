@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class DestinationRandomHelper {
 
-    public static Point2D randomPointInAreas(List<Rectangle2D> areas) {
+    public static Point2D randomPointsAroundCentralInAreas(List<Rectangle2D> areas) {
         List<Point2D> randomPoints = new ArrayList<>();
         for (Rectangle2D area : areas) {
             Point2D randomPoint = randomPointAroundCentralOfArea(area);
