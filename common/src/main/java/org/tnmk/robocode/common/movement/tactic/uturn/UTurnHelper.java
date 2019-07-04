@@ -11,7 +11,7 @@ public class UTurnHelper {
         if (remainTurnAngleDegree > 30) {
             maxVelocity = MIN_MAX_VELOCITY;
         } else {
-            maxVelocity = MAX_MAX_VELOCITY - (remainTurnAngleDegree / 10) * 2;
+            maxVelocity = MAX_MAX_VELOCITY - (Math.abs(remainTurnAngleDegree) / 10d) * 2d;
         }
         return maxVelocity;
     }
