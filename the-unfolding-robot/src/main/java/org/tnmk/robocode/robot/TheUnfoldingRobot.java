@@ -26,9 +26,6 @@ public class TheUnfoldingRobot extends AdvancedRobot {
         ErrorLogger.init(this);
 
         try {
-            if (true) {
-                throw new IllegalStateException("Test exception");
-            }
             HiTechDecorator.decorate(this);
 
             setAdjustGunForRobotTurn(true);
