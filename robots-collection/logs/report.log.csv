@@ -55,4 +55,56 @@
 2019-07-03 21:38:17,047 	Vs_BlackPearlTest 	Actual Win: 65.4% (500 rounds).	 Expect Win: 65.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
 2019-07-03 21:39:49,435 	Vs_DiamondTest 	Actual Win: 9.0% (100 rounds).	 Expect Win: 1.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
 2019-07-03 21:40:03,837 	Vs_HawkOnFireTest 	Actual Win: 95.0% (100 rounds).	 Expect Win: 50.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
-2019-07-03 21:41:51,561 	Vs_MoebiusTest 	Actual Win: 93.8% (500 rounds).	 Expect Win: 90.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:41:51,561 	Vs_MoebiusTest 	Actual Win: 93.8% (500 rounds).	 Expect Win: 90.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+2019-07-04 09:24:04,109 	Vs_SuperSampleBots02Test 	Actual Win: 64.4% (2000 rounds).	 Expect Win: 55.00000000000001%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:24:13,677 	Vs_HawkOnFire_BlackPearl_OthersTest 	Actual Win: 55.00000000000001% (100 rounds).	 Expect Win: 50.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:28:25,407 	Vs_BlackPearl_AndMoebiusTest 	Actual Win: 49.9% (2000 rounds).	 Expect Win: 45.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:29:54,158 	Vs_Diamond_HawkOnFire_BlackPearl_SuperSpinTest 	Actual Win: 28.000000000000004% (100 rounds).	 Expect Win: 10.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:32:04,539 	Vs_BlackPearl_AndOthersTest 	Actual Win: 48.55% (2000 rounds).	 Expect Win: 45.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:34:57,304 	Vs_SuperSampleBots01Test 	Actual Win: 67.7% (2000 rounds).	 Expect Win: 63.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:38:42,778 	Vs_Moebius_And_OthersTest 	Actual Win: 58.45% (2000 rounds).	 Expect Win: 56.99999999999999%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:38:47,377 	Vs_SuperMecuritoBotTest 	Actual Win: 97.0% (100 rounds).	 Expect Win: 85.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:38:49,217 	Vs_SuperRamFireTest 	Actual Win: 76.0% (100 rounds).	 Expect Win: 75.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:38:52,061 	Vs_SuperWallsTest 	Actual Win: 82.0% (100 rounds).	 Expect Win: 75.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:39:11,055 	Vs_SuperSpinBotTest 	Actual Win: 76.8% (500 rounds).	 Expect Win: 70.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:40:26,368 	Vs_MoebiusTest 	Actual Win: 94.39999999999999% (500 rounds).	 Expect Win: 90.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:40:46,473 	Vs_BlackPearlTest 	Actual Win: 72.8% (500 rounds).	 Expect Win: 65.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:41:41,642 	Vs_DiamondTest 	Actual Win: 6.0% (100 rounds).	 Expect Win: 1.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:41:42,639 	Vs_SpinBotTest 	Actual Win: 100.0% (20 rounds).	 Expect Win: 100.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:41:42,639 	Vs_SpinBotTest 	ActualBulletDamage: 1739. Expect: 1600.0	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:41:43,283 	Vs_WallsTest 	Actual Win: 100.0% (20 rounds).	 Expect Win: 100.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:41:43,283 	Vs_WallsTest 	ActualBulletDamage: 1864. Expect: 1800.0	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 09:41:49,651 	Vs_HawkOnFireTest 	Actual Win: 93.0% (100 rounds).	 Expect Win: 85.0%	 master.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+2019-07-04 10:22:01,141 	Vs_SuperSampleBots02Test 	Actual Win: 66.9% (2000 rounds).	 Expect Win: 55.00000000000001%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9
+2019-07-04 10:22:10,490 	Vs_HawkOnFire_BlackPearl_OthersTest 	Actual Win: 48.0% (100 rounds).	 Expect Win: 50.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 10:26:17,574 	Vs_BlackPearl_AndMoebiusTest 	Actual Win: 49.6% (2000 rounds).	 Expect Win: 45.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 10:27:45,127 	Vs_Diamond_HawkOnFire_BlackPearl_SuperSpinTest 	Actual Win: 22.0% (100 rounds).	 Expect Win: 10.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 10:29:58,209 	Vs_BlackPearl_AndOthersTest 	Actual Win: 46.85% (2000 rounds).	 Expect Win: 45.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 10:32:55,854 	Vs_SuperSampleBots01Test 	Actual Win: 67.80000000000001% (2000 rounds).	 Expect Win: 63.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 10:36:39,880 	Vs_Moebius_And_OthersTest 	Actual Win: 58.050000000000004% (2000 rounds).	 Expect Win: 56.99999999999999%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 10:36:44,548 	Vs_SuperMecuritoBotTest 	Actual Win: 97.0% (100 rounds).	 Expect Win: 85.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 10:36:46,326 	Vs_SuperRamFireTest 	Actual Win: 81.0% (100 rounds).	 Expect Win: 75.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 10:36:48,776 	Vs_SuperWallsTest 	Actual Win: 98.0% (100 rounds).	 Expect Win: 75.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 10:37:08,172 	Vs_SuperSpinBotTest 	Actual Win: 75.6% (500 rounds).	 Expect Win: 70.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+2019-07-04 16:09:35,031 	Vs_SuperSampleBots02Test 	Actual Win: 65.0% (2000 rounds).	 Expect Win: 55.00000000000001%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:11:05,611 	Vs_HawkOnFire_BlackPearl_OthersTest 	Actual Win: 56.00000000000001% (1000 rounds).	 Expect Win: 50.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:15:10,572 	Vs_BlackPearl_AndMoebiusTest 	Actual Win: 48.0% (2000 rounds).	 Expect Win: 45.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:16:44,414 	Vs_Diamond_HawkOnFire_BlackPearl_SuperSpinTest 	Actual Win: 26.0% (100 rounds).	 Expect Win: 10.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:18:57,240 	Vs_BlackPearl_AndOthersTest 	Actual Win: 49.15% (2000 rounds).	 Expect Win: 45.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:21:52,705 	Vs_SuperSampleBots01Test 	Actual Win: 67.2% (2000 rounds).	 Expect Win: 63.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:25:37,126 	Vs_Moebius_And_OthersTest 	Actual Win: 59.25% (2000 rounds).	 Expect Win: 56.99999999999999%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:25:42,346 	Vs_SuperMecuritoBotTest 	Actual Win: 97.0% (100 rounds).	 Expect Win: 85.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:25:44,328 	Vs_SuperRamFireTest 	Actual Win: 87.0% (100 rounds).	 Expect Win: 75.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:25:47,138 	Vs_SuperWallsTest 	Actual Win: 98.0% (100 rounds).	 Expect Win: 75.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:26:07,641 	Vs_SuperSpinBotTest 	Actual Win: 77.8% (500 rounds).	 Expect Win: 70.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:27:22,404 	Vs_MoebiusTest 	Actual Win: 93.60000000000001% (500 rounds).	 Expect Win: 90.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:27:42,622 	Vs_BlackPearlTest 	Actual Win: 64.2% (500 rounds).	 Expect Win: 65.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:28:51,424 	Vs_DiamondTest 	Actual Win: 11.0% (100 rounds).	 Expect Win: 1.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:28:52,327 	Vs_SpinBotTest 	Actual Win: 100.0% (20 rounds).	 Expect Win: 100.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:28:52,328 	Vs_SpinBotTest 	ActualBulletDamage: 1808. Expect: 1600.0	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:28:53,094 	Vs_WallsTest 	Actual Win: 100.0% (20 rounds).	 Expect Win: 100.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:28:53,094 	Vs_WallsTest 	ActualBulletDamage: 1858. Expect: 1800.0	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  
+2019-07-04 16:28:58,988 	Vs_HawkOnFireTest 	Actual Win: 95.0% (100 rounds).	 Expect Win: 85.0%	 revert-aiming-bearing-angle.412.acba164	 acba164b0e9d1f656f3e9441b52f411a76edfeb9	  

@@ -68,6 +68,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
             EnemyHistory enemyHistory = enemyStatisticContext.getEnemyHistory();
             PatternIdentification patternIdentification = enemyStatisticContext.getPatternIdentification();
 
+//            Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
             AimPrediction aimPrediction= predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower);
             EnemyPrediction enemyPrediction = aimPrediction.getEnemyPrediction();
 //            LogHelper.logRobotMovement(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
@@ -81,7 +82,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
 //                Point2D robotPosition = new Point2D.Double(robot.getX(), robot.getY());
 
                 /**Turn the gun to the correct angle**/
-                //double gunBearing = GunUtils.reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
+//                double gunBearing = GunUtils.reckonTurnGunLeftNormRadian(robotPosition, enemyPrediction.getPredictionPosition(), robot.getGunHeadingRadians());
                 robot.setTurnGunLeftRadians(aimPrediction.getGunTurnLeftRadian());
                 gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PREDICTION, bulletPower, enemyHistory.getName());
 //                LogHelper.logSimple(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
