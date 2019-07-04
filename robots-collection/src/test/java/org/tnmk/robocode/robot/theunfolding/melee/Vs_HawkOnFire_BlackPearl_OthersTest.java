@@ -22,7 +22,7 @@ public class Vs_HawkOnFire_BlackPearl_OthersTest extends AbstractWinRateTest {
         );
 
 
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.5, TestRounds.NUM_ROUNDS_QUICK);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.5, TestRounds.NUM_ROUNDS_HIGH_CERTAINTY);
         return testConfig;
     }
 }
