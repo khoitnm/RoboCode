@@ -1,6 +1,10 @@
 package org.tnmk.robocode.robot;
 
+import org.tnmk.robocode.common.error.ErrorLogger;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
+import org.tnmk.robocode.common.robot.state.AdvanceRobotFightState;
+import org.tnmk.robocode.common.robot.state.AdvanceRobotState;
+import org.tnmk.robocode.common.robot.state.AdvanceRobotStateMapper;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.*;
 
@@ -19,82 +23,131 @@ public class TheUnfoldingRobot extends AdvancedRobot {
 
     @Override
     public void run() {
-        HiTechDecorator.decorate(this);
+        ErrorLogger.init(this);
 
-        setAdjustGunForRobotTurn(true);
-        setAdjustRadarForGunTurn(true);
-        setAdjustRadarForRobotTurn(true);
+        try {
+            if (true) {
+                throw new IllegalStateException("Test exception");
+            }
+            HiTechDecorator.decorate(this);
 
-        theUnfoldingRadar.runInit();
-        theUnfoldingGun.runInit();
-        theUnfoldingMovement.runInit();
-        execute();
+            setAdjustGunForRobotTurn(true);
+            setAdjustRadarForGunTurn(true);
+            setAdjustRadarForRobotTurn(true);
 
-        while (true) {
-            theUnfoldingGun.runLoop();
-            theUnfoldingMovement.runLoop();
+            theUnfoldingRadar.runInit();
+            theUnfoldingGun.runInit();
+            theUnfoldingMovement.runInit();
             execute();
-            loopIndex++;
+
+            while (true) {
+                theUnfoldingGun.runLoop();
+                theUnfoldingMovement.runLoop();
+                execute();
+                loopIndex++;
+            }
+        } catch (RuntimeException e) {
+            logAndRethrowException(e);
         }
     }
 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
-        /** Radar must be executed before other things so that it can update the latest information. */
-        theUnfoldingRadar.onScannedRobot(scannedRobotEvent);
-        theUnfoldingMovement.onScannedRobot(scannedRobotEvent);
-        theUnfoldingGun.onScannedRobot(scannedRobotEvent);
-        //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
-        //All of event should trigger robot.setXxx() methods only, they will be triggered in loopRun()
-//        execute();
+        try {
+            /** Radar must be executed before other things so that it can update the latest information. */
+            theUnfoldingRadar.onScannedRobot(scannedRobotEvent);
+            theUnfoldingMovement.onScannedRobot(scannedRobotEvent);
+            theUnfoldingGun.onScannedRobot(scannedRobotEvent);
+            //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
+            //All of event should trigger robot.setXxx() methods only, they will be triggered in loopRun()
+        } catch (RuntimeException e) {
+            logAndRethrowException(e);
+        }
     }
 
     @Override
     public void onRobotDeath(RobotDeathEvent robotDeathEvent) {
-        theUnfoldingRadar.onRobotDeath(robotDeathEvent);
-        //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
-        //All of event should trigger robot.setXxx() methods only, they will be triggered in loopRun()
-//        execute();
+        try {
+            theUnfoldingRadar.onRobotDeath(robotDeathEvent);
+            //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
+            //All of event should trigger robot.setXxx() methods only, they will be triggered in loopRun()
+        } catch (RuntimeException e) {
+            logAndRethrowException(e);
+        }
     }
 
     @Override
     public void onCustomEvent(CustomEvent customEvent) {
-        theUnfoldingRadar.onCustomEvent(customEvent);
-        theUnfoldingGun.onCustomEvent(customEvent);
-        theUnfoldingMovement.onCustomEvent(customEvent);
-        //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
-        //All of event should trigger robot.setXxx() methods only, they will be triggered in loopRun()
-//        execute();
+        try {
+            theUnfoldingRadar.onCustomEvent(customEvent);
+            theUnfoldingGun.onCustomEvent(customEvent);
+            theUnfoldingMovement.onCustomEvent(customEvent);
+            //Note don't execute() in robotEvents, otherwise, the actions inside loopRun() will not be triggered.
+            //All of event should trigger robot.setXxx() methods only, they will be triggered in loopRun()
+        } catch (RuntimeException e) {
+            logAndRethrowException(e);
+        }
     }
 
     @Override
     public void onHitRobot(HitRobotEvent hitRobotEvent) {
-        theUnfoldingMovement.onHitRobot(hitRobotEvent);
+        try {
+            theUnfoldingMovement.onHitRobot(hitRobotEvent);
+        } catch (RuntimeException e) {
+            logAndRethrowException(e);
+        }
     }
 
     @Override
     public void onStatus(StatusEvent statusEvent) {
-        theUnfoldingMovement.onStatus(statusEvent);
+        try {
+            theUnfoldingMovement.onStatus(statusEvent);
+        } catch (RuntimeException e) {
+            logAndRethrowException(e);
+        }
     }
 
     @Override
     public void onHitWall(HitWallEvent hitWallEvent) {
-        theUnfoldingMovement.onHitWall(hitWallEvent);
+        try {
+            theUnfoldingMovement.onHitWall(hitWallEvent);
+        } catch (RuntimeException e) {
+            logAndRethrowException(e);
+        }
     }
 
     @Override
     public void onHitByBullet(HitByBulletEvent hitByBulletEvent) {
-        theUnfoldingGun.onHitByBullet(hitByBulletEvent);
+        try {
+            theUnfoldingGun.onHitByBullet(hitByBulletEvent);
+        } catch (RuntimeException e) {
+            logAndRethrowException(e);
+        }
     }
 
     @Override
     public void onWin(WinEvent winEvent) {
-        theUnfoldingGun.onWin(winEvent);
+        try {
+            theUnfoldingGun.onWin(winEvent);
+        } catch (RuntimeException e) {
+            logAndRethrowException(e);
+        }
     }
 
     @Override
     public void onBulletHit(BulletHitEvent event) {
-        theUnfoldingGun.onBulletHit(event);
-        theUnfoldingMovement.onBulletHit(event);
+        try {
+            theUnfoldingGun.onBulletHit(event);
+            theUnfoldingMovement.onBulletHit(event);
+        } catch (RuntimeException e) {
+            logAndRethrowException(e);
+        }
+    }
+
+    protected void logAndRethrowException(RuntimeException e) {
+        AdvanceRobotState state = AdvanceRobotStateMapper.toState(this);
+        String errorMessage = String.format("[%s] \n\tState: %s\n\tenemiesContext: %s", getTime(), state, allEnemiesObservationContext);
+        ErrorLogger.getInstance().logException(e, errorMessage);
+        throw e;
     }
 }
