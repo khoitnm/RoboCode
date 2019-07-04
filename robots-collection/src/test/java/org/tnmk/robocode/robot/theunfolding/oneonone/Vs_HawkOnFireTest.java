@@ -16,7 +16,7 @@ public class Vs_HawkOnFireTest extends AbstractWinRateTest {
         );
 
 
-        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.5, TestRounds.NUM_ROUNDS_QUICK);
+        TestConfig testConfig = new TestConfig(TheUnfoldingRobot.class, enemyNames, 0.85, TestRounds.NUM_ROUNDS_QUICK);
         return testConfig;
     }
 }

@@ -37,3 +37,22 @@
 2019-07-03 20:20:38,236 	Vs_DiamondTest 	Actual Win: 4.0% (100 rounds).	 Expect Win: 1.0%	 2.5.2.407.46a6ab1	 46a6ab19e54b6a5e1a94f187d0e1ec484a715d7b	 2.5.2 
 2019-07-03 20:20:53,790 	Vs_HawkOnFireTest 	Actual Win: 94.0% (100 rounds).	 Expect Win: 50.0%	 2.5.2.407.46a6ab1	 46a6ab19e54b6a5e1a94f187d0e1ec484a715d7b	 2.5.2 
 2019-07-03 20:22:28,563 	Vs_MoebiusTest 	Actual Win: 93.8% (500 rounds).	 Expect Win: 90.0%	 2.5.2.407.46a6ab1	 46a6ab19e54b6a5e1a94f187d0e1ec484a715d7b	 2.5.2 
+2019-07-03 21:11:22,084 	Vs_BlackPearl_AndMoebiusTest 	Actual Win: 50.05% (2000 rounds).	 Expect Win: 45.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:16:03,583 	Vs_BlackPearl_AndOthersTest 	Actual Win: 44.9% (2000 rounds).	 Expect Win: 45.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:18:06,959 	Vs_Diamond_HawkOnFire_BlackPearl_SuperSpinTest 	Actual Win: 31.0% (100 rounds).	 Expect Win: 10.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:18:31,589 	Vs_HawkOnFire_BlackPearl_OthersTest 	Actual Win: 44.0% (100 rounds).	 Expect Win: 50.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:25:16,809 	Vs_Moebius_And_OthersTest 	Actual Win: 59.9% (2000 rounds).	 Expect Win: 56.99999999999999%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:30:57,105 	Vs_SuperSampleBots01Test 	Actual Win: 68.95% (2000 rounds).	 Expect Win: 63.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:36:04,649 	Vs_SuperSampleBots02Test 	Actual Win: 63.65% (2000 rounds).	 Expect Win: 55.00000000000001%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:36:05,862 	Vs_SpinBotTest 	Actual Win: 100.0% (20 rounds).	 Expect Win: 100.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:36:05,862 	Vs_SpinBotTest 	ActualBulletDamage: 1665. Expect: 1600.0	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:36:07,413 	Vs_WallsTest 	Actual Win: 100.0% (20 rounds).	 Expect Win: 100.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:36:07,413 	Vs_WallsTest 	ActualBulletDamage: 1848. Expect: 1800.0	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:36:19,975 	Vs_SuperMecuritoBotTest 	Actual Win: 94.0% (100 rounds).	 Expect Win: 85.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:36:24,187 	Vs_SuperRamFireTest 	Actual Win: 78.0% (100 rounds).	 Expect Win: 75.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:37:14,532 	Vs_SuperSpinBotTest 	Actual Win: 79.4% (500 rounds).	 Expect Win: 70.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:37:23,134 	Vs_SuperWallsTest 	Actual Win: 84.0% (100 rounds).	 Expect Win: 70.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:38:17,047 	Vs_BlackPearlTest 	Actual Win: 65.4% (500 rounds).	 Expect Win: 65.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:39:49,435 	Vs_DiamondTest 	Actual Win: 9.0% (100 rounds).	 Expect Win: 1.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:40:03,837 	Vs_HawkOnFireTest 	Actual Win: 95.0% (100 rounds).	 Expect Win: 50.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
+2019-07-03 21:41:51,561 	Vs_MoebiusTest 	Actual Win: 93.8% (500 rounds).	 Expect Win: 90.0%	 master.411.7f9dee0	 7f9dee0d1463e1186be9618702d94ecbf4e3403d	  
