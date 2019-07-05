@@ -27,7 +27,7 @@ public class PatternPredictionUtils {
      * @param enemyMovementArea the area enemy always moving inside. It never move to outside this area (usually the battle field).
      * @return guess new enemy's position and also identify pattern at the predictionTime.
      */
-    public static EnemyPrediction predictEnemy(List<Enemy> historyItems, long predictionTime, Rectangle2D enemyMovementArea) {
+    public static EnemyPrediction predictEnemyBasedOnAvgVelocityAndAvgChangeHeading(List<Enemy> historyItems, long predictionTime, Rectangle2D enemyMovementArea) {
         Enemy enemy = historyItems.get(0);
         double avgChangeHeadingRadian = EnemyHistoryUtils.averageChangeHeadingRadian(historyItems);
         double avgVelocity = EnemyHistoryUtils.averageVelocity(historyItems);

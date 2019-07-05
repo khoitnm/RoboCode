@@ -87,7 +87,11 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
 
         Point2D enemyPosition = enemyHistory.getLatestHistoryItem().getPosition();
         long periodForTurningGun = 0;
+        long periodForBulletToReachEnemy = 0;
         double gunTurnLeftRadian = 0;
+        long timeWhenBulletReachEnemy = 0;
+        long totalPeriodGun = 0;
+
         Point2D predictRobotPosition = currentRobotPosition;
         for (int i = 0; i < ENEMY_PREDICTION_TIMES; i++) {//this loop is used to improve the correctness of prediction.
             RobotPrediction robotPrediction = RobotPredictionHelper.predictPosition(periodForTurningGun, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
@@ -97,14 +101,13 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
 
             double distanceRobotToEnemy = predictRobotPosition.distance(enemyPosition);
             double bulletVelocity = GunUtils.reckonBulletVelocity(firePower);
-            long periodForBulletToReachEnemy = (long) Math.ceil(Math.abs(distanceRobotToEnemy / bulletVelocity));
-
+            periodForBulletToReachEnemy = (long) Math.ceil(Math.abs(distanceRobotToEnemy / bulletVelocity));
             gunTurnLeftRadian = GunUtils.reckonTurnGunLeftNormRadian(predictRobotPosition, enemyPosition, robot.getGunHeadingRadians());
             periodForTurningGun = (long) Math.ceil(Math.abs(gunTurnLeftRadian / AngleUtils.toRadian(RobotPhysics.GUN_TURN_VELOCITY)));
-            long totalPeriodGun = periodForTurningGun + periodForBulletToReachEnemy;
-            long timeWhenBulletReachEnemy = robot.getTime() + Math.round(totalPeriodGun);
+            totalPeriodGun = periodForTurningGun + periodForBulletToReachEnemy;
+            timeWhenBulletReachEnemy = robot.getTime() + Math.round(totalPeriodGun);
 
-            enemyPrediction = PatternPredictionUtils.predictEnemy(latestHistoryItems, timeWhenBulletReachEnemy, battleField);
+            enemyPrediction = PatternPredictionUtils.predictEnemyBasedOnAvgVelocityAndAvgChangeHeading(latestHistoryItems, timeWhenBulletReachEnemy, battleField);
             enemyPosition = enemyPrediction.getPredictionPosition();
         }
         if (enemyPrediction == null) {
@@ -114,7 +117,7 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
 
 //        String message = String.format("Final predict enemy at %s, position {%.2f, %.2f}", enemyPrediction.getTime(), enemyPrediction.getPosition().getX(), enemyPrediction.getPosition().getY());
 //        LogHelper.logRobotMovement(robot, message);
-        return new AimPrediction(enemyPrediction, predictRobotPosition, gunTurnLeftRadian);
+        return new AimPrediction(enemyPrediction, predictRobotPosition, gunTurnLeftRadian, robot.getTime(), timeWhenBulletReachEnemy, totalPeriodGun, periodForTurningGun, periodForBulletToReachEnemy);
     }
 
     private void debugPredictSelfRobot(AdvancedRobot robot) {
@@ -126,7 +129,7 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
 
     private void debugPredictEnemy(List<Enemy> latestHistoryItems, Rectangle2D enemyMovementArea) {
         for (int i = 0; i < 5; i++) {
-            EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemy(latestHistoryItems, robot.getTime() + i, enemyMovementArea);
+            EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemyBasedOnAvgVelocityAndAvgChangeHeading(latestHistoryItems, robot.getTime() + i, enemyMovementArea);
             Point2D testEnemyPosition = enemyPrediction.getPredictionPosition();
             String message = String.format("predict enemy at time %s, position {%.2f, %.2f}", robot.getTime() + i, testEnemyPosition.getX(), testEnemyPosition.getY());
             LogHelper.logRobotMovement(robot, message);
