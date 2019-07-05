@@ -61,7 +61,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
             if (enemyStatisticContext != null && enemyStatisticContext.hasCertainPattern()) {
                 patternPredictionGun.onScannedRobot(scannedRobotEvent);
             } else {
-                aimGFTGunWhenPropriate(scannedRobotEvent);
+                aimGFTGunWhenAppropriated(scannedRobotEvent);
 //            blackPearlGun.onScannedRobot(scannedRobotEvent);
 //            mobiusGun.onScannedRobot(scannedRobotEvent);
 //            briareosGun.onScannedRobot(scannedRobotEvent);
@@ -69,7 +69,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
         }
     }
 
-    private void aimGFTGunWhenPropriate(ScannedRobotEvent scannedRobotEvent) {
+    private void aimGFTGunWhenAppropriated(ScannedRobotEvent scannedRobotEvent) {
         if (shouldApplyGFTGun(scannedRobotEvent.getDistance(), robot.getOthers())) {
             gftAimGun.onScannedRobot(scannedRobotEvent);
             DebugHelper.debugGFTGunInRange(robot);

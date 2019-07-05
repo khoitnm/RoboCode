@@ -25,14 +25,14 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
-public class PatternGun implements LoopableRun, OnScannedRobotControl {
+public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
     private static final int ENEMY_PREDICTION_TIMES = 3;
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
     private final GunStateContext gunStateContext;
 
-    public PatternGun(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, GunStateContext gunStateContext) {
+    public PatternPrecisionGun(AdvancedRobot robot, AllEnemiesObservationContext allEnemiesObservationContext, GunStateContext gunStateContext) {
         this.robot = robot;
         this.allEnemiesObservationContext = allEnemiesObservationContext;
         this.gunStateContext = gunStateContext;
