@@ -39,8 +39,8 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
         String enemyName = scannedRobotEvent.getName();
         EnemyStatisticContext enemyStatisticContext = allEnemiesObservationContext.getEnemyPatternPrediction(enemyName);
 //        Enemy enemy = enemyStatisticContext.getEnemyHistory().getLatestHistoryItem();
-        double bulletPower = 1;
-        aimGun(robot, enemyStatisticContext, bulletPower);
+//        double bulletPower = 1;
+        aimGun(robot, enemyStatisticContext);
 
     }
 
@@ -49,10 +49,10 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
      * bullet and the target based on a simple iteration.  It then moves
      * the gun to the correct angle to fire on the target.
      **/
-    private void aimGun(AdvancedRobot robot, EnemyStatisticContext enemyStatisticContext, double bulletPower) {
+    private void aimGun(AdvancedRobot robot, EnemyStatisticContext enemyStatisticContext) {
         EnemyHistory enemyHistory = enemyStatisticContext.getEnemyHistory();
 
-        AimPrediction aimPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower);
+        AimPrediction aimPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory);
 
 //        AimPrediction aimPrediction= PatternPredictionUtils.predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower, (latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre) -> PatternPredictionUtils.predictEnemyBasedOnAccelerationAndHeadingDelta(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre));
         EnemyPrediction enemyPrediction = aimPrediction.getEnemyPrediction();
@@ -64,7 +64,7 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
 
         /**Turn the gun to the correct angle**/
         robot.setTurnGunLeftRadians(aimPrediction.getGunTurnLeftRadian());
-        gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PREDICTION, bulletPower, enemyHistory.getName());
+        gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PREDICTION, aimPrediction.getBulletPower(), enemyHistory.getName());
 //                LogHelper.logSimple(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
 //                        "\n\tidentifiedPattern: " + patternIdentification +
 //                        "\n\tnewPrediction: " + enemyPrediction +
@@ -75,7 +75,8 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
 
     }
 
-    private AimPrediction predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory, double bulletPower) {
+    private AimPrediction predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory) {
+        double bulletPower = 0.1;//TODO calculate max necessary bulletPower
         PatternPredictionFunction patternPredictionFunction = (latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre) ->
                 PatternPredictionUtils.predictEnemyBasedOnAccelerationAndHeadingDelta(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre);
         return PatternPredictionUtils.predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower, patternPredictionFunction);

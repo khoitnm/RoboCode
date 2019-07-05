@@ -74,7 +74,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
                 /**Turn the gun to the correct angle**/
                 //double gunBearing = GunUtils.reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
                 robot.setTurnGunLeftRadians(aimPrediction.getGunTurnLeftRadian());
-                gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PREDICTION, bulletPower, enemyHistory.getName());
+                gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PREDICTION, aimPrediction.getBulletPower(), enemyHistory.getName());
                 DebugHelper.debug_PatternPredictionGun_TurnGun(robot, enemyStatisticContext, gunStateContext, patternIdentification, enemyPrediction, enemyPredictionHistory);
 
                 /** This code just aim the gun, don't fire it. The gun will be fired by loopRun() when finishing aiming.*/

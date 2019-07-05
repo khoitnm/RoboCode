@@ -8,6 +8,7 @@ public class AimPrediction {
     private final EnemyPrediction enemyPrediction;
     private final Point2D predictRobotPosition;
     private final double gunTurnLeftRadian;
+    private final double bulletPower;
     private final long timeMakingPrediction;
     private final long timeWhenBulletReachEnemy;
     /**
@@ -17,10 +18,11 @@ public class AimPrediction {
     private final long periodForTurningGun;
     private final long periodForBulletToReachEnemy;
 
-    public AimPrediction(EnemyPrediction enemyPrediction, Point2D predictRobotPosition, double gunTurnLeftRadian, long timeMakingPrediction, long timeWhenBulletReachEnemy, long totalPeriodGun, long periodForTurningGun, long periodForBulletToReachEnemy) {
+    public AimPrediction(EnemyPrediction enemyPrediction, Point2D predictRobotPosition, double gunTurnLeftRadian, double bulletPower, long timeMakingPrediction, long timeWhenBulletReachEnemy, long totalPeriodGun, long periodForTurningGun, long periodForBulletToReachEnemy) {
         this.enemyPrediction = enemyPrediction;
         this.predictRobotPosition = predictRobotPosition;
         this.gunTurnLeftRadian = gunTurnLeftRadian;
+        this.bulletPower = bulletPower;
         this.timeMakingPrediction = timeMakingPrediction;
         this.timeWhenBulletReachEnemy = timeWhenBulletReachEnemy;
 
@@ -59,5 +61,9 @@ public class AimPrediction {
 
     public long getTotalPeriodGun() {
         return totalPeriodGun;
+    }
+
+    public double getBulletPower() {
+        return bulletPower;
     }
 }

@@ -79,7 +79,7 @@ public class PatternPredictionUtils {
 
 //        String message = String.format("Final predict enemy at %s, position {%.2f, %.2f}", enemyPrediction.getTime(), enemyPrediction.getPosition().getX(), enemyPrediction.getPosition().getY());
 //        LogHelper.logRobotMovement(robot, message);
-        return new AimPrediction(enemyPrediction, predictRobotPosition, gunTurnLeftRadian, robot.getTime(), timeWhenBulletReachEnemy, totalPeriodGun, periodForTurningGun, periodForBulletToReachEnemy);
+        return new AimPrediction(enemyPrediction, predictRobotPosition, gunTurnLeftRadian, firePower, robot.getTime(), timeWhenBulletReachEnemy, totalPeriodGun, periodForTurningGun, periodForBulletToReachEnemy);
     }
 
     /**
