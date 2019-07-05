@@ -130,10 +130,10 @@ public class EnemyMovePatternIdentifyHelper {
         Enemy expectedEnemyData = enemyList.get(expectComparisionHistoryIndex);
 
         long timeOfNewestItemForPrediction = newestItemForPrediction.getTime();
-        long itemOfExpectComparision = expectedEnemyData.getTime();
-        long deltaTimeBetweenPredictionAndActual = itemOfExpectComparision - timeOfNewestItemForPrediction;
+        long timeOfExpectComparision = expectedEnemyData.getTime();
+        long deltaTimeBetweenPredictionAndActual = timeOfExpectComparision - timeOfNewestItemForPrediction;
 
-        EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemyBasedOnAvgVelocityAndAvgHeadingDelta(itemsToDoPrediction, itemOfExpectComparision, enemyMovementArea);
+        EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemyBasedOnAvgVelocityAndAvgHeadingDelta(itemsToDoPrediction, timeOfExpectComparision, enemyMovementArea);
         Point2D actualEnemyPosition = expectedEnemyData.getPosition();
         return new HistoricalPredictionResult(enemyPrediction, actualEnemyPosition, deltaTimeBetweenPredictionAndActual, timeOfNewestItemForPrediction);
     }
