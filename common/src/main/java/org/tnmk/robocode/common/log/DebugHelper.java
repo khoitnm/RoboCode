@@ -1,11 +1,10 @@
 package org.tnmk.robocode.common.log;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.tnmk.robocode.common.gun.GunStateContext;
+import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
+import org.tnmk.robocode.common.model.enemy.EnemyPredictionHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
+import org.tnmk.robocode.common.model.enemy.PatternIdentification;
 import org.tnmk.robocode.common.movement.MoveAreaHelper;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.strategy.antigravity.RiskArea;
@@ -13,6 +12,11 @@ import org.tnmk.robocode.common.paint.PaintHelper;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.AdvancedRobot;
+
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DebugHelper {
 
@@ -141,6 +145,36 @@ public class DebugHelper {
     public static void debugClosestRiskArea(AdvancedRobot robot, RiskArea closestRiskArea) {
         if (DebugHelper.isDebugOneAreaTooLong()) {
             PaintHelper.paintRectangle(robot.getGraphics(), closestRiskArea.getArea(), Color.magenta, "");
+        }
+    }
+
+    private static boolean isDebugPatternPredictionGun() {
+        return false;
+    }
+
+    public static void debug_PatternPredictionGun_TurnGun(AdvancedRobot robot, EnemyStatisticContext enemyStatisticContext, GunStateContext gunStateContext, PatternIdentification patternIdentification, EnemyPrediction enemyPrediction, EnemyPredictionHistory enemyPredictionHistory) {
+        if (DebugHelper.isDebugPatternPredictionGun()) {
+            LogHelper.logSimple(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
+                    "\n\tidentifiedPattern: " + patternIdentification +
+                    "\n\tnewPrediction: " + enemyPrediction +
+                    "\n\tpredictionHistory: " + enemyPredictionHistory.getAllHistoryItems()
+            );
+        }
+    }
+
+    public static void debug_PatternPredictionGun_DontTurnGun(AdvancedRobot robot, EnemyStatisticContext enemyStatisticContext, GunStateContext gunStateContext, PatternIdentification patternIdentification, EnemyPrediction enemyPrediction, EnemyPredictionHistory enemyPredictionHistory) {
+        if (DebugHelper.isDebugPatternPredictionGun()) {
+            LogHelper.logSimple(robot, "AimGun(NO): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
+                    "\n\tidentifiedPattern: " + patternIdentification +
+                    "\n\tnewPrediction: " + enemyPrediction +
+                    "\n\tpredictionHistory: " + enemyPredictionHistory.getAllHistoryItems()
+            );
+        }
+    }
+
+    public static void debug_PatternPredictionGun_predictionPattern(AdvancedRobot robot, EnemyStatisticContext enemyStatisticContext, EnemyPrediction enemyPrediction) {
+        if (DebugHelper.isDebugPatternPredictionGun()) {
+            LogHelper.logRobotMovement(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
         }
     }
 }

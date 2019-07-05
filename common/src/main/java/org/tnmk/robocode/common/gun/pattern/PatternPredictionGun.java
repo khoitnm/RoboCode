@@ -4,8 +4,6 @@ import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.GunUtils;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
-import org.tnmk.robocode.common.helper.prediction.RobotPrediction;
-import org.tnmk.robocode.common.helper.prediction.RobotPredictionHelper;
 import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.*;
@@ -16,10 +14,6 @@ import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
 
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.List;
-
 /**
  * https://www.ibm.com/developerworks/library/j-circular/index.html
  * <pre>
@@ -29,7 +23,6 @@ import java.util.List;
  * </pre>
  */
 public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl {
-    private static final int ENEMY_PREDICTION_TIMES = 3;
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
@@ -68,7 +61,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
 
             AimPrediction aimPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower);
             EnemyPrediction enemyPrediction = aimPrediction.getEnemyPrediction();
-//            LogHelper.logRobotMovement(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
+            DebugHelper.debug_PatternPredictionGun_predictionPattern(robot, enemyStatisticContext, enemyPrediction);
 
             /** No matter what is the prediction, always add it into predictionHistory.*/
             EnemyPredictionHistory enemyPredictionHistory = enemyStatisticContext.getEnemyPredictionHistory();
@@ -82,11 +75,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
                 //double gunBearing = GunUtils.reckonTurnGunLeftNormRadian(robotPosition, enemyPosition, robot.getGunHeadingRadians());
                 robot.setTurnGunLeftRadians(aimPrediction.getGunTurnLeftRadian());
                 gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PREDICTION, bulletPower, enemyHistory.getName());
-//                LogHelper.logSimple(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
-//                        "\n\tidentifiedPattern: " + patternIdentification +
-//                        "\n\tnewPrediction: " + enemyPrediction +
-//                        "\n\tpredictionHistory: " + enemyPredictionHistory.getAllHistoryItems()
-//                );
+                DebugHelper.debug_PatternPredictionGun_TurnGun(robot, enemyStatisticContext, gunStateContext, patternIdentification, enemyPrediction, enemyPredictionHistory);
 
                 /** This code just aim the gun, don't fire it. The gun will be fired by loopRun() when finishing aiming.*/
             } else {
@@ -94,11 +83,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
                  * Future prediction is not reliable, so don't aim it.
                  * Gun strategy should not rely on this pattern prediction.
                  */
-//                LogHelper.logSimple(robot, "AimGun(NO): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
-//                        "\n\tidentifiedPattern: " + patternIdentification +
-//                        "\n\tnewPrediction: " + enemyPrediction +
-//                        "\n\tpredictionHistory: " + enemyPredictionHistory.getAllHistoryItems()
-//                );
+                DebugHelper.debug_PatternPredictionGun_DontTurnGun(robot, enemyStatisticContext, gunStateContext, patternIdentification, enemyPrediction, enemyPredictionHistory);
             }
         } else {
             /**

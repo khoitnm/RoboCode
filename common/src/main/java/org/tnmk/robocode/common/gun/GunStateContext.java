@@ -56,4 +56,8 @@ public class GunStateContext {
     public String getAimingEnemyName() {
         return aimingEnemyName;
     }
+
+    public GunStrategy getGunStrategy() {
+        return gunStrategy;
+    }
 }
