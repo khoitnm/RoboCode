@@ -1,14 +1,8 @@
 package org.tnmk.robocode.common.gun.pattern;
 
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.List;
-import org.tnmk.common.math.AngleUtils;
-import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.GunUtils;
-import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.helper.prediction.RobotPrediction;
 import org.tnmk.robocode.common.helper.prediction.RobotPredictionHelper;
@@ -21,6 +15,10 @@ import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.AdvancedRobot;
 import robocode.ScannedRobotEvent;
+
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.List;
 
 /**
  * https://www.ibm.com/developerworks/library/j-circular/index.html
@@ -68,7 +66,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
             EnemyHistory enemyHistory = enemyStatisticContext.getEnemyHistory();
             PatternIdentification patternIdentification = enemyStatisticContext.getPatternIdentification();
 
-            AimPrediction aimPrediction= predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower);
+            AimPrediction aimPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower);
             EnemyPrediction enemyPrediction = aimPrediction.getEnemyPrediction();
 //            LogHelper.logRobotMovement(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
 
@@ -110,65 +108,12 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
         }
     }
 
-
-    private AimPrediction predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory, double firePower) {
-        EnemyPrediction enemyPrediction = null;
-        List<Enemy> latestHistoryItems = enemyHistory.getLatestHistoryItems(5);
-        Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
-
-        Rectangle2D battleField = BattleFieldUtils.constructBattleField(robot);
-//        debugPredictSelfRobot(robot);
-
-        Point2D enemyPosition = enemyHistory.getLatestHistoryItem().getPosition();
-        long periodForTurningGun = 0;
-        long periodForBulletToReachEnemy = 0;
-        double gunBearing = 0;
-        long timeWhenBulletReachEnemy = 0;
-        long totalPeriodGun = 0;
-        Point2D predictRobotPosition = currentRobotPosition;
-        for (int i = 0; i < ENEMY_PREDICTION_TIMES; i++) {//this loop is used to improve the correctness of prediction.
-            RobotPrediction robotPrediction = RobotPredictionHelper.predictPosition(periodForTurningGun, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
-            predictRobotPosition = robotPrediction.getPosition();
-//            String message = String.format("Predict at time %s, position {%.2f, %.2f}", (robot.getTime() + periodForTurningGun), predictRobotPosition.getX(), predictRobotPosition.getY());
-//            LogHelper.logRobotMovement(robot, message);
-
-            double distanceRobotToEnemy = predictRobotPosition.distance(enemyPosition);
-            double bulletVelocity = GunUtils.reckonBulletVelocity(firePower);
-            periodForBulletToReachEnemy = (long) Math.ceil(Math.abs(distanceRobotToEnemy / bulletVelocity));
-
-            gunBearing = GunUtils.reckonTurnGunLeftNormRadian(predictRobotPosition, enemyPosition, robot.getGunHeadingRadians());
-            periodForTurningGun = (long) Math.ceil(Math.abs(gunBearing / AngleUtils.toRadian(RobotPhysics.GUN_TURN_VELOCITY)));
-            totalPeriodGun = periodForTurningGun + periodForBulletToReachEnemy;
-            timeWhenBulletReachEnemy = robot.getTime() + Math.round(totalPeriodGun);
-
-            enemyPrediction = PatternPredictionUtils.predictEnemyBasedOnAvgVelocityAndAvgHeadingDelta(latestHistoryItems, timeWhenBulletReachEnemy, battleField);
-            enemyPosition = enemyPrediction.getPredictionPosition();
-        }
-        if (enemyPrediction == null) {
-            throw new IllegalStateException("Enemy Prediction should never be null");
-        }
-//        debugPredictEnemy(latestHistoryItems);
-
-//        String message = String.format("Final predict enemy at %s, position {%.2f, %.2f}", enemyPrediction.getTime(), enemyPrediction.getPosition().getX(), enemyPrediction.getPosition().getY());
-//        LogHelper.logRobotMovement(robot, message);
-        return new AimPrediction(enemyPrediction, predictRobotPosition, gunBearing, robot.getTime(), timeWhenBulletReachEnemy, totalPeriodGun, periodForTurningGun, periodForBulletToReachEnemy);
+    private AimPrediction predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory, double bulletPower) {
+        PatternPredictionFunction patternPredictionFunction = (latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre) ->
+                PatternPredictionUtils.predictEnemyBasedOnAvgVelocityAndAvgHeadingDelta(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre);
+        return PatternPredictionUtils.predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower, patternPredictionFunction);
     }
 
-    private void debugPredictSelfRobot(AdvancedRobot robot) {
-        Point2D currentRobotPosition = new Point2D.Double(robot.getX(), robot.getY());
-        RobotPrediction testRobotPredictionAfter5 = RobotPredictionHelper.predictPosition(5, currentRobotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
-        String message = String.format("Predict self at time %s, position {%.2f, %.2f}", (robot.getTime() + 5), testRobotPredictionAfter5.getPosition().getX(), testRobotPredictionAfter5.getPosition().getY());
-        LogHelper.logRobotMovement(robot, message);
-    }
-
-    private void debugPredictEnemy(List<Enemy> latestHistoryItems, Rectangle2D enemyMovementArea) {
-        for (int i = 0; i < 5; i++) {
-            EnemyPrediction enemyPrediction = PatternPredictionUtils.predictEnemyBasedOnAvgVelocityAndAvgHeadingDelta(latestHistoryItems, robot.getTime() + i, enemyMovementArea);
-            Point2D testEnemyPosition = enemyPrediction.getPredictionPosition();
-            String message = String.format("predict enemy at time %s, position {%.2f, %.2f}", robot.getTime() + i, testEnemyPosition.getX(), testEnemyPosition.getY());
-            LogHelper.logRobotMovement(robot, message);
-        }
-    }
 
     /**
      * Fire bullet when finish aiming.
