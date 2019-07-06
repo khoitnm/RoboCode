@@ -4,10 +4,7 @@ import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.GunUtils;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
-import org.tnmk.robocode.common.helper.prediction.RobotPrediction;
-import org.tnmk.robocode.common.helper.prediction.RobotPredictionHelper;
-import org.tnmk.robocode.common.log.LogHelper;
-import org.tnmk.robocode.common.model.enemy.Enemy;
+import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyPredictionHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
@@ -16,11 +13,10 @@ import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.AdvancedRobot;
+import robocode.Rules;
 import robocode.ScannedRobotEvent;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.List;
 
 public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
 
@@ -53,8 +49,12 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
         EnemyHistory enemyHistory = enemyStatisticContext.getEnemyHistory();
 
         AimPrediction aimPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory);
+        if (aimPrediction ==null){
+            DebugHelper.debug_PatternPrecision_NotEnoughTime(robot, enemyHistory);
+            return;
+        }
 
-//        AimPrediction aimPrediction= PatternPredictionUtils.predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower, (latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre) -> PatternPredictionUtils.predictEnemyBasedOnAccelerationAndHeadingDelta(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre));
+//        AimPrediction aimPrediction= PatternPredictionUtils.predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower, (latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre) -> PatternPredictionUtils.predictEnemyBasedOnAllEnemyPotentialPositions(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre));
         EnemyPrediction enemyPrediction = aimPrediction.getEnemyPrediction();
 //            LogHelper.logRobotMovement(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
 
@@ -76,9 +76,20 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
     }
 
     private AimPrediction predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory) {
-        double bulletPower = 0.1;//TODO calculate max necessary bulletPower
+        EnemyPotentialPositions enemyPotentialPositions = findTimePeriodAllPotentialPositionsStillIntersect(enemyHistory);
+        double totalTimePeriodForFiring = enemyPotentialPositions.getTimePeriod();
+        Point2D bestPotentialPosition = enemyPotentialPositions.getBestPotentialPosition();
+        double timePeriodToTurnGun = reckonTimePeriodToTurnGun(robot, bestPotentialPosition);
+        double timePeriodForBulletToFly = totalTimePeriodForFiring - timePeriodToTurnGun;
+        if (timePeriodForBulletToFly < 0){
+            return null;//Not enough time to fire.
+        }
+        double bulletPower = GunUtils.reckonBulletPower(timePeriodForBulletToFly);
+        if (bulletPower < Rules.MIN_BULLET_POWER){
+            return null;//Not enough time for bullet to reach the enemy.
+        }
         PatternPredictionFunction patternPredictionFunction = (latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre) ->
-                PatternPredictionUtils.predictEnemyBasedOnAccelerationAndHeadingDelta(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre);
+                PatternPredictionUtils.predictEnemyBasedOnAllEnemyPotentialPositions(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre);
         return PatternPredictionUtils.predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower, patternPredictionFunction);
     }
 

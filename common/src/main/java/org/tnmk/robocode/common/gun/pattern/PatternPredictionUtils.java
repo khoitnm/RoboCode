@@ -35,7 +35,7 @@ public class PatternPredictionUtils {
      * @param firePower
      * @param patternPredictionFunc we have 2 options for now:
      *                              <ul>
-     *                              <li> {@link #predictEnemyBasedOnAccelerationAndHeadingDelta(List, long, Rectangle2D)}</li>
+     *                              <li> {@link #predictEnemyBasedOnAllEnemyPotentialPositions(List, long, Rectangle2D)}</li>
      *                              <li> {@link #predictEnemyBasedOnAvgVelocityAndAvgHeadingDelta(List, long, Rectangle2D)}</li>
      *                              </ul>
      * @return
@@ -88,7 +88,7 @@ public class PatternPredictionUtils {
      * @param enemyMovementArea the area enemy always moving inside. It never move to outside this area (usually the battle field).
      * @return guess new enemy's position and also identify pattern at the predictionTime.
      */
-    public static EnemyPrediction predictEnemyBasedOnAccelerationAndHeadingDelta(List<Enemy> historyItems, long predictionTime, Rectangle2D enemyMovementArea) {
+    public static EnemyPrediction predictEnemyBasedOnAllEnemyPotentialPositions(List<Enemy> historyItems, long predictionTime, Rectangle2D enemyMovementArea) {
         Enemy enemy = historyItems.get(0);
         List<Enemy> latestHistory = ListUtils.firstElements(historyItems, 2);
 //        throw new UnsupportedOperationException("Not implemented");
