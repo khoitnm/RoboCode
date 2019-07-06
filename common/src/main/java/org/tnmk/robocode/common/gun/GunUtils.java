@@ -5,7 +5,10 @@ import java.awt.geom.Point2D;
 import java.util.Optional;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.number.DoubleUtils;
+import org.tnmk.robocode.common.helper.BattleFieldUtils;
+import org.tnmk.robocode.common.helper.TimeUtils;
 import robocode.AdvancedRobot;
+import robocode.Rules;
 
 public class GunUtils {
     /**
@@ -20,8 +23,9 @@ public class GunUtils {
 
     /**
      * Reckon the angle to turn to gun to the enemyPosition
-     * @param robotPosition the current position of our robot
-     * @param enemyPosition the enemy position we want to fire to
+     *
+     * @param robotPosition     the current position of our robot
+     * @param enemyPosition     the enemy position we want to fire to
      * @param gunHeadingRadians the current gun angle (radian) of our robot
      * @return
      */
@@ -37,7 +41,7 @@ public class GunUtils {
      * @param gunStateContext
      * @return fired enemy's name. null if don't fire
      */
-    public static Optional<String> fireBulletWhenFinishAiming(AdvancedRobot robot, GunStateContext gunStateContext, Color bulletColor){
+    public static Optional<String> fireBulletWhenFinishAiming(AdvancedRobot robot, GunStateContext gunStateContext, Color bulletColor) {
         if (gunStateContext.isAiming()) {
             //TODO Something weird happens here!!! look at the below code.
             // I just added a condition ```DoubleUtils.isConsideredZero(robot.getGunHeat()) && ```, which looks like totally makes sense, right?
@@ -63,5 +67,34 @@ public class GunUtils {
             }
         }
         return Optional.empty();
+    }
+
+    public static double reckonTimePeriodToTurnGun(AdvancedRobot robot, Point2D targetPosition) {
+        Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
+        double turnGunRadian = reckonTurnGunLeftNormRadian(robotPosition, targetPosition, robot.getHeadingRadians());
+        double timeToTurnGun = reckonTimePeriodToTurnGun(turnGunRadian);
+        return timeToTurnGun;
+    }
+
+    public static long reckonTicksToTurnGun(double turnGunRadian) {
+        return TimeUtils.toTicks(reckonTimePeriodToTurnGun(turnGunRadian));
+    }
+
+    public static double reckonTimePeriodToTurnGun(double turnGunRadian) {
+        double tunGunRadianNormalized = AngleUtils.normalizeRadian(turnGunRadian);
+        double timeToTurnGun = Math.abs(tunGunRadianNormalized) / Rules.GUN_TURN_RATE_RADIANS;
+        return timeToTurnGun;
+    }
+
+    /**
+     * @param ticksForBulletToFly
+     * @param distance
+     * @return
+     * @see Rules#getBulletSpeed(double) for the reverse formular
+     */
+    public static double reckonBulletPower(long ticksForBulletToFly, double distance) {
+        double bulletVelocity = distance / (double) ticksForBulletToFly;
+        double bulletPower = (20.0D - bulletVelocity) / 3.0D;
+        return bulletPower;
     }
 }

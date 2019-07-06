@@ -3,6 +3,8 @@ package org.tnmk.robocode.common.gun.pattern;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.GunUtils;
+import org.tnmk.robocode.common.helper.BattleFieldUtils;
+import org.tnmk.robocode.common.helper.TimeUtils;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
@@ -49,7 +51,7 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
         EnemyHistory enemyHistory = enemyStatisticContext.getEnemyHistory();
 
         AimPrediction aimPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory);
-        if (aimPrediction ==null){
+        if (aimPrediction == null) {
             DebugHelper.debug_PatternPrecision_NotEnoughTime(robot, enemyHistory);
             return;
         }
@@ -76,16 +78,19 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
     }
 
     private AimPrediction predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory) {
+        Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
         EnemyPotentialPositions enemyPotentialPositions = findTimePeriodAllPotentialPositionsStillIntersect(enemyHistory);
         double totalTimePeriodForFiring = enemyPotentialPositions.getTimePeriod();
         Point2D bestPotentialPosition = enemyPotentialPositions.getBestPotentialPosition();
-        double timePeriodToTurnGun = reckonTimePeriodToTurnGun(robot, bestPotentialPosition);
-        double timePeriodForBulletToFly = totalTimePeriodForFiring - timePeriodToTurnGun;
-        if (timePeriodForBulletToFly < 0){
+        double distance = robotPosition.distance(bestPotentialPosition);
+
+        double timePeriodToTurnGun = GunUtils.reckonTimePeriodToTurnGun(robot, bestPotentialPosition);
+        long ticksForBulletToFly = TimeUtils.toTicks(totalTimePeriodForFiring) - TimeUtils.toTicks(timePeriodToTurnGun);
+        if (ticksForBulletToFly < 0) {
             return null;//Not enough time to fire.
         }
-        double bulletPower = GunUtils.reckonBulletPower(timePeriodForBulletToFly);
-        if (bulletPower < Rules.MIN_BULLET_POWER){
+        double bulletPower = GunUtils.reckonBulletPower(ticksForBulletToFly, distance);
+        if (bulletPower < Rules.MIN_BULLET_POWER) {
             return null;//Not enough time for bullet to reach the enemy.
         }
         PatternPredictionFunction patternPredictionFunction = (latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre) ->

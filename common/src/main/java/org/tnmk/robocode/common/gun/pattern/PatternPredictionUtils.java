@@ -3,7 +3,6 @@ package org.tnmk.robocode.common.gun.pattern;
 import org.tnmk.common.collection.ListUtils;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.GeoMathUtils;
-import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.gun.GunUtils;
 import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import org.tnmk.robocode.common.helper.Move2DUtils;
@@ -65,7 +64,7 @@ public class PatternPredictionUtils {
             double bulletVelocity = GunUtils.reckonBulletVelocity(firePower);
             periodForBulletToReachEnemy = (long) Math.ceil(Math.abs(distanceRobotToEnemy / bulletVelocity));
             gunTurnLeftRadian = GunUtils.reckonTurnGunLeftNormRadian(predictRobotPosition, enemyPosition, robot.getGunHeadingRadians());
-            periodForTurningGun = (long) Math.ceil(Math.abs(gunTurnLeftRadian / AngleUtils.toRadian(RobotPhysics.GUN_TURN_VELOCITY)));
+            periodForTurningGun = GunUtils.reckonTicksToTurnGun(gunTurnLeftRadian);
             totalPeriodGun = periodForTurningGun + periodForBulletToReachEnemy;
             timeWhenBulletReachEnemy = robot.getTime() + Math.round(totalPeriodGun);
 
