@@ -1,6 +1,9 @@
 package org.tnmk.robocode.common.log;
 
+import java.awt.geom.Point2D;
 import org.tnmk.robocode.common.gun.GunStateContext;
+import org.tnmk.robocode.common.gun.pattern.BotBody;
+import org.tnmk.robocode.common.gun.pattern.PotentialPositionsWithIntersectArea;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyPredictionHistory;
@@ -173,19 +176,29 @@ public class DebugHelper {
         }
     }
 
-    public static void debug_PatternPredictionGun_predictionPattern(AdvancedRobot robot, EnemyStatisticContext enemyStatisticContext, EnemyPrediction enemyPrediction) {
+    public static void debug_GunPatternPrediction_predictionPattern(AdvancedRobot robot, EnemyStatisticContext enemyStatisticContext, EnemyPrediction enemyPrediction) {
         if (DebugHelper.isDebugPatternPredictionGun()) {
             LogHelper.logRobotMovement(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
         }
     }
 
-    public static void debug_PatternPrecision_NotEnoughTime(AdvancedRobot robot, EnemyHistory enemyHistory) {
-        if (DebugHelper.isDebugPatternPrecision()) {
+    public static void debug_GunPatternPrecision_NotEnoughTime(AdvancedRobot robot, EnemyHistory enemyHistory) {
+        if (DebugHelper.isDebug_GunPatternPrecision()) {
             LogHelper.logRobotMovement(robot, enemyHistory.getName() + ". Not found time to fire bullet. Distance: " + enemyHistory.getLatestHistoryItem().getDistance());
         }
     }
 
-    private static boolean isDebugPatternPrecision() {
+    private static boolean isDebug_GunPatternPrecision() {
         return true;
+    }
+
+    public static void debug_GunPatternPrecision_PotentialPositions_and_TargetPosition(AdvancedRobot advancedRobot, PotentialPositionsWithIntersectArea foundPotentialPositionsWithIntersectArea, Point2D targetPosition) {
+        if (isDebug_GunPatternPrecision()) {
+            for (BotBody botBody : foundPotentialPositionsWithIntersectArea.getPotentialBotBodies()) {
+                PaintHelper.drawRectangle(advancedRobot.getGraphics(), botBody.getBotShape(), Color.ORANGE);
+            }
+            PaintHelper.paintRectangle(advancedRobot.getGraphics(), foundPotentialPositionsWithIntersectArea.getIntersectArea().get(), Color.YELLOW);
+            PaintHelper.paintPoint(advancedRobot.getGraphics(), 10, Color.RED, targetPosition, null);
+        }
     }
 }

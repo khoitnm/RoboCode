@@ -61,7 +61,7 @@ public class PatternPredictionGun implements LoopableRun, OnScannedRobotControl 
 
             AimPrediction aimPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower);
             EnemyPrediction enemyPrediction = aimPrediction.getEnemyPrediction();
-            DebugHelper.debug_PatternPredictionGun_predictionPattern(robot, enemyStatisticContext, enemyPrediction);
+            DebugHelper.debug_GunPatternPrediction_predictionPattern(robot, enemyStatisticContext, enemyPrediction);
 
             /** No matter what is the prediction, always add it into predictionHistory.*/
             EnemyPredictionHistory enemyPredictionHistory = enemyStatisticContext.getEnemyPredictionHistory();

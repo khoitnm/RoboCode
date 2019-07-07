@@ -81,4 +81,9 @@ public class PaintHelper {
         paintRectangle(graphics, rectangle2D, color);
         paintTextAtPoint(graphics, text, (int) rectangle2D.getX() + 20, (int) rectangle2D.getY() - TEXT_LINE_HEIGHT);
     }
+
+    public static void drawRectangle(Graphics2D graphics, Rectangle2D rectangle2D, Color color) {
+        graphics.setColor(color);
+        graphics.drawRect((int) rectangle2D.getX(), (int) rectangle2D.getY(), (int) rectangle2D.getWidth(), (int) rectangle2D.getHeight());
+    }
 }
