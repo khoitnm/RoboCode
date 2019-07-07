@@ -2,7 +2,6 @@ package org.tnmk.robocode.common.gun.pattern;
 
 import java.awt.geom.Point2D;
 import java.util.*;
-import org.tnmk.common.collection.ListUtils;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.model.enemy.Enemy;
@@ -29,26 +28,31 @@ public class PatternPrecisionUtils {
             acceleration = (latestVelocity - previousVelocity) / timePeriod;
         }
         int normAcceleration = Move2DUtils.normalizeAcceleration(acceleration);
-        int reverseNormAcceleration = Move2DUtils.reverseNormAcceleration(normAcceleration);
-//        double avgVelocity = EnemyHistoryUtils.averageVelocity(historyItems);
-//        return PatternPredictionUtils.predictEnemy(enemy, avgVelocity, avgChangeHeadingRadian, predictionTime, enemyMovementArea);
-        Set<BotMovement> botMovementsWithNormAcceleration = constructAllPotentialPositionsAtAllPotentialHeadings(
-                enemy.getPosition(), enemy.getVelocity(), normAcceleration, AngleUtils.toRadian(enemy.getHeading()), avgChangeHeadingRadian);
-        Set<BotMovement> botMovementsWithReversedNormAcceleration = constructAllPotentialPositionsAtAllPotentialHeadings(
-                enemy.getPosition(), enemy.getVelocity(), reverseNormAcceleration, AngleUtils.toRadian(enemy.getHeading()), avgChangeHeadingRadian);
-        Set<BotMovement> botMovementsWithoutAcceleration = constructAllPotentialPositionsAtAllPotentialHeadings(
-                enemy.getPosition(), enemy.getVelocity(), 0, AngleUtils.toRadian(enemy.getHeading()), avgChangeHeadingRadian);
-        Set<BotMovement> allPotentialMovments = new HashSet<>();
-        allPotentialMovments.addAll(botMovementsWithNormAcceleration);
-        allPotentialMovments.addAll(botMovementsWithReversedNormAcceleration);
-        allPotentialMovments.addAll(botMovementsWithoutAcceleration);
 
+        Set<BotMovement> allPotentialMovments = constructAllPotentialBotMovements(enemy, normAcceleration, avgChangeHeadingRadian);
 
     }
 
-    private static Set<BotMovement> constructAllPotentialPositionsAtAllPotentialHeadings(Point2D position, double velocity, int normAcceleration, double headingRadian, double changeHeadingRadian) {
+    public static Set<BotMovement> constructAllPotentialBotMovements(Enemy enemy, int normAcceleration, double changeHeadingRadian) {
+        Set<BotMovement> botMovementsWithNormAcceleration = constructAllPotentialPositionsWithSameNormAcceleration(
+                enemy.getPosition(), enemy.getVelocity(), normAcceleration, AngleUtils.toRadian(enemy.getHeading()), changeHeadingRadian);
+        Set<BotMovement> allPotentialMovments = new HashSet<>(botMovementsWithNormAcceleration);
+        if (normAcceleration != 0) {
+            int reverseNormAcceleration = Move2DUtils.reverseNormAcceleration(normAcceleration);
+            Set<BotMovement> botMovementsWithReversedNormAcceleration = constructAllPotentialPositionsWithSameNormAcceleration(
+                    enemy.getPosition(), enemy.getVelocity(), reverseNormAcceleration, AngleUtils.toRadian(enemy.getHeading()), changeHeadingRadian);
+            Set<BotMovement> botMovementsWithoutAcceleration = constructAllPotentialPositionsWithSameNormAcceleration(
+                    enemy.getPosition(), enemy.getVelocity(), 0, AngleUtils.toRadian(enemy.getHeading()), changeHeadingRadian);
+            allPotentialMovments.addAll(botMovementsWithReversedNormAcceleration);
+            allPotentialMovments.addAll(botMovementsWithoutAcceleration);
+        }
+        return allPotentialMovments;
+    }
+
+    private static Set<BotMovement> constructAllPotentialPositionsWithSameNormAcceleration(Point2D position, double velocity, int normAcceleration, double headingRadian, double changeHeadingRadian) {
         double turnRateRadians = Rules.getTurnRateRadians(velocity);
         BotMovement mainBotMovement = new BotMovement(position, velocity, normAcceleration, headingRadian, changeHeadingRadian);
+        mainBotMovement.setMainMovement(true);
         BotMovement noChangeHeading = (changeHeadingRadian == 0) ? mainBotMovement : new BotMovement(position, velocity, normAcceleration, headingRadian, 0);
         BotMovement changeHeadingMaxRight = (changeHeadingRadian == turnRateRadians) ? mainBotMovement : new BotMovement(position, velocity, normAcceleration, headingRadian, turnRateRadians);
         BotMovement changeHeadingMaxLeft = (changeHeadingRadian == -turnRateRadians) ? mainBotMovement : new BotMovement(position, velocity, normAcceleration, headingRadian, -turnRateRadians);

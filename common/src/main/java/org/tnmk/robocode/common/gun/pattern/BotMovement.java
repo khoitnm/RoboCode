@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.util.Objects;
 
 public class BotMovement {
+    private boolean isMainMovement;
     private final Point2D currentPosition;
     private final double velocity;
     private final int normAcceleration;
@@ -53,5 +54,13 @@ public class BotMovement {
 
     public double getHeadingChangingRateRadians() {
         return headingChangingRateRadians;
+    }
+
+    public boolean isMainMovement() {
+        return isMainMovement;
+    }
+
+    public void setMainMovement(boolean mainMovement) {
+        isMainMovement = mainMovement;
     }
 }
