@@ -11,6 +11,7 @@ import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.GunUtils;
 import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import org.tnmk.robocode.common.helper.TimeUtils;
+import org.tnmk.robocode.common.helper.prediction.EnemyPositionPrediction;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.model.enemy.*;
@@ -101,7 +102,7 @@ public class PatternPrecisionGun implements Gun {
         PatternPredictionFunction patternPredictionFunction = (latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre) ->
         {
             long timeBulletHitEnemy = robot.getTime() + TimeUtils.toTicks(totalTimePeriodForFiring);
-            EnemyPrediction enemyPrediction = new EnemyPrediction(EnemyMovePattern.UNIDENTIFIED, timeBulletHitEnemy, bestPotentialPosition, -1, -1);
+            EnemyPositionPrediction enemyPrediction = new EnemyPositionPrediction(timeBulletHitEnemy, bestPotentialPosition);
             return enemyPrediction;
         };
         //PatternPredictionUtils.predictEnemyBasedOnAllEnemyPotentialPositions(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre);
