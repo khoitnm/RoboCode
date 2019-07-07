@@ -83,7 +83,8 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
 
     private AimPrediction predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory) {
         Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
-        EnemyPotentialPositions enemyPotentialPositions = findTimePeriodAllPotentialPositionsStillIntersect(enemyHistory);
+        Rectangle2D enemyMovementBoundary = BattleFieldUtils.constructBattleField(robot);
+        EnemyPotentialPositions enemyPotentialPositions = findTimePeriodAllPotentialPositionsStillIntersect(enemyHistory, enemyMovementBoundary);
         double totalTimePeriodForFiring = enemyPotentialPositions.getTimePeriod();
         Point2D bestPotentialPosition = enemyPotentialPositions.getBestPotentialPosition();
         double distance = robotPosition.distance(bestPotentialPosition);
@@ -102,7 +103,7 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
         return PatternPredictionUtils.predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower, patternPredictionFunction);
     }
 
-    private static EnemyPotentialPositions findTimePeriodAllPotentialPositionsStillIntersect(EnemyHistory enemyHistory) {
+    private static EnemyPotentialPositions findTimePeriodAllPotentialPositionsStillIntersect(EnemyHistory enemyHistory, Rectangle2D enemyMovementBoundary) {
         //We'll never check with this ticks number.
         //Hence we must ensure that with this ticks, there's no chance that there will be intersect.
         int maxCheckedTicksNotFound = 20;
@@ -114,7 +115,7 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
         Rectangle2D foundIntersectArea = null;
         int deltaTicks;
         do {
-            Optional<Rectangle2D> intersectArea = findIntersectAreaOfAllPotentialPositions(enemyHistory, checkingTicks);
+            Optional<Rectangle2D> intersectArea = findIntersectAreaOfAllPotentialPositions(enemyHistory, checkingTicks, enemyMovementBoundary);
             //1: we'll continue finding with bigger ticks
             //-1: we'll continue finding with smaller ticks.
             int ticksIncrement;
@@ -136,15 +137,15 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
         return enemyPotentialPositions;
     }
 
-    private static Optional<Rectangle2D> findIntersectAreaOfAllPotentialPositions(EnemyHistory enemyHistory, int ticks) {
-        List<BotMovementPrediction> potentialPositions = PatternPrecisionUtils.findPotentialPositionsAfterTimePeriod(enemyHistory, ticks);
+    private static Optional<Rectangle2D> findIntersectAreaOfAllPotentialPositions(EnemyHistory enemyHistory, int ticks, Rectangle2D enemyMovementBoundary) {
+        List<BotMovementPrediction> potentialPositions = PatternPrecisionUtils.findPotentialPositionsAfterTimePeriod(enemyHistory, ticks,enemyMovementBoundary);
         List<BotBody> potentialBotBodies = potentialPositions.stream().map(PatternPrecisionGun::calculateBotBodyAtPredictionPoint).collect(Collectors.toList());
         Optional<Rectangle2D> intersectArea = BotBodyUtils.reckonIntersectArea(potentialBotBodies);
         return intersectArea;
     }
 
     private static BotBody calculateBotBodyAtPredictionPoint(BotMovementPrediction botMovementPrediction) {
-        return BotBodyFactory.constructBotBody(botMovementPrediction.getEnemyPrediction().getPredictionPosition());
+        return BotBodyFactory.constructBotBody(botMovementPrediction.getPredictPosition());
     }
 
     /**

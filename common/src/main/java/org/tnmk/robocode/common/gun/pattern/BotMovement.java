@@ -1,6 +1,7 @@
 package org.tnmk.robocode.common.gun.pattern;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
 public class BotMovement {
@@ -11,12 +12,15 @@ public class BotMovement {
     private final double headingRadians;
     private final double headingChangingRateRadians;
 
-    public BotMovement(Point2D currentPosition, double velocity, int normAcceleration, double headingRadians, double headingChangingRateRadians) {
+    private final Rectangle2D enemyMovementBoundary;
+
+    public BotMovement(Point2D currentPosition, double velocity, int normAcceleration, double headingRadians, double headingChangingRateRadians, Rectangle2D enemyMovementBoundary) {
         this.currentPosition = currentPosition;
         this.velocity = velocity;
         this.normAcceleration = normAcceleration;
         this.headingRadians = headingRadians;
         this.headingChangingRateRadians = headingChangingRateRadians;
+        this.enemyMovementBoundary = enemyMovementBoundary;
     }
 
     @Override
@@ -34,6 +38,10 @@ public class BotMovement {
     @Override
     public int hashCode() {
         return Objects.hash(currentPosition, velocity, normAcceleration, headingRadians, headingChangingRateRadians);
+    }
+
+    public Rectangle2D getEnemyMovementBoundary() {
+        return enemyMovementBoundary;
     }
 
     public Point2D getCurrentPosition() {

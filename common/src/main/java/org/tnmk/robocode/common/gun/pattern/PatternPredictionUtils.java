@@ -118,34 +118,34 @@ public class PatternPredictionUtils {
      */
     public static EnemyPrediction predictEnemyBasedOnAvgVelocityAndAvgHeadingDelta(List<Enemy> historyItems, long predictionTime, Rectangle2D enemyMovementArea) {
         Enemy enemy = historyItems.get(0);
-        double avgChangeHeadingRadian = EnemyHistoryUtils.averageChangeHeadingRadian(historyItems);
+        double avgHeadingChangeRateRadian = EnemyHistoryUtils.averageChangeHeadingRadian(historyItems);
         double avgVelocity = EnemyHistoryUtils.averageVelocity(historyItems);
-        return PatternPredictionUtils.predictEnemy(enemy, avgVelocity, avgChangeHeadingRadian, predictionTime, enemyMovementArea);
+        return PatternPredictionUtils.predictEnemy(enemy, avgVelocity, avgHeadingChangeRateRadian, predictionTime, enemyMovementArea);
     }
 
     /**
      * @param enemy              latest data in history
-     * @param headingDeltaRadian changing heading of the enemy per tick based on the recent history items.
+     * @param headingChangeRateRadian changing heading of the enemy per tick based on the recent history items.
      * @param predictionTime     the time that we think the bullet will reach the target.
      * @param velocity           the velocity of enemy
      * @return guess new enemy's position and moving pattern at the predictionTime based on the latest enemy data and average changing heading.
      */
-    private static EnemyPrediction predictEnemy(Enemy enemy, double velocity, double headingDeltaRadian, long predictionTime, Rectangle2D enemyMovementArea) {
+    public static EnemyPrediction predictEnemy(Enemy enemy, double velocity, double headingChangeRateRadian, long predictionTime, Rectangle2D enemyMovementArea) {
         double diff = predictionTime - enemy.getTime();
         double newX, newY;
 
         EnemyMovePattern enemyMovePattern;
         /**if there is a significant change in heading, use circular path prediction**/
         double enemyHeadingRadian = AngleUtils.toRadian(enemy.getHeading());
-        if (Math.abs(headingDeltaRadian) > 0.00001) {
+        if (Math.abs(headingChangeRateRadian) > 0.00001) {
             enemyMovePattern = EnemyMovePattern.CIRCULAR;
-            double radius = velocity / headingDeltaRadian;
-            double totalHeadingDeltaRadian = diff * headingDeltaRadian;
+            double radius = velocity / headingChangeRateRadian;
+            double totalHeadingChangeRadian = diff * headingChangeRateRadian;
             newY = enemy.getPosition().getY() +
-                    Math.sin(enemyHeadingRadian + totalHeadingDeltaRadian) * radius -
+                    Math.sin(enemyHeadingRadian + totalHeadingChangeRadian) * radius -
                     Math.sin(enemyHeadingRadian) * radius
             ;
-            newX = enemy.getPosition().getX() + (Math.cos(enemyHeadingRadian) * radius) - (Math.cos(enemyHeadingRadian + totalHeadingDeltaRadian) * radius);
+            newX = enemy.getPosition().getX() + (Math.cos(enemyHeadingRadian) * radius) - (Math.cos(enemyHeadingRadian + totalHeadingChangeRadian) * radius);
         }
         /**if the change in heading is insignificant, use linear path prediction**/
         else {
@@ -162,8 +162,50 @@ public class PatternPredictionUtils {
         Point2D predictionPosition = new Point2D.Double(newX, newY);
         predictionPosition = Move2DUtils.reckonMaximumDestination(enemy.getPosition(), predictionPosition, enemyMovementArea);
         debugPredictionPositionOutsideBattleField(enemy, predictionPosition, enemyMovementArea);
-        EnemyPrediction patternPredictionResult = new EnemyPrediction(enemyMovePattern, predictionTime, predictionPosition, headingDeltaRadian, velocity);
+        EnemyPrediction patternPredictionResult = new EnemyPrediction(enemyMovePattern, predictionTime, predictionPosition, headingChangeRateRadian, velocity);
         return patternPredictionResult;
+    }
+
+    /**
+     * TODO the logic is quite duplicated to {@link #predictEnemy(Enemy, double, double, long, Rectangle2D)}
+     * @param enemyPosition
+     * @param enemyHeadingRadian
+     * @param velocity
+     * @param headingChangeRateRadian
+     * @param ticks
+     * @param enemyMovementArea
+     * @return
+     */
+    public static Point2D predictPosition(Point2D enemyPosition, double enemyHeadingRadian, double velocity, double headingChangeRateRadian, long ticks, Rectangle2D enemyMovementArea) {
+        double newX, newY;
+
+        EnemyMovePattern enemyMovePattern;
+        /**if there is a significant change in heading, use circular path prediction**/
+        if (Math.abs(headingChangeRateRadian) > 0.00001) {
+            enemyMovePattern = EnemyMovePattern.CIRCULAR;
+            double radius = velocity / headingChangeRateRadian;
+            double totalHeadingChangeRadian = ticks * headingChangeRateRadian;
+            newY = enemyPosition.getY() +
+                    Math.sin(enemyHeadingRadian + totalHeadingChangeRadian) * radius -
+                    Math.sin(enemyHeadingRadian) * radius
+            ;
+            newX = enemyPosition.getX() + (Math.cos(enemyHeadingRadian) * radius) - (Math.cos(enemyHeadingRadian + totalHeadingChangeRadian) * radius);
+        }
+        /**if the change in heading is insignificant, use linear path prediction**/
+        else {
+            if (velocity < 1) {
+                enemyMovePattern = EnemyMovePattern.STAY_STILL;
+                newY = enemyPosition.getY();
+                newX = enemyPosition.getX();
+            } else {
+                enemyMovePattern = EnemyMovePattern.LINEAR;
+                newY = enemyPosition.getY() + Math.cos(enemyHeadingRadian) * velocity * ticks;
+                newX = enemyPosition.getX() + Math.sin(enemyHeadingRadian) * velocity * ticks;
+            }
+        }
+        Point2D predictionPosition = new Point2D.Double(newX, newY);
+        predictionPosition = Move2DUtils.reckonMaximumDestination(enemyPosition, predictionPosition, enemyMovementArea);
+        return predictionPosition;
     }
 
     private static void debugPredictionPositionOutsideBattleField(Enemy enemy, Point2D predictionPosition, Rectangle2D enemyMovementArea) {
