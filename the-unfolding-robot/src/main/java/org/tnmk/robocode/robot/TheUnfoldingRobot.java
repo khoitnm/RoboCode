@@ -1,6 +1,11 @@
 package org.tnmk.robocode.robot;
 
 import org.tnmk.robocode.common.error.ErrorLogger;
+import org.tnmk.robocode.common.gun.Gun;
+import org.tnmk.robocode.common.gun.GunStateContext;
+import org.tnmk.robocode.common.gun.pattern.PatternPrecisionGun;
+import org.tnmk.robocode.common.movement.Movement;
+import org.tnmk.robocode.common.movement.strategy.gostraight.StraightToEnemyMovement;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.state.AdvanceRobotFightState;
 import org.tnmk.robocode.common.robot.state.AdvanceRobotState;
@@ -16,9 +21,11 @@ import robocode.*;
 public class TheUnfoldingRobot extends AdvancedRobot {
     private static int loopIndex = 0;
     private AllEnemiesObservationContext allEnemiesObservationContext = new AllEnemiesObservationContext(this);
-    private TheUnfoldingMovement theUnfoldingMovement = new TheUnfoldingMovement(this, allEnemiesObservationContext);
+    //private Movement theUnfoldingMovement =  new TheUnfoldingMovement(this, allEnemiesObservationContext);
+    private Movement theUnfoldingMovement = new StraightToEnemyMovement(this, allEnemiesObservationContext);
     private TheUnfoldingRadar theUnfoldingRadar = new TheUnfoldingRadar(this, allEnemiesObservationContext);
-    private TheUnfoldingGun theUnfoldingGun = new TheUnfoldingGun(this, allEnemiesObservationContext);
+    //private Gun theUnfoldingGun = new TheUnfoldingGun(this, allEnemiesObservationContext);
+    private Gun theUnfoldingGun = new PatternPrecisionGun(this, allEnemiesObservationContext, new GunStateContext());
 
 
     @Override

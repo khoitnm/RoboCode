@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.log.LogHelper;
+import org.tnmk.robocode.common.movement.Movement;
 import org.tnmk.robocode.common.movement.MovementContext;
 import org.tnmk.robocode.common.movement.strategy.antigravity.AntiGravityMoveController;
 import org.tnmk.robocode.common.movement.strategy.oscillator.OscillatorMoveController;
@@ -18,7 +19,7 @@ import org.tnmk.robocode.common.robot.state.AdvanceRobotStateMapper;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
 import robocode.*;
 
-public class TheUnfoldingMovement implements InitiableRun, LoopableRun, OnScannedRobotControl, OnHitRobotControl, OnStatusControl, OnCustomEventControl, OnBulletHitControl {
+public class TheUnfoldingMovement implements Movement {
     public static final double IDEAL_ENEMY_OSCILLATOR_DISTANCE = 150;
 
     private final AdvancedRobot robot;

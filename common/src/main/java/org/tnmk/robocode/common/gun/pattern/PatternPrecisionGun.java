@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.tnmk.common.math.GeoMathUtils;
+import org.tnmk.robocode.common.gun.Gun;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.GunUtils;
@@ -17,13 +18,11 @@ import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
 import org.tnmk.robocode.common.robotdecorator.HiTechDecorator;
-import robocode.AdvancedRobot;
-import robocode.Rules;
-import robocode.ScannedRobotEvent;
+import robocode.*;
 
 import java.awt.geom.Point2D;
 
-public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
+public class PatternPrecisionGun implements Gun {
 
     private final AdvancedRobot robot;
     private final AllEnemiesObservationContext allEnemiesObservationContext;
@@ -164,5 +163,30 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
     @Override
     public void runLoop() {
         GunUtils.fireBulletWhenFinishAiming(robot, gunStateContext, HiTechDecorator.BULLET_COLOR);
+    }
+
+    @Override
+    public void runInit() {
+
+    }
+
+    @Override
+    public void onBulletHit(BulletHitEvent event) {
+
+    }
+
+    @Override
+    public void onCustomEvent(CustomEvent customEvent) {
+
+    }
+
+    @Override
+    public void onHitByBullet(HitByBulletEvent hitByBulletEvent) {
+
+    }
+
+    @Override
+    public void onWin(WinEvent winEvent) {
+
     }
 }

@@ -1,5 +1,6 @@
 package org.tnmk.robocode.robot;
 
+import org.tnmk.robocode.common.gun.Gun;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.blackpearl.BlackPearlGun;
 import org.tnmk.robocode.common.gun.briareos.BriareosGun;
@@ -15,7 +16,7 @@ import org.tnmk.robocode.common.robot.*;
 import org.tnmk.robocode.robot.helper.EnemyHealthHelper;
 import robocode.*;
 
-public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobotControl, OnCustomEventControl, OnHitBulletControl, OnWinControl, OnBulletHitControl {
+public class TheUnfoldingGun implements Gun {
     /**
      * The furthest distance which we should fire on target in one-on-one fights.
      * Note: this distance should never be lower than {@link TheUnfoldingMovement#IDEAL_ENEMY_OSCILLATOR_DISTANCE}
