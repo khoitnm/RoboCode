@@ -69,8 +69,10 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
         enemyPredictionHistory.addToHistory(enemyPrediction);
 
         /**Turn the gun to the correct angle**/
-        robot.setTurnGunLeftRadians(aimPrediction.getGunTurnLeftRadian());
-        gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PREDICTION, aimPrediction.getBulletPower(), enemyHistory.getName());
+        if (!gunStateContext.isAiming()) {
+            robot.setTurnGunLeftRadians(aimPrediction.getGunTurnLeftRadian());
+            gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PREDICTION, aimPrediction.getBulletPower(), enemyHistory.getName());
+        }
 //                LogHelper.logSimple(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
 //                        "\n\tidentifiedPattern: " + patternIdentification +
 //                        "\n\tnewPrediction: " + enemyPrediction +
