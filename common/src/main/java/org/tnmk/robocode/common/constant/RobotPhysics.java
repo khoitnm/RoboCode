@@ -29,7 +29,12 @@ public class RobotPhysics {
      * The full size of a robot.
      * Note: if you look at {@link Robot#getWidth()}, the value is 36
      */
-    public static final double ROBOT_SIZE = 50;
+    public static final double ROBOT_BUFFER_SIZE_FOR_WALL_SMOOTH = 50;
+
+    /**
+     * @see Robot#getWidth()
+     */
+    public static final double ROBOT_WIDTH = 36.0D;
 
     /**
      * velocity from 8 -> 6 -> 4 -> 2 -> 0: 5 ticks

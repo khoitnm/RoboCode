@@ -180,4 +180,16 @@ public class Move2DUtils {
         double moveAngle = GeoMathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), currentPosition.getX(), currentPosition.getY(), destination.getX(), destination.getY());
         return moveAngle;
     }
+
+    public static double normalizeAcceleration(double acceleration) {
+        double normalizedAcceleration;
+        if (acceleration < 0) {
+            normalizedAcceleration = -2;
+        } else if (acceleration > 0) {
+            normalizedAcceleration = 1;
+        } else {
+            normalizedAcceleration = 0;
+        }
+        return normalizedAcceleration;
+    }
 }

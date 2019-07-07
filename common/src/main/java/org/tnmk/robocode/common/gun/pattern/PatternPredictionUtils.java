@@ -99,7 +99,7 @@ public class PatternPredictionUtils {
             double previousVelocity = historyItems.get(1).getVelocity();
             double timePeriod = enemy.getTime() - previousHistoryItem.getTime();
             acceleration = (latestVelocity - previousVelocity) / timePeriod;
-            acceleration = normalizeAcceleration(acceleration);
+            acceleration = Move2DUtils.normalizeAcceleration(acceleration);
         }
 //        double avgVelocity = EnemyHistoryUtils.averageVelocity(historyItems);
 //        return PatternPredictionUtils.predictEnemy(enemy, avgVelocity, avgChangeHeadingRadian, predictionTime, enemyMovementArea);
@@ -159,18 +159,6 @@ public class PatternPredictionUtils {
         debugPredictionPositionOutsideBattleField(enemy, predictionPosition, enemyMovementArea);
         EnemyPrediction patternPredictionResult = new EnemyPrediction(enemyMovePattern, predictionTime, predictionPosition, headingDeltaRadian, velocity);
         return patternPredictionResult;
-    }
-
-    private static double normalizeAcceleration(double acceleration) {
-        double normalizedAcceleration;
-        if (acceleration < 0) {
-            normalizedAcceleration = -2;
-        } else if (acceleration > 0) {
-            normalizedAcceleration = 1;
-        } else {
-            normalizedAcceleration = 0;
-        }
-        return normalizedAcceleration;
     }
 
     private static void debugPredictionPositionOutsideBattleField(Enemy enemy, Point2D predictionPosition, Rectangle2D enemyMovementArea) {

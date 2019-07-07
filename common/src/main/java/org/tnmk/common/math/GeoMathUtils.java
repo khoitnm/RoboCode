@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 
@@ -195,8 +196,8 @@ public final class GeoMathUtils {
         return xC;
     }
 
-    public static double calculateDiagonal(Rectangle2D rectangle){
-        double diagonal = Math.sqrt(Math.pow(rectangle.getWidth(), 2)+Math.pow(rectangle.getHeight(), 2));
+    public static double calculateDiagonal(Rectangle2D rectangle) {
+        double diagonal = Math.sqrt(Math.pow(rectangle.getWidth(), 2) + Math.pow(rectangle.getHeight(), 2));
         return diagonal;
     }
 
@@ -204,5 +205,9 @@ public final class GeoMathUtils {
         double x = rectangle2D.getMinX() + rectangle2D.getWidth() / 2;
         double y = rectangle2D.getMinY() + rectangle2D.getHeight() / 2;
         return new Point2D.Double(x, y);
+    }
+
+    public static Point2D calculateCentralPoint(Rectangle2D rectangle2D) {
+        return new Point2D.Double(rectangle2D.getMinX() + rectangle2D.getWidth() / 2d, rectangle2D.getMinY() + rectangle2D.getHeight() / 2d);
     }
 }

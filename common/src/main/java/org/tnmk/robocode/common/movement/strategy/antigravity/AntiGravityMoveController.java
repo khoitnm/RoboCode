@@ -70,16 +70,16 @@ public class AntiGravityMoveController implements ResetableMoveController, Initi
         double battleWidth = robot.getBattleFieldWidth();
         double battleHeight = robot.getBattleFieldHeight();
         this.battleField = new Rectangle2D.Double(0, 0, battleWidth, battleHeight);
-        double safePaddingMovementDistance = RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_SIZE;
+        double safePaddingMovementDistance = RobotPhysics.ROBOT_DISTANCE_TO_STOP_FROM_FULL_SPEED + RobotPhysics.ROBOT_BUFFER_SIZE_FOR_WALL_SMOOTH;
 
 
         Rectangle2D safeMovementArea = new Rectangle2D.Double(safePaddingMovementDistance, safePaddingMovementDistance, battleWidth - safePaddingMovementDistance * 2, battleHeight - safePaddingMovementDistance * 2);
         double maxPossibleMoveDistance = Math.min(battleWidth, battleHeight);
-        int maxPossibleEnemiesCount = 1 + (int) (maxPossibleMoveDistance / RobotPhysics.ROBOT_SIZE);
+        int maxPossibleEnemiesCount = 1 + (int) (maxPossibleMoveDistance / RobotPhysics.ROBOT_BUFFER_SIZE_FOR_WALL_SMOOTH);
         int maxActualEnemiesCount = robot.getOthers();
 
         double haftMaxPossibleMoveDistance = maxPossibleMoveDistance / 2;
-        double safePaddingDistance = (maxPossibleEnemiesCount / 4) * RobotPhysics.ROBOT_SIZE;
+        double safePaddingDistance = (maxPossibleEnemiesCount / 4) * RobotPhysics.ROBOT_BUFFER_SIZE_FOR_WALL_SMOOTH;
         double maxSafeMoveDistance = Math.max(haftMaxPossibleMoveDistance, maxPossibleMoveDistance - safePaddingDistance);
         double movementIncrement = 10 * (maxPossibleEnemiesCount / maxActualEnemiesCount);
 

@@ -1,15 +1,18 @@
 package org.tnmk.robocode.common.gun.pattern;
 
+import java.awt.geom.Rectangle2D;
+import java.util.List;
+import java.util.Optional;
+import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
 import org.tnmk.robocode.common.gun.GunUtils;
 import org.tnmk.robocode.common.helper.BattleFieldUtils;
+import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.helper.TimeUtils;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
 import org.tnmk.robocode.common.log.DebugHelper;
-import org.tnmk.robocode.common.model.enemy.EnemyHistory;
-import org.tnmk.robocode.common.model.enemy.EnemyPredictionHistory;
-import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
+import org.tnmk.robocode.common.model.enemy.*;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
 import org.tnmk.robocode.common.robot.OnScannedRobotControl;
@@ -97,6 +100,48 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
                 PatternPredictionUtils.predictEnemyBasedOnAllEnemyPotentialPositions(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre);
         return PatternPredictionUtils.predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower, patternPredictionFunction);
     }
+
+    private static EnemyPotentialPositions findTimePeriodAllPotentialPositionsStillIntersect(EnemyHistory enemyHistory) {
+        //We'll never check with this ticks number.
+        //Hence we must ensure that with this ticks, there's no chance that there will be intersect.
+        int maxCheckedTicksNotFound = 20;
+
+        //We'll never check with this ticks number, and always assume that we'll find intersect with this number.
+        //Hence we must ensure that with this ticks, there must be intersect.
+        int minCheckedTickedFoundResult = 1;
+        int checkingTicks = maxCheckedTicksNotFound / 2;
+        Rectangle2D foundIntersectArea = null;
+        int deltaTicks;
+        do {
+            Optional<Rectangle2D> intersectArea = findIntersectAreaOfAllPotentialPositions(enemyHistory, checkingTicks);
+            //1: we'll continue finding with bigger ticks
+            //-1: we'll continue finding with smaller ticks.
+            int ticksIncrement;
+            if (intersectArea.isPresent()) {
+                minCheckedTickedFoundResult = checkingTicks;
+                foundIntersectArea = intersectArea.get();
+                ticksIncrement = 1;
+            } else {
+                maxCheckedTicksNotFound = checkingTicks;
+                ticksIncrement = -1;
+            }
+            deltaTicks = (maxCheckedTicksNotFound - minCheckedTickedFoundResult) / 2;
+            checkingTicks = checkingTicks + ticksIncrement * deltaTicks;
+        } while (deltaTicks == 0);
+
+        Point2D targetPosition = GeoMathUtils.calculateCentralPoint(foundIntersectArea);
+
+        EnemyPotentialPositions enemyPotentialPositions = new EnemyPotentialPositions(checkingTicks, targetPosition);
+        return enemyPotentialPositions;
+    }
+
+    private static Optional<Rectangle2D> findIntersectAreaOfAllPotentialPositions(EnemyHistory enemyHistory, int ticks) {
+        List<Point2D> potentialPositions = PatternPrecisionUtils.findPotentialPositionsAfterTimePeriod(enemyHistory, ticks);
+        List<BotBody> potentialBotBodies = BotBodyFactory.constructBotBodies(potentialPositions);
+        Optional<Rectangle2D> intersectArea = BotBodyUtils.reckonIntersectArea(potentialBotBodies);
+        return intersectArea;
+    }
+
 
     /**
      * Fire bullet when finish aiming.
