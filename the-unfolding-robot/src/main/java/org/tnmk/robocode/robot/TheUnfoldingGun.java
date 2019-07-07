@@ -6,6 +6,7 @@ import org.tnmk.robocode.common.gun.briareos.BriareosGun;
 import org.tnmk.robocode.common.gun.finishoff.FinishOffGun;
 import org.tnmk.robocode.common.gun.gft.oldalgorithm.GFTAimGun;
 import org.tnmk.robocode.common.gun.mobius.MobiusGun;
+import org.tnmk.robocode.common.gun.pattern.PatternPrecisionGun;
 import org.tnmk.robocode.common.gun.pattern.PatternPredictionGun;
 import org.tnmk.robocode.common.log.DebugHelper;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
@@ -34,6 +35,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     private final FinishOffGun finishOffGun;
     private final MobiusGun mobiusGun;
     private final BlackPearlGun blackPearlGun;
+    private final PatternPrecisionGun patternPrecisionGun;
 
     private final GunStateContext gunStateContext;
 
@@ -49,10 +51,13 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
         this.blackPearlGun = new BlackPearlGun(robot, gunStateContext);
         this.patternPredictionGun = new PatternPredictionGun(robot, allEnemiesObservationContext, gunStateContext);
         this.finishOffGun = new FinishOffGun(robot, allEnemiesObservationContext, gunStateContext);
+        this.patternPrecisionGun = new PatternPrecisionGun(robot, allEnemiesObservationContext, gunStateContext);
     }
 
     @Override
     public void onScannedRobot(ScannedRobotEvent scannedRobotEvent) {
+//        patternPrecisionGun.onScannedRobot(scannedRobotEvent);
+
         if (EnemyHealthHelper.isEnemyHasNoEnergy(scannedRobotEvent)) {
             finishOffGun.onScannedRobot(scannedRobotEvent);
         } else {
@@ -110,6 +115,7 @@ public class TheUnfoldingGun implements InitiableRun, LoopableRun, OnScannedRobo
     @Override
     public void runLoop() {
 //        briareosGun.runLoop();
+//        patternPrecisionGun.runLoop();
         patternPredictionGun.runLoop();
         finishOffGun.runLoop();
     }
