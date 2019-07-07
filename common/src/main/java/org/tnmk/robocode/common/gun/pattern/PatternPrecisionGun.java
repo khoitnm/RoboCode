@@ -3,6 +3,7 @@ package org.tnmk.robocode.common.gun.pattern;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
@@ -136,12 +137,15 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
     }
 
     private static Optional<Rectangle2D> findIntersectAreaOfAllPotentialPositions(EnemyHistory enemyHistory, int ticks) {
-        List<Point2D> potentialPositions = PatternPrecisionUtils.findPotentialPositionsAfterTimePeriod(enemyHistory, ticks);
-        List<BotBody> potentialBotBodies = BotBodyFactory.constructBotBodies(potentialPositions);
+        List<BotMovementPrediction> potentialPositions = PatternPrecisionUtils.findPotentialPositionsAfterTimePeriod(enemyHistory, ticks);
+        List<BotBody> potentialBotBodies = potentialPositions.stream().map(PatternPrecisionGun::calculateBotBodyAtPredictionPoint).collect(Collectors.toList());
         Optional<Rectangle2D> intersectArea = BotBodyUtils.reckonIntersectArea(potentialBotBodies);
         return intersectArea;
     }
 
+    private static BotBody calculateBotBodyAtPredictionPoint(BotMovementPrediction botMovementPrediction) {
+        return BotBodyFactory.constructBotBody(botMovementPrediction.getEnemyPrediction().getPredictionPosition());
+    }
 
     /**
      * Fire bullet when finish aiming.

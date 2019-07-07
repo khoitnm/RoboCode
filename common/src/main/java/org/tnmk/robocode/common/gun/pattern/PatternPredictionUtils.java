@@ -90,6 +90,7 @@ public class PatternPredictionUtils {
      */
     @Deprecated
     public static EnemyPrediction predictEnemyBasedOnAllEnemyPotentialPositions(List<Enemy> historyItems, long predictionTime, Rectangle2D enemyMovementArea) {
+        //TODO
         Enemy enemy = historyItems.get(0);
         List<Enemy> latestHistory = ListUtils.firstElements(historyItems, 2);
 //        throw new UnsupportedOperationException("Not implemented");
@@ -106,6 +107,8 @@ public class PatternPredictionUtils {
 //        double avgVelocity = EnemyHistoryUtils.averageVelocity(historyItems);
 //        return PatternPredictionUtils.predictEnemy(enemy, avgVelocity, avgChangeHeadingRadian, predictionTime, enemyMovementArea);
     }
+
+
 
     /**
      * @param historyItems      must be not empty

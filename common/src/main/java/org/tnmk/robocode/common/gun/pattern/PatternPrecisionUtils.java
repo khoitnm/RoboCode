@@ -1,7 +1,11 @@
 package org.tnmk.robocode.common.gun.pattern;
 
 import java.awt.geom.Point2D;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.robocode.common.helper.Move2DUtils;
 import org.tnmk.robocode.common.model.enemy.Enemy;
@@ -11,10 +15,7 @@ import robocode.Rules;
 
 public class PatternPrecisionUtils {
 
-    public static List<Point2D> findPotentialPositionsAfterTimePeriod(EnemyHistory enemyHistory, long ticks) {
-        //Predict with same accelerator: 3 positions: same heading. Turn left (max), & turn right (max)
-        //Predict with reduce accelerator until min velocity, and then increase accelerator until max velocity): 3 positions: same heading. Turn left (max), & turn right (max)
-        //Predict with increase accelerator until max velocity: 3 positions: same heading. Turn left (max), & turn right (max)
+    public static List<BotMovementPrediction> findPotentialPositionsAfterTimePeriod(EnemyHistory enemyHistory, long ticks) {
 
         Enemy enemy = enemyHistory.getLatestHistoryItem();
         List<Enemy> latestHistory = enemyHistory.getLatestHistoryItems(2);
@@ -29,14 +30,24 @@ public class PatternPrecisionUtils {
         }
         int normAcceleration = Move2DUtils.normalizeAcceleration(acceleration);
 
-        Set<BotMovement> allPotentialMovments = constructAllPotentialBotMovements(enemy, normAcceleration, avgChangeHeadingRadian);
+        Set<BotMovement> allPotentialMovements = constructAllPotentialBotMovements(enemy, normAcceleration, avgChangeHeadingRadian);
+        List<BotMovementPrediction> allPredictions = predictMovements(allPotentialMovements);
+        return allPredictions;
+    }
 
+    private static List<BotMovementPrediction> predictMovements(Set<BotMovement> allPotentialMovments) {
+        return allPotentialMovments.stream().map(botMovement -> predictMovement(botMovement)).collect(Collectors.toList());
+    }
+
+    private static BotMovementPrediction predictMovement(BotMovement botMovement) {
+        //TODO
     }
 
     public static Set<BotMovement> constructAllPotentialBotMovements(Enemy enemy, int normAcceleration, double changeHeadingRadian) {
         Set<BotMovement> botMovementsWithNormAcceleration = constructAllPotentialPositionsWithSameNormAcceleration(
                 enemy.getPosition(), enemy.getVelocity(), normAcceleration, AngleUtils.toRadian(enemy.getHeading()), changeHeadingRadian);
         Set<BotMovement> allPotentialMovments = new HashSet<>(botMovementsWithNormAcceleration);
+        //TODO totally reverse movement direction when enemy is staying still.
         if (normAcceleration != 0) {
             int reverseNormAcceleration = Move2DUtils.reverseNormAcceleration(normAcceleration);
             Set<BotMovement> botMovementsWithReversedNormAcceleration = constructAllPotentialPositionsWithSameNormAcceleration(

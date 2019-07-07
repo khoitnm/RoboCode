@@ -2,6 +2,7 @@ package org.tnmk.robocode.common.log;
 
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
+import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyPredictionHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 import org.tnmk.robocode.common.model.enemy.PatternIdentification;
@@ -176,5 +177,15 @@ public class DebugHelper {
         if (DebugHelper.isDebugPatternPredictionGun()) {
             LogHelper.logRobotMovement(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
         }
+    }
+
+    public static void debug_PatternPrecision_NotEnoughTime(AdvancedRobot robot, EnemyHistory enemyHistory) {
+        if (DebugHelper.isDebugPatternPrecision()) {
+            LogHelper.logRobotMovement(robot, enemyHistory.getName() + ". Not found time to fire bullet. Distance: " + enemyHistory.getLatestHistoryItem().getDistance());
+        }
+    }
+
+    private static boolean isDebugPatternPrecision() {
+        return true;
     }
 }

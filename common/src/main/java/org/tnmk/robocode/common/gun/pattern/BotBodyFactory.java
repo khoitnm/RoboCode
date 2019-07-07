@@ -5,7 +5,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.tnmk.robocode.common.constant.RobotPhysics;
-import robocode.Rules;
 
 public class BotBodyFactory {
     public static List<BotBody> constructBotBodies(List<Point2D> botPositions) {
