@@ -48,6 +48,10 @@ public class DiamondNoGun extends Diamond {
 //          _gun.execute();
         }
         _radar.execute();
+
+        if (this.getEnergy() > 10){
+          this.setFire(3);//Fire until energy lower than 10
+        }
         execute();
       }
     } catch (RuntimeException re) {

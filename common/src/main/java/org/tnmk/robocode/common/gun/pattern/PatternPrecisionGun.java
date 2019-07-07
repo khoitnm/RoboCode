@@ -134,7 +134,7 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
             }
             deltaTicks = (maxCheckedTicksNotFound - minCheckedTickedFoundResult) / 2;
             checkingTicks = checkingTicks + ticksIncrement * deltaTicks;
-        } while (deltaTicks == 0);
+        } while (deltaTicks != 0);
 
         Point2D targetPosition = GeoMathUtils.calculateCentralPoint(foundIntersectArea);
 
