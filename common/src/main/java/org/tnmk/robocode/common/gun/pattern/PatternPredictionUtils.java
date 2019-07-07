@@ -82,35 +82,6 @@ public class PatternPredictionUtils {
     }
 
     /**
-     * @deprecated similar to {@link PatternPrecisionUtils#findPotentialPositionsAfterTimePeriod}?
-     * @param historyItems      must be not empty
-     * @param predictionTime    when is the time that we think the bullet will reach the target.
-     * @param enemyMovementArea the area enemy always moving inside. It never move to outside this area (usually the battle field).
-     * @return guess new enemy's position and also identify pattern at the predictionTime.
-     */
-    @Deprecated
-    public static EnemyPrediction predictEnemyBasedOnAllEnemyPotentialPositions(List<Enemy> historyItems, long predictionTime, Rectangle2D enemyMovementArea) {
-        //TODO
-        Enemy enemy = historyItems.get(0);
-        List<Enemy> latestHistory = ListUtils.firstElements(historyItems, 2);
-//        throw new UnsupportedOperationException("Not implemented");
-        double avgChangeHeadingRadian = EnemyHistoryUtils.averageChangeHeadingRadian(latestHistory);
-        double latestVelocity = enemy.getVelocity();
-        double acceleration = 0;
-        if (historyItems.size() > 1) {
-            Enemy previousHistoryItem = historyItems.get(1);
-            double previousVelocity = historyItems.get(1).getVelocity();
-            double timePeriod = enemy.getTime() - previousHistoryItem.getTime();
-            acceleration = (latestVelocity - previousVelocity) / timePeriod;
-            acceleration = Move2DUtils.normalizeAcceleration(acceleration);
-        }
-//        double avgVelocity = EnemyHistoryUtils.averageVelocity(historyItems);
-//        return PatternPredictionUtils.predictEnemy(enemy, avgVelocity, avgChangeHeadingRadian, predictionTime, enemyMovementArea);
-    }
-
-
-
-    /**
      * @param historyItems      must be not empty
      * @param predictionTime    when is the time that we think the bullet will reach the target.
      * @param enemyMovementArea the area enemy always moving inside. It never move to outside this area (usually the battle field).

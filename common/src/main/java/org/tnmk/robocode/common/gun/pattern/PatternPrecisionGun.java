@@ -99,7 +99,12 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
             return null;//Not enough time for bullet to reach the enemy.
         }
         PatternPredictionFunction patternPredictionFunction = (latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre) ->
-                PatternPredictionUtils.predictEnemyBasedOnAllEnemyPotentialPositions(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre);
+        {
+            long timeBulletHitEnemy = robot.getTime() + TimeUtils.toTicks(totalTimePeriodForFiring);
+            EnemyPrediction enemyPrediction = new EnemyPrediction(EnemyMovePattern.UNIDENTIFIED, timeBulletHitEnemy, bestPotentialPosition, -1, -1);
+            return enemyPrediction;
+        };
+        //PatternPredictionUtils.predictEnemyBasedOnAllEnemyPotentialPositions(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre);
         return PatternPredictionUtils.predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower, patternPredictionFunction);
     }
 
@@ -138,7 +143,7 @@ public class PatternPrecisionGun implements LoopableRun, OnScannedRobotControl {
     }
 
     private static Optional<Rectangle2D> findIntersectAreaOfAllPotentialPositions(EnemyHistory enemyHistory, int ticks, Rectangle2D enemyMovementBoundary) {
-        List<BotMovementPrediction> potentialPositions = PatternPrecisionUtils.findPotentialPositionsAfterTimePeriod(enemyHistory, ticks,enemyMovementBoundary);
+        List<BotMovementPrediction> potentialPositions = PatternPrecisionUtils.findPotentialPositionsAfterTimePeriod(enemyHistory, ticks, enemyMovementBoundary);
         List<BotBody> potentialBotBodies = potentialPositions.stream().map(PatternPrecisionGun::calculateBotBodyAtPredictionPoint).collect(Collectors.toList());
         Optional<Rectangle2D> intersectArea = BotBodyUtils.reckonIntersectArea(potentialBotBodies);
         return intersectArea;

@@ -13,6 +13,8 @@ import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
 public class EnemyPrediction {
     /**
      * Note: this is not the time we do prediction. It's the corresponding time of the predictionPosition.
+     * <br/>
+     * It's the time when the enemy reach the predictionPosition.
      */
     private final long predictionTime;
     private final EnemyMovePattern enemyMovePattern;
