@@ -13,10 +13,19 @@ public class Enemy {
 
     private double energy;
 
+    /**
+     * The angle of enemy body (degree)
+     */
     private double heading;
 
+    /**
+     * The angle of enemy compare to our robot (degree)
+     */
     private double bearing;
 
+    /**
+     * Distance from our robot to the enemy at this time
+     */
     private double distance;
 
     private double velocity;
@@ -25,6 +34,9 @@ public class Enemy {
 
     private Point2D position;
 
+    /**
+     * The time of these enemy's information
+     */
     private long time;
 
     public String getName() {

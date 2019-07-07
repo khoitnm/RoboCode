@@ -49,4 +49,6 @@ public class RobotPhysics {
      * The energy of each robot when starting a round (match)
      */
     public static final double ROBOT_INITIATE_ENERGY = 100;
+    public static final int DECELERATION = -2;
+    public static final int ACCELERATION = 1;
 }

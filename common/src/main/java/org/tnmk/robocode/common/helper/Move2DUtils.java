@@ -5,17 +5,12 @@ import java.awt.geom.Rectangle2D;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.CircleMathUtils;
 import org.tnmk.common.math.GeoMathUtils;
+import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.movement.strategy.antigravity.AntiGravityMoveController;
 import robocode.*;
 import robocode.util.Utils;
 
 public class Move2DUtils {
-    public static final double ROBOT_SIZE = 50;
-
-    public static Point2D reckonEnemyPosition(Robot thisRobot, HitRobotEvent targetRobotEvent) {
-        return reckonEnemyPosition(thisRobot, targetRobotEvent.getBearing(), ROBOT_SIZE);
-    }
-
     /**
      * This method is correct, no need to debug.
      *
@@ -181,15 +176,27 @@ public class Move2DUtils {
         return moveAngle;
     }
 
-    public static double normalizeAcceleration(double acceleration) {
-        double normalizedAcceleration;
+    public static int normalizeAcceleration(double acceleration) {
+        int normalizedAcceleration;
         if (acceleration < 0) {
-            normalizedAcceleration = -2;
+            normalizedAcceleration = RobotPhysics.DECELERATION;
         } else if (acceleration > 0) {
-            normalizedAcceleration = 1;
+            normalizedAcceleration = RobotPhysics.ACCELERATION;
         } else {
             normalizedAcceleration = 0;
         }
         return normalizedAcceleration;
+    }
+
+    public static int reverseNormAcceleration(int normAcceleration) {
+        if (normAcceleration == RobotPhysics.DECELERATION){
+            return RobotPhysics.ACCELERATION;
+        }else if (normAcceleration == RobotPhysics.ACCELERATION){
+            return RobotPhysics.DECELERATION;
+        }else if (normAcceleration == 0){
+            return 0;
+        }else{
+            throw new IllegalArgumentException("Norm Acceleration must be one of 0, -2, or 1. But the actual value is "+normAcceleration);
+        }
     }
 }
