@@ -1,6 +1,7 @@
 package org.tnmk.robocode.common.gun.pattern;
 
 import java.awt.geom.Point2D;
+import java.util.Objects;
 
 public class BotMovement {
     private final Point2D currentPosition;
@@ -15,6 +16,23 @@ public class BotMovement {
         this.normAcceleration = normAcceleration;
         this.headingRadians = headingRadians;
         this.headingChangingRateRadians = headingChangingRateRadians;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BotMovement that = (BotMovement) o;
+        return Double.compare(that.velocity, velocity) == 0 &&
+                normAcceleration == that.normAcceleration &&
+                Double.compare(that.headingRadians, headingRadians) == 0 &&
+                Double.compare(that.headingChangingRateRadians, headingChangingRateRadians) == 0 &&
+                Objects.equals(currentPosition, that.currentPosition);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(currentPosition, velocity, normAcceleration, headingRadians, headingChangingRateRadians);
     }
 
     public Point2D getCurrentPosition() {

@@ -82,11 +82,13 @@ public class PatternPredictionUtils {
     }
 
     /**
+     * @deprecated similar to {@link PatternPrecisionUtils#findPotentialPositionsAfterTimePeriod}?
      * @param historyItems      must be not empty
      * @param predictionTime    when is the time that we think the bullet will reach the target.
      * @param enemyMovementArea the area enemy always moving inside. It never move to outside this area (usually the battle field).
      * @return guess new enemy's position and also identify pattern at the predictionTime.
      */
+    @Deprecated
     public static EnemyPrediction predictEnemyBasedOnAllEnemyPotentialPositions(List<Enemy> historyItems, long predictionTime, Rectangle2D enemyMovementArea) {
         Enemy enemy = historyItems.get(0);
         List<Enemy> latestHistory = ListUtils.firstElements(historyItems, 2);
