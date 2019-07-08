@@ -5,12 +5,18 @@ import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
+import org.tnmk.robocode.common.helper.BattleFieldUtils;
+import robocode.AdvancedRobot;
 import robocode.Rules;
 
 /**
  * This class helps to predict our own robot position. Not predict enemy position.
  */
 public class RobotPredictionHelper {
+    public static RobotPrediction predictPosition(AdvancedRobot robot, long expectPredictionTimePeriod) {
+        Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
+        return predictPosition(expectPredictionTimePeriod, robotPosition, robot.getVelocity(), robot.getDistanceRemaining(), robot.getHeadingRadians(), robot.getTurnRemainingRadians());
+    }
     /**
      * @param expectPredictionTimePeriod
      * @param currentPosition

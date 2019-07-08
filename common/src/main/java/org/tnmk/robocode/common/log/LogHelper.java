@@ -121,4 +121,8 @@ public class LogHelper {
             return "";
         }
     }
+
+    public static String toString(double num) {
+        return String.format("%.2f", num);
+    }
 }

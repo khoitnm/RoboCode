@@ -71,7 +71,11 @@ public class GunUtils {
 
     public static double reckonTimePeriodToTurnGun(AdvancedRobot robot, Point2D targetPosition) {
         Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
-        double turnGunRadian = reckonTurnGunLeftNormRadian(robotPosition, targetPosition, robot.getHeadingRadians());
+        return reckonTimePeriodToTurnGun(robotPosition, robot.getGunHeadingRadians(), targetPosition);
+    }
+
+    public static double reckonTimePeriodToTurnGun(Point2D robotPosition, double gunHeadingRadians, Point2D targetPosition) {
+        double turnGunRadian = reckonTurnGunLeftNormRadian(robotPosition, targetPosition, gunHeadingRadians);
         double timeToTurnGun = reckonTimePeriodToTurnGun(turnGunRadian);
         return timeToTurnGun;
     }
@@ -81,8 +85,8 @@ public class GunUtils {
     }
 
     public static double reckonTimePeriodToTurnGun(double turnGunRadian) {
-        double tunGunRadianNormalized = AngleUtils.normalizeRadian(turnGunRadian);
-        double timeToTurnGun = Math.abs(tunGunRadianNormalized) / Rules.GUN_TURN_RATE_RADIANS;
+//        double tunGunRadianNormalized = AngleUtils.normalizeRadian(turnGunRadian);
+        double timeToTurnGun = Math.abs(turnGunRadian) / Rules.GUN_TURN_RATE_RADIANS;
         return timeToTurnGun;
     }
 

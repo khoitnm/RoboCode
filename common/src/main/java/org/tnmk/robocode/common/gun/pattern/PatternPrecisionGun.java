@@ -13,7 +13,10 @@ import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import org.tnmk.robocode.common.helper.TimeUtils;
 import org.tnmk.robocode.common.helper.prediction.EnemyPositionPrediction;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
+import org.tnmk.robocode.common.helper.prediction.RobotPrediction;
+import org.tnmk.robocode.common.helper.prediction.RobotPredictionHelper;
 import org.tnmk.robocode.common.log.DebugHelper;
+import org.tnmk.robocode.common.log.LogHelper;
 import org.tnmk.robocode.common.model.enemy.*;
 import org.tnmk.robocode.common.radar.AllEnemiesObservationContext;
 import org.tnmk.robocode.common.robot.LoopableRun;
@@ -53,24 +56,24 @@ public class PatternPrecisionGun implements Gun {
     private void aimGun(AdvancedRobot robot, EnemyStatisticContext enemyStatisticContext) {
         EnemyHistory enemyHistory = enemyStatisticContext.getEnemyHistory();
 
-        AimPrediction aimPrediction = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory);
-        if (aimPrediction == null) {
+        AimResult aimResult = predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory);
+        if (aimResult == null) {
             DebugHelper.debug_GunPatternPrecision_NotEnoughTime(robot, enemyHistory);
             return;
         }
 
 //        AimPrediction aimPrediction= PatternPredictionUtils.predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower, (latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre) -> PatternPredictionUtils.predictEnemyBasedOnAllEnemyPotentialPositions(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre));
-        EnemyPrediction enemyPrediction = aimPrediction.getEnemyPrediction();
+//        EnemyPrediction enemyPrediction = aimPrediction.getEnemyPrediction();
 //            LogHelper.logRobotMovement(robot, "Future prediction: Enemy name: " + enemyStatisticContext.getEnemyName() + ", predictionPattern: " + enemyPrediction.getEnemyMovePattern() + ", historySize: " + enemyStatisticContext.getEnemyHistory().countHistoryItems());
 
         /** No matter what is the prediction, always add it into predictionHistory.*/
-        EnemyPredictionHistory enemyPredictionHistory = enemyStatisticContext.getEnemyPredictionHistory();
-        enemyPredictionHistory.addToHistory(enemyPrediction);
+//        EnemyPredictionHistory enemyPredictionHistory = enemyStatisticContext.getEnemyPredictionHistory();
+//        enemyPredictionHistory.addToHistory(enemyPrediction);
 
         /**Turn the gun to the correct angle**/
         if (!gunStateContext.isAiming()) {
-            robot.setTurnGunLeftRadians(aimPrediction.getGunTurnLeftRadian());
-            gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PREDICTION, aimPrediction.getBulletPower(), enemyHistory.getName());
+            robot.setTurnGunLeftRadians(aimResult.getGunTurnLeftRadian());
+            gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PRECISION, aimResult.getBulletPower(), enemyHistory.getName());
         }
 //                LogHelper.logSimple(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
 //                        "\n\tidentifiedPattern: " + patternIdentification +
@@ -82,31 +85,55 @@ public class PatternPrecisionGun implements Gun {
 
     }
 
-    private AimPrediction predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory) {
+    private AimResult predictEnemyPositionWhenBulletReachEnemy(AdvancedRobot robot, EnemyHistory enemyHistory) {
         Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
         Rectangle2D enemyMovementBoundary = BattleFieldUtils.constructBattleField(robot);
         EnemyPotentialPositions enemyPotentialPositions = findTimePeriodAllPotentialPositionsStillIntersect(robot, enemyHistory, enemyMovementBoundary);
         double totalTimePeriodForFiring = enemyPotentialPositions.getTimePeriod();
+        long totalTicksForFiring = TimeUtils.toTicks(totalTimePeriodForFiring);
         Point2D bestPotentialPosition = enemyPotentialPositions.getBestPotentialPosition();
         double distance = robotPosition.distance(bestPotentialPosition);
 
-        double timePeriodToTurnGun = GunUtils.reckonTimePeriodToTurnGun(robot, bestPotentialPosition);
-        long ticksForBulletToFly = TimeUtils.toTicks(totalTimePeriodForFiring) - TimeUtils.toTicks(timePeriodToTurnGun);
-        if (ticksForBulletToFly < 0) {
-            return null;//Not enough time to fire.
+        double bulletPower = 0;
+        double gunTurnLeftRadian = 0;
+        long timeWhenFinishTurningGun;
+        double timePeriodToTurnGun = 0;
+        long ticksToTurnGun = 0;
+        long ticksForBulletToReachEnemy = 0;
+        Point2D robotPredictionPosition = robotPosition;
+        for (int i = 0; i < 5; i++) {
+            gunTurnLeftRadian = GunUtils.reckonTurnGunLeftNormRadian(robotPredictionPosition, bestPotentialPosition, robot.getGunHeadingRadians());
+            timePeriodToTurnGun = GunUtils.reckonTimePeriodToTurnGun(gunTurnLeftRadian);
+            ticksToTurnGun = TimeUtils.toTicks(timePeriodToTurnGun);
+            ticksForBulletToReachEnemy = totalTicksForFiring - ticksToTurnGun;
+            if (ticksForBulletToReachEnemy < 0) {
+                return null;//Not enough time to fire.
+            }
+            bulletPower = GunUtils.reckonBulletPower(ticksForBulletToReachEnemy, distance);
+            if (bulletPower < Rules.MIN_BULLET_POWER) {
+                return null;//Not enough time for bullet to reach the enemy.
+            }
+            timeWhenFinishTurningGun = robot.getTime() + ticksToTurnGun;
+            //RobotPrediction robotPrediction = RobotPredictionHelper.predictPosition(robot, timeWhenFinishTurningGun);
+            //robotPredictionPosition = robotPrediction.getPosition();
         }
-        double bulletPower = GunUtils.reckonBulletPower(ticksForBulletToFly, distance);
-        if (bulletPower < Rules.MIN_BULLET_POWER) {
-            return null;//Not enough time for bullet to reach the enemy.
-        }
-        PatternPredictionFunction patternPredictionFunction = (latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre) ->
-        {
-            long timeBulletHitEnemy = robot.getTime() + TimeUtils.toTicks(totalTimePeriodForFiring);
-            EnemyPositionPrediction enemyPrediction = new EnemyPositionPrediction(timeBulletHitEnemy, bestPotentialPosition);
-            return enemyPrediction;
-        };
-        //PatternPredictionUtils.predictEnemyBasedOnAllEnemyPotentialPositions(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre);
-        return PatternPredictionUtils.predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower, patternPredictionFunction);
+
+        long timeWhenBulletReachEnemy = robot.getTime() + totalTicksForFiring;
+        AimResult aimResult = new AimResult(
+                robotPredictionPosition,
+                gunTurnLeftRadian, bulletPower,
+                robot.getTime(), timeWhenBulletReachEnemy, totalTicksForFiring, ticksToTurnGun, ticksForBulletToReachEnemy);
+        DebugHelper.debug_GunPatternPrecision_AimResult(robot, aimResult);
+        return aimResult;
+
+//        PatternPredictionFunction patternPredictionFunction = (latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre) ->
+//        {
+//            long timeBulletHitEnemy = robot.getTime() + TimeUtils.toTicks(totalTimePeriodForFiring);
+//            EnemyPositionPrediction enemyPrediction = new EnemyPositionPrediction(timeBulletHitEnemy, bestPotentialPosition);
+//            return enemyPrediction;
+//        };
+//        //PatternPredictionUtils.predictEnemyBasedOnAllEnemyPotentialPositions(latestHistoryItems, timeWhenBulletReachEnemy, enemyMovementBoundaryAre);
+//        return PatternPredictionUtils.predictEnemyPositionWhenBulletReachEnemy(robot, enemyHistory, bulletPower, patternPredictionFunction);
     }
 
     private static EnemyPotentialPositions findTimePeriodAllPotentialPositionsStillIntersect(AdvancedRobot robot, EnemyHistory enemyHistory, Rectangle2D enemyMovementBoundary) {

@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 
 public class AimPrediction {
     private final EnemyPrediction enemyPrediction;
+    //TODO replace all of below fields by AimResult
     private final Point2D predictRobotPosition;
     private final double gunTurnLeftRadian;
     private final double bulletPower;

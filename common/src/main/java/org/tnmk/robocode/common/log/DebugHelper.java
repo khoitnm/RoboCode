@@ -2,6 +2,7 @@ package org.tnmk.robocode.common.log;
 
 import java.awt.geom.Point2D;
 import org.tnmk.robocode.common.gun.GunStateContext;
+import org.tnmk.robocode.common.gun.pattern.AimResult;
 import org.tnmk.robocode.common.gun.pattern.BotBody;
 import org.tnmk.robocode.common.gun.pattern.PotentialPositionsWithIntersectArea;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
@@ -199,6 +200,12 @@ public class DebugHelper {
             }
             PaintHelper.paintRectangle(advancedRobot.getGraphics(), foundPotentialPositionsWithIntersectArea.getIntersectArea().get(), Color.YELLOW);
             PaintHelper.paintPoint(advancedRobot.getGraphics(), 10, Color.RED, targetPosition, null);
+        }
+    }
+
+    public static void debug_GunPatternPrecision_AimResult(AdvancedRobot robot, AimResult aimResult) {
+        if (isDebug_GunPatternPrecision()) {
+            LogHelper.logSimple(robot, "AimResult: " + aimResult);
         }
     }
 }
