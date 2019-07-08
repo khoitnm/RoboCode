@@ -8,10 +8,16 @@ import robocode.Robot;
 
 public class LogHelper {
     public static String toString(Point2D point2D) {
+        if (point2D == null) {
+            return null;
+        }
         return String.format("{%.2f, %.2f}", point2D.getX(), point2D.getY());
     }
 
     public static String toString(Rectangle2D rectangle2D) {
+        if (rectangle2D == null) {
+            return null;
+        }
         return String.format("{%.2f, %.2f} -> {%.2f, %.2f}", rectangle2D.getMinX(), rectangle2D.getMinY(), rectangle2D.getMaxX(), rectangle2D.getMaxY());
     }
 
