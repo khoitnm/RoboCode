@@ -44,11 +44,19 @@ public class PatternPrecisionUtils {
     private static BotMovementPrediction predictMovement(BotMovement botMovement, long ticks) {
         //TODO improve performance (and precision) by using Maths formula
         Point2D predictPosition;
+        double distance = Move2DUtils.calculateDistanceWithAccelerationAndLimitVelocity(botMovement.getVelocity(), botMovement.getNormAcceleration(), (int) ticks);
         if (botMovement.getHeadingChangingRateRadians() > 0.0001) {
             //run in circle
+            double avgVelocity = distance / (double) ticks;
+            double avgRadius = avgVelocity / botMovement.getHeadingChangingRateRadians();
+            double totalHeadingChangeRadian = ticks * botMovement.getHeadingChangingRateRadians();
+            double currentHeadingRadian = botMovement.getHeadingRadians();
+            double newHeadingRadian = currentHeadingRadian + totalHeadingChangeRadian;
+            double newX = botMovement.getCurrentPosition().getX() + (Math.cos(currentHeadingRadian) - Math.cos(newHeadingRadian)) * avgRadius;
+            double newY = botMovement.getCurrentPosition().getY() + (Math.sin(newHeadingRadian) - Math.sin(currentHeadingRadian)) * avgRadius;
+            predictPosition = new Point2D.Double(newX, newY);
         } else {
             //run in linear
-            double distance = Move2DUtils.calculateDistanceWithAccelerationAndLimitVelocity(botMovement.getVelocity(), botMovement.getNormAcceleration(), (int) ticks);
             predictPosition = Move2DUtils.reckonDestination(botMovement.getCurrentPosition(), botMovement.getHeadingRadians(), distance);
         }
 //
