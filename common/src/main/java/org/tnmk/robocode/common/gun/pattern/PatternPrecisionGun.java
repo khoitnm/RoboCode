@@ -113,9 +113,8 @@ public class PatternPrecisionGun implements Gun {
             if (bulletPower < Rules.MIN_BULLET_POWER) {
                 return null;//Not enough time for bullet to reach the enemy.
             }
-            timeWhenFinishTurningGun = robot.getTime() + ticksToTurnGun;
-            //RobotPrediction robotPrediction = RobotPredictionHelper.predictPosition(robot, timeWhenFinishTurningGun);
-            //robotPredictionPosition = robotPrediction.getPosition();
+            RobotPrediction robotPrediction = RobotPredictionHelper.predictPosition(robot, ticksToTurnGun);
+            robotPredictionPosition = robotPrediction.getPosition();
         }
 
         long timeWhenBulletReachEnemy = robot.getTime() + totalTicksForFiring;
