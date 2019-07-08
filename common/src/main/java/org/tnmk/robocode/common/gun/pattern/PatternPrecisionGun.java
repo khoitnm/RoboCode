@@ -103,6 +103,9 @@ public class PatternPrecisionGun implements Gun {
         Point2D robotPredictionPosition = robotPosition;
         for (int i = 0; i < 5; i++) {
             gunTurnLeftRadian = GunUtils.reckonTurnGunLeftNormRadian(robotPredictionPosition, bestPotentialPosition, robot.getGunHeadingRadians());
+            if (gunTurnLeftRadian < 0.001){
+                gunTurnLeftRadian = 0;//If the angle is too small, consider don't need to turn the gun at all.
+            }
             timePeriodToTurnGun = GunUtils.reckonTimePeriodToTurnGun(gunTurnLeftRadian);
             ticksToTurnGun = TimeUtils.toTicks(timePeriodToTurnGun);
             ticksForBulletToReachEnemy = totalTicksForFiring - ticksToTurnGun;
