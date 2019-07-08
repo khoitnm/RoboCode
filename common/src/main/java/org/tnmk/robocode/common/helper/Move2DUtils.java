@@ -1,14 +1,18 @@
 package org.tnmk.robocode.common.helper;
 
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import org.tnmk.common.math.AngleUtils;
 import org.tnmk.common.math.CircleMathUtils;
 import org.tnmk.common.math.GeoMathUtils;
 import org.tnmk.robocode.common.constant.RobotPhysics;
 import org.tnmk.robocode.common.movement.strategy.antigravity.AntiGravityMoveController;
-import robocode.*;
+import robocode.AdvancedRobot;
+import robocode.Robot;
+import robocode.Rules;
+import robocode.ScannedRobotEvent;
 import robocode.util.Utils;
+
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 public class Move2DUtils {
     /**
@@ -170,7 +174,7 @@ public class Move2DUtils {
         return distanceToDestination;
     }
 
-    public static double reckonMoveAngleDegree(AdvancedRobot robot, Point2D destination){
+    public static double reckonMoveAngleDegree(AdvancedRobot robot, Point2D destination) {
         Point2D currentPosition = new Point2D.Double(robot.getX(), robot.getY());
         double moveAngle = GeoMathUtils.calculateTurnRightDirectionToTarget(robot.getHeading(), currentPosition.getX(), currentPosition.getY(), destination.getX(), destination.getY());
         return moveAngle;
@@ -189,14 +193,41 @@ public class Move2DUtils {
     }
 
     public static int reverseNormAcceleration(int normAcceleration) {
-        if (normAcceleration == RobotPhysics.DECELERATION){
+        if (normAcceleration == RobotPhysics.DECELERATION) {
             return RobotPhysics.ACCELERATION;
-        }else if (normAcceleration == RobotPhysics.ACCELERATION){
+        } else if (normAcceleration == RobotPhysics.ACCELERATION) {
             return RobotPhysics.DECELERATION;
-        }else if (normAcceleration == 0){
+        } else if (normAcceleration == 0) {
             return 0;
-        }else{
-            throw new IllegalArgumentException("Norm Acceleration must be one of 0, -2, or 1. But the actual value is "+normAcceleration);
+        } else {
+            throw new IllegalArgumentException("Norm Acceleration must be one of 0, -2, or 1. But the actual value is " + normAcceleration);
         }
+    }
+
+    public static double calculateDistanceWithAcceleration(double currentVelocity, int normAcceleration, int ticks) {
+        double distance = (ticks * currentVelocity) + (normAcceleration * (ticks - 1) * ticks / 2d);
+        return distance;
+    }
+
+    public static int calculateMaxTicksForChangingVelocity(double currentVelocity, int normAcceleration) {
+        int maxTicks;
+        if (normAcceleration > 0) {
+            maxTicks = (int) Math.ceil((Rules.MAX_VELOCITY - currentVelocity) / normAcceleration) + 1;
+        } else {
+            maxTicks = (int) Math.ceil((0 - currentVelocity) / normAcceleration) + 1;
+        }
+        return maxTicks;
+    }
+
+    public static double calculateDistanceWithAccelerationAndLimitVelocity(double currentVelocity, int normAcceleration, int ticks) {
+        double distance;
+        int maxTicksForChangingVelocity = calculateMaxTicksForChangingVelocity(currentVelocity, normAcceleration);
+        if (ticks > maxTicksForChangingVelocity) {
+            double distanceWithAcceleration = calculateDistanceWithAcceleration(currentVelocity, normAcceleration, maxTicksForChangingVelocity);
+            distance = distanceWithAcceleration + currentVelocity * (ticks - maxTicksForChangingVelocity);
+        }else{
+            distance = calculateDistanceWithAcceleration(currentVelocity, normAcceleration, ticks);
+        }
+        return distance;
     }
 }
