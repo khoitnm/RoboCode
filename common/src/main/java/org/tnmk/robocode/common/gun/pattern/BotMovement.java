@@ -3,6 +3,7 @@ package org.tnmk.robocode.common.gun.pattern;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
+import org.tnmk.robocode.common.log.LogHelper;
 
 public class BotMovement {
     private boolean isMainMovement;
@@ -38,6 +39,19 @@ public class BotMovement {
     @Override
     public int hashCode() {
         return Objects.hash(currentPosition, velocity, normAcceleration, headingRadians, headingChangingRateRadians);
+    }
+
+    @Override
+    public String toString() {
+        return "BotMovement{" +
+                "isMainMovement=" + isMainMovement +
+                ", currentPosition=" + LogHelper.toString(currentPosition) +
+                ", velocity=" + LogHelper.toString(velocity) +
+                ", normAcceleration=" + normAcceleration +
+                ", headingRadians=" + LogHelper.toString(headingRadians) +
+                ", headingChangingRateRadians=" + LogHelper.toString(headingChangingRateRadians) +
+                ", enemyMovementBoundary=" + LogHelper.toString(enemyMovementBoundary) +
+                '}';
     }
 
     public Rectangle2D getEnemyMovementBoundary() {
