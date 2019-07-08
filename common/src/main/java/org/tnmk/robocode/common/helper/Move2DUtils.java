@@ -135,18 +135,19 @@ public class Move2DUtils {
     }
 
     /**
-     * @param robotPosition
-     * @param newHeadingRadian this is the radian in-game angle (not the geometry angle)
+     * You can find destination position by using this method.
+     * @param currentPosition
+     * @param inGameHeadingRadian this is the radian in-game angle (not the geometry angle)
      * @param normDistance     could be positive or negative
-     * @return
+     * @return destination position
      */
-    public static Point2D reckonDestination(Point2D robotPosition, double newHeadingRadian, double normDistance) {
+    public static Point2D reckonDestination(Point2D currentPosition, double inGameHeadingRadian, double normDistance) {
         //In geometry Maths, cos() is associated to x-coordinate, sin() is associated to y-coordinate.
         //But the angle in game is different from Geometry Maths, so sin() is associated to x now, and cos() is associated to y now.
         //To reverse the normal Geometry Maths formula, we change inGameAngle to Geometry angle.
-        double geoNewHeadingRadian = AngleUtils.toGeometryRadian(newHeadingRadian);
-        double x = robotPosition.getX() + Math.cos(geoNewHeadingRadian) * normDistance;
-        double y = robotPosition.getY() + Math.sin(geoNewHeadingRadian) * normDistance;
+        double geoNewHeadingRadian = AngleUtils.toGeometryRadian(inGameHeadingRadian);
+        double x = currentPosition.getX() + Math.cos(geoNewHeadingRadian) * normDistance;
+        double y = currentPosition.getY() + Math.sin(geoNewHeadingRadian) * normDistance;
 
 //        double x = robotPosition.getX() + Math.sin(newHeadingRadian) * normDistance;
 //        double y = robotPosition.getY() + Math.cos(newHeadingRadian) * normDistance;

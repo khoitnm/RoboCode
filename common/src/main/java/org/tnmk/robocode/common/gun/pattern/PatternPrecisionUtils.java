@@ -1,5 +1,12 @@
 package org.tnmk.robocode.common.gun.pattern;
 
+import org.tnmk.common.math.AngleUtils;
+import org.tnmk.robocode.common.helper.Move2DUtils;
+import org.tnmk.robocode.common.model.enemy.Enemy;
+import org.tnmk.robocode.common.model.enemy.EnemyHistory;
+import org.tnmk.robocode.common.model.enemy.EnemyHistoryUtils;
+import robocode.Rules;
+
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
@@ -7,12 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.tnmk.common.math.AngleUtils;
-import org.tnmk.robocode.common.helper.Move2DUtils;
-import org.tnmk.robocode.common.model.enemy.Enemy;
-import org.tnmk.robocode.common.model.enemy.EnemyHistory;
-import org.tnmk.robocode.common.model.enemy.EnemyHistoryUtils;
-import robocode.Rules;
 
 public class PatternPrecisionUtils {
 
@@ -42,17 +43,27 @@ public class PatternPrecisionUtils {
 
     private static BotMovementPrediction predictMovement(BotMovement botMovement, long ticks) {
         //TODO improve performance (and precision) by using Maths formula
-        double velocity = botMovement.getVelocity();
-        Point2D predictPosition = botMovement.getCurrentPosition();
-        for (int i = 0; i < ticks; i++) {
-            predictPosition = PatternPredictionUtils.predictPosition(predictPosition, botMovement.getHeadingRadians(), velocity, botMovement.getHeadingChangingRateRadians(), 1, botMovement.getEnemyMovementBoundary());
-            velocity += (double) botMovement.getNormAcceleration();
-            if (velocity < 0){
-                velocity = 0;
-            }else if (velocity > Rules.MAX_VELOCITY){
-                velocity = Rules.MAX_VELOCITY;
-            }
+        Point2D predictPosition;
+        if (botMovement.getHeadingChangingRateRadians() > 0.0001) {
+            //run in circle
+        } else {
+            //run in linear
+            double distance = Move2DUtils.calculateDistanceWithAccelerationAndLimitVelocity(botMovement.getVelocity(), botMovement.getNormAcceleration(), (int) ticks);
+            predictPosition = Move2DUtils.reckonDestination(botMovement.getCurrentPosition(), botMovement.getHeadingRadians(), distance);
         }
+//
+//
+//        double velocity = botMovement.getVelocity();
+//        Point2D predictPosition = botMovement.getCurrentPosition();
+//        for (int i = 0; i < ticks; i++) {
+//            predictPosition = PatternPredictionUtils.predictPosition(predictPosition, botMovement.getHeadingRadians(), velocity, botMovement.getHeadingChangingRateRadians(), 1, botMovement.getEnemyMovementBoundary());
+//            velocity += (double) botMovement.getNormAcceleration();
+//            if (velocity < 0){
+//                velocity = 0;
+//            }else if (velocity > Rules.MAX_VELOCITY){
+//                velocity = Rules.MAX_VELOCITY;
+//            }
+//        }
         BotMovementPrediction botMovementPrediction = new BotMovementPrediction(botMovement, predictPosition);
         return botMovementPrediction;
     }
