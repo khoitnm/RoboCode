@@ -136,9 +136,10 @@ public class Move2DUtils {
 
     /**
      * You can find destination position by using this method.
+     *
      * @param currentPosition
      * @param inGameHeadingRadian this is the radian in-game angle (not the geometry angle)
-     * @param normDistance     could be positive or negative
+     * @param normDistance        could be positive or negative
      * @return destination position
      */
     public static Point2D reckonDestination(Point2D currentPosition, double inGameHeadingRadian, double normDistance) {
@@ -206,29 +207,41 @@ public class Move2DUtils {
     }
 
     public static double calculateDistanceWithAcceleration(double currentVelocity, int normAcceleration, int ticks) {
-        double distance = (ticks * currentVelocity) + (normAcceleration * (ticks - 1) * ticks / 2d);
+        double distance = (ticks * Math.abs(currentVelocity)) + (normAcceleration * (ticks - 1) * ticks / 2d);
+        distance = GeoMathUtils.sign(currentVelocity) * distance;
         return distance;
     }
 
     public static int calculateMaxTicksForChangingVelocity(double currentVelocity, int normAcceleration) {
         int maxTicks;
         if (normAcceleration > 0) {
-            maxTicks = (int) Math.ceil((Rules.MAX_VELOCITY - currentVelocity) / normAcceleration) + 1;
+            maxTicks = (int) Math.ceil((Rules.MAX_VELOCITY - Math.abs(currentVelocity)) / normAcceleration) + 1;
         } else {
-            maxTicks = (int) Math.ceil((0 - currentVelocity) / normAcceleration) + 1;
+            maxTicks = (int) Math.ceil((0 - Math.abs(currentVelocity)) / normAcceleration) + 1;
         }
         return maxTicks;
     }
 
+    /**
+     * @param currentVelocity
+     * @param normAcceleration
+     * @param ticks
+     * @return could be positive or negative
+     */
     public static double calculateDistanceWithAccelerationAndLimitVelocity(double currentVelocity, int normAcceleration, int ticks) {
-        double distance;
-        int maxTicksForChangingVelocity = calculateMaxTicksForChangingVelocity(currentVelocity, normAcceleration);
-        if (ticks > maxTicksForChangingVelocity) {
-            double distanceWithAcceleration = calculateDistanceWithAcceleration(currentVelocity, normAcceleration, maxTicksForChangingVelocity);
-            distance = distanceWithAcceleration + currentVelocity * (ticks - maxTicksForChangingVelocity);
-        }else{
-            distance = calculateDistanceWithAcceleration(currentVelocity, normAcceleration, ticks);
+        double normDistance;
+        if (normAcceleration == 0) {
+            normDistance = currentVelocity * ticks;
+        } else {
+            int maxTicksForChangingVelocity = calculateMaxTicksForChangingVelocity(currentVelocity, normAcceleration);
+            if (ticks > maxTicksForChangingVelocity) {
+                double distanceWithAcceleration = calculateDistanceWithAcceleration(currentVelocity, normAcceleration, maxTicksForChangingVelocity);
+                normDistance = distanceWithAcceleration + currentVelocity * (ticks - maxTicksForChangingVelocity);
+            } else {
+                normDistance = calculateDistanceWithAcceleration(currentVelocity, normAcceleration, ticks);
+            }
         }
-        return distance;
+
+        return normDistance;
     }
 }
