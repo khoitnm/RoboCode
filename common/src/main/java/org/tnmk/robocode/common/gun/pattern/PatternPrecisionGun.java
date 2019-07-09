@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.tnmk.common.math.GeoMathUtils;
+import org.tnmk.common.number.DoubleUtils;
 import org.tnmk.robocode.common.gun.Gun;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.GunStrategy;
@@ -72,8 +73,12 @@ public class PatternPrecisionGun implements Gun {
 
         /**Turn the gun to the correct angle**/
         if (!gunStateContext.isAiming()) {
-            robot.setTurnGunLeftRadians(aimResult.getGunTurnLeftRadian());
-            gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PRECISION, aimResult.getBulletPower(), enemyHistory.getName());
+            if (DoubleUtils.isConsideredZero(aimResult.getGunTurnLeftRadian())) {
+                robot.setFire(aimResult.getBulletPower());
+            } else {
+                robot.setTurnGunLeftRadians(aimResult.getGunTurnLeftRadian());
+                gunStateContext.saveSateAimGun(GunStrategy.PATTERN_PRECISION, aimResult.getBulletPower(), enemyHistory.getName());
+            }
         }
 //                LogHelper.logSimple(robot, "AimGun(YES): enemyName: " + enemyStatisticContext.getEnemyName() + ", gunStrategy: " + gunStateContext.getGunStrategy() +
 //                        "\n\tidentifiedPattern: " + patternIdentification +
@@ -103,7 +108,7 @@ public class PatternPrecisionGun implements Gun {
         Point2D robotPredictionPosition = robotPosition;
         for (int i = 0; i < 5; i++) {
             gunTurnLeftRadian = GunUtils.reckonTurnGunLeftNormRadian(robotPredictionPosition, bestPotentialPosition, robot.getGunHeadingRadians());
-            if (gunTurnLeftRadian < 0.001){
+            if (gunTurnLeftRadian < 0.0001) {
                 gunTurnLeftRadian = 0;//If the angle is too small, consider don't need to turn the gun at all.
             }
             timePeriodToTurnGun = GunUtils.reckonTimePeriodToTurnGun(gunTurnLeftRadian);
