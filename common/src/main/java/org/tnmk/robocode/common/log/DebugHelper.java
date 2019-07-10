@@ -4,8 +4,11 @@ import java.awt.geom.Point2D;
 import org.tnmk.robocode.common.gun.GunStateContext;
 import org.tnmk.robocode.common.gun.pattern.AimResult;
 import org.tnmk.robocode.common.gun.pattern.BotBody;
+import org.tnmk.robocode.common.gun.pattern.BotBodyFactory;
 import org.tnmk.robocode.common.gun.pattern.PotentialPositionsWithIntersectArea;
+import org.tnmk.robocode.common.helper.BattleFieldUtils;
 import org.tnmk.robocode.common.helper.prediction.EnemyPrediction;
+import org.tnmk.robocode.common.model.BattleField;
 import org.tnmk.robocode.common.model.enemy.EnemyHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyPredictionHistory;
 import org.tnmk.robocode.common.model.enemy.EnemyStatisticContext;
@@ -207,5 +210,24 @@ public class DebugHelper {
         if (isDebug_GunPatternPrecision()) {
             LogHelper.logSimple(robot, "AimResult: " + aimResult);
         }
+    }
+
+    public static void debug_AimResult(AdvancedRobot robot, AimResult aimResult) {
+        if (isDebug_AimResult()) {
+            Color currentColor = Color.GREEN;
+            Point2D robotPosition = BattleFieldUtils.constructRobotPosition(robot);
+//            BotBody currentBotBody = BotBodyFactory.constructBotBody(aimResult.getPredictRobotPosition());
+//            PaintHelper.paintBotBody(robot.getGraphics(), currentBotBody, currentColor);
+            PaintHelper.paintAngleRadian(robot.getGraphics(), robotPosition, robot.getGunHeadingRadians(), 300, 2, currentColor);
+
+            Color predictionColor = Color.MAGENTA;
+            BotBody predictionBotBody = BotBodyFactory.constructBotBody(aimResult.getPredictRobotPosition());
+            PaintHelper.paintBotBody(robot.getGraphics(), predictionBotBody, predictionColor);
+            PaintHelper.paintAngleRadian(robot.getGraphics(), aimResult.getPredictRobotPosition(), robot.getGunHeadingRadians() - aimResult.getGunTurnLeftRadian(), 200, 4, predictionColor);
+        }
+    }
+
+    private static boolean isDebug_AimResult() {
+        return true;
     }
 }

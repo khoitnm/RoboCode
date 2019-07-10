@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import org.tnmk.robocode.common.gun.pattern.BotBody;
 import org.tnmk.robocode.common.helper.Move2DUtils;
 import robocode.Robot;
 
@@ -85,5 +86,10 @@ public class PaintHelper {
     public static void drawRectangle(Graphics2D graphics, Rectangle2D rectangle2D, Color color) {
         graphics.setColor(color);
         graphics.drawRect((int) rectangle2D.getX(), (int) rectangle2D.getY(), (int) rectangle2D.getWidth(), (int) rectangle2D.getHeight());
+    }
+
+    public static void paintBotBody(Graphics2D graphics, BotBody botBody, Color color) {
+        paintPoint(graphics, 5, color, botBody.getPosition(), null);
+        drawRectangle(graphics, botBody.getBotShape(), color);
     }
 }
